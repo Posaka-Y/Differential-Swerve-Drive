@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>配線図 - Teensy4.0 + ESP32 + C610x2 + M2006x2</title>
+<style>
+  @page { size: A3 landscape; margin: 10mm; }
+  body {
+    font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: #fafaf7;
+    margin: 0;
+    padding: 20px;
+    color: #1a1a1a;
+  }
+  h1 {
+    font-size: 18px;
+    margin: 0 0 6px 0;
+    letter-spacing: 0.05em;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+  svg {
+    display: block;
+    background: white;
+    border: 1px solid #999;
+    width: 100%;
+    height: auto;
+  }
+  .legend-table {
+    font-size: 11px;
+    border-collapse: collapse;
+    margin-top: 12px;
+    width: 100%;
+  }
+  .legend-table th, .legend-table td {
+    border: 1px solid #999;
+    padding: 4px 8px;
+    text-align: left;
+  }
+  .legend-table th { background: #eee; }
+  .note {
+    margin-top: 14px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  .note h3 { margin: 8px 0 4px 0; font-size: 12px; }
+  .note ul { margin: 0 0 6px 18px; padding: 0; }
+</style>
+</head>
+<body>
+
+<h1>ロボコン機体 配線図</h1>
+<div class="subtitle">4S LiPo / LM2596 / Teensy 4.0 / ESP32 / C610×2 / M2006×2 / DualSense BT</div>
+
+<svg viewBox="0 0 1400 820" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 線種定義 -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c00"/>
+    </marker>
+  </defs>
+
+  <style>
+    .block { fill: white; stroke: #222; stroke-width: 1.5; }
+    .block-battery { fill: #fff4e6; stroke: #a63; stroke-width: 2; }
+    .block-power { fill: #ffe8e8; stroke: #b33; stroke-width: 1.8; }
+    .block-mcu { fill: #e8f0ff; stroke: #339; stroke-width: 1.8; }
+    .block-esc { fill: #e6f5e6; stroke: #383; stroke-width: 1.8; }
+    .block-motor { fill: #f0e8f5; stroke: #63a; stroke-width: 1.8; }
+    .block-bt { fill: #fff0f5; stroke: #a36; stroke-width: 1.8; }
+    .label { font-family: "Hiragino Sans", sans-serif; font-size: 13px; font-weight: 600; fill: #111; }
+    .sublabel { font-family: "Hiragino Sans", sans-serif; font-size: 10px; fill: #444; }
+    .pin { font-family: "Courier New", monospace; font-size: 10px; fill: #222; }
+    .wire-power { stroke: #c00; stroke-width: 2.5; fill: none; }
+    .wire-gnd { stroke: #111; stroke-width: 2.5; fill: none; }
+    .wire-5v { stroke: #e88; stroke-width: 2; fill: none; }
+    .wire-signal { stroke: #06a; stroke-width: 1.5; fill: none; }
+    .wire-can { stroke: #090; stroke-width: 1.8; fill: none; stroke-dasharray: 6 3; }
+    .wire-motor { stroke: #639; stroke-width: 2.2; fill: none; }
+    .wire-bt { stroke: #a36; stroke-width: 1.5; fill: none; stroke-dasharray: 3 3; }
+    .wire-lbl { font-family: "Courier New", monospace; font-size: 9.5px; fill: #333; }
+    .term { fill: #222; }
+    .caution { fill: #c00; font-size: 10px; font-weight: bold; font-family: "Hiragino Sans", sans-serif; }
+  </style>
+
+  <!-- タイトルバー -->
+  <rect x="0" y="0" width="1400" height="30" fill="#222"/>
+  <text x="20" y="20" font-family="Courier New" font-size="13" fill="#fff">WIRING DIAGRAM / rev.1 / Posaka</text>
+  <text x="1200" y="20" font-family="Courier New" font-size="11" fill="#aaa">4S LiPo • M2006×2 • C610×2</text>
+
+  <!-- ========== 電源系統 (上段) ========== -->
+  
+  <!-- バッテリー -->
+  <g transform="translate(40, 70)">
+    <rect class="block-battery" x="0" y="0" width="150" height="80" rx="4"/>
+    <text class="label" x="75" y="22" text-anchor="middle">4S LiPo</text>
+    <text class="sublabel" x="75" y="38" text-anchor="middle">14.8V (12-16.8V)</text>
+    <text class="sublabel" x="75" y="52" text-anchor="middle">XT60コネクタ</text>
+    <!-- 端子 -->
+    <circle class="term" cx="150" cy="25" r="3"/>
+    <text class="pin" x="155" y="29">+</text>
+    <circle class="term" cx="150" cy="55" r="3"/>
+    <text class="pin" x="155" y="59">−</text>
+  </g>
+
+  <!-- メインスイッチ+ヒューズ -->
+  <g transform="translate(240, 70)">
+    <rect class="block-power" x="0" y="0" width="130" height="80" rx="4"/>
+    <text class="label" x="65" y="22" text-anchor="middle">MAIN SW</text>
+    <text class="sublabel" x="65" y="38" text-anchor="middle">+ Fuse 20A</text>
+    <text class="sublabel" x="65" y="54" text-anchor="middle">ロッカSW等</text>
+    <circle class="term" cx="0" cy="25" r="3"/>
+    <circle class="term" cx="130" cy="25" r="3"/>
+    <circle class="term" cx="0" cy="55" r="3"/>
+    <circle class="term" cx="130" cy="55" r="3"/>
+  </g>
+
+  <!-- 電源分岐ハブ -->
+  <g transform="translate(420, 70)">
+    <rect class="block-power" x="0" y="0" width="110" height="80" rx="4" stroke-dasharray="4 2"/>
+    <text class="label" x="55" y="22" text-anchor="middle">DIST BUS</text>
+    <text class="sublabel" x="55" y="38" text-anchor="middle">XT30分岐</text>
+    <text class="sublabel" x="55" y="52" text-anchor="middle">orはんだ</text>
+    <circle class="term" cx="0" cy="25" r="3"/>
+    <circle class="term" cx="110" cy="15" r="3"/>
+    <circle class="term" cx="110" cy="35" r="3"/>
+    <circle class="term" cx="110" cy="55" r="3"/>
+    <circle class="term" cx="0" cy="55" r="3"/>
+    <circle class="term" cx="110" cy="65" r="3"/>
+  </g>
+
+  <!-- LM2596降圧モジュール -->
+  <g transform="translate(580, 260)">
+    <rect class="block-power" x="0" y="0" width="160" height="100" rx="4"/>
+    <text class="label" x="80" y="22" text-anchor="middle">LM2596 DC-DC</text>
+    <text class="sublabel" x="80" y="38" text-anchor="middle">降圧: 14.8V → 5.0V</text>
+    <text class="sublabel" x="80" y="54" text-anchor="middle">VR: 5.00V に事前調整!</text>
+    <text class="caution" x="80" y="74" text-anchor="middle">※接続前に無負荷で確認</text>
+    <circle class="term" cx="0" cy="25" r="3"/>
+    <text class="pin" x="-18" y="29">IN+</text>
+    <circle class="term" cx="0" cy="75" r="3"/>
+    <text class="pin" x="-18" y="79">IN−</text>
+    <circle class="term" cx="160" cy="25" r="3"/>
+    <text class="pin" x="165" y="29">OUT+ (5V)</text>
+    <circle class="term" cx="160" cy="75" r="3"/>
+    <text class="pin" x="165" y="79">OUT−</text>
+  </g>
+
+  <!-- 出力フィルタ -->
+  <g transform="translate(800, 280)">
+    <rect class="block" x="0" y="0" width="120" height="60" rx="4" fill="#fffbe0"/>
+    <text class="label" x="60" y="20" text-anchor="middle">出力フィルタ</text>
+    <text class="sublabel" x="60" y="36" text-anchor="middle">FB + 100μF</text>
+    <text class="sublabel" x="60" y="50" text-anchor="middle">+ 100nF</text>
+    <circle class="term" cx="0" cy="15" r="3"/>
+    <circle class="term" cx="120" cy="15" r="3"/>
+    <circle class="term" cx="0" cy="45" r="3"/>
+    <circle class="term" cx="120" cy="45" r="3"/>
+  </g>
+
+  <!-- ========== C610 ESC (中段左) ========== -->
+  
+  <!-- C610 #1 -->
+  <g transform="translate(600, 60)">
+    <rect class="block-esc" x="0" y="0" width="130" height="110" rx="4"/>
+    <text class="label" x="65" y="22" text-anchor="middle">C610 #1</text>
+    <text class="sublabel" x="65" y="38" text-anchor="middle">M2006 ESC</text>
+    <text class="sublabel" x="65" y="52" text-anchor="middle">CAN ID = 0x201</text>
+    <text class="sublabel" x="65" y="66" text-anchor="middle">(DIP: 1)</text>
+    <!-- 電源入力 -->
+    <circle class="term" cx="0" cy="25" r="3"/>
+    <text class="pin" x="-18" y="29">V+</text>
+    <circle class="term" cx="0" cy="45" r="3"/>
+    <text class="pin" x="-18" y="49">GND</text>
+    <!-- モータ出力 -->
+    <circle class="term" cx="130" cy="25" r="3"/>
+    <text class="pin" x="135" y="29">M+</text>
+    <circle class="term" cx="130" cy="45" r="3"/>
+    <text class="pin" x="135" y="49">M−</text>
+    <!-- CAN -->
+    <circle class="term" cx="65" cy="110" r="3"/>
+    <text class="pin" x="20" y="105">CAN_H/L</text>
+  </g>
+
+  <!-- C610 #2 -->
+  <g transform="translate(780, 60)">
+    <rect class="block-esc" x="0" y="0" width="130" height="110" rx="4"/>
+    <text class="label" x="65" y="22" text-anchor="middle">C610 #2</text>
+    <text class="sublabel" x="65" y="38" text-anchor="middle">M2006 ESC</text>
+    <text class="sublabel" x="65" y="52" text-anchor="middle">CAN ID = 0x202</text>
+    <text class="sublabel" x="65" y="66" text-anchor="middle">(DIP: 2)</text>
+    <circle class="term" cx="0" cy="25" r="3"/>
+    <text class="pin" x="-18" y="29">V+</text>
+    <circle class="term" cx="0" cy="45" r="3"/>
+    <text class="pin" x="-18" y="49">GND</text>
+    <circle class="term" cx="130" cy="25" r="3"/>
+    <text class="pin" x="135" y="29">M+</text>
+    <circle class="term" cx="130" cy="45" r="3"/>
+    <text class="pin" x="135" y="49">M−</text>
+    <circle class="term" cx="65" cy="110" r="3"/>
+    <text class="pin" x="20" y="105">CAN_H/L</text>
+  </g>
+
+  <!-- M2006 モータ -->
+  <g transform="translate(1000, 60)">
+    <rect class="block-motor" x="0" y="0" width="100" height="70" rx="4"/>
+    <text class="label" x="50" y="22" text-anchor="middle">M2006 #1</text>
+    <text class="sublabel" x="50" y="40" text-anchor="middle">3相BLDC</text>
+    <text class="sublabel" x="50" y="54" text-anchor="middle">(減速比36)</text>
+  </g>
+  <g transform="translate(1150, 60)">
+    <rect class="block-motor" x="0" y="0" width="100" height="70" rx="4"/>
+    <text class="label" x="50" y="22" text-anchor="middle">M2006 #2</text>
+    <text class="sublabel" x="50" y="40" text-anchor="middle">3相BLDC</text>
+    <text class="sublabel" x="50" y="54" text-anchor="middle">(減速比36)</text>
+  </g>
+
+  <!-- ========== ロジック系 (下段) ========== -->
+  
+  <!-- Teensy 4.0 -->
+  <g transform="translate(990, 430)">
+    <rect class="block-mcu" x="0" y="0" width="190" height="200" rx="4"/>
+    <text class="label" x="95" y="22" text-anchor="middle">Teensy 4.0</text>
+    <text class="sublabel" x="95" y="38" text-anchor="middle">CAN司令 + UART受信</text>
+    <text class="sublabel" x="95" y="54" text-anchor="middle">3.3V logic</text>
+    
+    <!-- 左側ピン -->
+    <circle class="term" cx="0" cy="80" r="3"/>
+    <text class="pin" x="8" y="84">VIN (5V)</text>
+    <circle class="term" cx="0" cy="100" r="3"/>
+    <text class="pin" x="8" y="104">GND</text>
+    <circle class="term" cx="0" cy="125" r="3"/>
+    <text class="pin" x="8" y="129">Pin 0: RX1</text>
+    <circle class="term" cx="0" cy="145" r="3"/>
+    <text class="pin" x="8" y="149">Pin 1: TX1</text>
+    <circle class="term" cx="0" cy="170" r="3"/>
+    <text class="pin" x="8" y="174">Pin 22: CRX2</text>
+    <circle class="term" cx="0" cy="190" r="3"/>
+    <text class="pin" x="8" y="194">Pin 23: CTX2</text>
+
+    <text class="caution" x="95" y="70" text-anchor="middle">⚠ 裏面USB-VINパッド切断</text>
+  </g>
+
+  <!-- CAN トランシーバ -->
+  <g transform="translate(780, 470)">
+    <rect class="block" x="0" y="0" width="140" height="120" rx="4" fill="#e6ffe6"/>
+    <text class="label" x="70" y="22" text-anchor="middle">CAN Transceiver</text>
+    <text class="sublabel" x="70" y="38" text-anchor="middle">TJA1051 / SN65HVD230</text>
+    <text class="sublabel" x="70" y="52" text-anchor="middle">3.3V駆動品を使用</text>
+    <circle class="term" cx="140" cy="35" r="3"/>
+    <text class="pin" x="100" y="39">CTX</text>
+    <circle class="term" cx="140" cy="55" r="3"/>
+    <text class="pin" x="100" y="59">CRX</text>
+    <circle class="term" cx="140" cy="75" r="3"/>
+    <text class="pin" x="100" y="79">VCC</text>
+    <circle class="term" cx="140" cy="95" r="3"/>
+    <text class="pin" x="100" y="99">GND</text>
+    <circle class="term" cx="0" cy="50" r="3"/>
+    <text class="pin" x="8" y="54">CANH</text>
+    <circle class="term" cx="0" cy="75" r="3"/>
+    <text class="pin" x="8" y="79">CANL</text>
+    <text class="caution" x="70" y="115" text-anchor="middle">120Ω終端を片端に</text>
+  </g>
+
+  <!-- ESP32 (無印) -->
+  <g transform="translate(250, 450)">
+    <rect class="block-mcu" x="0" y="0" width="200" height="180" rx="4"/>
+    <text class="label" x="100" y="22" text-anchor="middle">ESP32 DevKit</text>
+    <text class="sublabel" x="100" y="38" text-anchor="middle">BT Classic対応品</text>
+    <text class="sublabel" x="100" y="54" text-anchor="middle">Bluepad32使用</text>
+    
+    <circle class="term" cx="0" cy="80" r="3"/>
+    <text class="pin" x="8" y="84">VIN (5V)</text>
+    <circle class="term" cx="0" cy="100" r="3"/>
+    <text class="pin" x="8" y="104">GND</text>
+    <circle class="term" cx="200" cy="120" r="3"/>
+    <text class="pin" x="140" y="124">GPIO17: TX2</text>
+    <circle class="term" cx="200" cy="140" r="3"/>
+    <text class="pin" x="140" y="144">GPIO16: RX2</text>
+    <circle class="term" cx="200" cy="160" r="3"/>
+    <text class="pin" x="140" y="164">GND</text>
+  </g>
+
+  <!-- DualSense -->
+  <g transform="translate(40, 480)">
+    <rect class="block-bt" x="0" y="0" width="140" height="100" rx="4"/>
+    <text class="label" x="70" y="22" text-anchor="middle">DualSense</text>
+    <text class="sublabel" x="70" y="38" text-anchor="middle">PS5 コントローラ</text>
+    <text class="sublabel" x="70" y="54" text-anchor="middle">Bluetooth接続</text>
+    <text class="sublabel" x="70" y="74" text-anchor="middle">PS+Create 長押し</text>
+    <text class="sublabel" x="70" y="88" text-anchor="middle">→ 青点滅でペアリング</text>
+  </g>
+
+  <!-- ========== 配線 ========== -->
+
+  <!-- バッテリー+ → SW -->
+  <path class="wire-power" d="M 190,95 L 240,95" marker-end="url(#arrow-red)"/>
+  <!-- バッテリー- → SW (GNDライン) -->
+  <path class="wire-gnd" d="M 190,125 L 240,125" marker-end="url(#arrow)"/>
+  <!-- SW → DIST BUS -->
+  <path class="wire-power" d="M 370,95 L 420,95"/>
+  <path class="wire-gnd" d="M 370,125 L 420,125"/>
+
+  <!-- DIST BUS → C610 #1 V+ -->
+  <path class="wire-power" d="M 530,85 L 565,85 L 565,85 L 600,85"/>
+  <!-- DIST BUS → C610 #2 V+ -->
+  <path class="wire-power" d="M 530,105 L 550,105 L 550,85 L 780,85"/>
+  <!-- DIST BUS → LM2596 IN+ -->
+  <path class="wire-power" d="M 530,125 L 555,125 L 555,285 L 580,285"/>
+  <!-- DIST BUS → 各GND -->
+  <path class="wire-gnd" d="M 530,135 L 545,135 L 545,105 L 600,105"/>
+  <path class="wire-gnd" d="M 545,105 L 545,105 L 780,105" opacity="0.7"/>
+  <path class="wire-gnd" d="M 545,335 L 580,335"/>
+  <path d="M 530,135 L 545,135 L 545,335" class="wire-gnd"/>
+
+  <!-- C610 → M2006 -->
+  <path class="wire-motor" d="M 730,85 L 1000,85"/>
+  <path class="wire-motor" d="M 730,105 L 750,105 L 750,105 L 1000,105" opacity="0.0"/>
+  <path class="wire-motor" d="M 910,85 L 1150,85"/>
+  <path class="wire-motor" d="M 910,105 L 1150,105" opacity="0.0"/>
+  <text class="wire-lbl" x="850" y="78">3相出力</text>
+  <text class="wire-lbl" x="1030" y="78">3相出力</text>
+
+  <!-- LM2596 OUT → Filter -->
+  <path class="wire-5v" d="M 740,285 L 800,295"/>
+  <path class="wire-gnd" d="M 740,335 L 800,325"/>
+
+  <!-- Filter → Teensy VIN -->
+  <path class="wire-5v" d="M 920,295 L 960,295 L 960,510 L 990,510"/>
+  <!-- Filter → ESP32 VIN -->
+  <path class="wire-5v" d="M 920,295 L 940,295 L 940,400 L 230,400 L 230,530 L 250,530"/>
+  <!-- Filter GND → Teensy GND -->
+  <path class="wire-gnd" d="M 920,325 L 950,325 L 950,530 L 990,530"/>
+  <!-- Filter GND → ESP32 GND -->
+  <path class="wire-gnd" d="M 920,325 L 930,325 L 930,410 L 220,410 L 220,550 L 250,550"/>
+
+  <!-- UART: ESP32 TX2 → Teensy RX1 -->
+  <path class="wire-signal" d="M 450,570 L 700,570 L 700,555 L 990,555"/>
+  <text class="wire-lbl" x="600" y="564">ESP32 TX2 → Teensy RX1 (UART 115200bps)</text>
+  <!-- UART: ESP32 RX2 → Teensy TX1 -->
+  <path class="wire-signal" d="M 450,590 L 720,590 L 720,575 L 990,575"/>
+  <text class="wire-lbl" x="600" y="602">ESP32 RX2 ← Teensy TX1</text>
+  <!-- UART GND共通 (共通GND線を明示) -->
+  <path class="wire-gnd" d="M 450,610 L 740,610 L 740,610" opacity="0.6"/>
+  <text class="wire-lbl" x="600" y="624" fill="#c00">GND 共通 (必須)</text>
+
+  <!-- Teensy ↔ CAN Transceiver -->
+  <path class="wire-signal" d="M 990,600 L 960,600 L 960,505 L 920,505"/>
+  <text class="wire-lbl" x="925" y="498">CTX</text>
+  <path class="wire-signal" d="M 990,620 L 950,620 L 950,525 L 920,525"/>
+  <text class="wire-lbl" x="925" y="518">CRX</text>
+
+  <!-- CAN Transceiver → C610 CAN bus -->
+  <path class="wire-can" d="M 780,520 L 740,520 L 740,170 L 665,170"/>
+  <path class="wire-can" d="M 740,170 L 845,170"/>
+  <text class="wire-lbl" x="700" y="350">CAN Bus</text>
+  <text class="wire-lbl" x="700" y="362">1 Mbps</text>
+
+  <!-- CAN Transceiver VCC/GND -->
+  <path class="wire-5v" d="M 920,545 L 940,545 L 940,560" opacity="0"/>
+  <!-- 簡略のため省略 -->
+
+  <!-- Bluetooth link -->
+  <path class="wire-bt" d="M 180,530 L 250,530" opacity="0"/>
+  <path class="wire-bt" d="M 180,500 Q 215,460 250,490"/>
+  <text class="wire-lbl" x="185" y="455" fill="#a36">Bluetooth (2.4GHz)</text>
+
+  <!-- ========== 凡例 ========== -->
+  <g transform="translate(40, 680)">
+    <rect x="0" y="0" width="1320" height="120" fill="white" stroke="#999"/>
+    <text class="label" x="10" y="20">凡例 / Legend</text>
+    
+    <line x1="10" y1="40" x2="50" y2="40" class="wire-power"/>
+    <text class="sublabel" x="60" y="44">バッテリー電源 (14.8V) +</text>
+    
+    <line x1="230" y1="40" x2="270" y2="40" class="wire-gnd"/>
+    <text class="sublabel" x="280" y="44">GND (共通)</text>
+    
+    <line x1="400" y1="40" x2="440" y2="40" class="wire-5v"/>
+    <text class="sublabel" x="450" y="44">5V ロジック電源</text>
+    
+    <line x1="570" y1="40" x2="610" y2="40" class="wire-signal"/>
+    <text class="sublabel" x="620" y="44">デジタル信号 (UART/CAN TX-RX)</text>
+    
+    <line x1="820" y1="40" x2="860" y2="40" class="wire-can"/>
+    <text class="sublabel" x="870" y="44">CAN バス (CANH/CANL ツイストペア)</text>
+    
+    <line x1="1100" y1="40" x2="1140" y2="40" class="wire-motor"/>
+    <text class="sublabel" x="1150" y="44">モータ3相 (A/B/C)</text>
+
+    <line x1="10" y1="70" x2="50" y2="70" class="wire-bt"/>
+    <text class="sublabel" x="60" y="74">Bluetooth (無線)</text>
+    
+    <!-- ワイヤーゲージ推奨 -->
+    <text class="label" x="10" y="100">推奨ワイヤーゲージ:</text>
+    <text class="sublabel" x="180" y="100">モータ幹線 AWG14 (2sq)</text>
+    <text class="sublabel" x="360" y="100">C610まで AWG16-18 (1.25sq)</text>
+    <text class="sublabel" x="570" y="100">LM2596入力 AWG22</text>
+    <text class="sublabel" x="720" y="100">5V出力 AWG22-24</text>
+    <text class="sublabel" x="870" y="100">信号線 AWG26-28</text>
+    <text class="sublabel" x="1010" y="100">CAN線 ツイストペア</text>
+  </g>
+
+</svg>
+
+<div class="note">
+  <h3>配線時の重要ポイント</h3>
+  <ul>
+    <li><strong>GND一点接地</strong>: モータGND (バッテリー−) とロジックGND (LM2596 OUT−) は必ずバッテリー側で一点接地。LM2596の入力GNDと出力GNDは基板内部で繋がっている。</li>
+    <li><strong>LM2596の出力電圧調整</strong>: Teensy/ESP32を接続する前に、無負荷でテスターで5.00V ±0.05V を確認してから接続。初期状態の電圧は不定。</li>
+    <li><strong>Teensy 4.0のUSB-VINパッド</strong>: 裏面の2つのパッドを繋ぐ細いトレースをカッターで切る。これを怠ると、開発中にUSBとVIN(5V)が競合して最悪Teensyが壊れる。</li>
+    <li><strong>CAN終端抵抗</strong>: CANバスの両端のうち片方に120Ω抵抗 (CANH-CANL間)。もう片端のC610は内部終端があると言われているので片方だけでよい場合もあり。実機で要確認。</li>
+    <li><strong>C610のCAN ID</strong>: C610のDIPスイッチで #1=0x201, #2=0x202 に設定。制御コマンドは0x200に全8バイトまとめて送信。</li>
+    <li><strong>電源投入順</strong>: バッテリー接続→メインSW ON でモータ電源とロジック電源がほぼ同時に立ち上がる。起動後1-2秒はTeensyからCANコマンドを送らないこと(C610の初期化待ち)。</li>
+    <li><strong>Bluetoothペアリング</strong>: DualSenseは PS + Create ボタン長押しで青点滅、この間にESP32側でスキャン開始。</li>
+  </ul>
+  
+  <h3>CAN制御プロトコル (参考)</h3>
+  <ul>
+    <li>送信ID: <code>0x200</code> (ID 0x201-0x204 の4台分まとめて制御)</li>
+    <li>データ長: 8バイト</li>
+    <li>バイト構成: <code>[ID1_H, ID1_L, ID2_H, ID2_L, ID3_H, ID3_L, ID4_H, ID4_L]</code></li>
+    <li>各16bit値: 電流指令 (-10000 〜 +10000 を -10A 〜 +10A にマップ)</li>
+    <li>送信周期: 1 kHz (1 ms 毎) 推奨</li>
+    <li>受信ID: <code>0x201, 0x202</code> から角度/速度/電流/温度のフィードバック</li>
+  </ul>
+</div>
+
+</body>
+</html>
