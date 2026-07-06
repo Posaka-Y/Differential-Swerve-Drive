@@ -1,3 +1,9 @@
 # STL files (large binary outputs)
 *.STL
 *.stl
+
+# Firmware build outputs and editor-local state
+firmware/build/
+firmware/out/
+.cache/
+.vscode/*.log

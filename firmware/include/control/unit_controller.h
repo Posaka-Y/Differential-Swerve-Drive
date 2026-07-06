@@ -1,0 +1,96 @@
+#pragma once
+
+#include <stdint.h>
+
+typedef struct {
+    float motor_max_rpm;
+    float steer_max_rpm;
+    /* Commanded speeds below the mechanism's re-stick speed cause stick-slip
+     * limit cycles; outside the deadband the steer command magnitude is floored
+     * to this value so the final approach stays in continuous motion. */
+    float steer_min_rpm;
+    float steer_accel_rpm_per_s;
+    float angle_kp_rpm_per_deg;
+    float angle_deadband_deg;
+
+    /* Ramp on the drive (wheel) target, mirroring steer_accel_rpm_per_s.
+     * Without it a step wheel target hits the drive PI unfiltered. */
+    float wheel_accel_rpm_per_s;
+
+    /* Mode-coordinate PI gains (steer = common mode, drive = differential mode).
+     * Friction is rejected by the integral term alone; current_limit must have
+     * margin over the worst-case measured breakaway current for this to work. */
+    float steer_mode_kp;
+    float steer_mode_ki;
+    float drive_mode_kp;
+    float drive_mode_ki;
+
+    /* Separate clamp on each mode integral (RoboMaster-style max_iout).
+     * Must sit above the worst-case breakaway current (so the integral can
+     * still defeat static friction) but below current_limit, so the charge
+     * stored while stuck cannot release as a full-limit torque jump. */
+    float mode_integral_limit;
+
+    /* First-order low-pass applied to the measured mode rpm before the PI. */
+    float mode_rpm_filter_tau_s;
+
+    float current_limit;
+    float steer_motor_sign;
+} unit_controller_config_t;
+
+typedef struct {
+    float target_wheel_rpm;
+    float target_steer_deg;
+} unit_target_t;
+
+typedef struct {
+    float steer_deg;
+    float motor1_rpm;
+    float motor2_rpm;
+} unit_measurement_t;
+
+typedef struct {
+    int16_t motor1_current;
+    int16_t motor2_current;
+    float angle_error_deg;
+    float steer_rpm_command;
+    float wheel_rpm_command;
+    float motor1_target_rpm;
+    float motor2_target_rpm;
+    float steer_mode_target_rpm;
+    float drive_mode_target_rpm;
+    float steer_mode_measured_rpm;
+    float drive_mode_measured_rpm;
+    float steer_mode_current;
+    float drive_mode_current;
+    uint8_t limiting_active;
+    /* Set when the combined per-motor current exceeded current_limit and both
+     * mode currents were scaled down proportionally. */
+    uint8_t torque_scaling_active;
+} unit_control_output_t;
+
+typedef struct {
+    unit_controller_config_t config;
+    unit_target_t target;
+    float steer_rpm_state;
+    float wheel_rpm_state;
+    float steer_mode_integral;
+    float drive_mode_integral;
+    float steer_mode_filtered_rpm;
+    float drive_mode_filtered_rpm;
+    /* Previous-cycle combined saturation; freezes both integrals for one cycle
+     * (conditional integration against cross-mode windup). */
+    uint8_t combined_saturated;
+} unit_controller_t;
+
+void unit_controller_init(unit_controller_t *controller,
+                          const unit_controller_config_t *config);
+void unit_controller_set_target(unit_controller_t *controller,
+                                float wheel_rpm, float steer_deg);
+void unit_controller_reset(unit_controller_t *controller);
+void unit_controller_update(unit_controller_t *controller,
+                            const unit_measurement_t *measurement,
+                            float dt_s, unit_control_output_t *output);
+
+/* Returns angle normalized to [0, 360). */
+float unit_normalize_angle_deg(float angle_deg);

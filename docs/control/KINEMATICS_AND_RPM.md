@@ -1,0 +1,188 @@
+# ギア比・rpm・トルク・運動学
+
+## 前提
+
+- モーター: C620 / M3508前提
+- モーター1回転数: `n1`
+- モーター2回転数: `n2`
+- 単位: rpm
+- 平歯車段: 40T -> 55T
+- 傘歯車段: 60T -> 15T
+- 操舵はパターン(a)で確定
+
+## 駆動ギア比
+
+平歯車段:
+
+$$
+\frac{40}{55} = 0.727
+$$
+
+傘歯車段:
+
+$$
+\frac{60}{15} = 4.0
+$$
+
+全体:
+
+$$
+0.727 \times 4.0 = 2.909
+$$
+
+したがって、駆動出力は **2.909倍増速**。
+
+## 駆動rpm
+
+定格:
+
+$$
+469 \times 2.909 = 1364 rpm
+$$
+
+空載:
+
+$$
+482 \times 2.909 = 1402 rpm
+$$
+
+## 駆動トルク
+
+増速比の逆数でトルクは低下する。
+
+モーター単体:
+
+$$
+3 \div 2.909 = 1.031 N \cdot m
+$$
+
+ユニット2基分:
+
+$$
+1.031 \times 2 = 2.063 N \cdot m
+$$
+
+ギア効率0.8込み:
+
+$$
+2.063 \times 0.8 = 1.65 N \cdot m
+$$
+
+拘束トルク4.5N m基準:
+
+$$
+4.5 \div 2.909 \times 2 \times 0.8 = 2.48 N \cdot m
+$$
+
+## ステアrpm
+
+$$
+n_{steer} = \frac{n_1 + n_2}{2} \times \frac{40}{55} \times \frac{15}{60}
+$$
+
+係数:
+
+$$
+\frac{40}{55} \times \frac{15}{60} = 0.1818
+$$
+
+したがって、
+
+$$
+n_{steer} = 0.1818 \times \frac{n_1 + n_2}{2}
+$$
+
+または、
+
+$$
+n_{steer} = 0.0909(n_1 + n_2)
+$$
+
+## 駆動rpmの差動式
+
+$$
+n_{drive} = \frac{n_1 - n_2}{2} \times \frac{40}{55} \times \frac{60}{15}
+$$
+
+係数:
+
+$$
+\frac{40}{55} \times \frac{60}{15} = 2.909
+$$
+
+したがって、
+
+$$
+n_{drive} = 2.909 \times \frac{n_1 - n_2}{2}
+$$
+
+または、
+
+$$
+n_{drive} = 1.4545(n_1 - n_2)
+$$
+
+## 順運動学
+
+$$
+n_{drive} = 1.4545(n_1 - n_2)
+$$
+
+$$
+n_{steer} = 0.0909(n_1 + n_2)
+$$
+
+```cpp
+struct ModuleRpm {
+    double drive;
+    double steer;
+};
+
+ModuleRpm forwardKinematics(double n1, double n2) {
+    constexpr double DRIVE_RATIO = 2.909090909;
+    constexpr double STEER_RATIO = 0.181818182;
+
+    return {
+        DRIVE_RATIO * (n1 - n2) / 2.0,
+        STEER_RATIO * (n1 + n2) / 2.0
+    };
+}
+```
+
+## 逆運動学
+
+$$
+n_1 = \frac{n_{drive}}{2.909} + \frac{n_{steer}}{0.1818}
+$$
+
+$$
+n_2 = -\frac{n_{drive}}{2.909} + \frac{n_{steer}}{0.1818}
+$$
+
+```cpp
+struct MotorRpm {
+    double n1;
+    double n2;
+};
+
+MotorRpm inverseKinematics(double nDrive, double nSteer) {
+    constexpr double DRIVE_RATIO = 2.909090909;
+    constexpr double STEER_RATIO = 0.181818182;
+
+    return {
+        nDrive / DRIVE_RATIO + nSteer / STEER_RATIO,
+       -nDrive / DRIVE_RATIO + nSteer / STEER_RATIO
+    };
+}
+```
+
+## 数値例
+
+| 操作 | n1 | n2 | n_drive | n_steer |
+|---|---:|---:|---:|---:|
+| 純駆動 | +469 | -469 | 1364 rpm | 0 rpm |
+| 純操舵 | +469 | +469 | 0 rpm | 85.3 rpm |
+| 片側のみ | +469 | 0 | 682 rpm | 42.6 rpm |
+
+純操舵時の85.3rpmは、1回転あたり約0.70秒、180度で約0.35秒。
+

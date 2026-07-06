@@ -1,0 +1,11 @@
+{
+  "cmake.cmakePath": "${env:LOCALAPPDATA}\\stm32cube\\bundles\\cmake\\4.3.1+st.1\\bin\\cmake.exe",
+  "cmake.environment": {
+    "PATH": "${env:LOCALAPPDATA}\\stm32cube\\bundles\\ninja\\1.13.2+st.1\\bin;${env:PATH}"
+  },
+  "cmake.sourceDirectory": "${workspaceFolder}/firmware",
+  "cmake.useCMakePresets": "always",
+  "cmake.configureOnOpen": true,
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/firmware/build/debug/compile_commands.json",
+  "files.associations": { "*.h": "c" }
+}

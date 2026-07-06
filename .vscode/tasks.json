@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Firmware: Build Debug",
+      "type": "process",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\firmware\\scripts\\build.ps1", "-Configuration", "Debug"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Firmware: Build Release",
+      "type": "process",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\firmware\\scripts\\build.ps1", "-Configuration", "Release"],
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Firmware: Flash Debug",
+      "type": "process",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\firmware\\scripts\\flash.ps1", "-Configuration", "Debug"],
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,243 @@
+#include "control/unit_controller.h"
+
+enum {
+    DRIVE_RATIO_NUM = 32,
+    DRIVE_RATIO_DEN = 11,
+    STEER_RATIO_NUM = 2,
+    STEER_RATIO_DEN = 11,
+};
+
+static float absf(float value)
+{
+    return value < 0.0f ? -value : value;
+}
+
+static float clampf(float value, float minimum, float maximum)
+{
+    if (value < minimum) {
+        return minimum;
+    }
+    if (value > maximum) {
+        return maximum;
+    }
+    return value;
+}
+
+float unit_normalize_angle_deg(float angle_deg)
+{
+    while (angle_deg >= 360.0f) {
+        angle_deg -= 360.0f;
+    }
+    while (angle_deg < 0.0f) {
+        angle_deg += 360.0f;
+    }
+    return angle_deg;
+}
+
+static float shortest_angle_error(float target_deg, float current_deg)
+{
+    float error = unit_normalize_angle_deg(target_deg) -
+                  unit_normalize_angle_deg(current_deg);
+    if (error >= 180.0f) {
+        error -= 360.0f;
+    } else if (error < -180.0f) {
+        error += 360.0f;
+    }
+    return error;
+}
+
+/* Single-pole low-pass, time-constant form so behavior is independent of dt jitter. */
+static float lowpass_update(float previous, float raw, float tau_s, float dt_s)
+{
+    if (tau_s <= 0.0f || dt_s <= 0.0f) {
+        return raw;
+    }
+    const float alpha = dt_s / (tau_s + dt_s);
+    return previous + alpha * (raw - previous);
+}
+
+/* Friction is treated as a steady disturbance and rejected by the integral term
+ * alone; there is no feedforward. This requires current_limit to have margin
+ * over the worst-case measured breakaway current for every mode/direction.
+ *
+ * The integral is clamped to +/-integral_limit independently of the output
+ * limit (RoboMaster-style max_iout): while the mechanism is stuck the integral
+ * may only charge up to integral_limit, so breakaway cannot release a
+ * full-limit torque jump. freeze_integral holds the integral for cycles that
+ * follow combined per-motor saturation (conditional integration). */
+static float pi_update_mode(float target, float measured_filtered, float kp,
+                           float ki, float dt_s, float limit,
+                           float integral_limit, uint8_t freeze_integral,
+                           float *integral)
+{
+    const float error = target - measured_filtered;
+
+    if (!freeze_integral) {
+        const float candidate_integral = clampf(
+            *integral + ki * error * dt_s, -integral_limit, integral_limit);
+        const float candidate_output = kp * error + candidate_integral;
+        if (!((candidate_output > limit && error > 0.0f) ||
+              (candidate_output < -limit && error < 0.0f))) {
+            *integral = candidate_integral;
+        }
+    }
+
+    return clampf(kp * error + *integral, -limit, limit);
+}
+
+void unit_controller_init(unit_controller_t *controller,
+                          const unit_controller_config_t *config)
+{
+    controller->config = *config;
+    controller->target.target_wheel_rpm = 0.0f;
+    controller->target.target_steer_deg = 0.0f;
+    unit_controller_reset(controller);
+}
+
+void unit_controller_set_target(unit_controller_t *controller,
+                                float wheel_rpm, float steer_deg)
+{
+    controller->target.target_wheel_rpm = wheel_rpm;
+    controller->target.target_steer_deg = unit_normalize_angle_deg(steer_deg);
+}
+
+void unit_controller_reset(unit_controller_t *controller)
+{
+    controller->steer_rpm_state = 0.0f;
+    controller->wheel_rpm_state = 0.0f;
+    controller->steer_mode_integral = 0.0f;
+    controller->drive_mode_integral = 0.0f;
+    controller->steer_mode_filtered_rpm = 0.0f;
+    controller->drive_mode_filtered_rpm = 0.0f;
+    controller->combined_saturated = 0U;
+}
+
+void unit_controller_update(unit_controller_t *controller,
+                            const unit_measurement_t *measurement,
+                            float dt_s, unit_control_output_t *output)
+{
+    const float drive_ratio =
+        (float)DRIVE_RATIO_NUM / (float)DRIVE_RATIO_DEN;
+    const float steer_ratio =
+        (float)STEER_RATIO_NUM / (float)STEER_RATIO_DEN;
+    const float sign = controller->config.steer_motor_sign;
+
+    output->angle_error_deg = shortest_angle_error(
+        controller->target.target_steer_deg, measurement->steer_deg);
+
+    float requested_steer_rpm = 0.0f;
+    if (absf(output->angle_error_deg) >
+        controller->config.angle_deadband_deg) {
+        requested_steer_rpm =
+            controller->config.angle_kp_rpm_per_deg * output->angle_error_deg;
+        if (requested_steer_rpm > 0.0f &&
+            requested_steer_rpm < controller->config.steer_min_rpm) {
+            requested_steer_rpm = controller->config.steer_min_rpm;
+        } else if (requested_steer_rpm < 0.0f &&
+                   requested_steer_rpm > -controller->config.steer_min_rpm) {
+            requested_steer_rpm = -controller->config.steer_min_rpm;
+        }
+    }
+    requested_steer_rpm = clampf(
+        requested_steer_rpm, -controller->config.steer_max_rpm,
+        controller->config.steer_max_rpm);
+
+    const float max_steer_delta =
+        controller->config.steer_accel_rpm_per_s * dt_s;
+    const float steer_delta = clampf(
+        requested_steer_rpm - controller->steer_rpm_state,
+        -max_steer_delta, max_steer_delta);
+    controller->steer_rpm_state += steer_delta;
+    output->steer_rpm_command = controller->steer_rpm_state;
+
+    /* Motor-space mode targets: steer mode is the common-mode rpm, drive mode is
+     * the differential-mode rpm (matches wheelRpm=1.4545*(m1-m2), steerRpm=0.0909*(m1+m2)). */
+    const float steer_mode_target = sign * output->steer_rpm_command / steer_ratio;
+    float available_drive_motor_rpm =
+        controller->config.motor_max_rpm - absf(steer_mode_target);
+    if (available_drive_motor_rpm < 0.0f) {
+        available_drive_motor_rpm = 0.0f;
+    }
+    const float wheel_rpm_limit = available_drive_motor_rpm * drive_ratio;
+    const float limited_wheel_rpm = clampf(
+        controller->target.target_wheel_rpm, -wheel_rpm_limit,
+        wheel_rpm_limit);
+    output->limiting_active =
+        absf(limited_wheel_rpm -
+             controller->target.target_wheel_rpm) > 0.01f;
+
+    /* Ramp the drive target like the steer target, so a step wheel command
+     * cannot hit the drive PI unfiltered. */
+    const float max_wheel_delta =
+        controller->config.wheel_accel_rpm_per_s * dt_s;
+    const float wheel_delta = clampf(
+        limited_wheel_rpm - controller->wheel_rpm_state,
+        -max_wheel_delta, max_wheel_delta);
+    controller->wheel_rpm_state += wheel_delta;
+    output->wheel_rpm_command = controller->wheel_rpm_state;
+
+    const float drive_mode_target = output->wheel_rpm_command / drive_ratio;
+
+    output->motor1_target_rpm = drive_mode_target + steer_mode_target;
+    output->motor2_target_rpm = -drive_mode_target + steer_mode_target;
+    output->steer_mode_target_rpm = steer_mode_target;
+    output->drive_mode_target_rpm = drive_mode_target;
+
+    const float raw_drive_mode_rpm =
+        (measurement->motor1_rpm - measurement->motor2_rpm) * 0.5f;
+    const float raw_steer_mode_rpm =
+        sign * (measurement->motor1_rpm + measurement->motor2_rpm) * 0.5f;
+
+    controller->drive_mode_filtered_rpm = lowpass_update(
+        controller->drive_mode_filtered_rpm, raw_drive_mode_rpm,
+        controller->config.mode_rpm_filter_tau_s, dt_s);
+    controller->steer_mode_filtered_rpm = lowpass_update(
+        controller->steer_mode_filtered_rpm, raw_steer_mode_rpm,
+        controller->config.mode_rpm_filter_tau_s, dt_s);
+
+    output->drive_mode_measured_rpm = controller->drive_mode_filtered_rpm;
+    output->steer_mode_measured_rpm = controller->steer_mode_filtered_rpm;
+
+    output->steer_mode_current = pi_update_mode(
+        steer_mode_target, controller->steer_mode_filtered_rpm,
+        controller->config.steer_mode_kp, controller->config.steer_mode_ki,
+        dt_s, controller->config.current_limit,
+        controller->config.mode_integral_limit,
+        controller->combined_saturated,
+        &controller->steer_mode_integral);
+    output->drive_mode_current = pi_update_mode(
+        drive_mode_target, controller->drive_mode_filtered_rpm,
+        controller->config.drive_mode_kp, controller->config.drive_mode_ki,
+        dt_s, controller->config.current_limit,
+        controller->config.mode_integral_limit,
+        controller->combined_saturated,
+        &controller->drive_mode_integral);
+
+    /* If the combined per-motor demand exceeds current_limit, scale both mode
+     * currents by a common factor instead of clamping each motor separately.
+     * Clamping only one motor would silently change the steer/drive torque
+     * ratio (cross-coupling); proportional scaling preserves the torque
+     * direction, matching how RoboMaster power limiting scales all motors. */
+    const float peak_motor_current =
+        absf(output->steer_mode_current) + absf(output->drive_mode_current);
+    output->torque_scaling_active =
+        peak_motor_current > controller->config.current_limit;
+    if (output->torque_scaling_active) {
+        const float scale = controller->config.current_limit / peak_motor_current;
+        output->steer_mode_current *= scale;
+        output->drive_mode_current *= scale;
+    }
+    controller->combined_saturated = output->torque_scaling_active;
+
+    const float motor1_current = clampf(
+        output->steer_mode_current + output->drive_mode_current,
+        -controller->config.current_limit, controller->config.current_limit);
+    const float motor2_current = clampf(
+        output->steer_mode_current - output->drive_mode_current,
+        -controller->config.current_limit, controller->config.current_limit);
+
+    output->motor1_current = (int16_t)(
+        motor1_current >= 0.0f ? motor1_current + 0.5f : motor1_current - 0.5f);
+    output->motor2_current = (int16_t)(
+        motor2_current >= 0.0f ? motor2_current + 0.5f : motor2_current - 0.5f);
+}

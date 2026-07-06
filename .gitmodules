@@ -1,0 +1,6 @@
+[submodule "hardware/reference/ARK_CANNODE"]
+	path = hardware/reference/ARK_CANNODE
+	url = https://github.com/ARK-Electronics/ARK_CANNODE
+[submodule "hardware/reference/candleLightFD"]
+	path = hardware/reference/candleLightFD
+	url = https://github.com/linux-automation/candleLightFD
