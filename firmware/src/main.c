@@ -160,7 +160,7 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
         controller.config.steer_accel_rpm_per_s = applied;
         break;
     case SET_CONFIG_WHEEL_ACCEL_RPM_PER_S:
-        applied = clampf(value, 0.0f, 2000.0f);
+        applied = clampf(value, 0.0f, 5000.0f);
         controller.config.wheel_accel_rpm_per_s = applied;
         break;
     case SET_CONFIG_MODE_INTEGRAL_LIMIT:
@@ -168,8 +168,10 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
         controller.config.mode_integral_limit = applied;
         break;
     case SET_CONFIG_CURRENT_LIMIT:
-        /* Upper bound of 2000 is a hard safety ceiling; never raise it. */
-        applied = clampf(value, 0.0f, 2000.0f);
+        /* Ceiling raised 2000->6000 (~7.3A of C620's 20A full scale) with
+         * user approval 2026-07-08 for response tuning; M3508 rated 10A
+         * continuous. */
+        applied = clampf(value, 0.0f, 6000.0f);
         controller.config.current_limit = applied;
         break;
     case SET_CONFIG_MODE_RPM_FILTER_TAU_S:
@@ -274,27 +276,32 @@ int main(void)
 {
     static const unit_controller_config_t control_config = {
         .motor_max_rpm = 469.0f,
-        .steer_max_rpm = 5.0f,
+        /* steer 10rpm/150rpm/s: 90deg step converges <0.5deg in ~0.7-0.9s
+         * while wheel 300rpm holds within +-4rpm (2026-07-08). */
+        .steer_max_rpm = 10.0f,
         .steer_min_rpm = 0.0f,
-        .steer_accel_rpm_per_s = 50.0f,
-        /* Untested default; tune during this wheel!=0 test. */
-        .wheel_accel_rpm_per_s = 200.0f,
+        .steer_accel_rpm_per_s = 150.0f,
+        /* 4000 + drive Kp=30 + current_limit 4000: 0->500rpm rise 0.41s,
+         * full +-500 reversal 0.51s, steer held <1.2deg, current peak
+         * ~3700, temp 29C (2026-07-08, user-approved limit raise). */
+        .wheel_accel_rpm_per_s = 4000.0f,
         .angle_kp_rpm_per_deg = 0.5f,
         .angle_deadband_deg = 0.5f,
         .steer_mode_kp = 50.0f,
         .steer_mode_ki = 30.0f,
-        /* drive_mode_kp / drive_integral_floor_current / drive_motion_threshold_rpm
-         * are 2026-07-07 measured values (kinetic friction ~200 raw). */
-        .drive_mode_kp = 10.0f,
+        /* Kp=20 also trims the integral-floor overspeed bias at 25rpm to
+         * ~+8% with no stick (see CONTROL_LOOP_TUNING.md 2026-07-08). */
+        .drive_mode_kp = 30.0f,
         .drive_mode_ki = 20.0f,
         /* Above worst-case breakaway (~850-950 raw, 2026-07-05/06 measurements) so the
          * integral can still defeat static friction, below current_limit so a
          * stuck-phase charge cannot release as a full-limit jump. */
         .mode_integral_limit = 1200.0f,
         .mode_rpm_filter_tau_s = 0.02f,
-        /* Measured breakaway ranged ~150-950 raw across angle/direction (2026-07-05/06
-         * characterization); this gives ~2x margin over the worst case. */
-        .current_limit = 2000.0f,
+        /* Raised 2000->4000 (~4.9A, M3508 rated 10A continuous) with user
+         * approval 2026-07-08; acceleration peaks reach ~3700 with temps
+         * steady at 29C on the bench. SET_CONFIG ceiling is 6000. */
+        .current_limit = 4000.0f,
         .steer_motor_sign = 1.0f,
         /* Kinetic-friction FF stays disabled (0); integral floor and motion
          * threshold are 2026-07-07 measured values (kinetic friction ~200 raw). */

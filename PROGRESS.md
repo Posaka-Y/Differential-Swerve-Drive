@@ -14,6 +14,31 @@
 
 ---
 
+## 2026-07-08 (Linux mini PC評価環境確立、低速stick-slip対策完了)
+
+### やったこと
+
+- Linux mini PC側の評価環境を確立: can-utils/python3-serial、slcandでcan0(CANableは
+  `/dev/ttyACM1`、`/dev/ttyACM0`はST-Link V3 VCP)、`st-flash`でのflashも初成功。
+- `tools/linux/unit_bench.py`(socketcan直、run/set-param/disable/profile)を追加。
+- ファームへCAN `SET_CONFIG`(0x140+unitId、17パラメータ、安全クランプ付き)を実装し、
+  reflash不要のランタイム調整を可能にした。
+- 動摩擦電流を実測同定(~200 raw、速度非依存・正逆対称)。低速stick-slipの原因を
+  「ブレークアウェイ~850 vs 維持~200の差」と定量確定し、積分フロア(200)+driveKp10+
+  動作開始時積分クランプ(400)で40rpm p-p 213→16、25rpm固着46%→0%を達成。
+  確定値は`main.c`既定値へ焼き込み済み。コミット`781b516`。
+
+### 現在の状態
+
+- 無負荷単体ユニット(NUCLEO)で、mini PCからCAN経由で25〜1360rpm+ステアの
+  安定制御が成立。残るばらつきは機構の角度依存の引っかかり由来。
+
+### 次の作業
+
+1. 連続軌道評価(`unit_bench.py profile`、速度ゼロクロス反転を含む)。
+2. 接地・負荷での摩擦再同定とフロア/クランプ見直し。
+3. 中央Teensy 4.1のbring-up。
+
 ## 2026-07-07 (mini PC Linux評価引き継ぎ)
 
 ### やったこと
