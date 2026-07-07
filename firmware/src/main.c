@@ -540,8 +540,11 @@ int main(void)
         } else if (!active &&
                    (uint32_t)(now_ms - last_report_ms) >= IDLE_REPORT_PERIOD_MS) {
             last_report_ms = now_ms;
-            debug_printf("idle angle=%d amtOk=%u\n",
-                         to_milli(current_angle_deg), amt_ok ? 1U : 0U);
+            debug_printf("idle angle=%d amtOk=%u fdbkOk=%u en=%u tgtOk=%u\n",
+                         to_milli(current_angle_deg), amt_ok ? 1U : 0U,
+                         feedback_is_fresh(now_ms) ? 1U : 0U,
+                         unit_enabled ? 1U : 0U,
+                         target_is_fresh(now_ms) ? 1U : 0U);
         }
     }
 }

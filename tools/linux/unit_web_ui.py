@@ -96,7 +96,7 @@ STOP_COAST_S = 1.0
 
 STEER_DEG_MIN, STEER_DEG_MAX = 0.0, 360.0
 WHEEL_RPM_MIN, WHEEL_RPM_MAX = -1360.0, 1360.0
-STEER_RATE_DPS_MIN, STEER_RATE_DPS_MAX = -240.0, 240.0
+STEER_RATE_DPS_MIN, STEER_RATE_DPS_MAX = 0.0, 240.0
 
 WHEEL_GEAR_RATIO = 32.0 / 11.0
 
@@ -261,6 +261,11 @@ def summarize_telemetry(fields):
         "i2": i2,
         "t1": t1,
         "t2": t2,
+        # Present only on "idle" lines: firmware-side start-condition health
+        # (fdbkOk=0 means no C620 feedback -> enable will silently not start,
+        # typically the 24V motor power is off).
+        "fdbk_ok": scalar("fdbkOk"),
+        "amt_ok": scalar("amtOk"),
     }
 
 
@@ -313,6 +318,22 @@ def mod_360000(mdeg):
 # --------------------------------------------------------------------------
 
 
+def shortest_diff_mdeg(a, b):
+    """Shortest signed angular difference a-b in mdeg, in [-180000, 180000)."""
+    return (a - b + 180000.0) % 360000.0 - 180000.0
+
+
+# The physical steer axis cannot always follow the commanded rate (the two
+# motors share the motor_max_rpm budget with the wheel, and the firmware's
+# steer_max_rpm clamp caps the axis rate). If the target keeps advancing
+# open-loop past what the axis can do, the angle error grows until the
+# firmware's 120deg divergence guard latches the unit off. Leash the target:
+# never let it lead the measured angle by more than this.
+TARGET_LEASH_MDEG = 45000.0
+# Ignore telemetry older than this for leash purposes (10Hz run= lines).
+LEASH_TELEMETRY_MAX_AGE_S = 0.5
+
+
 def can_tx_loop(stop_event, state, can_sock, can_lock):
     interval = 1.0 / TARGET_HZ
     next_tick = time.monotonic()
@@ -322,19 +343,46 @@ def can_tx_loop(stop_event, state, can_sock, can_lock):
         dt = now - last_time
         last_time = now
         with state.lock:
-            steer_rate_dps = state.steer_rate_dps
-            if steer_rate_dps != 0.0:
-                state.effective_steer_mdeg = mod_360000(
-                    state.effective_steer_mdeg + steer_rate_dps * 1000.0 * dt
-                )
+            # steer_rate_dps is the approach speed toward the steer_deg
+            # destination: the effective target slews toward it (shortest
+            # path) at this rate and stops on arrival, with SET_TARGET_FF
+            # sent only while moving. Rate 0 means the destination was
+            # snapped directly by /api/set (fastest, firmware clamps govern).
+            rate_dps = abs(state.steer_rate_dps)
+            ff_mdeg_s = 0
+            if rate_dps > 0.0:
+                dest_mdeg = mod_360000(state.steer_deg * 1000.0)
+                diff = shortest_diff_mdeg(dest_mdeg, state.effective_steer_mdeg)
+                step = rate_dps * 1000.0 * dt
+                if abs(diff) <= step:
+                    state.effective_steer_mdeg = dest_mdeg  # arrived: FF=0
+                else:
+                    direction = 1.0 if diff > 0.0 else -1.0
+                    advanced = mod_360000(
+                        state.effective_steer_mdeg + direction * step)
+                    telem = state.telemetry
+                    telem_fresh = (
+                        telem is not None
+                        and isinstance(telem.get("angle"), (int, float))
+                        and (now - state.telemetry_time) < LEASH_TELEMETRY_MAX_AGE_S
+                    )
+                    if telem_fresh:
+                        lead = shortest_diff_mdeg(advanced, float(telem["angle"]))
+                        if lead > TARGET_LEASH_MDEG and direction > 0.0:
+                            advanced = mod_360000(
+                                float(telem["angle"]) + TARGET_LEASH_MDEG)
+                        elif lead < -TARGET_LEASH_MDEG and direction < 0.0:
+                            advanced = mod_360000(
+                                float(telem["angle"]) - TARGET_LEASH_MDEG)
+                    state.effective_steer_mdeg = advanced
+                    ff_mdeg_s = int(round(direction * rate_dps * 1000.0))
             steer_mdeg = int(round(state.effective_steer_mdeg))
             wheel_rpm_milli = int(round(state.wheel_rpm * 1000.0))
-            steer_rate_mdeg_s = int(round(steer_rate_dps * 1000.0))
 
         try:
             with can_lock:
-                if steer_rate_dps != 0.0:
-                    send_set_target_ff(can_sock, steer_rate_mdeg_s, 0)
+                if ff_mdeg_s != 0:
+                    send_set_target_ff(can_sock, ff_mdeg_s, 0)
                 send_set_target(can_sock, steer_mdeg, wheel_rpm_milli)
         except OSError:
             pass  # best-effort; next cycle will retry
@@ -459,16 +507,28 @@ def handle_set(state, body):
         return {"ok": False, "error": "body must be a JSON object"}
     updated = {}
     with state.lock:
+        # Apply steer_rate_dps before steer_deg: when both arrive in one
+        # request, the destination's snap-vs-slew decision must see the new
+        # rate, or a rate sent together with the angle is silently bypassed.
+        if "steer_rate_dps" in body:
+            try:
+                v = clamp(float(body["steer_rate_dps"]), STEER_RATE_DPS_MIN, STEER_RATE_DPS_MAX)
+            except (TypeError, ValueError):
+                return {"ok": False, "error": "invalid steer_rate_dps"}
+            state.steer_rate_dps = v
+            updated["steer_rate_dps"] = v
         if "steer_deg" in body:
             try:
                 v = clamp(float(body["steer_deg"]), STEER_DEG_MIN, STEER_DEG_MAX)
             except (TypeError, ValueError):
                 return {"ok": False, "error": "invalid steer_deg"}
             state.steer_deg = v
-            # Direct jump: the effective (transmitted) target follows the
-            # slider immediately; continuous advancement only happens via
-            # steer_rate_dps from this point on.
-            state.effective_steer_mdeg = mod_360000(v * 1000.0)
+            # steer_deg is the destination. With steer_rate_dps == 0 the
+            # effective (transmitted) target snaps to it (fastest, firmware
+            # clamps govern); with a nonzero rate the tx loop slews the
+            # effective target toward it at that speed (profiled approach).
+            if state.steer_rate_dps == 0.0:
+                state.effective_steer_mdeg = mod_360000(v * 1000.0)
             updated["steer_deg"] = v
         if "wheel_rpm" in body:
             try:
@@ -477,13 +537,6 @@ def handle_set(state, body):
                 return {"ok": False, "error": "invalid wheel_rpm"}
             state.wheel_rpm = v
             updated["wheel_rpm"] = v
-        if "steer_rate_dps" in body:
-            try:
-                v = clamp(float(body["steer_rate_dps"]), STEER_RATE_DPS_MIN, STEER_RATE_DPS_MAX)
-            except (TypeError, ValueError):
-                return {"ok": False, "error": "invalid steer_rate_dps"}
-            state.steer_rate_dps = v
-            updated["steer_rate_dps"] = v
     if not updated:
         return {"ok": False, "error": "no recognized fields in body"}
     return {"ok": True, "updated": updated}
@@ -570,12 +623,31 @@ def build_status_json(state):
         telemetry_json["raw_line"] = telem_raw
         telemetry_json["age_s"] = round(now_mono - telem_time, 3) if telem_time is not None else None
 
+    # Feasibility envelope: the two motors share the motor_max_rpm budget,
+    # |steer_mode| + |drive_mode| <= 469 with steer priority in the firmware
+    # (wheel gets cut). steer axis rpm = 0.7273 * mode, wheel = 2.909 * mode,
+    # steer axis further capped at 40rpm (=240deg/s) by steer_max_rpm.
+    MOTOR_MAX = 469.0
+    DRIVE_RATIO = 32.0 / 11.0
+    STEER_AXIS_PER_MODE = 8.0 / 11.0
+    steer_mode_used = abs(cfg["steer_rate_dps"]) / 6.0 / STEER_AXIS_PER_MODE
+    drive_mode_used = abs(cfg["wheel_rpm"]) / DRIVE_RATIO
+    steer_rate_avail_dps = min(
+        240.0,
+        max(0.0, (MOTOR_MAX - drive_mode_used) * STEER_AXIS_PER_MODE * 6.0),
+    )
+    wheel_avail_rpm = max(0.0, (MOTOR_MAX - steer_mode_used) * DRIVE_RATIO)
+
     return {
         "config": cfg,
         "effective_steer_deg": round(effective_steer_deg, 3),
         "enabled": enabled,
         "last_stop_reason": last_stop_reason,
         "telemetry": telemetry_json,
+        "envelope": {
+            "steer_rate_avail_dps": round(steer_rate_avail_dps, 1),
+            "wheel_avail_rpm": round(wheel_avail_rpm, 1),
+        },
         "server_time_utc": datetime.now(timezone.utc).isoformat(timespec="milliseconds"),
     }
 
@@ -657,10 +729,10 @@ INDEX_HTML = """<!doctype html>
     <button class="zero" onclick="zeroField('wheel_rpm')">wheel=0</button>
   </div>
   <div class="field">
-    <label for="steer_rate_dps_range">Steer rate FF &omega;s (deg/s, -240..+240)</label>
-    <input type="range" id="steer_rate_dps_range" min="-240" max="240" step="5" value="0"
+    <label for="steer_rate_dps_range">&omega;s approach speed to &theta;s (deg/s, 0 = instant step)</label>
+    <input type="range" id="steer_rate_dps_range" min="0" max="240" step="5" value="0"
            oninput="onFieldInput('steer_rate_dps', this.value)">
-    <input type="number" id="steer_rate_dps_num" min="-240" max="240" step="5" value="0"
+    <input type="number" id="steer_rate_dps_num" min="0" max="240" step="5" value="0"
            onchange="onFieldInput('steer_rate_dps', this.value)">
     <button class="zero" onclick="zeroField('steer_rate_dps')">steer_rate=0</button>
   </div>
@@ -684,6 +756,9 @@ INDEX_HTML = """<!doctype html>
     <tr><td class="k">t1 / t2 (temperature)</td><td id="st_t1t2">--</td></tr>
     <tr><td class="k">Telemetry age</td><td id="st_age">--</td></tr>
     <tr><td class="k">Last STOP reason</td><td id="st_stop_reason">--</td></tr>
+    <tr><td class="k">&omega;s available (at current &omega;w)</td><td id="st_env_ws">--</td></tr>
+    <tr><td class="k">&omega;w available (at current &omega;s)</td><td id="st_env_ww">--</td></tr>
+    <tr><td class="k">C620 feedback (idle check)</td><td id="st_fdbk">--</td></tr>
   </table>
   <div class="raw" id="st_raw"></div>
 </div>
@@ -740,6 +815,20 @@ function refreshStatus() {
     document.getElementById("st_effective_target").textContent = fmt(data.effective_steer_deg, 2) + " deg";
     document.getElementById("st_stop_reason").textContent = data.last_stop_reason || "--";
 
+    if (data.envelope) {
+      const wsAvail = data.envelope.steer_rate_avail_dps;
+      const wwAvail = data.envelope.wheel_avail_rpm;
+      const wsEl = document.getElementById("st_env_ws");
+      const wwEl = document.getElementById("st_env_ww");
+      wsEl.textContent = fmt(wsAvail, 0) + " deg/s";
+      wwEl.textContent = fmt(wwAvail, 0) + " rpm";
+      // Highlight when the current request exceeds the feasible envelope
+      // (the two motors share the 469rpm budget; firmware cuts wheel first,
+      // and the server-side target leash prevents the divergence STOP).
+      wsEl.style.color = Math.abs(data.config.steer_rate_dps) > wsAvail ? "#ff6b6b" : "";
+      wwEl.style.color = Math.abs(data.config.wheel_rpm) > wwAvail ? "#ff6b6b" : "";
+    }
+
     const t = data.telemetry;
     if (t) {
       document.getElementById("st_angle").textContent = fmt(t.angle_deg, 2) + " deg";
@@ -750,6 +839,17 @@ function refreshStatus() {
       document.getElementById("st_t1t2").textContent = fmt(t.t1, 0) + " / " + fmt(t.t2, 0) + " C";
       document.getElementById("st_age").textContent = fmt(t.age_s, 2) + " s ago";
       document.getElementById("st_raw").textContent = t.raw_line || "";
+      const fdbkEl = document.getElementById("st_fdbk");
+      if (t.fdbk_ok === 0) {
+        fdbkEl.textContent = "NG - C620 feedback missing (24V motor power off?)";
+        fdbkEl.style.color = "#ff6b6b";
+      } else if (t.fdbk_ok === 1) {
+        fdbkEl.textContent = "OK";
+        fdbkEl.style.color = "";
+      } else {
+        fdbkEl.textContent = "(running)";
+        fdbkEl.style.color = "";
+      }
     } else {
       ["st_angle", "st_err", "st_wheel", "st_ffs", "st_i1i2", "st_t1t2", "st_age"].forEach(function (id) {
         document.getElementById(id).textContent = "--";
@@ -928,7 +1028,7 @@ def run_self_check():
     required_snippets = [
         "/api/status", "/api/set", "/api/enable", "/api/stop", "/api/disable",
         "steer_deg", "wheel_rpm", "steer_rate_dps",
-        "min=\"0\" max=\"360\"", "min=\"-1360\" max=\"1360\"", "min=\"-240\" max=\"240\"",
+        "min=\"0\" max=\"360\"", "min=\"-1360\" max=\"1360\"", "min=\"0\" max=\"240\"",
     ]
     for snippet in required_snippets:
         if snippet not in html:
