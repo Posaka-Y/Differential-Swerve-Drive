@@ -1,6 +1,27 @@
 # Firmware progress
 
-最終更新: 2026-07-08(STEER_RATIO 4倍誤り訂正+SET_TARGET_FF実機検証合格。θs/ωs/ωw指令が成立)
+最終更新: 2026-07-08(試験用WebUI追加・実機検証合格。ファームへidle時角度出力を追加)
+
+## 完了(2026-07-08 試験用ブラウザUI `tools/linux/unit_web_ui.py`)
+
+- θs/ωw/ωsスライダー+Enable/STOP/Disable+ライブ数値表示の単一ファイルWebUI
+  (Python標準ライブラリ+pyserial、既定 http://localhost:8080)。ファームプロトコルは
+  既存のSET_TARGET/SET_TARGET_FF/UNIT_CTRLのみ使用。
+- 安全設計(すべて実機検証済み):
+  - Enable時にステア目標を現在角へ自動シードし、**enable送信前にシード済みSET_TARGETを
+    1発送信**(ファームはSTART時に最後に受信した目標をラッチするため、これを怠ると
+    古い目標で発散ガードが即発火する。実際に初回試験でtarget=0のままSTART→即STOPを踏んだ)。
+  - STOPはωw=0/ωs=0で1秒減速後にdisable(空走カップリング対策)。
+  - デッドマン: ブラウザ操作/ポーリングが3秒途絶で自動STOP(実測5秒放置→自動停止確認)。
+    enable/set等のPOSTもハートビートとして扱う(enable直後の誤発火を修正済み)。
+  - Ctrl-C/例外/atexitで必ずdisable。
+- **ファーム変更**: disabled中も500ms周期で`idle angle=<mdeg> amtOk=<0|1>`を出力
+  (`IDLE_REPORT_PERIOD_MS`)。UIがenable前に現在角を知るために必須(`run=`行はactive中のみ)。
+  flash済み。
+- UI側バグ修正: `SET_TARGET_RX`等のangleを含まないVCP行がテレメトリを置き換えて
+  現在角が消える問題を、angleを含む行のみ採用する形で修正。
+- 実機検証: enable(シード121.99°)→ωs=30°/s+ωw=100rpmで追従誤差0.4°以内・
+  wheel実測97〜103rpm→STOP正常。デッドマン自動停止も確認。
 
 ## 完了(2026-07-08 STEER_RATIO訂正とSET_TARGET_FF実機検証)
 

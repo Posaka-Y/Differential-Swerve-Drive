@@ -28,6 +28,10 @@ enum {
     CONTROL_PERIOD_MS = 1U,
     FEEDBACK_TIMEOUT_MS = 20U,
     REPORT_PERIOD_MS = 100U,
+    /* Disabled-state angle report so a UI can seed its steer target from the
+     * actual angle before the first enable (run= lines only print while
+     * active). */
+    IDLE_REPORT_PERIOD_MS = 500U,
     ANGLE_DIVERGENCE_STOP_DEG_MILLI = 120000U,
     MOTOR_TEMPERATURE_LIMIT_C = 80U,
     M3508_INTERNAL_REDUCTION = 19U,
@@ -533,6 +537,11 @@ int main(void)
                          (uint32_t)output.torque_scaling_active,
                          to_milli(output.wheel_rpm_command),
                          to_milli(applied_steer_rate_ff_rpm));
+        } else if (!active &&
+                   (uint32_t)(now_ms - last_report_ms) >= IDLE_REPORT_PERIOD_MS) {
+            last_report_ms = now_ms;
+            debug_printf("idle angle=%d amtOk=%u\n",
+                         to_milli(current_angle_deg), amt_ok ? 1U : 0U);
         }
     }
 }
