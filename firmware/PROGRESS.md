@@ -1,5 +1,56 @@
 # Firmware progress
 
+最終更新: 2026-07-07(SET_CONFIG追加、動摩擦同定、積分フロアで低速stick-slip大幅改善)
+
+## 完了(2026-07-07 低速stick-slip対策: SET_CONFIG+積分フロア)
+
+- CAN `SET_CONFIG`(0x141)でランタイムパラメータ変更を実装・実機確認(reflash不要で調整可能に)。
+  併せて動摩擦FF(idx14)・積分フロア(idx15)・動作判定しきい値(idx16)を追加(既定0=無効)。
+- Linux評価ツール`tools/linux/unit_bench.py`を新規作成(socketcan直、必ずdisable送信)。
+  `st-info --probe`→`flash.sh debug`でこのLinux機からの書き込みも初成功。
+- 動摩擦電流を定常iDrive法で同定: **約200 raw(185〜215)、速度依存なし、正逆対称**。
+  ブレークアウェイ~850との差がstick-slipキックの定量的原因と確定。
+- A/B試験の結論: **積分フロア=200+driveKp=10**で、40rpmはp-p 213→19.6・固着66%→0%、
+  25rpmも固着0%で連続回転化。150rpmは無退行(mean 150.0)。FF併用は過速NG。
+  詳細は`firmware/docs/CONTROL_LOOP_TUNING.md`の同日セクション。
+
+現在の状態(2026-07-08更新):
+- **採用値をすべて`main.c`既定値へ焼き込みflash済み**: driveKp=10、積分フロア=200、
+  動作しきい値=5、動作開始時積分クランプ=400(idx17、2026-07-08追加実装)。
+- クランプ400で25rpm 3回連続固着ゼロ(p-p 17〜47、ばらつきは機構の角度依存の
+  引っかかり由来)。40rpmはp-p 16。ユーザー所感とも一致:「機構上改善はできない
+  引っかかりがあり、それがオーバーシュートの原因」— 制御側はfloor+クランプで
+  通過トルク確保と過剰キック抑制まで対応済み。
+
+次の作業:
+1. 接地・負荷ありでの摩擦再同定とフロア/クランプ値の見直し(負荷下では引っかかりの
+   相対影響は縮む見込み)。
+2. 恒久対策が必要なら角度インデックス摩擦マップ(CALフェーズ、
+   `docs/control/CALIBRATION_AND_ADAPTATION_PLAN.md`)。
+3. 中央Teensy/mini PCからの連続軌道(`unit_bench.py profile`)での評価。
+
+## 完了(2026-07-07 mini PC LinuxからのCANable smoke test)
+
+## 完了(2026-07-07 mini PC LinuxからのCANable smoke test)
+
+- `docs/testing/MINIPC_LINUX_HANDOFF.md`に従い、mini PC(Ubuntu 22.04)側の評価環境を構築。
+  - `python3-serial`追加導入(can-utils/dialoutは既存Linux環境整備で導入済み)。
+  - USBデバイス判別に注意: `/dev/ttyACM0`は**ST-Link V3のVCPパススルー**(ユニットのdebug UARTログが
+    ここに出る)、`/dev/ttyACM1`が実際の**CANable2**(slcan)。ハンドオフメモの`ttyACM0`前提は
+    このPC構成では逆だったため、`slcand -o -c -s8 /dev/ttyACM1 can0`で接続した。
+  - `sudo ip link set can0 up`後、`ip -details link show can0`で`UP`/`ERROR-ACTIVE`確認
+    (`bitrate 0`表示はslcanインターフェース仕様上の既知表示で異常ではない)。
+- ホイールを浮かせた状態でメモ記載の単発smoke(`SET_TARGET`1回→`enable=1`→3秒→`enable=0`)を実施し、
+  `candump`と`/dev/ttyACM0`(VCP)を同時キャプチャして正常動作を確認:
+  - `SET_TARGET_RX steer=90000 wheel=500000`受信、`START_CAN`後angleが90000mdeg付近(err±2000)へ収束、
+    wheelがランプ増加。
+  - 単発送信のため周期`SET_TARGET`が止まり、想定どおり`STOP: target timeout`→`UNIT_CTRL enable=0`で安全停止。
+- ログ保存: `firmware/logs/linux-minipc-smoke-vcp-2026-07-07T23-29-46.log`、
+  `firmware/logs/linux-minipc-smoke-candump-2026-07-07T23-29-46.log`。
+
+次: mini PC側で周期送信スクリプト(メモのCodex prompt例、20〜50Hzで`SET_TARGET`を送り続けるPython実装)を
+作成し、単発smokeではなく実際の連続駆動評価に進む。
+
 ## 進行中(2026-07-07 CANable手入力consoleの落ち挙動切り分け)
 
 - CANable手入力consoleで、周期的に「落ちる」ように見える挙動が発生。
@@ -140,6 +191,36 @@
 
 次: KIを大幅に下げる(100→20〜30程度)実験は未実施のまま保留。実走行(接地・負荷あり)で
 摩擦特性を取り直すのが優先度高いかもしれない。
+
+## 完了(2026-07-07 Linux機のビルド・書き込み環境整備)
+
+- 開発機(Ubuntu 22.04、これまでのWindows/PowerShell環境とは別の作業PC)に
+  ファーム開発ツールチェーンが未導入だったため、ユーザーと相談の上apt版で整備する方針を確定:
+  - ARM GCC: 公式Arm GNU Toolchain 14.2(Windows側)ではなく、apt版
+    `gcc-arm-none-eabi`(10.3-2021.07-4)を採用(手動導入の手間を避けるため)。
+  - 書き込みツール: 公式`STM32CubeProgrammer`(ST公式サイトでのアカウント登録必須)ではなく、
+    apt版`stlink-tools`(st-flash 1.7.0)を採用。
+  - `ninja-build`(1.10.1)もaptで導入。
+- `sudo apt-get install gcc-arm-none-eabi ninja-build stlink-tools`でインストール
+  (初回は`unattended-upgrades`がdpkgロックを保持しており一時失敗、時間を置いて再実行で成功)。
+- udevルールはパッケージ既定の`/lib/udev/rules.d/49-stlinkv*.rules`で足りており追加設定不要と確認。
+- `firmware/scripts/build.sh debug`でビルド成功を確認(FLASH使用0.92%、RAM 1.19%)。
+- `firmware/scripts/build.sh`・`flash.sh`に実行権限(`chmod +x`)が付いていなかったため付与。
+- `flash.sh`を`STM32_Programmer_CLI`(Windows側専用、未導入)から`st-flash --reset write
+  <bin> 0x08000000`(stlink-tools)呼び出しへ書き換え。`.hex`ではなく`.bin`成果物を使う点に注意。
+
+### 現在の状態
+
+- このLinux機でのビルドは動作確認済み。書き込みは未検証(作業時点でST-Link/ボード未接続、
+  `st-info --probe`は0件)。ボード接続後に`./scripts/flash.sh debug`での実機書き込み確認が必要。
+- Windows側の`build.ps1`/`flash.ps1`/`toolchain.ps1`(Arm GCC 14.2 + STM32CubeProgrammer前提)は
+  無変更。今回の変更は`build.sh`/`flash.sh`(Linux用)のみ。
+
+### 次の作業
+
+1. ST-Link(NUCLEO-G474RE搭載のものでも可)をこのPCへ接続し、`st-info --probe`で認識確認。
+2. `./scripts/flash.sh debug`で実機書き込みが成功するか確認する
+   (ARM GCCバージョン差異(10.3 vs 14.2)によるバイナリ挙動差にも注意して見る)。
 
 ## 完了(2026-07-06 rpm発散ガード撤去・駆動ステップ10秒完走)
 

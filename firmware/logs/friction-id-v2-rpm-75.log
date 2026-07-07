@@ -1,0 +1,511 @@
+2026-07-07T14:47:52.766+00:00 BENCH log opened: firmware/logs/friction-id-v2-rpm-75.log
+2026-07-07T14:47:52.766+00:00 BENCH run: steer=315.352deg (315352mdeg) wheel=-75.0rpm (-75000milli-rpm) rate=50.0Hz duration=8.0s
+2026-07-07T14:47:52.767+00:00 CAN id=121 dlc=2 data=0101
+2026-07-07T14:47:52.767+00:00 BENCH enable sent
+2026-07-07T14:47:52.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.786+00:00 VCP NIT_CTRL enable=0
+2026-07-07T14:47:52.786+00:00 VCP UNIT_CTRL enable=0
+2026-07-07T14:47:52.786+00:00 VCP UNIT_CTRL enable=1
+2026-07-07T14:47:52.786+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:52.786+00:00 VCP START_CAN: angle=354199 target=315352 wheelTarget=-75000
+2026-07-07T14:47:52.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.885+00:00 VCP run=1 step=0 angle=354199 target=315352 err=-38847 steer=-250 m1=50/-1719 i1=-83 t1=27 m2=-11/-1031 i2=-76 t2=27 steerMode=-1375/205 iSteer=-79250 driveMode=-344/321 iDrive=-3390 scale=0 wheel=-1000
+2026-07-07T14:47:52.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:52.988+00:00 VCP run=1 step=0 angle=354199 target=315352 err=-38847 steer=-4650 m1=-134/-31969 i1=-1274 t1=27 m2=-67/-19181 i2=-1201 t2=27 steerMode=-25575/-1530 iSteer=-1237753 driveMode=-6394/-382 iDrive=-36625 scale=0 wheel=-18600
+2026-07-07T14:47:53.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.173+00:00 VCP run=1 step=0 angle=344180 target=315352 err=-28828 steer=-5000 m1=-599/-40219 i1=-39 t1=27 m2=-513/-14781 i2=100 t2=27 steerMode=-27500/-29240 iSteer=30459 driveMode=-12719/-2896 iDrive=-69629 scale=0 wheel=-37000
+2026-07-07T14:47:53.173+00:00 VCP run=1 step=0 angle=333545 target=315352 err=-18193 steer=-5000 m1=-609/-46544 i1=-353 t1=27 m2=-371/-8456 i2=-147 t2=27 steerMode=-27500/-23740 iSteer=-250085 driveMode=-19044/-6645 iDrive=-103050 scale=0 wheel=-55400
+2026-07-07T14:47:53.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.273+00:00 VCP run=1 step=0 angle=322383 target=315352 err=-7031 steer=-3628 m1=-695/-45252 i1=50 t1=27 m2=-229/5348 i2=312 t2=27 steerMode=-19952/-24884 iSteer=180857 driveMode=-25300/-12017 iDrive=-130920 scale=0 wheel=-73600
+2026-07-07T14:47:53.273+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:53.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.376+00:00 VCP run=1 step=0 angle=316758 target=315352 err=-1406 steer=-703 m1=-381/-29647 i1=-18 t1=27 m2=161/21915 i2=241 t2=27 steerMode=-3866/-7078 iSteer=111785 driveMode=-25781/-16535 iDrive=-129339 scale=0 wheel=-75000
+2026-07-07T14:47:53.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.481+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-264/-25781 i1=-122 t1=27 m2=228/25781 i2=209 t2=27 steerMode=0/-1747 iSteer=43723 driveMode=-25781/-13372 iDrive=-165585 scale=0 wheel=-75000
+2026-07-07T14:47:53.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.586+00:00 VCP run=1 step=0 angle=315352 target=315352 err=0 steer=0 m1=-275/-25781 i1=-175 t1=27 m2=263/25781 i2=211 t2=27 steerMode=0/-1181 iSteer=17995 driveMode=-25781/-12769 iDrive=-192761 scale=0 wheel=-75000
+2026-07-07T14:47:53.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.768+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-268/-24330 i1=-126 t1=27 m2=184/27233 i2=302 t2=27 steerMode=1451/-1048 iSteer=87925 driveMode=-25781/-13366 iDrive=-213650 scale=0 wheel=-75000
+2026-07-07T14:47:53.768+00:00 VCP run=1 step=0 angle=314912 target=315352 err=440 steer=0 m1=-262/-25781 i1=-315 t1=27 m2=326/25781 i2=134 t2=27 steerMode=0/1134 iSteer=-90185 driveMode=-25781/-15513 iDrive=-224323 scale=0 wheel=-75000
+2026-07-07T14:47:53.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.873+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:53.873+00:00 VCP run=1 step=0 angle=314736 target=315352 err=616 steer=308 m1=-360/-24088 i1=-130 t1=27 m2=297/27474 i2=327 t2=27 steerMode=1693/-888 iSteer=98786 driveMode=-25781/-18045 iDrive=-228442 scale=0 wheel=-75000
+2026-07-07T14:47:53.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:53.977+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-434/-25781 i1=-276 t1=27 m2=385/25781 i2=163 t2=27 steerMode=0/528 iSteer=-56364 driveMode=-25781/-21875 iDrive=-219728 scale=0 wheel=-75000
+2026-07-07T14:47:53.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.082+00:00 VCP run=1 step=0 angle=315000 target=315352 err=352 steer=0 m1=-505/-25781 i1=-188 t1=27 m2=466/25781 i2=230 t2=27 steerMode=0/-972 iSteer=21164 driveMode=-25781/-24867 iDrive=-208933 scale=0 wheel=-75000
+2026-07-07T14:47:54.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.186+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-482/-24330 i1=-142 t1=27 m2=541/27233 i2=263 t2=27 steerMode=1451/-247 iSteer=60193 driveMode=-25781/-26179 iDrive=-202576 scale=0 wheel=-75000
+2026-07-07T14:47:54.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.287+00:00 VCP run=1 step=0 angle=314912 target=315352 err=440 steer=0 m1=-507/-25781 i1=-210 t1=27 m2=514/25781 i2=189 t2=27 steerMode=0/-258 iSteer=-10406 driveMode=-25781/-26535 iDrive=-199580 scale=0 wheel=-75000
+2026-07-07T14:47:54.287+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:54.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.473+00:00 VCP run=1 step=0 angle=314736 target=315352 err=616 steer=308 m1=-473/-24088 i1=-181 t1=27 m2=546/27474 i2=221 t2=27 steerMode=1693/925 iSteer=20207 driveMode=-25781/-26162 iDrive=-200758 scale=0 wheel=-75000
+2026-07-07T14:47:54.473+00:00 VCP run=1 step=0 angle=314736 target=315352 err=616 steer=308 m1=-517/-24088 i1=-96 t1=27 m2=512/27474 i2=306 t2=27 steerMode=1693/-773 iSteer=104989 driveMode=-25781/-25926 iDrive=-201399 scale=0 wheel=-75000
+2026-07-07T14:47:54.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.578+00:00 VCP run=1 step=0 angle=314912 target=315352 err=440 steer=0 m1=-450/-25781 i1=-222 t1=27 m2=437/25781 i2=198 t2=27 steerMode=0/-80 iSteer=-11689 driveMode=-25781/-24408 iDrive=-209889 scale=0 wheel=-75000
+2026-07-07T14:47:54.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.683+00:00 VCP run=1 step=0 angle=314912 target=315352 err=440 steer=14 m1=-419/-25705 i1=-249 t1=27 m2=422/25858 i2=191 t2=27 steerMode=76/446 iSteer=-29055 driveMode=-25781/-23101 iDrive=-220217 scale=0 wheel=-75000
+2026-07-07T14:47:54.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.784+00:00 VCP run=1 step=0 angle=314912 target=315352 err=440 steer=0 m1=-446/-25781 i1=-193 t1=27 m2=393/25781 i2=260 t2=27 steerMode=0/-866 iSteer=33202 driveMode=-25781/-22984 iDrive=-226313 scale=0 wheel=-75000
+2026-07-07T14:47:54.784+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:54.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.888+00:00 VCP run=1 step=0 angle=315000 target=315352 err=352 steer=0 m1=-473/-25781 i1=-249 t1=27 m2=477/25781 i2=201 t2=27 steerMode=0/310 iSteer=-23769 driveMode=-25781/-24101 iDrive=-225054 scale=0 wheel=-75000
+2026-07-07T14:47:54.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:54.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.075+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-492/-24330 i1=-142 t1=27 m2=506/27233 i2=294 t2=27 steerMode=1451/-212 iSteer=75928 driveMode=-25781/-25884 iDrive=-217882 scale=0 wheel=-75000
+2026-07-07T14:47:55.075+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-526/-24330 i1=-210 t1=27 m2=579/27233 i2=207 t2=27 steerMode=1451/1373 iSteer=-1937 driveMode=-25781/-27470 iDrive=-208451 scale=0 wheel=-75000
+2026-07-07T14:47:55.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.179+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-547/-24330 i1=-171 t1=27 m2=556/27233 i2=229 t2=27 steerMode=1451/780 iSteer=29074 driveMode=-25781/-28269 iDrive=-200302 scale=0 wheel=-75000
+2026-07-07T14:47:55.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.280+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-553/-25781 i1=-151 t1=27 m2=500/25781 i2=245 t2=27 steerMode=0/-1028 iSteer=47219 driveMode=-25781/-27878 iDrive=-198119 scale=0 wheel=-75000
+2026-07-07T14:47:55.280+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:55.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.384+00:00 VCP run=1 step=0 angle=315176 target=315352 err=176 steer=0 m1=-522/-25781 i1=-164 t1=27 m2=498/25781 i2=230 t2=27 steerMode=0/-695 iSteer=32675 driveMode=-25781/-27368 iDrive=-196940 scale=0 wheel=-75000
+2026-07-07T14:47:55.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.571+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-553/-25781 i1=-175 t1=27 m2=495/25781 i2=214 t2=27 steerMode=0/-411 iSteer=19781 driveMode=-25781/-27280 iDrive=-194501 scale=0 wheel=-75000
+2026-07-07T14:47:55.571+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-528/-25781 i1=-158 t1=27 m2=529/25781 i2=223 t2=27 steerMode=0/-636 iSteer=32612 driveMode=-25781/-27385 iDrive=-190870 scale=0 wheel=-75000
+2026-07-07T14:47:55.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.676+00:00 VCP run=1 step=0 angle=314912 target=315352 err=440 steer=0 m1=-511/-25781 i1=-157 t1=27 m2=462/25781 i2=231 t2=27 steerMode=0/-690 iSteer=36911 driveMode=-25781/-26322 iDrive=-194029 scale=0 wheel=-75000
+2026-07-07T14:47:55.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.777+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-453/-24330 i1=-134 t1=27 m2=472/27233 i2=268 t2=27 steerMode=1451/234 iSteer=66875 driveMode=-25781/-24959 iDrive=-200939 scale=0 wheel=-75000
+2026-07-07T14:47:55.777+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:55.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.881+00:00 VCP run=1 step=0 angle=315176 target=315352 err=176 steer=0 m1=-465/-25781 i1=-186 t1=27 m2=452/25781 i2=228 t2=27 steerMode=0/-300 iSteer=20794 driveMode=-25781/-24250 iDrive=-206911 scale=0 wheel=-75000
+2026-07-07T14:47:55.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:55.986+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=150 m1=-457/-24956 i1=-157 t1=27 m2=452/26606 i2=260 t2=27 steerMode=825/-71 iSteer=51594 driveMode=-25781/-24544 iDrive=-208160 scale=0 wheel=-75000
+2026-07-07T14:47:55.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.172+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-465/-24330 i1=-192 t1=27 m2=475/27233 i2=218 t2=27 steerMode=1451/1346 iSteer=13317 driveMode=-25781/-25519 iDrive=-204903 scale=0 wheel=-75000
+2026-07-07T14:47:56.172+00:00 VCP run=1 step=0 angle=315264 target=315352 err=88 steer=0 m1=-536/-25781 i1=-162 t1=27 m2=462/25781 i2=232 t2=27 steerMode=0/-564 iSteer=35007 driveMode=-25781/-26905 iDrive=-197104 scale=0 wheel=-75000
+2026-07-07T14:47:56.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.275+00:00 VCP run=1 step=0 angle=315264 target=315352 err=88 steer=0 m1=-538/-25781 i1=-187 t1=27 m2=546/25781 i2=189 t2=27 steerMode=0/136 iSteer=790 driveMode=-25781/-28120 iDrive=-187871 scale=0 wheel=-75000
+2026-07-07T14:47:56.275+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:56.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.379+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-578/-25781 i1=-165 t1=27 m2=546/25781 i2=188 t2=27 steerMode=0/-86 iSteer=11870 driveMode=-25781/-29313 iDrive=-176544 scale=0 wheel=-75000
+2026-07-07T14:47:56.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.483+00:00 VCP run=1 step=0 angle=315527 target=315352 err=-175 steer=0 m1=-545/-25781 i1=-158 t1=27 m2=575/25781 i2=173 t2=27 steerMode=0/10 iSteer=7151 driveMode=-25781/-30061 iDrive=-165403 scale=0 wheel=-75000
+2026-07-07T14:47:56.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.671+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-582/-25781 i1=-141 t1=27 m2=537/25781 i2=178 t2=27 steerMode=0/-205 iSteer=18157 driveMode=-25781/-29735 iDrive=-159362 scale=0 wheel=-75000
+2026-07-07T14:47:56.671+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-545/-25781 i1=-159 t1=27 m2=531/25781 i2=159 t2=27 steerMode=0/169 iSteer=-15 driveMode=-25781/-28522 iDrive=-159415 scale=0 wheel=-75000
+2026-07-07T14:47:56.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.773+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-501/-25781 i1=-141 t1=27 m2=508/25781 i2=190 t2=27 steerMode=0/-304 iSteer=24107 driveMode=-25781/-26595 iDrive=-165467 scale=0 wheel=-75000
+2026-07-07T14:47:56.773+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:56.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.877+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-440/-25781 i1=-139 t1=27 m2=412/25781 i2=221 t2=27 steerMode=0/-632 iSteer=41269 driveMode=-25781/-23849 iDrive=-180098 scale=0 wheel=-75000
+2026-07-07T14:47:56.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:56.982+00:00 VCP run=1 step=0 angle=315264 target=315352 err=88 steer=0 m1=-409/-25781 i1=-172 t1=27 m2=351/25781 i2=223 t2=27 steerMode=0/-286 iSteer=25540 driveMode=-25781/-21656 iDrive=-197209 scale=0 wheel=-75000
+2026-07-07T14:47:56.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.087+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-419/-25781 i1=-159 t1=27 m2=380/25781 i2=266 t2=27 steerMode=0/-825 iSteer=53397 driveMode=-25781/-20362 iDrive=-212469 scale=0 wheel=-75000
+2026-07-07T14:47:57.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.270+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-381/-25781 i1=-200 t1=27 m2=403/25781 i2=242 t2=27 steerMode=0/-151 iSteer=20936 driveMode=-25781/-20647 iDrive=-220991 scale=0 wheel=-75000
+2026-07-07T14:47:57.270+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-442/-25781 i1=-195 t1=27 m2=353/25781 i2=251 t2=27 steerMode=0/-280 iSteer=27817 driveMode=-25781/-21960 iDrive=-222770 scale=0 wheel=-75000
+2026-07-07T14:47:57.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.375+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:57.375+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-465/-25781 i1=-215 t1=27 m2=447/25781 i2=227 t2=27 steerMode=0/170 iSteer=5874 driveMode=-25781/-23556 iDrive=-220865 scale=0 wheel=-75000
+2026-07-07T14:47:57.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.479+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-492/-25781 i1=-189 t1=27 m2=424/25781 i2=254 t2=27 steerMode=0/-359 iSteer=32621 driveMode=-25781/-24158 iDrive=-221340 scale=0 wheel=-75000
+2026-07-07T14:47:57.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.584+00:00 VCP run=1 step=0 angle=315000 target=315352 err=352 steer=0 m1=-482/-25781 i1=-195 t1=27 m2=466/25781 i2=248 t2=27 steerMode=0/-223 iSteer=26483 driveMode=-25781/-24540 iDrive=-221732 scale=0 wheel=-75000
+2026-07-07T14:47:57.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.768+00:00 VCP run=1 step=0 angle=315000 target=315352 err=352 steer=0 m1=-503/-25781 i1=-203 t1=27 m2=447/25781 i2=243 t2=27 steerMode=0/-91 iSteer=19971 driveMode=-25781/-24792 iDrive=-222682 scale=0 wheel=-75000
+2026-07-07T14:47:57.768+00:00 VCP run=1 step=0 angle=314912 target=315352 err=440 steer=0 m1=-482/-25781 i1=-189 t1=27 m2=493/25781 i2=254 t2=27 steerMode=0/-333 iSteer=32529 driveMode=-25781/-25325 iDrive=-221166 scale=0 wheel=-75000
+2026-07-07T14:47:57.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.872+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:57.872+00:00 VCP run=1 step=0 angle=314824 target=315352 err=528 steer=264 m1=-490/-24330 i1=-185 t1=27 m2=521/27233 i2=247 t2=27 steerMode=1451/1190 iSteer=31234 driveMode=-25781/-26409 iDrive=-215792 scale=0 wheel=-75000
+2026-07-07T14:47:57.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:57.977+00:00 VCP run=1 step=0 angle=315000 target=315352 err=352 steer=0 m1=-524/-25781 i1=-161 t1=27 m2=500/25781 i2=260 t2=27 steerMode=0/-655 iSteer=49728 driveMode=-25781/-27182 iDrive=-210426 scale=0 wheel=-75000
+2026-07-07T14:47:57.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.081+00:00 VCP run=1 step=0 angle=315000 target=315352 err=352 steer=0 m1=-549/-25781 i1=-164 t1=27 m2=533/25781 i2=241 t2=27 steerMode=0/-409 iSteer=38773 driveMode=-25781/-28129 iDrive=-202284 scale=0 wheel=-75000
+2026-07-07T14:47:58.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.186+00:00 VCP run=1 step=0 angle=315088 target=315352 err=264 steer=0 m1=-570/-25781 i1=-157 t1=27 m2=500/25781 i2=236 t2=27 steerMode=0/-399 iSteer=39083 driveMode=-25781/-28359 iDrive=-196446 scale=0 wheel=-75000
+2026-07-07T14:47:58.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.288+00:00 VCP run=1 step=0 angle=315264 target=315352 err=88 steer=0 m1=-561/-25781 i1=-162 t1=27 m2=533/25781 i2=213 t2=27 steerMode=0/-111 iSteer=25412 driveMode=-25781/-29079 iDrive=-187253 scale=0 wheel=-75000
+2026-07-07T14:47:58.288+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:58.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.474+00:00 VCP run=1 step=0 angle=315264 target=315352 err=88 steer=0 m1=-561/-25781 i1=-167 t1=27 m2=527/25781 i2=195 t2=27 steerMode=0/109 iSteer=14110 driveMode=-25781/-29057 iDrive=-181203 scale=0 wheel=-75000
+2026-07-07T14:47:58.474+00:00 VCP run=1 step=0 angle=315352 target=315352 err=0 steer=0 m1=-549/-25781 i1=-143 t1=27 m2=525/25781 i2=210 t2=27 steerMode=0/-268 iSteer=33252 driveMode=-25781/-28765 iDrive=-176390 scale=0 wheel=-75000
+2026-07-07T14:47:58.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.579+00:00 VCP run=1 step=0 angle=315352 target=315352 err=0 steer=0 m1=-513/-25781 i1=-158 t1=27 m2=516/25781 i2=191 t2=27 steerMode=0/69 iSteer=16357 driveMode=-25781/-28115 iDrive=-174512 scale=0 wheel=-75000
+2026-07-07T14:47:58.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.684+00:00 VCP run=1 step=0 angle=315352 target=315352 err=0 steer=0 m1=-542/-25781 i1=-158 t1=27 m2=514/25781 i2=181 t2=27 steerMode=0/158 iSteer=11587 driveMode=-25781/-28270 iDrive=-169198 scale=0 wheel=-75000
+2026-07-07T14:47:58.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.787+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-534/-25781 i1=-155 t1=27 m2=541/25781 i2=177 t2=27 steerMode=0/166 iSteer=11088 driveMode=-25781/-28005 iDrive=-166396 scale=0 wheel=-75000
+2026-07-07T14:47:58.787+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:58.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:58.973+00:00 VCP run=1 step=0 angle=315527 target=315352 err=-175 steer=0 m1=-501/-25781 i1=-134 t1=27 m2=495/25781 i2=202 t2=27 steerMode=0/-287 iSteer=33919 driveMode=-25781/-27031 iDrive=-167869 scale=0 wheel=-75000
+2026-07-07T14:47:58.974+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-473/-25781 i1=-155 t1=27 m2=477/25781 i2=194 t2=27 steerMode=0/17 iSteer=19476 driveMode=-25781/-25605 iDrive=-174218 scale=0 wheel=-75000
+2026-07-07T14:47:58.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.078+00:00 VCP run=1 step=0 angle=315791 target=315352 err=-439 steer=0 m1=-459/-25781 i1=-154 t1=27 m2=437/25781 i2=209 t2=27 steerMode=0/-150 iSteer=27471 driveMode=-25781/-24448 iDrive=-181555 scale=0 wheel=-75000
+2026-07-07T14:47:59.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.183+00:00 VCP run=1 step=0 angle=315527 target=315352 err=-175 steer=0 m1=-425/-25781 i1=-162 t1=27 m2=391/25781 i2=222 t2=27 steerMode=0/-193 iSteer=29925 driveMode=-25781/-23000 iDrive=-192246 scale=0 wheel=-75000
+2026-07-07T14:47:59.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.284+00:00 VCP run=1 step=0 angle=315527 target=315352 err=-175 steer=0 m1=-411/-25781 i1=-177 t1=27 m2=416/25781 i2=238 t2=27 steerMode=0/-199 iSteer=30346 driveMode=-25781/-21343 iDrive=-207414 scale=0 wheel=-75000
+2026-07-07T14:47:59.284+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:59.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.471+00:00 VCP run=1 step=0 angle=315352 target=315352 err=0 steer=0 m1=-411/-25781 i1=-193 t1=27 m2=408/25781 i2=248 t2=27 steerMode=0/-128 iSteer=27779 driveMode=-25781/-20555 iDrive=-220650 scale=0 wheel=-75000
+2026-07-07T14:47:59.471+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-404/-25781 i1=-201 t1=27 m2=431/25781 i2=252 t2=27 steerMode=0/-85 iSteer=25811 driveMode=-25781/-21262 iDrive=-226317 scale=0 wheel=-75000
+2026-07-07T14:47:59.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.576+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-455/-25781 i1=-219 t1=27 m2=441/25781 i2=226 t2=27 steerMode=0/348 iSteer=3617 driveMode=-25781/-23357 iDrive=-222699 scale=0 wheel=-75000
+2026-07-07T14:47:59.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.681+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-488/-25781 i1=-212 t1=27 m2=539/25781 i2=214 t2=27 steerMode=0/400 iSteer=550 driveMode=-25781/-25789 iDrive=-213002 scale=0 wheel=-75000
+2026-07-07T14:47:59.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.767+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.783+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-519/-25781 i1=-182 t1=27 m2=510/25781 i2=226 t2=27 steerMode=0/-35 iSteer=21743 driveMode=-25781/-27301 iDrive=-203901 scale=0 wheel=-75000
+2026-07-07T14:47:59.783+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:47:59.787+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.807+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.827+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.847+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.867+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.887+00:00 VCP run=1 step=0 angle=315439 target=315352 err=-87 steer=0 m1=-526/-25781 i1=-186 t1=27 m2=521/25781 i2=210 t2=26 steerMode=0/153 iSteer=12148 driveMode=-25781/-27886 iDrive=-197720 scale=0 wheel=-75000
+2026-07-07T14:47:59.887+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.907+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.927+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.947+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.967+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:47:59.987+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.007+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.027+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.047+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.067+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.073+00:00 VCP run=1 step=0 angle=315527 target=315352 err=-175 steer=0 m1=-528/-25781 i1=-164 t1=27 m2=516/25781 i2=216 t2=26 steerMode=0/-115 iSteer=25704 driveMode=-25781/-28509 iDrive=-190021 scale=0 wheel=-75000
+2026-07-07T14:48:00.073+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-532/-25781 i1=-160 t1=27 m2=573/25781 i2=211 t2=26 steerMode=0/-97 iSteer=25312 driveMode=-25781/-28504 iDrive=-185201 scale=0 wheel=-75000
+2026-07-07T14:48:00.087+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.107+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.127+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.147+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.167+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.178+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-557/-25781 i1=-136 t1=27 m2=525/25781 i2=230 t2=26 steerMode=0/-518 iSteer=46876 driveMode=-25781/-27954 iDrive=-183291 scale=0 wheel=-75000
+2026-07-07T14:48:00.187+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.207+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.227+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.247+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.267+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.280+00:00 VCP run=1 step=0 angle=315615 target=315352 err=-263 steer=0 m1=-509/-25781 i1=-157 t1=27 m2=498/25781 i2=213 t2=26 steerMode=0/-133 iSteer=28243 driveMode=-25781/-26956 iDrive=-184933 scale=0 wheel=-75000
+2026-07-07T14:48:00.280+00:00 VCP SET_TARGET_RX steer=315352 wheel=-75000
+2026-07-07T14:48:00.287+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.307+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.327+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.347+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.367+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.385+00:00 VCP run=1 step=0 angle=315703 target=315352 err=-351 steer=0 m1=-501/-25781 i1=-162 t1=27 m2=506/25781 i2=212 t2=26 steerMode=0/-56 iSteer=25078 driveMode=-25781/-26234 iDrive=-187403 scale=0 wheel=-75000
+2026-07-07T14:48:00.387+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.407+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.427+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.447+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.467+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.487+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.507+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.527+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.547+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.567+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.571+00:00 VCP run=1 step=0 angle=315703 target=315352 err=-351 steer=0 m1=-471/-25781 i1=-167 t1=27 m2=521/25781 i2=219 t2=26 steerMode=0/-57 iSteer=25958 driveMode=-25781/-25219 iDrive=-192914 scale=0 wheel=-75000
+2026-07-07T14:48:00.571+00:00 VCP run=1 step=0 angle=315791 target=315352 err=-439 steer=-113 m1=-471/-26405 i1=-190 t1=27 m2=458/25157 i2=203 t2=26 steerMode=-624/-298 iSteer=6464 driveMode=-25781/-24771 iDrive=-196851 scale=0 wheel=-75000
+2026-07-07T14:48:00.587+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.607+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.627+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.647+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.667+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.676+00:00 VCP run=1 step=0 angle=315703 target=315352 err=-351 steer=0 m1=-484/-25781 i1=-197 t1=27 m2=508/25781 i2=199 t2=26 steerMode=0/455 iSteer=1161 driveMode=-25781/-24955 iDrive=-197922 scale=0 wheel=-75000
+2026-07-07T14:48:00.687+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.707+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.727+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.747+00:00 CAN id=101 dlc=8 data=d8cf040008dbfeff
+2026-07-07T14:48:00.767+00:00 BENCH disable sent
+2026-07-07T14:48:00.767+00:00 CAN id=121 dlc=2 data=0100
+2026-07-07T14:48:00.767+00:00 CAN id=121 dlc=2 data=0100
+2026-07-07T14:48:00.876+00:00 VCP run=1 step=0 angle=315791 target=315352 err=-439 steer=0 m1=-492/-25781 i1=-173 t1=27 m2=527/25781 i2=216 t2=26 steerMode=0/48 iSteer=21578 driveMode=-25781/-25839 iDrive=-194248 scale=0 wheel=-75000
+2026-07-07T14:48:00.876+00:00 VCP UNIT_CTRL enable=0
+2026-07-07T14:48:00.876+00:00 VCP UNIT_CTRL enable=0
+2026-07-07T14:48:00.876+00:00 VCP STOP: disabled
+2026-07-07T14:48:01.168+00:00 BENCH log closed

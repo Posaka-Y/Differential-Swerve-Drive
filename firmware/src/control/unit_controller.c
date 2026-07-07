@@ -68,6 +68,7 @@ static float lowpass_update(float previous, float raw, float tau_s, float dt_s)
 static float pi_update_mode(float target, float measured_filtered, float kp,
                            float ki, float dt_s, float limit,
                            float integral_limit, uint8_t freeze_integral,
+                           float integral_floor, uint8_t apply_integral_floor,
                            float *integral)
 {
     const float error = target - measured_filtered;
@@ -82,13 +83,48 @@ static float pi_update_mode(float target, float measured_filtered, float kp,
         }
     }
 
+    /* While moving in the commanded direction, do not let the integral decay
+     * below integral_floor toward that direction (guarded by floor > 0 so a
+     * zero floor, the default, never changes behavior). */
+    if (apply_integral_floor && integral_floor > 0.0f) {
+        if (target > 0.0f && *integral < integral_floor) {
+            *integral = integral_floor;
+        } else if (target < 0.0f && *integral > -integral_floor) {
+            *integral = -integral_floor;
+        }
+    }
+
     return clampf(kp * error + *integral, -limit, limit);
 }
 
 void unit_controller_init(unit_controller_t *controller,
                           const unit_controller_config_t *config)
 {
-    controller->config = *config;
+    /* Field-by-field copy, not a struct assignment: this build is -nostdlib
+     * and a whole-struct copy of this size gets lowered to a memcpy() call
+     * with no libc to satisfy it. */
+    controller->config.motor_max_rpm = config->motor_max_rpm;
+    controller->config.steer_max_rpm = config->steer_max_rpm;
+    controller->config.steer_min_rpm = config->steer_min_rpm;
+    controller->config.steer_accel_rpm_per_s = config->steer_accel_rpm_per_s;
+    controller->config.angle_kp_rpm_per_deg = config->angle_kp_rpm_per_deg;
+    controller->config.angle_deadband_deg = config->angle_deadband_deg;
+    controller->config.wheel_accel_rpm_per_s = config->wheel_accel_rpm_per_s;
+    controller->config.steer_mode_kp = config->steer_mode_kp;
+    controller->config.steer_mode_ki = config->steer_mode_ki;
+    controller->config.drive_mode_kp = config->drive_mode_kp;
+    controller->config.drive_mode_ki = config->drive_mode_ki;
+    controller->config.mode_integral_limit = config->mode_integral_limit;
+    controller->config.mode_rpm_filter_tau_s = config->mode_rpm_filter_tau_s;
+    controller->config.current_limit = config->current_limit;
+    controller->config.steer_motor_sign = config->steer_motor_sign;
+    controller->config.drive_kinetic_ff_current = config->drive_kinetic_ff_current;
+    controller->config.drive_integral_floor_current =
+        config->drive_integral_floor_current;
+    controller->config.drive_motion_threshold_rpm =
+        config->drive_motion_threshold_rpm;
+    controller->config.drive_onset_integral_clamp_current =
+        config->drive_onset_integral_clamp_current;
     controller->target.target_wheel_rpm = 0.0f;
     controller->target.target_steer_deg = 0.0f;
     unit_controller_reset(controller);
@@ -110,6 +146,7 @@ void unit_controller_reset(unit_controller_t *controller)
     controller->steer_mode_filtered_rpm = 0.0f;
     controller->drive_mode_filtered_rpm = 0.0f;
     controller->combined_saturated = 0U;
+    controller->drive_was_in_motion = 0U;
 }
 
 void unit_controller_update(unit_controller_t *controller,
@@ -198,12 +235,35 @@ void unit_controller_update(unit_controller_t *controller,
     output->drive_mode_measured_rpm = controller->drive_mode_filtered_rpm;
     output->steer_mode_measured_rpm = controller->steer_mode_filtered_rpm;
 
+    /* "Moving" for the kinetic-friction feedforward and integral-floor logic
+     * below: the drive mode is actually turning, not just commanded to. */
+    const uint8_t drive_in_motion =
+        absf(controller->drive_mode_filtered_rpm) >
+        controller->config.drive_motion_threshold_rpm;
+
+    /* Onset clamp: the instant the drive mode transitions stuck->moving
+     * (rising edge), clamp the drive integral magnitude down before this
+     * cycle's drive PI runs, so the breakaway charge (built up while stuck,
+     * up to mode_integral_limit) cannot release as a full torque kick. Sign
+     * is preserved; steer integral is untouched. Zero clamp value disables. */
+    if (drive_in_motion && !controller->drive_was_in_motion &&
+        controller->config.drive_onset_integral_clamp_current > 0.0f) {
+        const float clamp = controller->config.drive_onset_integral_clamp_current;
+        if (controller->drive_mode_integral > clamp) {
+            controller->drive_mode_integral = clamp;
+        } else if (controller->drive_mode_integral < -clamp) {
+            controller->drive_mode_integral = -clamp;
+        }
+    }
+    controller->drive_was_in_motion = drive_in_motion;
+
     output->steer_mode_current = pi_update_mode(
         steer_mode_target, controller->steer_mode_filtered_rpm,
         controller->config.steer_mode_kp, controller->config.steer_mode_ki,
         dt_s, controller->config.current_limit,
         controller->config.mode_integral_limit,
         controller->combined_saturated,
+        0.0f, 0U,
         &controller->steer_mode_integral);
     output->drive_mode_current = pi_update_mode(
         drive_mode_target, controller->drive_mode_filtered_rpm,
@@ -211,7 +271,18 @@ void unit_controller_update(unit_controller_t *controller,
         dt_s, controller->config.current_limit,
         controller->config.mode_integral_limit,
         controller->combined_saturated,
+        controller->config.drive_integral_floor_current, drive_in_motion,
         &controller->drive_mode_integral);
+
+    /* Kinetic-friction feedforward, added in the direction of actual motion
+     * before mode-current combination and the current_limit clamp below.
+     * Zero drive_kinetic_ff_current (default) makes this a no-op. */
+    if (drive_in_motion) {
+        const float ff_sign =
+            controller->drive_mode_filtered_rpm >= 0.0f ? 1.0f : -1.0f;
+        output->drive_mode_current +=
+            ff_sign * controller->config.drive_kinetic_ff_current;
+    }
 
     /* If the combined per-motor demand exceeds current_limit, scale both mode
      * currents by a common factor instead of clamping each motor separately.

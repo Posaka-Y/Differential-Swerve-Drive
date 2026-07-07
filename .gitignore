@@ -7,3 +7,4 @@ firmware/build/
 firmware/out/
 .cache/
 .vscode/*.log
+__pycache__/

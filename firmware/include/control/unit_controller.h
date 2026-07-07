@@ -36,6 +36,30 @@ typedef struct {
 
     float current_limit;
     float steer_motor_sign;
+
+    /* Kinetic-friction feedforward: while |filtered drive-mode rpm| exceeds
+     * drive_motion_threshold_rpm (i.e. the wheel is actually moving), this
+     * much current is added to the drive-mode output in the direction of
+     * motion, before mode-current combination and the current_limit clamp.
+     * Zero disables (default, unchanged behavior). */
+    float drive_kinetic_ff_current;
+
+    /* Floor on the drive-mode integral toward the commanded direction while
+     * the wheel is moving (see drive_motion_threshold_rpm): the integral is
+     * not allowed to decay below this magnitude in the direction of
+     * target_wheel_rpm. Zero disables (default, unchanged behavior). */
+    float drive_integral_floor_current;
+
+    /* Motion threshold (M3508 output-shaft rpm) used by both the kinetic-
+     * friction feedforward and the integral floor above. */
+    float drive_motion_threshold_rpm;
+
+    /* Onset clamp: on the stuck->moving rising edge of drive_in_motion, the
+     * drive-mode integral magnitude is clamped down to this value (sign
+     * preserved) before that cycle's drive PI runs, so the breakaway charge
+     * cannot release as a full torque kick. Zero disables (default,
+     * unchanged behavior). */
+    float drive_onset_integral_clamp_current;
 } unit_controller_config_t;
 
 typedef struct {
@@ -81,6 +105,9 @@ typedef struct {
     /* Previous-cycle combined saturation; freezes both integrals for one cycle
      * (conditional integration against cross-mode windup). */
     uint8_t combined_saturated;
+    /* Previous-cycle drive_in_motion state, used to detect the stuck->moving
+     * rising edge for drive_onset_integral_clamp_current. */
+    uint8_t drive_was_in_motion;
 } unit_controller_t;
 
 void unit_controller_init(unit_controller_t *controller,

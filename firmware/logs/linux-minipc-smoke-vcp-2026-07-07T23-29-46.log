@@ -1,0 +1,15 @@
+SET_TARGET_RX steer=90000 wheel=500000
+UNIT_CTRL enable=1
+START_CAN: angle=92637 target=90000 wheelTarget=500000
+run=1 step=0 angle=92637 target=90000 err=-2637 steer=-250 m1=0/-1031 i1=-67 t1=27 m2=0/-1719 i2=-71 t2=27 steerMode=-1375/0 iSteer=-68956 driveMode=344/0 iDrive=1753 scale=0 wheel=1000
+run=1 step=0 angle=92637 target=90000 err=-2637 steer=-1318 m1=-72/-788 i1=-287 t1=27 m2=-5/-13713 i2=-373 t2=27 steerMode=-7251/-991 iSteer=-329981 driveMode=6462/-845 iDrive=42813 scale=0 wheel=18800
+run=1 step=0 angle=92285 target=90000 err=-2285 steer=-1143 m1=-160/6572 i1=-54 t1=27 m2=0/-19140 i2=-278 t2=27 steerMode=-6284/-3531 iSteer=-166205 driveMode=12856/-3528 iDrive=111712 scale=0 wheel=37400
+run=1 step=0 angle=91582 target=90000 err=-1582 steer=-791 m1=-47/14899 i1=-87 t1=27 m2=0/-23601 i2=-407 t2=27 steerMode=-4351/-143 iSteer=-247291 driveMode=19250/-94 iDrive=160105 scale=0 wheel=56000
+run=1 step=0 angle=91582 target=90000 err=-1582 steer=-791 m1=0/21293 i1=-31 t1=27 m2=0/-29994 i2=-499 t2=27 steerMode=-4351/-27 iSteer=-264842 driveMode=25644/-13 iDrive=233798 scale=0 wheel=74600
+run=1 step=0 angle=91582 target=90000 err=-1582 steer=-791 m1=0/27687 i1=43 t1=27 m2=0/-36388 i2=-596 t2=27 steerMode=-4351/-34 iSteer=-276586 driveMode=32037/33 iDrive=319291 scale=0 wheel=93200
+run=1 step=0 angle=91582 target=90000 err=-1582 steer=-791 m1=0/34081 i1=128 t1=27 m2=-3/-42782 i2=-706 t2=27 steerMode=-4351/-28 iSteer=-288956 driveMode=38431/29 iDrive=416905 scale=0 wheel=111799
+run=1 step=0 angle=91582 target=90000 err=-1582 steer=-791 m1=2/40474 i1=223 t1=27 m2=0/-49175 i2=-829 t2=27 steerMode=-4351/11 iSteer=-302969 driveMode=44825/49 iDrive=526259 scale=0 wheel=130399
+run=1 step=0 angle=90439 target=90000 err=-439 steer=-164 m1=6/50318 i1=722 t1=27 m2=-275/-52119 i2=-520 t2=27 steerMode=-900/-4766 iSteer=100973 driveMode=51218/4932 iDrive=621111 scale=0 wheel=148999
+run=1 step=0 angle=87979 target=90000 err=2021 steer=1011 m1=602/63171 i1=748 t1=27 m2=-371/-52053 i2=-559 t2=27 steerMode=5559/2326 iSteer=94376 driveMode=57612/20698 iDrive=653829 scale=0 wheel=167599
+STOP: target timeout
+UNIT_CTRL enable=0
