@@ -128,6 +128,51 @@ current_limitが既にハードクランプしているため、rpm誤差ベー�
 振動域を許容するなど)。(2) スティックスリップを抑えて滑らかな50rpm定常回転に近づける
 `drive_mode_ki`/`wheel_accel_rpm_per_s`のチューニング。
 
+### 単一モーター速度制御の追試(イテレーション12〜17、2026-07-06)
+
+ユーザー指摘(「実は全然回っていないのでは」「単一モーターでもrpm指定すれば摩擦関係なく
+回るはずでは」「低速域が制御不能な領域なのでは」)を受け、二モーター差動を切り離し、
+**motor1単体・motor2=0固定**で5種類のアーキテクチャを試した(`firmware/src/main.c`を都度書き換え)。
+
+| # | アーキテクチャ | 結果 |
+|---|---|---|
+| 12 | 単純rpm PI(KP=5, KI=100、目標50rpmへランプ) | m1rpmが-95〜+309rpmで激しく振動、10秒間収束せず。integralが溜める→跳ぶ→崩壊を繰り返す典型的なスティックスリップ限界サイクル |
+| 13 | +測定rpmへの一次LPF(τ=0.02s、mode_rpm_filter_tau_sと同値) | **改善なし**。振動は実際のブレークアウェイキック(センサノイズではない)そのものなので、フィルタでは消えないと確認 |
+| 14 | +初期キック電流(1200raw固定→動き出し検知でPIへバンプレス引き継ぎ) | キック自体は成功(t=7msでrpm=14に到達)が、**PI移行後も同じ振動が継続**。「動き出すまでが遅い」問題とは別に、PIゲイン自体が発振の原因と確定 |
+| 15 | 仮想シャフト位置追従(C620のrotor_angleフィードバックで目標位置を常時ランプ、位置誤差からP制御でrpm指令を生成し同じ内側PIへ) | **改善なし**。lagRev(位置ズレ)が0.13〜0.34回転の帯で振動し続け収束せず |
+| 16 | 同上、目標を50→250rpmへ引き上げ(低速域回避の仮説検証) | **悪化**。lagRevが収束するどころか単調に増加し1.3回転超まで拡大、指令rpmが上限(400rpm)に張り付いたまま追いつけず。m1rpmの振れ幅も-141〜+554rpmに拡大。**低速域が原因という仮説は否定** |
+
+**結論**: 5種類の外側アーキテクチャ(単純PI/フィルタ/キック/位置追従/高速目標)すべてで
+同じ発振が形を変えて現れ続けた。共通する変数は内側電流PIのゲイン(KP=5, KI=100)のみであり、
+アーキテクチャ変更では解決しないことを確認。ユーザーが目視した「モーターのガクガクした動き」は
+指令送信の不連続性(バグ)ではなく、1kHzで正しく更新され続けている指令値そのものが
+数百ms周期で大きく振動していることの物理的な現れと確認。
+
+このまま無負荷ベンチでの深追いは費用対効果が低いと判断し、`CLOSED_LOOP_TEST_ENABLED=0`
+(安全待機)で書き込み・verify・reset済み。次回再開する場合の候補:
+KIを大幅に下げる(100→20〜30程度)実験は未実施のまま保留。実走行(接地・負荷あり)で
+摩擦特性を取り直す方が優先度が高い可能性。
+
+### 訂正: C620 rpmの19:1単位不一致(2026-07-06)
+
+上記イテレーション12〜17では、C620が返すM3508ロータrpm(内蔵19:1減速前)を、
+`motor_max_rpm=469`および運動学が扱う減速後出力軸rpmと直接比較していた。測定値が19倍の
+単位不一致だったため、「250rpmでも悪化」「低速域原因説を否定」および内側PIだけを原因とした
+結論は無効。履歴として表は残すが、ゲイン選定の根拠には使用しない。
+
+measurement境界を`feedback.rpm / 19.0f`へ修正後の結果:
+
+- 単一モーター目標50 output-rpm、Kp=5/Ki=20: 概ね47〜54rpmへ追従。
+- 差動wheel、steer Kp=50/Ki=20、drive Kp=5/Ki=20、steer max/min=0.5/0rpm、
+  steer accel=5rpm/s^2、angle Kp=0.1、current limit=2000、integral limit=1200:
+  50/60/75/100/150/250rpmを各10秒完走し、概ね追従。
+- 25rpmは停止・再始動の周期動作が残り不合格。40rpmは正式再試験が必要。
+- 上記は無負荷・正転の探索結果。正式採用には正逆転を含む各点3/3合格が必要。
+
+試験はRPM点ごとの短命エージェントへ分割し、1点最大2回、生ログはファイル保存して集計値だけを
+親へ返す。COM/flash/駆動は`invoke-hardware-session.ps1`のmutexで直列化し、finallyで安全待機を
+書き込む。別セッションが同じ`main.c`を編集している間は実機試験を開始しない。
+
 ## 電流ランプ特性化の実測(参考)
 
 開ループで50mA/100msずつ増加、動き出し電流を記録(4試行、開始角度は毎回異なる):
@@ -184,3 +229,204 @@ current_limitが既にハードクランプしているため、rpm誤差ベー�
 6. **将来計画**: CALフェーズでの機構自己同定(ブレークアウェイ・時定数の自動測定→
    電流系パラメータの自動導出)と、荷重変動へのLESO/LADRC適用。
    `docs/control/CALIBRATION_AND_ADAPTATION_PLAN.md` 参照。
+
+## wheel 40rpm単点試験(2026-07-07)
+
+- 単位: C620 raw rotor rpmを19で除算してM3508出力軸rpmへ変換後、wheel rpmを評価。
+- Run 1: steer Kp/Ki=50/20、drive Kp/Ki=5/20、current limit=2000、積分上限=1200。
+  10秒完走、後半wheel平均33.999rpm、min/max=-0.032/243.561rpm、角度誤差peak
+  1.670°、モーター非ゼロ率m1=32%/m2=34%。停止・再始動型スティックスリップのためFAIL。
+- Run 2: drive Kiだけ20→30へ変更。実行ツールtimeoutかつログ未生成のため評価不能。
+  追加駆動せずKi=20へ復帰した。
+- 最終状態: `CLOSED_LOOP_TEST_ENABLED=0`をclean buildし、flash/verify/reset成功。
+
+## wheel staircase下限探索(2026-07-07)
+
+安全運用:
+- 実機操作はすべて`firmware/scripts/invoke-hardware-session.ps1`経由。
+- 有効化HEXを退避してからソースをsafe-idleへ戻し、試験終了後はsafe-idleを
+  flash/verify/reset。最終状態も`CLOSED_LOOP_TEST_ENABLED=0`。
+
+標準staircase(40/45/50/60/75/100/150rpm):
+- ログ: `firmware/logs/staircase-2026-07-07T04-31-33-622Z.log`
+- 全stepが`STEP_OK`で完走。
+- `STEP_OK`直前1秒の評価では、40rpmも平均40.74rpm、p-p 15.07rpm、
+  角度誤差max 0.97°で通過。45rpmは平均47.78rpm、p-p 8.05rpm、
+  角度誤差max 1.76°。50rpm以上も全て通過。
+- ただしstep全体の集計ではブレークアウェイ直後のキックを含むためp-pが大きく見える。
+  `STEP_OK`直前の安定窓と、step全体の過渡を分けて評価する必要がある。
+
+低速staircase(25/30/35/40rpm、一時変更):
+- ログ: `firmware/logs/staircase-lowrpm-2026-07-07T04-34-11-016Z.log`
+- 25rpm: `STEP_OK`、直前1秒平均23.98rpm、p-p 18.78rpm、角度誤差max 0.79°。
+- 30rpm: timeout、終了時 measured 6.82rpm、angleErr 7.47°。
+- 35rpm: `STEP_OK`、直前1秒平均37.37rpm、p-p 6.67rpm、角度誤差max 2.02°。
+- 40rpm: timeout、終了時 measured 127.73rpm、angleErr 2.37°。step中の角度誤差maxは10.37°。
+
+結論:
+- 現ゲイン(drive Kp/Ki=5/20、steer Kp/Ki=50/20、steer max=0.5rpm)で、
+  正転・無負荷・今回の姿勢では40rpm以上は通るが、30〜40rpm帯の再現性は未確定。
+- 25/35 OK、30/40 timeoutという非単調な結果から、単純な最低rpmしきい値よりも
+  始動角・局所摩擦・駆動→操舵カップリングの影響が支配的と見る。
+- 次の試験ではdrive Kiを増やす前に、操舵保持側を少し強める
+  (`angle_kp_rpm_per_deg`、`steer_max_rpm`、`steer_mode_ki`)か、
+  角度誤差が大きいstepを早めにFAIL扱いするstep内ガードを追加する。
+
+## 操舵保持強化と350rpmまでの確認(2026-07-07)
+
+変更:
+- `scale=`ログを追加し、`compact-test-log.ps1`でstep別スケーリング率を集計。
+- step内角度誤差6°が300ms継続したら`STEP_FAIL: angle`で次stepへ進む。
+- 操舵保持を強化:
+  - `steer_max_rpm`: 0.5 -> 1.0
+  - `angle_kp_rpm_per_deg`: 0.1 -> 0.2
+  - `steer_mode_ki`: 20 -> 30
+
+低速再試験(30/35/40rpm):
+- ログ: `firmware/logs/staircase-lowrpm-steerhold-2026-07-07T04-42-02-928Z.log`
+- 30rpm: timeout、終了時 measured 0rpm、angleErr -1.406°。
+- 35rpm: timeout、終了時 measured 0.001rpm相当、angleErr 0.176°。
+- 40rpm: `STEP_OK`、直前1秒平均39.37rpm、p-p 11.94rpm、角度誤差max 0.44°。
+- 全体最大角度誤差3.43°、`scale=1`は0%。操舵外乱は改善したため、30/35rpmの失敗は
+  角度保持ではなく駆動側stick-slipが主因。
+
+中高速試験(40/75/150/250/350rpm):
+- ログ: `firmware/logs/staircase-highrpm-steerhold-2026-07-07T04-44-49-432Z.log`
+- 全step `STEP_OK`、`scale=1`は全step 0%。
+- `STEP_OK`直前1秒:
+  - 40rpm: 平均39.36rpm、p-p 9.34rpm、角度誤差max 0.70°
+  - 75rpm: 平均69.23rpm、p-p 11.18rpm、角度誤差max 0.79°
+  - 150rpm: 平均148.84rpm、p-p 20.77rpm、角度誤差max 0.53°
+  - 250rpm: 平均239.55rpm、p-p 50.40rpm、角度誤差max 1.14°
+  - 350rpm: 平均345.75rpm、p-p 81.13rpm、角度誤差max 0.79°
+
+判断:
+- 無負荷・正転の下限は暫定40rpm。30/35rpmは採用しない。
+- 350rpmまでは電流飽和なしで通過。高速側のp-pは増えるが、操舵保持は良好。
+- 次は500/750/1000rpm級へ段階拡張し、`motor_max_rpm=469`とdrive比32/11から来る
+  wheel理論上限約1360rpmへ近づける。高速側では平均追従だけでなく、p-p増加、
+  `scale=1`率、温度、角度保持を主要判定にする。
+
+## 長時間・拘束領域staircase(2026-07-07)
+
+ユーザー指摘: 各stepの動作時間が短く、定常状態に至る前に`STEP_OK`している可能性がある。
+拘束領域の評価では、短い通過判定ではなく長時間保持でp-p、角度保持、飽和率を見る。
+
+ハーネス変更:
+- `STEP_TIMEOUT_MS=25000`
+- `STEP_MIN_DWELL_MS=10000`
+- `STEP_STABLE_MS=3000`
+- 安定判定は要求targetではなく`output.wheel_rpm_command`基準に変更。
+  `motor_max_rpm`で要求1400rpmが約1364rpmへ制限されるため、要求値との差を見続けると
+  拘束領域を正常評価できない。
+- `STEP_OK/STEP_FAIL`へ`cmd=`を追加。
+
+結果:
+- ログ: `firmware/logs/staircase-long-highrpm-constraint-2026-07-07T04-49-46-624Z.log`
+- 要求500/750/1000/1200/1400rpm、全step `STEP_OK`。
+- `STEP_OK`直前1秒:
+  - 500rpm: 平均500.03rpm、p-p 5.06rpm、角度誤差max 0.53°、scale 0%
+  - 750rpm: 平均749.72rpm、p-p 3.99rpm、角度誤差max 0.62°、scale 0%
+  - 1000rpm: 平均1000.10rpm、p-p 2.96rpm、角度誤差max 0.62°、scale 0%
+  - 1200rpm: 平均1200.27rpm、p-p 2.50rpm、角度誤差max 0.62°、scale 0%
+  - 1400rpm要求: `cmd`約1363rpm、実測平均1363.49rpm、p-p 1.86rpm、
+    角度誤差max 0.62°、scale 0%
+- step全体のfinal-halfでは1400rpm要求stepでscale 0.8%。安定窓では0%。
+
+判断:
+- 無負荷・正転では40〜約1360rpmまで安定制御できている。
+- 1400rpm要求は`motor_max_rpm=469`とdrive比32/11から来る上限拘束に入り、
+  制御器は正しく`wheel_rpm_command`を約1364rpmへ制限している。
+- 次の必須確認は逆転側。同じ長時間保持で-40/-500/-1000/-1400rpmを確認し、
+  方向依存の摩擦・カップリング・電流余裕を切り分ける。
+
+## 逆転代表点確認(2026-07-07)
+
+負方向の安定判定で許容幅が常に10rpmになる問題を修正し、`wheel_tolerance`を
+`abs(effective_target)`基準へ変更した。
+
+結果:
+- ログ: `firmware/logs/staircase-reverse-representative-2026-07-07T04-55-26-552Z.log`
+- 要求 -40/-500/-1400rpm、全step `STEP_OK`。
+- `STEP_OK`直前1秒:
+  - -40rpm: 平均 -42.39rpm、p-p 9.02rpm、角度誤差max 0.53°、scale 0%
+  - -500rpm: 平均 -500.31rpm、p-p 1.90rpm、角度誤差max 0.62°、scale 0%
+  - -1400rpm要求: `cmd`約 -1363rpm、実測平均 -1362.55rpm、p-p 2.26rpm、
+    角度誤差max 0.70°、scale 0%
+
+判断:
+- 逆転側も代表点では問題なし。
+- 無負荷では正逆とも `|wheel rpm|=40〜約1360rpm` を安定制御できる。
+- 次は接地/拘束状態で、同じ`ωw, θs`制御が温度・電流余裕・低速stick-slipの面で成立するか確認する。
+
+## wheel 500rpm + steer +10deg 同時指令(2026-07-07)
+
+接地試験ができないため、無負荷で「`ωw`を出しながら`θs`を動かす」確認へ移行。
+
+試験:
+- `ωw=500rpm`
+- 起動角から`θs=+10°`
+- 長時間保持ハーネスを1stepにして流用。
+
+注意:
+- 既存のstep内角度誤差6°/300ms FAILは、角度step試験ではstep投入直後に当然発火する。
+  初回ログ`theta-step-wheel500-2026-07-07T05-01-36-470Z.log`はこの理由で評価不能。
+- 再試験では`STEP_ANGLE_FAIL_DEG_MILLI=12000`へ緩和。
+
+結果:
+- ログ: `firmware/logs/theta-step-wheel500-retry-2026-07-07T05-02-45-975Z.log`
+- `START: angle=185.186° target=195.186° wheelTarget=500`
+- `STEP_OK: cmd=500.000rpm measured=499.349rpm angleErr=0.156°`
+- 100msログ基準で角度誤差は約0.9sで2°以内、約1.0sで1°以内/0.5°以内。
+- final-half wheel平均500.111rpm、p-p 9.914rpm、角度誤差max 0.771°、
+  scale 0%、maxTemp 29°C。
+
+判断:
+- 無負荷では`ωw=500rpm`を維持しながら`θs=+10°`へ収束できる。
+- 次は`θs`往復(+10/-10/0)または`ωw=40/1200rpm`代表点で同じ角度stepを確認する。
+
+## wheel 500rpm定常 + steer 90deg刻み(2026-07-07)
+
+目的:
+- wheel立ち上がり過渡とsteer応答を分離する。
+- 先に`ωw=500rpm, θs=base`で定常化し、その後`θs=base+90/+180/+270/+0°`
+  へ90°刻みでstepする。
+- step間で`unit_controller_reset()`は呼ばず、wheel状態と積分を維持。
+
+ログ:
+- `firmware/logs/steer-90deg-steps-wheel500-2026-07-07T05-16-32-974Z.log`
+
+結果:
+- step0 base: `STEP_OK`、final-half wheel平均500.08rpm、p-p 6.88rpm、角度誤差max 0.53°
+- step1 +90°: `STEP_OK`、final-half wheel平均500.01rpm、p-p 5.81rpm、角度誤差max 0.53°
+- step2 +180°: `STEP_OK`、final-half wheel平均499.85rpm、p-p 8.13rpm、角度誤差max 0.62°
+- step3 +270°: `STEP_OK`、final-half wheel平均500.03rpm、p-p 5.91rpm、角度誤差max 0.62°
+- step4 +0°: `STEP_OK`。ただしユーザーが最終stepでホイールに触れたため外乱あり。
+  p-p 93rpmは速度制御評価から除外する。角度誤差は0.53°以内。
+
+判断:
+- step0〜3では、`ωw=500rpm`定常中に90°刻みで`θs`を変更しても、AMT角ログ上は
+  各目標へ収束し、wheel速度も維持できている。
+- ユーザー目視でも良さそう。AMT角ログと物理ステア出力は概ね一致している扱いで次へ進める。
+- `steer_min_rpm=2`は大角度step終端でリミットサイクルを作ったため、同時指令系では
+  現状`steer_min_rpm=0`の方が良い。
+
+## 40rpm/1200rpmでの90deg刻み同時指令(2026-07-07)
+
+40rpm:
+- ログ: `firmware/logs/steer-90deg-steps-wheel40-2026-07-07T05-22-52-902Z.log`
+- 全step完走。角度は概ね追従し、step0〜3の角度誤差maxは0.7°以内。
+- wheel p-pは大きい(step0 41rpm、step3 85rpm、step4 129rpm)。
+- 判断: 40rpmは機構摩擦を超える瞬間のオーバーシュート/stick-slip境界。
+  実用下限は75rpmから扱う。
+
+1200rpm:
+- ログ: `firmware/logs/steer-90deg-steps-wheel1200-2026-07-07T05-27-36-868Z.log`
+- 全step `STEP_OK`、scale 0%。
+- step1〜4(定常化後の90°刻み)はwheel p-p約3.6rpm、角度誤差max 0.70°以内。
+- maxTempは30°Cから36°Cへ上昇。
+- 判断: 1200rpm定常中でも90°刻みの`θs`変更は安定。
+
+現時点の結論:
+- 無負荷単体ユニットでは、実用域`|ωw|>=75rpm`で`ωw, θs`指令制御は成立。
+- 次の大きな段階は、内部シナリオではなく中央CAN `SET_TARGET` 経由で同じ目標を流すこと。

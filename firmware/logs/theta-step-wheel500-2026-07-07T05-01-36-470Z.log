@@ -1,0 +1,5 @@
+START: angle=185186 target=195186 wheelTarget=500 step=0 count=1
+run=1 step=0 angle=185186 target=195186 err=10000 steer=500 m1=2/9625 i1=181 t1=29 m2=2/-4125 i2=98 t2=28 steerMode=2750/43 iSteer=139527 driveMode=6875/9 iDrive=41281 scale=0 wheel=20000
+run=1 step=0 angle=185186 target=195186 err=10000 steer=970 m1=0/18673 i1=375 t1=29 m2=0/-8003 i2=189 t2=28 steerMode=5335/10 iSteer=281801 driveMode=13338/8 iDrive=92714 scale=0 wheel=38800
+STEP_FAIL: angle step=0 target=500 measured=53 angleErr=10000
+STOP: staircase complete

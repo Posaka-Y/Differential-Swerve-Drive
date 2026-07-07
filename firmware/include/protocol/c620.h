@@ -8,7 +8,7 @@
 typedef struct {
     uint8_t motor_id;
     uint16_t rotor_angle; /* 0-8191 */
-    int16_t rpm;
+    int16_t rpm; /* Motor rotor rpm before the M3508's 19:1 internal reduction. */
     int16_t torque_current;
     uint8_t temperature_c;
 } c620_feedback_t;

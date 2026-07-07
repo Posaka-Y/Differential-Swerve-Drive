@@ -14,6 +14,73 @@
 
 ---
 
+## 2026-07-07 (mini PC Linux評価引き継ぎ)
+
+### やったこと
+
+- Linux mini PC上の別Codexセッションへ渡すため、`docs/testing/MINIPC_LINUX_HANDOFF.md`を追加。
+- CANable/socketcan前提の初期セットアップ、CAN ID/payload、smoke手順、Linux側Codexへの依頼文を整理。
+
+### 現在の状態
+
+- `main`と`origin/main`は同一コミットだが、ローカルには未コミット変更が残っている。
+- このCodexセッションでは`.git/index.lock`を作れず、commit/pushは不可。
+
+### 次の作業
+
+1. ローカル端末側で未コミット変更をcommit/pushする。
+2. Linux mini PC側で`docs/testing/MINIPC_LINUX_HANDOFF.md`をCodexに読ませ、周期送信+CSV再生スクリプトを作る。
+3. 実機評価前に`UNIT_CTRL disable`を即送れる端末を用意する。
+
+## 2026-07-07 (未コミット成果のリモート同期)
+
+### やったこと
+
+- CANable bring-up以降の未コミット成果を確認し、ファーム・ドキュメント・チューニングログ・補助スクリプトをGit管理へ同期する準備を実施。
+- `firmware/scripts/build.ps1`でDebugビルド成功を確認。
+- Codex実行権限では`.git/index.lock`を作れず、さらにGitHubへの443接続もブロックされたため、コミット・pushは未完了。
+
+### 現在の状態
+
+- `main`には未コミット変更が残っている。ローカル端末側で`git add -A`、commit、pushが必要。
+
+### 次の作業
+
+1. ローカル端末側で未コミット変更をコミットし、`origin/main`へpushする。
+2. push後、必要なら実機consoleを終了してtimeout修正版をflashする。
+3. console再確認でVCPログの`STOP:`行を確認する。
+
+---
+
+## 2026-07-07 (CANable中央CAN指令bring-up)
+
+### やったこと
+
+- NUCLEO-G474REの中央CAN(FDCAN1 PA11/PA12)をCANable(COM16)から制御する経路を実機確認。
+- ファームを、起動時disabled、`SET_TARGET(0x101)` + `UNIT_CTRL(0x121)` enableでのみ駆動する構成へ変更。
+- CANable送信用スクリプトを追加し、hardware-session経由でflash→短時間smoke→disableを実行できるようにした。
+- `θs=179.912°`, `ωw=500rpm`を20Hz送信し、enable後に実駆動、disableで停止することを確認。
+- 続けて、CANableから手入力で`θs`/`ωw`を調整するconsole sessionスクリプトを追加。
+
+### 現在の状態
+
+- 最新CAN制御ファームがflash/verify/reset済み。
+- 実機は起動時disabledで、最後にCANableから`UNIT_CTRL disable`をBody/SafeIdle両方で送信済み。
+- 無負荷ではPC(CANable)から`θs`/`ωw`司令で動作できる段階に到達。
+- 手入力確認は `firmware/scripts/run-canable-target-console-session.ps1` から実行可能。
+- 手入力consoleで周期的に落ちるような挙動を確認。timeout 200msが主候補のため、
+  ワークツリー上では1000ms化+timeout停止ラッチを実装・ビルド済みだが、console sessionが
+  mutexを保持していたため未flash。console側は±1200rpm上限を追加済み。
+
+### 次の作業
+
+1. 手元consoleで`q`を押してmutexを解放し、timeout修正版をflash。
+2. console sessionで手入力操作を再確認し、VCPログの`STOP:`行で落ち原因を確定する。
+3. PC側送信ツールを任意軌道/CSV再生へ拡張し、指令生成とログ保存を分離する。
+4. その後、中央Teensy相当の周期送信・timeout・disable手順へ移植する。
+
+---
+
 ## 2026-07-06 (7)
 
 ### やったこと
@@ -274,3 +341,125 @@
 3. `hardware/` ディレクトリ骨組み+KiCad共通ブロック(can_interface等)の作成。
 4. 中央ボード用にコンタクタ・E-stopスイッチの型番確定(コイル仕様がドライバ回路に効く)。
 5. オドメトリ(AMT102)の受け側MCUを決める(Teensyならレベルシフタ、G474なら直結)。
+
+## 2026-07-07 ゲイン調整セッション保存
+
+- C620の `feedback.rpm` はM3508内蔵19:1減速前のロータRPMで、制御側の差動ステア運動学は減速後出力軸RPMとして扱う方針に整理した。
+- ファーム側ではC620フィードバックを `M3508_INTERNAL_REDUCTION` で除算して `unit_controller_update()` に渡す前提へ修正・文書化した。
+- 単点RPM試験用に、サブエージェント契約、コンパクトログ収集、実機mutexラッパを追加した。
+- 40 wheel-rpm単点試験:
+  - Run1: drive Kp/Ki=5/20、steer Kp/Ki=50/20で10秒完走。
+  - 後半平均 33.999 RPM、範囲 -0.032〜243.561 RPM、角度誤差peak 1.670°。
+  - 周期的stick-slipのためFAIL判定。
+  - Run2はログ未生成で評価不能のため採用せず、追加駆動なし。
+- 現在状態:
+  - `CLOSED_LOOP_TEST_ENABLED=0`
+  - clean build後、safe-idle flash/verify/reset成功済み。
+  - 40rpmは失敗境界として扱い、次は50rpm以上の安定域から下限探索または試験ハーネス高速化を優先する。
+
+## 2026-07-07 ゲイン調整セッション保存(2)
+
+- `invoke-hardware-session.ps1`経由でstaircase試験を実施し、各回の終了後にsafe-idleを
+  flash/verify/resetした。最終状態は`CLOSED_LOOP_TEST_ENABLED=0`のsafe-idle。
+- 標準staircase(40/45/50/60/75/100/150rpm)は全stepが`STEP_OK`で完走。
+  `STEP_OK`直前1秒では40rpmも平均40.74rpm、角度誤差max 0.97°まで入った。
+- 低速staircase(25/30/35/40rpm)も追加実施。25rpm/35rpmは`STEP_OK`、
+  30rpm/40rpmはtimeout。最大角度誤差10.37°。結果が非単調で、低速限界は
+  始動角・局所摩擦・駆動→操舵カップリングに強く依存している可能性が高い。
+- 暫定判断: 現ゲインの正転・無負荷では40rpm以上は動作可能だが、30〜40rpm帯は
+  安定採用には未確定。次は角度外乱対策として操舵保持側ゲインを少し戻すか、
+  30/35/40rpmを開始角・正逆方向を変えて複数回試験する。
+
+## 2026-07-07 ゲイン調整セッション保存(3)
+
+- 操舵保持を強化して再試験:
+  - `steer_max_rpm=1.0`
+  - `angle_kp_rpm_per_deg=0.2`
+  - `steer_mode_ki=30`
+  - step内角度誤差6°/300msでstep FAIL、`scale=`ログ追加。
+- 30/35/40rpm再試験では、40rpmのみ`STEP_OK`。30/35rpmは角度ではなく駆動側stick-slipで
+  timeout。操舵外乱は最大3.43°まで低下したため、下限は暫定40rpm。
+- 中高速staircase(40/75/150/250/350rpm)は全step`STEP_OK`、電流スケーリング0%、
+  角度保持良好。350rpm直前1秒は平均345.75rpm、角度誤差max 0.79°。
+- 最終状態: 実機はsafe-idle。`firmware/src/main.c`も`CLOSED_LOOP_TEST_ENABLED=0`。
+  次は500/750/1000rpm級へ段階拡張して、理論wheel上限(約1360rpm)へ近づける。
+
+## 2026-07-07 ゲイン調整セッション保存(4)
+
+- ユーザー指摘により、各stepの保持時間を長くした拘束領域試験へ移行。
+  `STEP_MIN_DWELL_MS=10000`、`STEP_STABLE_MS=3000`、`STEP_TIMEOUT_MS=25000`。
+  上限拘束時に要求rpmとの差で失敗しないよう、判定基準を`wheel_rpm_command`へ変更。
+- 500/750/1000/1200/1400rpm要求の長時間staircaseを実施し、全step`STEP_OK`。
+  500〜1200rpmは直前1秒でp-p 2.5〜5.1rpm程度、角度誤差max 0.62°以下。
+  1400rpm要求では制御器が約1363rpmへ制限し、実測平均1363.49rpm、角度誤差max 0.62°。
+- 暫定レンジ: 無負荷・正転では下限40rpm、上限は`motor_max_rpm=469`由来の約1360rpm。
+  30/35rpmはstick-slipで不採用。次は逆転側と、接地/拘束での温度・電流余裕確認。
+
+## 2026-07-07 ゲイン調整セッション保存(5)
+
+- 逆転代表点 -40/-500/-1400rpm を長時間保持で確認。
+  全step`STEP_OK`、終了後safe-idle書き戻し済み。
+- 直前1秒:
+  - -40rpm: 平均 -42.39rpm、p-p 9.02rpm、角度誤差max 0.53°
+  - -500rpm: 平均 -500.31rpm、p-p 1.90rpm、角度誤差max 0.62°
+  - -1400rpm要求: cmd約 -1363rpm、実測平均 -1362.55rpm、p-p 2.26rpm、角度誤差max 0.70°
+- 結論: 無負荷では正逆とも`|ωw|=40〜約1360rpm`で安定。次は接地/拘束状態での
+  温度・電流余裕・低速stick-slip再評価。
+
+## 2026-07-07 ゲイン調整セッション保存(6)
+
+- 接地試験ができないため、`ωw`固定中に`θs`を動かす同時指令試験へ移行。
+- `ωw=500rpm`、起動角から`θs=+10°`を実施。
+  初回はstep内角度誤差6°ガードが意図せず働いたため、角度step用に12°へ緩和して再試験。
+- 再試験結果: `STEP_OK`。角度誤差は約1.0秒で1°以内、final-halfでは
+  wheel平均500.11rpm、p-p 9.91rpm、角度誤差max 0.77°、scale 0%、maxTemp 29°C。
+- 判断: 無負荷では`ωw=500rpm`を維持しながら`θs=+10°`へ収束できる。
+  次は`θs`往復(+10/-10/0)または`ωw=40/1200rpm`代表点で同じ角度step。
+
+## 2026-07-07 ゲイン調整セッション保存(7)
+
+- 目視切り分けしやすくするため、`ωw=500rpm`のまま`θs=+90°`を試験。
+- `steer_min_rpm=2`ではログ上は約0.9秒で到達するが、終端で±2〜3°のリミットサイクルが出て
+  安定判定timeout。`steer_min_rpm=0`では`STEP_OK`。
+- `steer_min_rpm=0`試験のログではAMT角が約49.9°→138.5°へ約90°変化し、wheel平均500.01rpm、
+  p-p 6.85rpm、角度誤差max 0.44°、scale 0%、maxTemp 30°C。
+- ただしユーザー目視ではステア変化が見えなかった。ログ上のAMT角と物理ステア出力の対応が
+  未確認。次は通電せず、ステア出力を手で動かしてAMT角が同じだけ変わるかを確認する。
+
+## 2026-07-07 ゲイン調整セッション保存(8)
+
+- `ωw=500rpm`を先に定常化し、その後`θs=base/+90/+180/+270/+0°`へ90°刻みでstepする試験を実施。
+- step0〜3は全て`STEP_OK`。final-half wheel平均はほぼ500rpm、p-pは約5.8〜8.1rpm、
+  角度誤差maxは0.62°以内。
+- step4(+0°戻し)も`STEP_OK`だが、ユーザーが最終stepでホイールに触れたため外乱あり。
+  p-p 93rpmは速度制御評価から除外する。
+- 判断: ログ上は500rpm定常中に90°刻みの`θs`変更へ追従でき、ユーザー目視でも良さそう。
+  AMT角ログと物理ステア出力は概ね一致している扱いで次へ進める。最終stepはホイール接触外乱あり。
+
+## 2026-07-07 ゲイン調整セッション保存(9)
+
+- 90°刻み同時指令を低速40rpmと高速1200rpmへ展開。
+- 40rpmは全step完走し角度は概ね追従するが、wheel p-pが大きく、機構摩擦を超える瞬間の
+  オーバーシュート/stick-slip境界。実用下限は40rpmではなく75rpmから扱う方針。
+- 1200rpmは全step`STEP_OK`、scale 0%。定常化後のstep1〜4はwheel p-p約3.6rpm、
+  角度誤差max 0.70°以内。maxTempは30→36°C。
+- 結論: 無負荷単体ユニットでは、実用域`|ωw|>=75rpm`で`ωw, θs`指令制御は成立。
+
+## 2026-07-07 中央CAN受信ログ準備
+
+- 2個目のCANトランシーバをFDCAN1(PA11/PA12)へ接続する前提で、ファームに中央CAN初期化を追加。
+- safe-idleのまま、FDCAN1受信フレームをVCPへ`CENTRAL_RX`表示。
+- `0x101` DLC8を`SET_TARGET`としてlittle-endian int32 x2で仮decodeし、
+  `SET_TARGET_RX steer=... wheel=...`を表示。まだ制御には接続していない。
+- `docs/communication/COMMUNICATION_NAMING_AND_IDS.md`へSET_TARGET little-endian規約を追記。
+- Debugビルドとflash/verify/reset完了。次はCANableから`0x101`を送ってG474 VCPで受信確認。
+
+## 2026-07-07 中央CAN受信確認
+
+- CANableはWindows上で`COM16`、G474 VCPは`COM15`として認識。
+- CANable(SLCAN)から`S8`(1Mbps)、`O`後に`0x101` DLC8を送信。
+  payload `90 5F 01 00 20 A1 07 00`。
+- G474 VCPで以下を確認:
+  - `CENTRAL_RX id=101 dlc=8 data=90 5f 1 0 20 a1 7 0`
+  - `SET_TARGET_RX steer=90000 wheel=500000`
+- 中央CAN受信経路は成立。次はenable/timeout付きで`SET_TARGET`を制御目標へ接続。

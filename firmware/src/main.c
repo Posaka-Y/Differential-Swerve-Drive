@@ -1,8 +1,6 @@
-/* Closed-loop bench test: auto-starts once at boot, holding steer at the boot
- * angle and commanding a wheel rpm step (0 -> TEST_WHEEL_TARGET_RPM). Wheel
- * must be lifted clear of the ground (free-spinning) before running this.
- * Checks mode non-interference (steer should stay near the held angle while
- * the wheel spins) and tunes wheel_accel_rpm_per_s / drive_mode_ki.
+/* CAN target bench app. The unit boots disabled, accepts SET_TARGET on the
+ * central CAN bus, and only drives after UNIT_CTRL enable.
+ * Wheel must be lifted clear of the ground (free-spinning) before enabling.
  *
  * No rpm-tracking divergence guard: current_limit already hard-clamps every
  * motor command, so a wheel-rpm-error threshold only added false trips on the
@@ -25,14 +23,20 @@
 #include "protocol/c620.h"
 
 enum {
-    CLOSED_LOOP_TEST_ENABLED = 0U, /* Set to 1 only during a supervised test. */
     CONTROL_PERIOD_MS = 1U,
     FEEDBACK_TIMEOUT_MS = 20U,
-    REPORT_PERIOD_MS = 250U,
-    TEST_MAX_DURATION_MS = 10000U, /* Auto-stop so an unattended wheel can't spin forever. */
+    REPORT_PERIOD_MS = 100U,
+    ANGLE_DIVERGENCE_STOP_DEG_MILLI = 120000U,
+    MOTOR_TEMPERATURE_LIMIT_C = 80U,
+    M3508_INTERNAL_REDUCTION = 19U,
+    UNIT_ID = 1U,
+    CAN_ID_SET_TARGET_BASE = 0x100U,
+    CAN_ID_SET_TARGET = CAN_ID_SET_TARGET_BASE + UNIT_ID,
+    CAN_ID_UNIT_CTRL_BASE = 0x120U,
+    CAN_ID_UNIT_CTRL = CAN_ID_UNIT_CTRL_BASE + UNIT_ID,
+    UNIT_CTRL_SET_ENABLE = 0x01U,
+    TARGET_TIMEOUT_MS = 1000U,
 };
-
-static const float TEST_WHEEL_TARGET_RPM = 50.0f;
 
 typedef struct {
     c620_feedback_t feedback;
@@ -43,6 +47,12 @@ typedef struct {
 static motor_state_t motors[2];
 static unit_controller_t controller;
 static unit_control_output_t output;
+static bool unit_enabled = false;
+static bool target_received = false;
+static uint32_t last_target_ms = 0U;
+static uint32_t last_target_log_ms = 0U;
+static float can_target_wheel_rpm = 0.0f;
+static float can_target_steer_deg = 0.0f;
 
 static int32_t to_milli(float value)
 {
@@ -53,6 +63,61 @@ static int32_t to_milli(float value)
 static float absf(float value)
 {
     return value < 0.0f ? -value : value;
+}
+
+static int32_t read_i32_le(const uint8_t *data)
+{
+    const uint32_t raw =
+        (uint32_t)data[0] |
+        ((uint32_t)data[1] << 8U) |
+        ((uint32_t)data[2] << 16U) |
+        ((uint32_t)data[3] << 24U);
+    return (int32_t)raw;
+}
+
+static bool target_is_fresh(uint32_t now_ms)
+{
+    return target_received &&
+           (uint32_t)(now_ms - last_target_ms) < TARGET_TIMEOUT_MS;
+}
+
+static void receive_central_can(uint32_t now_ms)
+{
+    fdcan_frame_t frame;
+    while (fdcan_receive(FDCAN_BUS_CENTRAL, &frame)) {
+        if (!frame.extended && !frame.remote &&
+            frame.id == CAN_ID_SET_TARGET && frame.dlc == 8U) {
+            const int32_t target_steer_mdeg = read_i32_le(&frame.data[0]);
+            const int32_t target_wheel_rpm_milli = read_i32_le(&frame.data[4]);
+            can_target_steer_deg = (float)target_steer_mdeg * 0.001f;
+            can_target_wheel_rpm = (float)target_wheel_rpm_milli * 0.001f;
+            last_target_ms = now_ms;
+            target_received = true;
+            if ((uint32_t)(now_ms - last_target_log_ms) >= 500U) {
+                last_target_log_ms = now_ms;
+                debug_printf("SET_TARGET_RX steer=%d wheel=%d\n",
+                             target_steer_mdeg,
+                             target_wheel_rpm_milli);
+            }
+        } else if (!frame.extended && !frame.remote &&
+                   frame.id == CAN_ID_UNIT_CTRL && frame.dlc >= 2U &&
+                   frame.data[0] == UNIT_CTRL_SET_ENABLE) {
+            unit_enabled = frame.data[1] != 0U;
+            debug_printf("UNIT_CTRL enable=%u\n", unit_enabled ? 1U : 0U);
+        } else {
+            debug_printf("CENTRAL_RX id=%x dlc=%u data=%x %x %x %x %x %x %x %x\n",
+                         frame.id,
+                         (uint32_t)frame.dlc,
+                         (uint32_t)frame.data[0],
+                         (uint32_t)frame.data[1],
+                         (uint32_t)frame.data[2],
+                         (uint32_t)frame.data[3],
+                         (uint32_t)frame.data[4],
+                         (uint32_t)frame.data[5],
+                         (uint32_t)frame.data[6],
+                         (uint32_t)frame.data[7]);
+        }
+    }
 }
 
 static void receive_c620(uint32_t now_ms)
@@ -88,18 +153,17 @@ int main(void)
 {
     static const unit_controller_config_t control_config = {
         .motor_max_rpm = 469.0f,
-        .steer_max_rpm = 5.0f, /* stick-slip below ~1rpm; run above re-stick speed */
-        .steer_min_rpm = 2.0f,
+        .steer_max_rpm = 5.0f,
+        .steer_min_rpm = 0.0f,
         .steer_accel_rpm_per_s = 50.0f,
         /* Untested default; tune during this wheel!=0 test. */
         .wheel_accel_rpm_per_s = 200.0f,
         .angle_kp_rpm_per_deg = 0.5f,
         .angle_deadband_deg = 0.5f,
-        .steer_mode_kp = 5.0f,
-        .steer_mode_ki = 125.0f, /* 150 regressed to Ki=100-level response; 200 caused a
-                                   * hard +/-2deg limit cycle (2026-07-05). 125 is best (2026-07-06). */
+        .steer_mode_kp = 50.0f,
+        .steer_mode_ki = 30.0f,
         .drive_mode_kp = 5.0f,
-        .drive_mode_ki = 100.0f,
+        .drive_mode_ki = 20.0f,
         /* Above worst-case breakaway (~850-950 raw, 2026-07-05/06 measurements) so the
          * integral can still defeat static friction, below current_limit so a
          * stuck-phase charge cannot release as a full-limit jump. */
@@ -117,18 +181,22 @@ int main(void)
     amt22_init();
     unit_controller_init(&controller, &control_config);
 
-    debug_printf("\n=== differential wheel step test (steer held, wheel 0->%drpm) ===\n",
-                 (int32_t)TEST_WHEEL_TARGET_RPM);
-    debug_printf("WHEEL MUST BE LIFTED CLEAR OF THE GROUND (free-spinning) before starting.\n");
-    debug_printf("auto-starts once; press B1 any time to abort (latches stopped)\n");
-    debug_printf("limit=%d iLimit=%d wheelAccel=%drpm/s maxDur=%us\n",
+    debug_printf("\n=== CAN target differential unit test ===\n");
+    debug_printf("WHEEL MUST BE LIFTED CLEAR OF THE GROUND before UNIT_CTRL enable.\n");
+    debug_printf("boots disabled; press B1 any time to abort and latch disabled\n");
+    debug_printf("limit=%d iLimit=%d wheelAccel=%drpm/s targetTimeout=%ums\n",
                  (int32_t)control_config.current_limit,
                  (int32_t)control_config.mode_integral_limit,
                  (int32_t)control_config.wheel_accel_rpm_per_s,
-                 TEST_MAX_DURATION_MS / 1000U);
-    debug_printf("bench actuation: %s\n",
-                 CLOSED_LOOP_TEST_ENABLED ? "ENABLED" : "DISABLED (safe idle)");
+                 TARGET_TIMEOUT_MS);
     clock_delay_ms(250U);
+
+    if (!fdcan_init(FDCAN_BUS_CENTRAL, FDCAN_MODE_NORMAL)) {
+        debug_printf("FDCAN1 init FAILED\n");
+        for (;;) {
+            status_led_write(((clock_millis() / 100U) & 1U) != 0U);
+        }
+    }
 
     if (!fdcan_init(FDCAN_BUS_C620, FDCAN_MODE_NORMAL)) {
         debug_printf("FDCAN2 init FAILED\n");
@@ -138,19 +206,18 @@ int main(void)
     }
 
     send_currents(0, 0);
-    debug_printf("ready: wheel target=%drpm, steer target=current angle (held)\n",
-                 (int32_t)TEST_WHEEL_TARGET_RPM);
+    debug_printf("ready: central CAN SET_TARGET + UNIT_CTRL enable, unitId=%u\n",
+                 UNIT_ID);
 
     bool active = false;
-    bool test_done = false; /* Latches once stopped; only a board reset re-arms. */
     uint32_t last_control_ms = clock_millis();
     uint32_t last_report_ms = last_control_ms;
-    uint32_t test_start_ms = 0U;
     float current_angle_deg = 0.0f;
     float test_target_deg = 0.0f;
 
     for (;;) {
         const uint32_t now_ms = clock_millis();
+        receive_central_can(now_ms);
         receive_c620(now_ms);
 
         const uint32_t elapsed_ms = now_ms - last_control_ms;
@@ -174,32 +241,47 @@ int main(void)
         if (active && pressed) {
             debug_printf("STOP: B1 abort\n");
             active = false;
-            test_done = true;
+            unit_enabled = false;
             unit_controller_reset(&controller);
-        } else if (!active && !test_done && CLOSED_LOOP_TEST_ENABLED &&
+        } else if (!active && unit_enabled && target_is_fresh(now_ms) &&
                    amt_ok && feedback_is_fresh(now_ms)) {
             active = true;
-            test_start_ms = now_ms;
-            test_target_deg = current_angle_deg; /* Hold steer; only the wheel steps. */
+            test_target_deg = can_target_steer_deg;
             unit_controller_reset(&controller);
-            unit_controller_set_target(&controller, TEST_WHEEL_TARGET_RPM, test_target_deg);
-            debug_printf("START: angle=%d target=%d wheelTarget=%d\n",
+            unit_controller_set_target(&controller, can_target_wheel_rpm, test_target_deg);
+            debug_printf("START_CAN: angle=%d target=%d wheelTarget=%d\n",
                          to_milli(current_angle_deg),
                          to_milli(test_target_deg),
-                         (int32_t)TEST_WHEEL_TARGET_RPM);
+                         to_milli(can_target_wheel_rpm));
+        }
+
+        if (active && !unit_enabled) {
+            debug_printf("STOP: disabled\n");
+            active = false;
+            unit_controller_reset(&controller);
+        }
+
+        if (active && !target_is_fresh(now_ms)) {
+            debug_printf("STOP: target timeout\n");
+            active = false;
+            unit_enabled = false;
+            unit_controller_reset(&controller);
         }
 
         if (active && (!amt_ok || !feedback_is_fresh(now_ms))) {
             debug_printf("STOP: sensor/C620 timeout\n");
             active = false;
-            test_done = true;
+            unit_enabled = false;
             unit_controller_reset(&controller);
         }
 
-        if (active && (now_ms - test_start_ms) >= TEST_MAX_DURATION_MS) {
-            debug_printf("STOP: max test duration reached\n");
+        if (active && (motors[0].feedback.temperature_c >= MOTOR_TEMPERATURE_LIMIT_C ||
+                       motors[1].feedback.temperature_c >= MOTOR_TEMPERATURE_LIMIT_C)) {
+            debug_printf("STOP: motor temperature m1=%u m2=%u\n",
+                         (uint32_t)motors[0].feedback.temperature_c,
+                         (uint32_t)motors[1].feedback.temperature_c);
             active = false;
-            test_done = true;
+            unit_enabled = false;
             unit_controller_reset(&controller);
         }
 
@@ -208,16 +290,24 @@ int main(void)
         if (active) {
             const unit_measurement_t measurement = {
                 .steer_deg = current_angle_deg,
-                .motor1_rpm = (float)motors[0].feedback.rpm,
-                .motor2_rpm = (float)motors[1].feedback.rpm,
+                /* C620 speed feedback is motor-rotor rpm; kinematics use the
+                 * M3508 gearbox output-shaft rpm (19:1 reduction). */
+                .motor1_rpm = (float)motors[0].feedback.rpm /
+                              (float)M3508_INTERNAL_REDUCTION,
+                .motor2_rpm = (float)motors[1].feedback.rpm /
+                              (float)M3508_INTERNAL_REDUCTION,
             };
+            test_target_deg = can_target_steer_deg;
+            unit_controller_set_target(&controller, can_target_wheel_rpm,
+                                       test_target_deg);
             unit_controller_update(&controller, &measurement, dt_s, &output);
 
-            if (absf(output.angle_error_deg) > 12.0f) {
+            if (absf(output.angle_error_deg) * 1000.0f >
+                (float)ANGLE_DIVERGENCE_STOP_DEG_MILLI) {
                 debug_printf("STOP: angle diverged err=%d\n",
                              to_milli(output.angle_error_deg));
                 active = false;
-                test_done = true;
+                unit_enabled = false;
                 unit_controller_reset(&controller);
             } else {
                 current1 = output.motor1_current;
@@ -228,28 +318,32 @@ int main(void)
         send_currents(current1, current2);
         status_led_write(active);
 
-        if ((uint32_t)(now_ms - last_report_ms) >= REPORT_PERIOD_MS) {
+        if (active && (uint32_t)(now_ms - last_report_ms) >= REPORT_PERIOD_MS) {
             last_report_ms = now_ms;
-            debug_printf("run=%u angle=%d target=%d err=%d steer=%d "
-                         "m1=%d/%d i1=%d m2=%d/%d i2=%d "
-                         "steerMode=%d/%d iSteer=%d driveMode=%d/%d iDrive=%d "
+            debug_printf("run=%u step=%u angle=%d target=%d err=%d steer=%d "
+                         "m1=%d/%d i1=%d t1=%u m2=%d/%d i2=%d t2=%u "
+                         "steerMode=%d/%d iSteer=%d driveMode=%d/%d iDrive=%d scale=%u "
                          "wheel=%d\n",
-                         active ? 1U : 0U, to_milli(current_angle_deg),
+                         active ? 1U : 0U, 0U,
+                         to_milli(current_angle_deg),
                          to_milli(test_target_deg),
                          to_milli(output.angle_error_deg),
                          to_milli(output.steer_rpm_command),
                          (int32_t)motors[0].feedback.rpm,
                          to_milli(output.motor1_target_rpm),
                          (int32_t)current1,
+                         (uint32_t)motors[0].feedback.temperature_c,
                          (int32_t)motors[1].feedback.rpm,
                          to_milli(output.motor2_target_rpm),
                          (int32_t)current2,
+                         (uint32_t)motors[1].feedback.temperature_c,
                          to_milli(output.steer_mode_target_rpm),
                          to_milli(output.steer_mode_measured_rpm),
                          to_milli(output.steer_mode_current),
                          to_milli(output.drive_mode_target_rpm),
                          to_milli(output.drive_mode_measured_rpm),
                          to_milli(output.drive_mode_current),
+                         (uint32_t)output.torque_scaling_active,
                          to_milli(output.wheel_rpm_command));
         }
     }

@@ -1,6 +1,145 @@
 # Firmware progress
 
-最終更新: 2026-07-06(rpm発散ガード撤去、駆動ステップテスト10秒完走・操舵振動を検出)
+## 進行中(2026-07-07 CANable手入力consoleの落ち挙動切り分け)
+
+- CANable手入力consoleで、周期的に「落ちる」ように見える挙動が発生。
+- 現ファームには電流増加率しきい値で停止する処理はないため、主候補は`STOP: target timeout`。
+  PowerShellのキー入力/表示処理で`SET_TARGET`周期が一瞬200msを超え、停止→再STARTしている可能性が高い。
+- 対策コードは実装・ビルド済み:
+  - `TARGET_TIMEOUT_MS`を200ms→1000msへ変更。
+  - `STOP: target timeout`時に`unit_enabled=false`へラッチし、通信断でSTOP/STARTを繰り返さないように変更。
+- ただしflashは`invoke-hardware-session.ps1`が`busy`を返したため未反映。
+  おそらく手元のconsole sessionがmutexを保持中。ユーザーがconsoleで`q`を押して終了後、再flashが必要。
+- wheel rpmが1300rpm以上に見える件:
+  - ファーム内の理論上限は`motor_max_rpm=469 * 32/11 = 約1364 wheel-rpm`なので、1300台自体は異常ではない。
+  - ただし運用上1200rpmまでにしたいため、console側に`MaxAbsWheelRpmMilli`を追加し、既定を±1200rpmへ制限。
+  - `run-canable-target-console-session.ps1`からも同パラメータを渡せるようにした。
+- PowerShell構文チェック:
+  - `run-canable-target-console.ps1`: OK
+  - `run-canable-target-console-session.ps1`: OK
+
+現在の状態:
+
+- 実機flash上は、まだtimeout 200ms版の可能性が高い。
+- ワークツリー上のfirmwareはtimeout 1000ms + timeout停止ラッチ版。
+- consoleスクリプトは±1200rpm上限版。
+
+次:
+
+1. 手元consoleで`q`を押して終了し、mutexを解放。
+2. `.\firmware\scripts\flash.ps1`でtimeout修正版をflash。
+3. consoleを再起動し、VCPログの`STOP:`行で落ち原因を確認。
+
+## 完了(2026-07-07 CANable手入力コンソール追加)
+
+- CANableから手入力で`θs`/`ωw`を変えられる操作スクリプトを追加。
+  - `firmware/scripts/run-canable-target-console.ps1`
+  - `firmware/scripts/run-canable-target-console-session.ps1`
+- 操作は`invoke-hardware-session.ps1`経由のsession版を使う前提。操作中はmutexを保持し、
+  終了時はconsole側finallyとSafeIdle側の両方で`UNIT_CTRL disable`を送る。
+- キー操作:
+  - `e`: enable
+  - `d`: disable
+  - `q`: quit
+  - 上下矢印: wheel rpmをstep増減(既定25rpm)
+  - 左右矢印: steer角をstep増減(既定5°)
+  - `z`/`x`: steer角を-90°/+90°
+  - `0`: wheel=0
+  - `h`: status表示
+- `SET_TARGET`は既定50ms周期(20Hz)で常時送信。起動直後はdisableを送ってから待機。
+- PowerShell構文チェック成功。対話操作はユーザーのコンソール入力が必要なため、ここでは未実行。
+
+次: 実機で以下を使って手入力確認。
+
+```powershell
+.\firmware\scripts\run-canable-target-console-session.ps1 -CanPort COM16 -InitialSteerMdeg 179912 -InitialWheelRpmMilli 0
+```
+
+## 完了(2026-07-07 CANable経由SET_TARGET実動作確認)
+
+- `firmware/src/main.c`を中央CAN(FDCAN1)の実指令で動くベンチアプリへ変更。
+  - `SET_TARGET` ID `0x101`: int32 little-endian `steer_mdeg` + int32 little-endian `wheel_rpm_milli`
+  - `UNIT_CTRL` ID `0x121`: `01 01`でenable、`01 00`でdisable
+  - 起動時は必ずdisabled。`SET_TARGET`は200ms timeout、B1/温度/センサ/C620 timeout/角度発散は停止。
+  - 安全停止時は`unit_enabled=false`へラッチし、角度発散時の再START連打を防止。
+- CANable用スクリプトを追加:
+  - `firmware/scripts/run-canable-target-smoke.ps1`: SET_TARGETを周期送信し、enable後に短時間動かしてdisable。
+  - `firmware/scripts/run-canable-target-session.ps1`: `invoke-hardware-session.ps1`経由でflash→smoke→SafeIdle(disable)。
+  - `firmware/scripts/send-canable-unit-disable.ps1`: CANableからUNIT_CTRL disableだけを送る。
+- 実機確認:
+  - CANable COM16、G474 VCP COM15、NUCLEO-G474RE。
+  - `θs=179912mdeg`, `ωw=500000milli-rpm`を20Hzで送信し、`UNIT_CTRL enable=1`後に`START_CAN`。
+  - wheel commandはランプで500rpmまで到達し、角度誤差は最終的に0〜0.6°程度。
+  - `UNIT_CTRL enable=0`で`STOP: disabled`、SafeIdleのdisable送信も成功。
+- 最終状態:
+  - 最新CAN制御ファームをflash/verify/reset済み。
+  - 実機は起動時disabled、最後に`t12120100`をBody/SafeIdle両方で送信済み。
+
+次: mini PC側または中央Teensy相当の送信器から、`θs`/`ωw`の連続プロファイルを生成して評価する。
+まずはPC上のCANable送信ツールを、単発smokeではなく任意軌道/CSV/キーボード入力で使える形にする。
+
+## 完了(2026-07-07 wheel RPM staircase試験ハーネス高速化)
+
+- `firmware/src/main.c`の閉ループベンチ試験を、単一RPMではなく複数RPMを1回のflashで順次実行する
+  staircase形式へ変更した。現在のステップは40/45/50/60/75/100/150 wheel-rpm。
+- 1ステップが`STEP_TIMEOUT_MS`内に安定しない場合は`STEP_FAIL`を出して次RPMへ進む。
+  角度発散、温度上限、センサ/C620 timeout、B1 abortは従来どおり即停止。
+- `firmware/scripts/compact-test-log.ps1`をstep別集計に対応させ、1本のログから各RPMの後半mean/min/max/p-pと
+  角度誤差を出せるようにした。
+- `firmware/scripts/build.ps1`でDebugビルド成功。`compact-test-log.ps1`のPowerShell構文チェック成功。
+- まだ実機flash/駆動はしていない。安全ゲートは`CLOSED_LOOP_TEST_ENABLED=0`のまま。
+
+次: 実機セッションではmutex wrapper経由でこのstaircase HEXを1回だけflashし、ログ取得後にsafe-idleをflashする。
+
+## 完了(2026-07-07 wheel 40rpm単点試験)
+
+- C620 raw rpmを`/19`した既定ゲイン(steer Kp/Ki=50/20、drive Kp/Ki=5/20)で
+  wheel 40rpmを10秒評価。後半平均33.999rpm、範囲-0.032〜243.561rpm、角度誤差peak
+  1.670°、m1/m2非ゼロ率32%/34%で、停止・再始動を伴うスティックスリップのためFAIL。
+- 2回目はdrive Kiだけ20→30へ変更したが、実行ツールがtimeoutしログ未生成のため評価不能。
+  追加駆動は行わず、Ki=20へ戻した。最終状態は`CLOSED_LOOP_TEST_ENABLED=0`をclean buildし、
+  mutex内でflash/verify/reset成功済み。ログ: `docs/tuning_logs/2026-07-07_wheel_40rpm_run1.log`。
+
+最終更新: 2026-07-07(wheel 40rpm単点試験、FAIL)
+
+## 完了(2026-07-06 C620 rpm単位修正・RPM点分割試験)
+
+- C620 `feedback.rpm` はM3508内蔵19:1減速機より前のロータrpmと判明。制御器の
+  `motor_max_rpm=469`、運動学、目標値は減速後出力軸rpmなので、`main.c`のmeasurement境界で
+  raw feedbackを19で除算した。イテレーション12〜17は目標と測定の単位が19倍ずれており、
+  そこから導いた「250rpmでも悪化」「低速域原因説を否定」は無効として扱う。
+- 修正後、単一モーター50 output-rpmはKp=5/Ki=20で概ね47〜54rpmへ追従。
+  差動wheel試験は暫定構成(steer Kp=50/Ki=20、drive Kp=5/Ki=20、current limit=2000、
+  integral limit=1200)で50/60/75/100/150/250rpmを各10秒完走。25rpmは周期的な停止・再始動でNG。
+  40rpmは正式な再試験が必要。正逆転および各点3回の再現性確認は未実施。
+- RPM点ごとに短命エージェントを起動する`.claude/agents/wheel-rpm-point-tuner.md`、最新の
+  `START:`〜`STOP:`だけ保存・集計する`scripts/compact-test-log.ps1`、実機処理を直列化して
+  必ず安全待機を実行する`scripts/invoke-hardware-session.ps1`を追加。
+- 別セッションが`main.c`を試験有効へ再編集していたため、競合中の実機試験は中止。
+  `CLOSED_LOOP_TEST_ENABLED=0`へ戻し、clean build、flash、verify、reset済み。競合側が繰り返し
+  `=1`へ戻したため、停止確認まで`main.c`を読み取り専用属性にして安全値を固定している。
+
+次: 他セッションの編集停止を確認後、40rpmを正逆転・3回で判定。その結果を境界として
+最低安定rpmを二分探索し、上限側は既知安定点から段階的に探索する。全実機操作はmutex wrapper経由。
+
+## 完了(2026-07-06 単一モーター速度制御の追試、5アーキテクチャとも発振)
+
+- 二モーター差動を切り離し、motor1単体・motor2=0固定で5種類のアーキテクチャを試験
+  (詳細は`firmware/docs/CONTROL_LOOP_TUNING.md`「単一モーター速度制御の追試」参照):
+  1. 単純rpm PI(KP=5,KI=100) → 激しいスティックスリップ限界サイクル
+  2. +測定rpmへの一次LPF → 改善なし(キックは実際の動きでノイズではないと確認)
+  3. +初期キック電流(1200raw) → キック自体は成功もPI移行後は同じ振動が継続
+  4. 仮想シャフト位置追従(C620のrotor_angleで位置制御) → 改善なし
+  5. 目標rpmを50→250へ引き上げ(低速域回避仮説) → **悪化**。低速域原因説は否定
+- **結論**: 5種類ともKP=5/KI=100の内側電流PIゲインは共通で、外側アーキテクチャ変更では
+  解決しないことを確認。ユーザーが目視した「モーターのガクガクした動き」は指令送信の
+  不連続バグではなく、1kHzで正しく更新され続けている指令値自体が数百ms周期で
+  大きく振動していることの物理的な現れと確認。
+- セッション終了時、`CLOSED_LOOP_TEST_ENABLED=0`(安全待機)で書き込み・verify・reset済み。
+- 無負荷ベンチでのこれ以上の深追いは費用対効果が低いと判断し保留。
+
+次: KIを大幅に下げる(100→20〜30程度)実験は未実施のまま保留。実走行(接地・負荷あり)で
+摩擦特性を取り直すのが優先度高いかもしれない。
 
 ## 完了(2026-07-06 rpm発散ガード撤去・駆動ステップ10秒完走)
 
@@ -266,3 +405,236 @@ Ki 100〜150 / angle_kp の詰め → 駆動モード実走テスト。
 - 現セッションでは`.git/index`が読み取り専用で、Gitコミットを作成できなかった。
 - firmware、`.vscode`、`.gitignore`の変更はワークツリーへ保存済み。
 - CADや既存docsの別作業変更は今回のfirmware作業へ含めないこと。
+
+## wheel staircase試験(2026-07-07)
+
+- `invoke-hardware-session.ps1`経由で実機試験を2回実行し、各回とも終了後に
+  `CLOSED_LOOP_TEST_ENABLED=0`のsafe-idleをflash/verify/resetした。最終状態もsafe-idle。
+- 標準staircase(40/45/50/60/75/100/150rpm、drive Kp/Ki=5/20、steer Kp/Ki=50/20):
+  全stepが`STEP_OK`で完走。`firmware/logs/staircase-2026-07-07T04-31-33-622Z.log`。
+  `STEP_OK`直前1秒の代表値:
+  - 40rpm: 31.06〜46.13rpm、平均40.74rpm、角度誤差max 0.97°
+  - 45rpm: 43.94〜51.99rpm、平均47.78rpm、角度誤差max 1.76°
+  - 50rpm: 45.00〜59.00rpm、平均49.57rpm、角度誤差max 1.58°
+  - 60rpm: 51.51〜68.58rpm、平均60.91rpm、角度誤差max 1.58°
+  - 75rpm: 69.67〜84.93rpm、平均80.27rpm、角度誤差max 0.53°
+  - 100rpm: 85.54〜104.89rpm、平均92.52rpm、角度誤差max 0.62°
+  - 150rpm: 131.29〜159.61rpm、平均151.50rpm、角度誤差max 0.88°
+- 低速staircase(一時的に25/30/35/40rpmへ変更):
+  `firmware/logs/staircase-lowrpm-2026-07-07T04-34-11-016Z.log`。
+  25rpmと35rpmは`STEP_OK`、30rpmと40rpmはtimeout。角度誤差は最大10.37°まで出たが、
+  12°の停止ガードには届かなかった。結果が非単調なため、低速限界は単純なrpmしきい値ではなく
+  始動角・局所摩擦・駆動→操舵カップリングに依存している可能性が高い。
+- 暫定判断: 現ゲインでは正転・無負荷・この姿勢の「一発通過」なら40rpm以上は動くが、
+  30〜40rpm帯は再現性未確定。最低安定rpmとして採用するには、角度誤差ガードを厳しめ
+  (例: step内6°程度)にして、正逆・開始角を変えた複数回試験が必要。
+
+次:
+1. 低速境界を詰めるなら、同一rpm単点を開始角を変えて3回ずつ実施し、30/35/40rpmの再現性を判定。
+2. 角度外乱が大きいので、次のゲイン調整はdrive Kiを上げる前に操舵保持側
+   (`angle_kp_rpm_per_deg`、`steer_max_rpm`、`steer_mode_ki`)を少し戻す試験を優先。
+3. ログへ`torque_scaling_active`を出して、STEP_OK判定と集計で飽和有無を直接確認できるようにする。
+
+## wheel staircase試験(2026-07-07 追加: 操舵保持強化と中高速)
+
+- 試験ハーネスを更新:
+  - `torque_scaling_active`を`scale=`としてログ出力。
+  - `compact-test-log.ps1`でstep別の電流スケーリング率を集計。
+  - step内角度誤差が6°を300ms超えたら、そのstepを`STEP_FAIL: angle`として次へ進める
+    ガードを追加(12°超の即停止ガードは維持)。
+- 操舵保持を少し強化:
+  - `steer_max_rpm`: 0.5 -> 1.0
+  - `angle_kp_rpm_per_deg`: 0.1 -> 0.2
+  - `steer_mode_ki`: 20 -> 30
+- 低速再試験(30/35/40rpm): `firmware/logs/staircase-lowrpm-steerhold-2026-07-07T04-42-02-928Z.log`
+  - 30rpm: timeout、終了時 measured 0rpm、angleErr -1.406°
+  - 35rpm: timeout、終了時 measured 0.001rpm相当、angleErr 0.176°
+  - 40rpm: `STEP_OK`、直前1秒平均39.37rpm、p-p 11.94rpm、角度誤差max 0.44°
+  - 全体の最大角度誤差は3.43°、`scale=1`は0%。操舵外乱は大きく改善したが、
+    30/35rpmは角度ではなく駆動側stick-slipで不合格。
+- 中高速試験(40/75/150/250/350rpm): `firmware/logs/staircase-highrpm-steerhold-2026-07-07T04-44-49-432Z.log`
+  - 全stepが`STEP_OK`で完走、`scale=1`は全step 0%。
+  - 直前1秒:
+    - 40rpm: 平均39.36rpm、p-p 9.34rpm、角度誤差max 0.70°
+    - 75rpm: 平均69.23rpm、p-p 11.18rpm、角度誤差max 0.79°
+    - 150rpm: 平均148.84rpm、p-p 20.77rpm、角度誤差max 0.53°
+    - 250rpm: 平均239.55rpm、p-p 50.40rpm、角度誤差max 1.14°
+    - 350rpm: 平均345.75rpm、p-p 81.13rpm、角度誤差max 0.79°
+- 暫定判断:
+  - 下限は40rpm。30/35rpmは現状の無負荷正転では採用しない。
+  - 350rpmまでは電流飽和なし・操舵保持良好で通過。速度p-pは高速ほど増えるため、
+    次は500/750/1000rpm級へ段階拡張し、`motor_max_rpm`由来のwheel上限(約1360rpm)に近づける。
+- 最終状態:
+  - 実機は`CLOSED_LOOP_TEST_ENABLED=0`のsafe-idleをflash/verify/reset済み。
+  - `firmware/src/main.c`は次回用に40/75/150/250/350rpm staircase、操舵保持強化、
+    step角度FAIL、`scale=`ログを残し、`CLOSED_LOOP_TEST_ENABLED=0`。
+
+## wheel 長時間・拘束領域試験(2026-07-07)
+
+- ユーザー指摘により、従来の1秒安定判定では定常評価が短すぎるため試験ハーネスを変更:
+  - `STEP_TIMEOUT_MS=25000`
+  - `STEP_MIN_DWELL_MS=10000`
+  - `STEP_STABLE_MS=3000`
+  - 拘束時に要求rpmとの差でtimeoutしないよう、安定判定を要求targetではなく
+    `output.wheel_rpm_command`基準へ変更。
+  - `STEP_OK/STEP_FAIL`へ`cmd=`を追加。
+- 長時間staircase(500/750/1000/1200/1400rpm要求):
+  `firmware/logs/staircase-long-highrpm-constraint-2026-07-07T04-49-46-624Z.log`
+  - 全step `STEP_OK`、実機は終了後safe-idleをflash/verify/reset済み。
+  - 直前1秒:
+    - 500rpm: 平均500.03rpm、p-p 5.06rpm、角度誤差max 0.53°、scale 0%
+    - 750rpm: 平均749.72rpm、p-p 3.99rpm、角度誤差max 0.62°、scale 0%
+    - 1000rpm: 平均1000.10rpm、p-p 2.96rpm、角度誤差max 0.62°、scale 0%
+    - 1200rpm: 平均1200.27rpm、p-p 2.50rpm、角度誤差max 0.62°、scale 0%
+    - 1400rpm要求: `cmd`平均約1363rpm、実測平均1363.49rpm、p-p 1.86rpm、
+      角度誤差max 0.62°、scale直前1秒0%
+  - step全体のfinal-half集計では1400rpm要求stepで`scale=1`が0.8%。ただし安定窓では0%。
+- 判断:
+  - 500〜1200rpmは10秒保持後に非常に安定。無負荷・正転ではdrive PIは十分。
+  - 1400rpm要求は`motor_max_rpm=469`とdrive比32/11によるwheel上限約1364rpmに拘束され、
+    制御器の`wheel_rpm_command`も約1363rpmへ制限される。拘束領域でも角度保持は良好。
+  - 現時点の無負荷正転レンジ: 下限40rpm、上限は約1360rpm(機構/設定上限)。30/35rpmは不採用。
+- 次:
+  1. 正転だけでなく逆転(-40/-500/-1000/-1400)を同じ長時間保持で確認。
+  2. `STOP: `が空で出るログ行を修正し、完走時は`STOP: staircase complete`を確実に出す。
+  3. 接地・拘束状態へ移る前に温度ログを集計へ追加し、長時間高負荷で温度上昇を見る。
+
+## wheel 逆転代表点試験(2026-07-07)
+
+- 逆転側の代表点として -40/-500/-1400rpm 要求を長時間保持で試験。
+  `firmware/logs/staircase-reverse-representative-2026-07-07T04-55-26-552Z.log`
+- 負方向の安定判定で許容幅が常に10rpmになる問題を修正:
+  `wheel_tolerance`を`abs(effective_target)`基準へ変更。
+- 結果:
+  - 全step `STEP_OK`、実機は終了後safe-idleをflash/verify/reset済み。
+  - 直前1秒:
+    - -40rpm: 平均 -42.39rpm、p-p 9.02rpm、角度誤差max 0.53°、scale 0%
+    - -500rpm: 平均 -500.31rpm、p-p 1.90rpm、角度誤差max 0.62°、scale 0%
+    - -1400rpm要求: `cmd`約 -1363rpm、実測平均 -1362.55rpm、p-p 2.26rpm、
+      角度誤差max 0.70°、scale 0%
+- 判断:
+  - 逆転代表点でも問題なし。無負荷では正逆とも `|wheel rpm|=40〜約1360rpm` を
+    `ωw, θs` 指令で制御できる状態。
+  - 次は接地/拘束状態での温度・電流余裕・低速stick-slipの再評価。
+
+## wheel 500rpm + steer +10deg 同時指令試験(2026-07-07)
+
+- 接地試験ができないため、次段階として「`ωw`を出しながら`θs`を動かす」確認へ移行。
+- 試験内容: 起動角から`θs=+10°`、同時に`ωw=500rpm`。長時間保持ハーネスを流用し、
+  1stepのみ実行。
+- 初回ログ: `firmware/logs/theta-step-wheel500-2026-07-07T05-01-36-470Z.log`
+  - `θs=+10°` stepを入れた直後に、既存のstep内角度誤差6°/300ms FAILが働き、
+    評価前に終了。角度step試験ではこのガードは不適切。
+- 再試験:
+  - `STEP_ANGLE_FAIL_DEG_MILLI`を一時的に12000へ緩和。
+  - ログ: `firmware/logs/theta-step-wheel500-retry-2026-07-07T05-02-45-975Z.log`
+  - `START: angle=185.186° target=195.186° wheelTarget=500`
+  - `STEP_OK: target=500 cmd=500.000rpm measured=499.349rpm angleErr=0.156°`
+  - 100msログ基準で、角度誤差は約0.9sで2°以内、約1.0sで1°以内/0.5°以内へ到達。
+  - final-half wheel: 平均500.111rpm、p-p 9.914rpm、角度誤差max 0.771°、
+    scale 0%、maxTemp 29°C。
+- 判断:
+  - 無負荷では`ωw=500rpm`を維持しながら`θs=+10°`へ収束できる。
+  - 次は`ωw=500rpm`で`θs`を+10/-10/0へ往復させる、または低速/高速代表点
+    (`ωw=40/1200rpm`)で同じ角度stepを確認する。
+
+## wheel 500rpm + steer +90deg 切り分け試験(2026-07-07)
+
+- ユーザー指摘: +10°/20°では角度変位が小さく、目視切り分けしにくい。
+  `ωw=500rpm`のまま`θs=+90°`へ変更して試験。
+- 試験1: `steer_min_rpm=2`のまま。
+  `firmware/logs/theta90-wheel500-2026-07-07T05-10-13-158Z.log`
+  - ログ上は約0.9sで角度誤差1°以内まで到達。
+  - ただし終端で`steer_min_rpm=2`由来のリミットサイクルが出て、±2〜3°程度で揺れ、
+    3秒安定判定に入れずtimeout。
+- 試験2: `steer_min_rpm=0`へ変更。
+  `firmware/logs/theta90-wheel500-nomin-2026-07-07T05-11-51-426Z.log`
+  - `STEP_OK`。ログ上のAMT角は49.922° -> 138.516°付近へ約90°変化。
+  - 約0.9sで1°以内、保持時は角度誤差0.1〜0.4°程度。
+  - final-half wheel平均500.013rpm、p-p 6.845rpm、角度誤差max 0.439°、
+    scale 0%、maxTemp 30°C。
+- 重要な未解決点:
+  - ユーザー目視ではステア変化が見えなかった。ログ上のAMT角は約90°変わっているため、
+    「AMTが見ている軸」と「実際にステアとして見ている出力」の間にズレ/滑り/観察点違いが
+    ある可能性がある。
+  - 次は通電試験ではなく、無通電でステア出力を手で90°動かし、AMT角が同じだけ変わるかを
+    確認する。AMTだけ変わって出力が変わらない場合は、機械結合/エンコーダ取付を点検する。
+
+## wheel 500rpm定常 + steer 90deg刻み試験(2026-07-07)
+
+- ユーザー提案により、wheel立ち上がり過渡を切り離すため、先に`ωw=500rpm, θs=base`
+  で定常化してから、`θs=base+90/+180/+270/+0°`へ90°刻みでstepする試験に変更。
+  step間で`unit_controller_reset()`は呼ばず、wheel状態と積分を維持。
+- ログ: `firmware/logs/steer-90deg-steps-wheel500-2026-07-07T05-16-32-974Z.log`
+- 結果:
+  - step0 base: `STEP_OK`、final-half wheel平均500.08rpm、p-p 6.88rpm、角度誤差max 0.53°
+  - step1 +90°: `STEP_OK`、final-half wheel平均500.01rpm、p-p 5.81rpm、角度誤差max 0.53°
+  - step2 +180°: `STEP_OK`、final-half wheel平均499.85rpm、p-p 8.13rpm、角度誤差max 0.62°
+  - step3 +270°: `STEP_OK`、final-half wheel平均500.03rpm、p-p 5.91rpm、角度誤差max 0.62°
+  - step4 +0°: `STEP_OK`、ただしユーザーが最終stepでホイールに触れたため外乱あり。
+    final-half wheel p-p 93rpmは速度制御評価から除外する。角度誤差は0.53°以内。
+- 判断:
+  - 少なくともstep0〜3では、`ωw=500rpm`定常中に90°刻みで`θs`を変更しても、
+    AMT角ログ上は各目標へ収束し、wheel速度も維持できている。
+  - ユーザー目視でもステア出力は良さそうとのこと。AMT角ログと物理ステア出力は概ね一致している
+    扱いで次へ進める。ただし最終stepはホイール接触外乱ありのため速度評価から除外。
+
+## wheel 40/1200rpm定常 + steer 90deg刻み試験(2026-07-07)
+
+- 500rpmで成立した90°刻み試験を、低速代表40rpmと高速代表1200rpmへ展開。
+- 40rpm: `firmware/logs/steer-90deg-steps-wheel40-2026-07-07T05-22-52-902Z.log`
+  - 全step完走。角度は概ね追従し、step0〜3の角度誤差maxは0.7°以内。
+  - ただしwheel p-pが大きい(step0 41rpm、step3 85rpm、step4 129rpm)。
+    40rpmは機構摩擦を超える瞬間のオーバーシュート/stick-slip境界と判断。
+  - 実用下限は40rpmではなく75rpmから扱う方針へ変更。
+- 1200rpm: `firmware/logs/steer-90deg-steps-wheel1200-2026-07-07T05-27-36-868Z.log`
+  - 全step `STEP_OK`、scale 0%。
+  - step0 base: final-half wheel平均1202.65rpm、p-p 37.98rpm、角度誤差max 0.53°
+    (立ち上がり/定常化込み)
+  - step1 +90°: 平均1199.86rpm、p-p 3.60rpm、角度誤差max 0.70°
+  - step2 +180°: 平均1200.25rpm、p-p 3.57rpm、角度誤差max 0.70°
+  - step3 +270°: 平均1199.96rpm、p-p 3.54rpm、角度誤差max 0.70°
+  - step4 +0°: 平均1200.15rpm、p-p 3.58rpm、角度誤差max 0.70°
+  - maxTempは30°Cから36°Cまで上昇。
+- 判断:
+  - 実用域は暫定`|ωw| >= 75rpm`。
+  - 1200rpm定常中の90°刻み`θs`変更は非常に安定。無負荷単体ユニットでは
+    `ωw, θs`指令制御は成立。
+
+## 中央CAN(FDCAN1)受信ログ準備(2026-07-07)
+
+- NUCLEO-G474REの中央CAN用FDCAN1(PA11=RX/CN10-14、PA12=TX/CN10-12)に
+  2個目のCANトランシーバを接続した前提で、ファームにFDCAN1初期化を追加。
+- `CLOSED_LOOP_TEST_ENABLED=0`のsafe-idleのまま、FDCAN1で受信した全フレームをVCPへ
+  `CENTRAL_RX id=... dlc=... data=...`として表示する。
+- `0x100 + unitId(=1)`、DLC 8を`SET_TARGET`としてlittle-endian int32 x2で仮decodeし、
+  `SET_TARGET_RX steer=... wheel=...`を表示する。まだ制御には接続しない。
+  - byte0-3: `targetSteerMdeg`
+  - byte4-7: `targetWheelRpmMilli`
+- `docs/communication/COMMUNICATION_NAMING_AND_IDS.md`へSET_TARGETのlittle-endian規約を追記。
+- Debugビルド成功後、実機へflash/verify/reset済み。最終状態はsafe-idle。
+- CAN受信確認時に邪魔になるため、`run=0`の100ms周期ログは止め、従来テレメトリは
+  `active`時のみ出すように変更。再ビルド・flash/verify/reset済み。
+
+次:
+1. PCのCANableから中央CANへ`0x101` DLC8を送信し、G474 VCPで`CENTRAL_RX`と
+   `SET_TARGET_RX`が出ることを確認。
+2. 受信確認後、enable/timeout付きで`SET_TARGET`を`unit_controller_set_target()`へ接続する。
+
+## 中央CAN(CANable -> FDCAN1)受信確認(2026-07-07)
+
+- PCにCANableをUSB-C接続。Windows上では追加シリアル`COM16`として認識、G474 VCPは`COM15`。
+- CANable(SLCAN)へ以下を送信:
+  - `C`
+  - `S8` (1Mbps)
+  - `O`
+  - `t1018905F010020A10700`
+- payloadは`SET_TARGET`:
+  - steer=90000mdeg (`90 5F 01 00`)
+  - wheel=500000rpm*1000 (`20 A1 07 00`)
+- G474 VCP実測:
+  - `CENTRAL_RX id=101 dlc=8 data=90 5f 1 0 20 a1 7 0`
+  - `SET_TARGET_RX steer=90000 wheel=500000`
+- 判断:
+  - CANable -> 中央CANトランシーバ -> G474 FDCAN1(PA11/PA12)の受信経路は成立。
+  - 次は`SET_TARGET`をenable/timeout付きで制御目標へ接続する。

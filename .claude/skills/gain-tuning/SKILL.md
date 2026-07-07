@@ -97,3 +97,14 @@ NUCLEO-G474RE上の閉ループベンチテスト(+10°ステップ応答)を使
 - 各イテレーションの「変更・結果(収束時間/終端誤差/発振有無)」を
   `firmware/docs/CONTROL_LOOP_TUNING.md` の実験ログ節へ追記。
 - セッション終了時に `firmware/PROGRESS.md` へ要約を追記。
+
+## wheel RPM点の分割実行
+
+- wheel速度試験は`.claude/agents/wheel-rpm-point-tuner.md`をRPM点ごとに新規起動する。
+- 1エージェントは1 RPM点・駆動最大2回・最終報告200語未満。
+- 生ログは`firmware/scripts/compact-test-log.ps1`で保存・集計し、親セッションへ貼らない。
+- 複数エージェントの解析は並列可。COM接続、flash、実機駆動は必ず直列。
+- 実機処理は`firmware/scripts/invoke-hardware-session.ps1`でmutexを取得し、`-SafeIdle`で
+  `CLOSED_LOOP_TEST_ENABLED=0`のbuild/flash/verify/resetまで成功させてからlockを解放する。
+- `Status=busy`または他セッションによる`main.c`再編集を検出した場合は実機へ触れず終了する。
+- C620 rpmは減速前ロータ値なので、制御・評価前に19.0で除算する。
