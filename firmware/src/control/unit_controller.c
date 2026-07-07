@@ -1,9 +1,14 @@
 #include "control/unit_controller.h"
 
 enum {
+    /* Per-motor gear train 40:55:60:15. Drive path goes through both stages:
+     * mode * (40/55)*(60/15) = 32/11. Steer path only reaches the 40:55
+     * stage (the 60:15 bevel is after the differential): mode * 40/55 = 8/11.
+     * The old 2/11 wrongly included the 60/15 stage; bench-verified 2026-07-08
+     * (AMT axis rate 30deg/s vs motor-derived rate matched 8/11 within 0.4%). */
     DRIVE_RATIO_NUM = 32,
     DRIVE_RATIO_DEN = 11,
-    STEER_RATIO_NUM = 2,
+    STEER_RATIO_NUM = 8,
     STEER_RATIO_DEN = 11,
 };
 
@@ -127,6 +132,7 @@ void unit_controller_init(unit_controller_t *controller,
         config->drive_onset_integral_clamp_current;
     controller->target.target_wheel_rpm = 0.0f;
     controller->target.target_steer_deg = 0.0f;
+    controller->target.steer_rate_ff_rpm = 0.0f;
     unit_controller_reset(controller);
 }
 
@@ -135,6 +141,12 @@ void unit_controller_set_target(unit_controller_t *controller,
 {
     controller->target.target_wheel_rpm = wheel_rpm;
     controller->target.target_steer_deg = unit_normalize_angle_deg(steer_deg);
+}
+
+void unit_controller_set_steer_rate_ff_rpm(unit_controller_t *controller,
+                                           float steer_rate_ff_rpm)
+{
+    controller->target.steer_rate_ff_rpm = steer_rate_ff_rpm;
 }
 
 void unit_controller_reset(unit_controller_t *controller)
@@ -162,18 +174,24 @@ void unit_controller_update(unit_controller_t *controller,
     output->angle_error_deg = shortest_angle_error(
         controller->target.target_steer_deg, measurement->steer_deg);
 
+    /* Angle-P term (deadband applied), then the steer-rate feedforward is
+     * added to the sum before the steer_min_rpm/steer_max_rpm clamps below
+     * (docs/control/CENTRAL_COORDINATED_CONTROL.md "SET_TARGET_FF"):
+     * steer_rpm_cmd = angle_kp*error + FF. With steer_rate_ff_rpm == 0
+     * (default / FF timed out) this reduces exactly to the pre-FF behavior. */
     float requested_steer_rpm = 0.0f;
     if (absf(output->angle_error_deg) >
         controller->config.angle_deadband_deg) {
         requested_steer_rpm =
             controller->config.angle_kp_rpm_per_deg * output->angle_error_deg;
-        if (requested_steer_rpm > 0.0f &&
-            requested_steer_rpm < controller->config.steer_min_rpm) {
-            requested_steer_rpm = controller->config.steer_min_rpm;
-        } else if (requested_steer_rpm < 0.0f &&
-                   requested_steer_rpm > -controller->config.steer_min_rpm) {
-            requested_steer_rpm = -controller->config.steer_min_rpm;
-        }
+    }
+    requested_steer_rpm += controller->target.steer_rate_ff_rpm;
+    if (requested_steer_rpm > 0.0f &&
+        requested_steer_rpm < controller->config.steer_min_rpm) {
+        requested_steer_rpm = controller->config.steer_min_rpm;
+    } else if (requested_steer_rpm < 0.0f &&
+               requested_steer_rpm > -controller->config.steer_min_rpm) {
+        requested_steer_rpm = -controller->config.steer_min_rpm;
     }
     requested_steer_rpm = clampf(
         requested_steer_rpm, -controller->config.steer_max_rpm,

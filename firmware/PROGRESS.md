@@ -1,6 +1,64 @@
 # Firmware progress
 
-最終更新: 2026-07-08(current_limit引き上げ承認、cl4000/accel4000/Kp30で反転0.51s)
+最終更新: 2026-07-08(STEER_RATIO 4倍誤り訂正+SET_TARGET_FF実機検証合格。θs/ωs/ωw指令が成立)
+
+## 完了(2026-07-08 STEER_RATIO訂正とSET_TARGET_FF実機検証)
+
+- **運動学定数の重大バグを発見・修正**: FF初回試験で「FFあり」が-7.5°先行する矛盾から追跡。
+  wheel=0でも再現し、AMT実測軸速度がモーター実測からの運動学逆算値のちょうど4.00倍だった。
+  ユーザー確認によりギア列は各モーター40:55:60:15で、**60:15段は差動後のドライブ経路のみ**。
+  ステア経路は40/55のみなのに、docs/firmwareは15/60を含めた`0.0909(n1+n2)`(=1/4)に
+  なっていた。`STEER_RATIO`を2/11→**8/11**へ修正(`docs/control/KINEMATICS_AND_RPM.md`も
+  訂正注記付きで修正済み。実測0.3623 vs 理論0.3636、0.4%一致)。
+- これまでのステア調整は外側角度Pループが4倍誤りを吸収していたため成立していた
+  (実効angle_kp・実効上限が公称の4倍)。挙動維持のため外側パラメータを4倍リスケール:
+  angle_kp 0.5→2.0、steer_max_rpm 10→40(真の軸rpm、=240°/s)、steer_accel 150→600。
+  SET_CONFIGクランプもsteer_max_rpm≤60、steer_accel≤2000へ拡大。
+  修正後のFFなし30°/s回頭で定常遅れ+2.76°(修正前+2.77°)と挙動維持を確認。
+- **SET_TARGET_FF実機検証(比修正後)**:
+  - 30°/s回頭+wheel300: FFなし定常遅れ+2.76° → **FFあり mean -0.03°、max 0.93°**
+  - 90°/s回頭+wheel300: **mean +0.24°、max 0.93°**、wheel維持p-p 6.6rpm、安全停止なし
+  - `unit_bench.py run --steer-rate-dps R`でθs・ωs・ωwの3指令駆動が成立。
+- 注意: ドライブ比2.909はモーター間整合のみで**ホイール物理回転数は未検証**
+  (外部計測が必要)。ギア列上は40/55×60/15=32/11で整合するため正しい見込みだが、
+  実測機会があれば確認すること。
+
+## 完了(2026-07-08 SET_TARGET_FF実装: ステア角速度FF)
+
+- `docs/communication/COMMUNICATION_NAMING_AND_IDS.md`(SET_TARGET_FF payload)
+  と`docs/control/CENTRAL_COORDINATED_CONTROL.md`(通信への追加)の仕様どおり、
+  CAN ID `0x110+unitId`(unitId=1につき`0x111`)、8バイトint32 LE
+  `targetSteerRateMdegPerS` + `targetWheelAccelRpmMilliPerS`を受信する処理を追加。
+- `firmware/include/control/unit_controller.h` / `firmware/src/control/unit_controller.c`:
+  `unit_target_t`に`steer_rate_ff_rpm`を追加し、専用setter
+  `unit_controller_set_steer_rate_ff_rpm()`を新設(`unit_controller_set_target()`とは
+  独立。CAN側のタイムアウトでFFだけ0へ戻せるようにするため)。
+  `unit_controller_update()`内でFF注入位置は「角度P項(deadband適用後)へFFを加算し、
+  その和へsteer_min_rpm floor→steer_max_rpm clampを適用」(既存のsteer_accelランプは
+  そのまま和の後段に残置)。FF=0なら旧コードパスとビット単位で同一の計算式になる。
+- `firmware/src/main.c`: `CAN_ID_SET_TARGET_FF_BASE=0x110`受信を追加。
+  mdeg/s→rpmは`/6000`(mdeg→deg`/1000`、deg/s→rpm`/6`)。`last_ff_ms`を記録し、
+  `TARGET_FF_TIMEOUT_MS=200`(仕様どおり)を過ぎたら制御ループで毎サイクルFF=0を
+  setterへ渡すフォールバックを実装(`ff_is_fresh()`)。受信ログ`SET_TARGET_FF_RX`は
+  既存の`SET_TARGET_RX`と同じ500ms間引きを踏襲。wheel加速度FFは現時点では
+  パース・ログのみで制御へは未接続(将来用、`can_wheel_accel_ff_rpm_milli_per_s`)。
+  周期テレメトリ(`run=`行)へ適用中のsteer FF rpmを`ffS=`として追加。
+- `tools/linux/unit_bench.py`: `send_set_target_ff()`(ID`0x111`)を追加。
+  `run`サブコマンドへ`--steer-rate-dps`(既定0)を追加。非0のとき、毎周期
+  SET_TARGET_FFをSET_TARGETの直前に送り、同時にツール側のsteer目標もrate*dtで
+  進める(360000mdegでラップ。中央協調制御の連続unwrap契約とは別物とコメントで明記)。
+  `profile`サブコマンドのCSVへ省略可能な4列目`steer_rate_mdeg_s`を追加(値がある行のみ
+  FF送信)。`python3 -m py_compile`と各`--help`はPASS、can0への実送信は未実施。
+- ビルド確認: `bash firmware/scripts/build.sh debug`成功。FLASH 8664B(1.65%)、
+  RAM 1280B(1.30%)。警告なし。**実機flash/書き込み・駆動は今回未実施**(指示により
+  ビルド・構文チェックまでに限定)。
+
+次:
+1. 実機での単体FF追従評価(段階1、`CENTRAL_COORDINATED_CONTROL.md`の段階導入表参照):
+   `unit_bench.py run --steer-rate-dps <R>`でランプ・ステア速度追従を確認。
+2. `steer_min_rpm`floorがFF単独(角度誤差小・FF一定)のケースでどう効くか実機評価
+   (deadband導入後の設計候補として`CENTRAL_COORDINATED_CONTROL.md`に記載あり)。
+3. wheel加速度FFを実際の駆動側制御へ接続するかどうかの検討(現状は受信のみ)。
 
 ## 完了(2026-07-08 current_limit引き上げ: 応答性第3弾)
 

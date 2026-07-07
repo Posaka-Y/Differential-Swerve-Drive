@@ -65,6 +65,14 @@ typedef struct {
 typedef struct {
     float target_wheel_rpm;
     float target_steer_deg;
+    /* Steer angular-rate feedforward (rpm), added to the angle-P term before
+     * the steer_min_rpm/steer_max_rpm/steer_accel clamps. Zero (default,
+     * set by unit_controller_init/reset callers not calling the setter below)
+     * reproduces the pre-FF behavior exactly. Set via
+     * unit_controller_set_steer_rate_ff_rpm(), independent of
+     * unit_controller_set_target() so a CAN-side FF timeout can zero it
+     * without touching the angle/wheel targets. */
+    float steer_rate_ff_rpm;
 } unit_target_t;
 
 typedef struct {
@@ -114,6 +122,11 @@ void unit_controller_init(unit_controller_t *controller,
                           const unit_controller_config_t *config);
 void unit_controller_set_target(unit_controller_t *controller,
                                 float wheel_rpm, float steer_deg);
+/* Sets the steer angular-rate feedforward (rpm). Call every control cycle
+ * with 0 once the source (e.g. SET_TARGET_FF over CAN) goes stale/timed out,
+ * so the FF cannot get stuck at a stale nonzero value. */
+void unit_controller_set_steer_rate_ff_rpm(unit_controller_t *controller,
+                                           float steer_rate_ff_rpm);
 void unit_controller_reset(unit_controller_t *controller);
 void unit_controller_update(unit_controller_t *controller,
                             const unit_measurement_t *measurement,

@@ -34,12 +34,20 @@ enum {
     UNIT_ID = 1U,
     CAN_ID_SET_TARGET_BASE = 0x100U,
     CAN_ID_SET_TARGET = CAN_ID_SET_TARGET_BASE + UNIT_ID,
+    CAN_ID_SET_TARGET_FF_BASE = 0x110U,
+    CAN_ID_SET_TARGET_FF = CAN_ID_SET_TARGET_FF_BASE + UNIT_ID,
     CAN_ID_UNIT_CTRL_BASE = 0x120U,
     CAN_ID_UNIT_CTRL = CAN_ID_UNIT_CTRL_BASE + UNIT_ID,
     UNIT_CTRL_SET_ENABLE = 0x01U,
     CAN_ID_SET_CONFIG_BASE = 0x140U,
     CAN_ID_SET_CONFIG = CAN_ID_SET_CONFIG_BASE + UNIT_ID,
     TARGET_TIMEOUT_MS = 1000U,
+    /* docs/communication/COMMUNICATION_NAMING_AND_IDS.md "SET_TARGET_FF
+     * payload": sender is assumed to publish at >=50Hz; 200ms is the
+     * documented staleness bound before the FF must fall back to 0. */
+    TARGET_FF_TIMEOUT_MS = 200U,
+    /* mdeg/s -> rpm: /1000 (mdeg->deg) then /6 (deg/s->rpm) = /6000. */
+    STEER_RATE_FF_MDEG_PER_S_TO_RPM_DIV = 6000,
 };
 
 typedef struct {
@@ -57,6 +65,15 @@ static uint32_t last_target_ms = 0U;
 static uint32_t last_target_log_ms = 0U;
 static float can_target_wheel_rpm = 0.0f;
 static float can_target_steer_deg = 0.0f;
+/* SET_TARGET_FF (0x110+unitId): steer angular-rate FF applied to the
+ * controller, plus wheel-accel FF received/logged only (not yet consumed by
+ * the controller -- reserved for a future extension). */
+static bool ff_received = false;
+static uint32_t last_ff_ms = 0U;
+static uint32_t last_ff_log_ms = 0U;
+static float can_steer_rate_ff_rpm = 0.0f;
+static int32_t can_wheel_accel_ff_rpm_milli_per_s = 0;
+static float applied_steer_rate_ff_rpm = 0.0f;
 
 static int32_t to_milli(float value)
 {
@@ -94,6 +111,12 @@ static bool target_is_fresh(uint32_t now_ms)
 {
     return target_received &&
            (uint32_t)(now_ms - last_target_ms) < TARGET_TIMEOUT_MS;
+}
+
+static bool ff_is_fresh(uint32_t now_ms)
+{
+    return ff_received &&
+           (uint32_t)(now_ms - last_ff_ms) < TARGET_FF_TIMEOUT_MS;
 }
 
 /* SET_CONFIG (0x140+unitId) param indices; each clamp is the safety range for
@@ -148,7 +171,8 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
         controller.config.angle_deadband_deg = applied;
         break;
     case SET_CONFIG_STEER_MAX_RPM:
-        applied = clampf(value, 0.0f, 10.0f);
+        /* Axis rpm; 60rpm = 360deg/s. Range x4 with the 8/11 ratio fix. */
+        applied = clampf(value, 0.0f, 60.0f);
         controller.config.steer_max_rpm = applied;
         break;
     case SET_CONFIG_STEER_MIN_RPM:
@@ -156,7 +180,7 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
         controller.config.steer_min_rpm = applied;
         break;
     case SET_CONFIG_STEER_ACCEL_RPM_PER_S:
-        applied = clampf(value, 0.0f, 200.0f);
+        applied = clampf(value, 0.0f, 2000.0f);
         controller.config.steer_accel_rpm_per_s = applied;
         break;
     case SET_CONFIG_WHEEL_ACCEL_RPM_PER_S:
@@ -220,6 +244,23 @@ static void receive_central_can(uint32_t now_ms)
                              target_wheel_rpm_milli);
             }
         } else if (!frame.extended && !frame.remote &&
+                   frame.id == CAN_ID_SET_TARGET_FF && frame.dlc == 8U) {
+            const int32_t steer_rate_ff_mdeg_per_s = read_i32_le(&frame.data[0]);
+            const int32_t wheel_accel_ff_rpm_milli_per_s =
+                read_i32_le(&frame.data[4]);
+            can_steer_rate_ff_rpm =
+                (float)steer_rate_ff_mdeg_per_s /
+                (float)STEER_RATE_FF_MDEG_PER_S_TO_RPM_DIV;
+            can_wheel_accel_ff_rpm_milli_per_s = wheel_accel_ff_rpm_milli_per_s;
+            last_ff_ms = now_ms;
+            ff_received = true;
+            if ((uint32_t)(now_ms - last_ff_log_ms) >= 500U) {
+                last_ff_log_ms = now_ms;
+                debug_printf("SET_TARGET_FF_RX steerRate=%d wheelAccel=%d\n",
+                             steer_rate_ff_mdeg_per_s,
+                             wheel_accel_ff_rpm_milli_per_s);
+            }
+        } else if (!frame.extended && !frame.remote &&
                    frame.id == CAN_ID_UNIT_CTRL && frame.dlc >= 2U &&
                    frame.data[0] == UNIT_CTRL_SET_ENABLE) {
             unit_enabled = frame.data[1] != 0U;
@@ -276,16 +317,17 @@ int main(void)
 {
     static const unit_controller_config_t control_config = {
         .motor_max_rpm = 469.0f,
-        /* steer 10rpm/150rpm/s: 90deg step converges <0.5deg in ~0.7-0.9s
-         * while wheel 300rpm holds within +-4rpm (2026-07-08). */
-        .steer_max_rpm = 10.0f,
+        /* Rescaled x4 on 2026-07-08 when STEER_RATIO was corrected 2/11->8/11
+         * (values are true steer-axis rpm now); physical behavior identical
+         * to the tuned 10rpm/150 set: 90deg step <0.5deg in ~0.7-0.9s. */
+        .steer_max_rpm = 40.0f,
         .steer_min_rpm = 0.0f,
-        .steer_accel_rpm_per_s = 150.0f,
+        .steer_accel_rpm_per_s = 600.0f,
         /* 4000 + drive Kp=30 + current_limit 4000: 0->500rpm rise 0.41s,
          * full +-500 reversal 0.51s, steer held <1.2deg, current peak
          * ~3700, temp 29C (2026-07-08, user-approved limit raise). */
         .wheel_accel_rpm_per_s = 4000.0f,
-        .angle_kp_rpm_per_deg = 0.5f,
+        .angle_kp_rpm_per_deg = 2.0f, /* x4 rescale with the 8/11 STEER_RATIO fix */
         .angle_deadband_deg = 0.5f,
         .steer_mode_kp = 50.0f,
         .steer_mode_ki = 30.0f,
@@ -439,6 +481,12 @@ int main(void)
             test_target_deg = can_target_steer_deg;
             unit_controller_set_target(&controller, can_target_wheel_rpm,
                                        test_target_deg);
+            /* FF falls back to 0 (pre-FF behavior) once stale/never received,
+             * per the 200ms SET_TARGET_FF timeout. */
+            applied_steer_rate_ff_rpm =
+                ff_is_fresh(now_ms) ? can_steer_rate_ff_rpm : 0.0f;
+            unit_controller_set_steer_rate_ff_rpm(&controller,
+                                                  applied_steer_rate_ff_rpm);
             unit_controller_update(&controller, &measurement, dt_s, &output);
 
             if (absf(output.angle_error_deg) * 1000.0f >
@@ -462,7 +510,7 @@ int main(void)
             debug_printf("run=%u step=%u angle=%d target=%d err=%d steer=%d "
                          "m1=%d/%d i1=%d t1=%u m2=%d/%d i2=%d t2=%u "
                          "steerMode=%d/%d iSteer=%d driveMode=%d/%d iDrive=%d scale=%u "
-                         "wheel=%d\n",
+                         "wheel=%d ffS=%d\n",
                          active ? 1U : 0U, 0U,
                          to_milli(current_angle_deg),
                          to_milli(test_target_deg),
@@ -483,7 +531,8 @@ int main(void)
                          to_milli(output.drive_mode_measured_rpm),
                          to_milli(output.drive_mode_current),
                          (uint32_t)output.torque_scaling_active,
-                         to_milli(output.wheel_rpm_command));
+                         to_milli(output.wheel_rpm_command),
+                         to_milli(applied_steer_rate_ff_rpm));
         }
     }
 }

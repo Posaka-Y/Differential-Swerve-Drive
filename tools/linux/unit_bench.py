@@ -12,13 +12,22 @@ python-can is NOT required and is intentionally not used.
 
 CAN message spec (see docs/testing/MINIPC_LINUX_HANDOFF.md, unitId=1):
 
-    SET_TARGET   ID 0x101  DLC 8  int32 LE steer_mdeg, int32 LE wheel_rpm_milli
-                 Must be sent periodically (recommended 50Hz). Target timeout
-                 is 1000ms on the latest firmware, but older flashed firmware
-                 may still use 200ms -- always send at 50Hz to be safe.
-    UNIT_CTRL    ID 0x121  DLC 2  enable = 01 01, disable = 01 00
-    SET_CONFIG   ID 0x141  DLC 8  byte0=param index (uint8), byte1..3=0,
-                 byte4..7 = int32 LE value*1000 (milli units)
+    SET_TARGET    ID 0x101  DLC 8  int32 LE steer_mdeg, int32 LE wheel_rpm_milli
+                  Must be sent periodically (recommended 50Hz). Target timeout
+                  is 1000ms on the latest firmware, but older flashed firmware
+                  may still use 200ms -- always send at 50Hz to be safe.
+    SET_TARGET_FF ID 0x111  DLC 8  int32 LE steer_rate_mdeg_per_s,
+                  int32 LE wheel_accel_rpm_milli_per_s (see
+                  docs/communication/COMMUNICATION_NAMING_AND_IDS.md
+                  "SET_TARGET_FF payload"). Steer-rate FF is added to the
+                  unit's angle-P term; the unit falls back to FF=0 if this
+                  frame is not seen for 200ms, so it must be sent at >=50Hz
+                  whenever used (this tool sends it right before SET_TARGET
+                  each cycle when enabled -- see --steer-rate-dps / the CSV
+                  steer_rate_mdeg_s column).
+    UNIT_CTRL     ID 0x121  DLC 2  enable = 01 01, disable = 01 00
+    SET_CONFIG    ID 0x141  DLC 8  byte0=param index (uint8), byte1..3=0,
+                  byte4..7 = int32 LE value*1000 (milli units)
 
 SAFETY (read before running "run" or "profile"):
 
@@ -51,6 +60,15 @@ Examples:
 
     # Replay a step profile from CSV (time_s, steer_mdeg, wheel_rpm_milli).
     python3 tools/linux/unit_bench.py profile --csv profile.csv --rate 50
+
+    # Same, plus a 4th optional CSV column steer_rate_mdeg_s: sends
+    # SET_TARGET_FF (steer rate only) each cycle whenever that cell is filled.
+    python3 tools/linux/unit_bench.py profile --csv profile_with_ff.csv --rate 50
+
+    # Ramp the steer target continuously at 30deg/s (sends SET_TARGET_FF
+    # every cycle) while holding wheel at 0rpm for 5s.
+    python3 tools/linux/unit_bench.py run --steer-deg 0 --wheel-rpm 0 \\
+        --steer-rate-dps 30 --duration 5
 """
 
 import argparse
@@ -69,6 +87,7 @@ from pathlib import Path
 # --------------------------------------------------------------------------
 
 SET_TARGET_ID = 0x101
+SET_TARGET_FF_ID = 0x111
 UNIT_CTRL_ID = 0x121
 SET_CONFIG_ID = 0x141
 
@@ -122,6 +141,11 @@ def parse_can_frame(frame):
 def send_set_target(sock, steer_mdeg, wheel_rpm_milli):
     data = struct.pack("<ii", steer_mdeg, wheel_rpm_milli)
     sock.send(build_can_frame(SET_TARGET_ID, data))
+
+
+def send_set_target_ff(sock, steer_rate_mdeg_per_s, wheel_accel_rpm_milli_per_s=0):
+    data = struct.pack("<ii", steer_rate_mdeg_per_s, wheel_accel_rpm_milli_per_s)
+    sock.send(build_can_frame(SET_TARGET_FF_ID, data))
 
 
 def send_unit_ctrl(sock, enable):
@@ -246,18 +270,25 @@ def vcp_rx_loop(stop_event, logger, port, baud):
 
 def load_profile(csv_path):
     required = {"time_s", "steer_mdeg", "wheel_rpm_milli"}
+    optional_ff_col = "steer_rate_mdeg_s"
     rows = []
     with open(csv_path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        missing = required - set(reader.fieldnames or [])
+        fieldnames = set(reader.fieldnames or [])
+        missing = required - fieldnames
         if missing:
             raise ValueError(f"CSV missing required columns: {sorted(missing)}")
+        has_ff_col = optional_ff_col in fieldnames
         for row in reader:
+            steer_rate_mdeg_s = None
+            if has_ff_col and row.get(optional_ff_col, "") != "":
+                steer_rate_mdeg_s = int(float(row[optional_ff_col]))
             rows.append(
                 (
                     float(row["time_s"]),
                     int(float(row["steer_mdeg"])),
                     int(float(row["wheel_rpm_milli"])),
+                    steer_rate_mdeg_s,
                 )
             )
     if not rows:
@@ -311,6 +342,9 @@ def cmd_run(args):
     if rate <= 0:
         raise ValueError("--rate must be > 0")
     interval = 1.0 / rate
+    steer_rate_dps = args.steer_rate_dps
+    # mdeg/s, int32 payload sent in SET_TARGET_FF each cycle while nonzero.
+    steer_rate_mdeg_per_s = int(round(steer_rate_dps * 1000))
 
     logger = BenchLogger(resolve_log_path(args.log))
     atexit.register(emergency_disable, args.can_iface)
@@ -322,15 +356,29 @@ def cmd_run(args):
             "BENCH",
             f"run: steer={args.steer_deg}deg ({steer_mdeg}mdeg) "
             f"wheel={args.wheel_rpm}rpm ({wheel_rpm_milli}milli-rpm) "
-            f"rate={rate}Hz duration={args.duration}s",
+            f"rate={rate}Hz duration={args.duration}s "
+            f"steer_rate={steer_rate_dps}dps ({steer_rate_mdeg_per_s}mdeg/s)",
         )
         send_unit_ctrl(tx_sock, True)
         logger.write("BENCH", "enable sent")
 
+        # Continuous steer-rate FF injection: the steer target itself is also
+        # advanced by rate*dt each cycle (wrapped into [0, 360000) mdeg) so
+        # the angle-P term and the FF stay consistent with each other, per
+        # docs/control/CENTRAL_COORDINATED_CONTROL.md. Wrapping here is fine
+        # for this single-unit bench (unlike the central controller's
+        # continuous-unwrap contract) because the firmware's shortest-angle
+        # error only ever sees both sides mod 360 deg anyway.
+        steer_target_mdeg = float(steer_mdeg) % 360000.0
         end_time = time.monotonic() + args.duration
         next_tick = time.monotonic()
         while time.monotonic() < end_time:
-            send_set_target(tx_sock, steer_mdeg, wheel_rpm_milli)
+            if steer_rate_dps != 0:
+                send_set_target_ff(tx_sock, steer_rate_mdeg_per_s, 0)
+            send_set_target(tx_sock, int(round(steer_target_mdeg)), wheel_rpm_milli)
+            steer_target_mdeg = (
+                steer_target_mdeg + steer_rate_dps * 1000.0 * interval
+            ) % 360000.0
             next_tick += interval
             sleep_for = next_tick - time.monotonic()
             if sleep_for > 0:
@@ -408,11 +456,15 @@ def cmd_profile(args):
                 break
             row = profile_value_at(rows, elapsed)
             if row != last_row:
+                ff_note = f" ffRate={row[3]}mdeg/s" if row[3] is not None else ""
                 logger.write(
                     "BENCH",
-                    f"step t={elapsed:.3f}s -> steer={row[1]}mdeg wheel={row[2]}milli-rpm",
+                    f"step t={elapsed:.3f}s -> steer={row[1]}mdeg wheel={row[2]}milli-rpm"
+                    + ff_note,
                 )
                 last_row = row
+            if row[3] is not None:
+                send_set_target_ff(tx_sock, row[3], 0)
             send_set_target(tx_sock, row[1], row[2])
             next_tick += interval
             sleep_for = next_tick - time.monotonic()
@@ -464,6 +516,15 @@ def build_parser():
     p_run.add_argument("--duration", type=float, required=True, help="run duration (s)")
     p_run.add_argument("--rate", type=float, default=50.0, help="SET_TARGET send rate in Hz (default: 50)")
     p_run.add_argument(
+        "--steer-rate-dps", type=float, default=0.0,
+        help=(
+            "steer angular-rate feedforward (deg/s, default: 0=disabled). When "
+            "nonzero, the steer target is also advanced by rate*dt each cycle "
+            "(wrapped mod 360deg) and a SET_TARGET_FF frame (steer rate only, "
+            "wheel accel FF=0) is sent immediately before each SET_TARGET."
+        ),
+    )
+    p_run.add_argument(
         "--log", type=str, default=None,
         help="log file path (default: firmware/logs/bench-<UTC ISO>.log)",
     )
@@ -492,7 +553,11 @@ def build_parser():
     )
     p_prof.add_argument(
         "--csv", type=str, required=True,
-        help="CSV file with columns: time_s, steer_mdeg, wheel_rpm_milli",
+        help=(
+            "CSV file with columns: time_s, steer_mdeg, wheel_rpm_milli, and "
+            "optional 4th column steer_rate_mdeg_s (steer-rate FF, mdeg/s; "
+            "sent via SET_TARGET_FF each cycle when the cell is non-empty)"
+        ),
     )
     p_prof.add_argument("--rate", type=float, default=50.0, help="SET_TARGET send rate in Hz (default: 50)")
     p_prof.add_argument(
