@@ -14,6 +14,46 @@
 
 ---
 
+## 2026-07-09 (負荷適応制御ロードマップ保存)
+
+### やったこと
+
+- 接地・負荷増加後の制御発展順序を、現行mode PIを土台にした `FF強化 → 摩擦補償 → mode-space DOB → 状態推定 → 必要時MPC` として確定。
+- `docs/control/LOAD_ADAPTIVE_CONTROL_ROADMAP.md` を追加し、負荷下での崩れ方、段階導入、`unit_controller_update()` へのFF/DOB挿入点、ログ先行の実装順序を整理。
+- `docs/ARCHITECTURE_DECISIONS.md` と `docs/PROJECT_DOCUMENT_INDEX.md` に参照を追加。
+
+### 現在の状態
+
+- 将来の本命構成は `P_theta + PI_d + PI_s + FF + DOB_d + DOB_s`。
+- G474は1kHz局所ロバスト制御、Teensy/mini PCは3輪協調・制約処理・必要時の最適化という責務分担で進める。
+
+### 次の作業
+
+1. 接地評価前に `unit_control_output_t` へFF/DOB/外乱推定ログ項目を追加するか検討する。
+2. `targetWheelAccelRpmMilliPerS` をdrive accel FFへ接続する実装案を作る。
+3. 接地・負荷ありで、摩擦・飽和・drive/steer干渉を分けてログ評価する。
+
+---
+
+## 2026-07-08 (オドメトリセンサをAMT102へ戻し)
+
+### やったこと
+
+- オドメトリセンサ方針をI2Cホール磁気エンコーダ(MT6701/AS5600)からAMT102 x3へ戻した。
+- Z相は使わず、各センサ4線(VCC/GND/A/B)のみでTIM2/TIM3/TIM4 Encoder Modeに入力する方針へ更新。
+- `docs/electrical/ODOMETRY_BOARD_REQUIREMENTS.md`、`docs/ARCHITECTURE_DECISIONS.md`、AGENTS/INDEX/README/ベンチ計画の記述を更新。
+
+### 現在の状態
+
+- オドメトリ基板はG474 + AMT102 A/B相 x3が正本。
+- 磁気エンコーダ案は、シャフトへの磁石・センサ位置合わせの機械接続が難しいため廃止扱い。
+
+### 次の作業
+
+1. AMT102の最新データシートで電源範囲、出力形式、ピン/線色、DIP分解能設定を最終確認して部品表・コネクタ表へ反映する。
+2. A/B 6ch分の5V→3.3V入力方式(レベル変換/保護/シュミット化)を決める。
+3. NUCLEOでTIM2/TIM3/TIM4 Encoder Modeの最小ファームを作り、1輪手回しでカウント方向と1回転countを確認する。
+
 ## 2026-07-08 (Linux mini PC評価環境確立、低速stick-slip対策完了)
 
 ### やったこと

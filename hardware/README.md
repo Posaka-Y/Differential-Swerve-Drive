@@ -10,7 +10,7 @@ hardware/
   blocks/          共通階層シート(can_interface, power_input_5v, status_led, mcu_min_g474)
   unit-board/      差動ステアユニット基板(STM32G474RET6)
   central-board/   中央制御ボード(Teensy 4.1)
-  odometry-board/  オドメトリ基板(STM32G474RET6 + I2C磁気エンコーダ x3)
+  odometry-board/  オドメトリ基板(STM32G474RET6 + AMT102 A/B相 x3)
   reference/       流用元プロジェクト(下表)
 ```
 

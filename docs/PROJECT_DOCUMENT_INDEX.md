@@ -13,11 +13,12 @@
 | 5 | `control/DYNAMIC_CONTROL_PLAN.md` | 静的配分から動的配分へ進める制御計画 |
 | 5.5 | `control/CALIBRATION_AND_ADAPTATION_PLAN.md` | 将来計画: CALフェーズの機構自己同定(接地対応)とLESO/LADRC負荷適応 |
 | 5.7 | `control/CENTRAL_COORDINATED_CONTROL.md` | 車体協調制御: 中央ツイストプロファイラ、車体IK+FF、デサチュレーション、反転ポリシー、段階導入 |
+| 5.8 | `control/LOAD_ADAPTIVE_CONTROL_ROADMAP.md` | 負荷適応制御: mode PIを土台にFF、摩擦補償、mode-space DOB、状態推定、必要時MPCへ進めるロードマップ |
 | 6 | `communication/COMMUNICATION_NAMING_AND_IDS.md` | 中央-ユニット通信、ネット名、ID、メッセージ |
 | 7 | `electrical/POWER_DISTRIBUTION_AND_ESTOP.md` | 6S LiPo x2、分電、降圧、非常停止 |
 | 8 | `electrical/CARRIER_BOARD_REQUIREMENTS.md` | ユニット基板(STM32G474自作基板)の設計要件 |
 | 9 | `electrical/CENTRAL_BOARD_REQUIREMENTS.md` | 中央制御ボード(Teensy 4.1)の設計要件 |
-| 9.5 | `electrical/ODOMETRY_BOARD_REQUIREMENTS.md` | オドメトリ基板(I2C磁気エンコーダx3、G474)の設計要件 |
+| 9.5 | `electrical/ODOMETRY_BOARD_REQUIREMENTS.md` | オドメトリ基板(AMT102 A/B相 x3、G474)の設計要件 |
 | 10 | `electrical/CARRIER_BOARD_BUILD_PLAN.md` | 基板製作の進め方、検証順序 |
 | 11 | `testing/NUCLEO_BENCH_TEST_PLAN.md` | CAN-G474主試験機、CAN-L431対向ノード、NUCLEO予備での通信・差動制御実証手順 |
 | 11.5 | `../firmware/docs/MATEK_CAN_G474_PORT.md` | CAN-G474へのファーム移植、ST-LINK書込み、ArduPilot参照範囲 |

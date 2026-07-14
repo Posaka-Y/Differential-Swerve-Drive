@@ -84,4 +84,4 @@ C620のID設定: SETボタンでモーター1=ID1、モーター2=ID2に設定�
 
 ## 補足: オドメトリユニット
 
-3輪オドメトリ(I2Cホール磁気エンコーダ x3、MT6701第一候補。AMT102案は2026-07-06廃止)+専用G474基板(`docs/electrical/ODOMETRY_BOARD_REQUIREMENTS.md`)。オドメトリのベンチ検証もNUCLEOで可能(I2Cバス3本+手回しで角度連続性・方向符号の確認、モーター通電下のI2Cエラーレート測定)。駆動ユニットのテスト完了後に同じNUCLEOで実施できる。
+3輪オドメトリ(AMT102 x3、Z相なし4線VCC/GND/A/B)+専用G474基板(`docs/electrical/ODOMETRY_BOARD_REQUIREMENTS.md`)。オドメトリのベンチ検証もNUCLEOで可能(TIM2/TIM3/TIM4 Encoder Mode + 手回しでカウント連続性・方向符号・1回転count数の確認)。駆動ユニットのテスト完了後に同じNUCLEOで実施できる。
