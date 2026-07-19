@@ -8,3 +8,11 @@ firmware/out/
 .cache/
 .vscode/*.log
 __pycache__/
+
+# KiCad auto-generated files (keep *.kicad_pro/_sch/_pcb and lib tables)
+*-backups/
+.history/
+fp-info-cache
+~*.lck
+_autosave-*
+*.kicad_prl
