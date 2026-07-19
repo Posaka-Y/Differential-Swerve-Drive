@@ -32,4 +32,5 @@ hardware/
 - 回路図のネット名は `docs/communication/COMMUNICATION_NAMING_AND_IDS.md` の命名に従う(`COMM_A/B`、`C620_CAN_*`、`PWR_*`、`_N`)。
 - ピン割当は `docs/electrical/CARRIER_BOARD_REQUIREMENTS.md`(ユニット)/ `ODOMETRY_BOARD_REQUIREMENTS.md`(オドメトリ)の表が正本。
 - シンボル・フットプリントは`lib/`に置き、KiCad標準ライブラリ依存を減らす(後続プロジェクトへの持ち出しやすさ優先)。
+- プロジェクト固有ライブラリの収録範囲と標準ライブラリ割当は`lib/LIBRARY_MANIFEST.md`を正本とする。標準部品を無理由に複製しない。
 - 発注前チェックは `docs/checklists/REVIEW_CHECKLIST.md`。

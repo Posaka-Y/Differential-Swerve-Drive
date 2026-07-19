@@ -16,7 +16,7 @@
 
 | ブロック | 内容 | 使用箇所 |
 |---|---|---|
-| `can_interface` | TCAN332 + PESD1CAN + 120Ω終端ジャンパ + XH 4pin(COMM_A/B/5V/GNDピン順統一) | ユニット2箇所、中央1〜3箇所 |
+| `can_interface` | `TCAN1051VDRQ1` + `ESD2CAN24DBZRQ1` + 120Ωスライド終端。中央CAN外部接続は横挿しGH 3pin x2(COMM_A/B/GND)、電源は別GH 2pin | ユニット2箇所、中央1〜3箇所 |
 | `power_input_5v` | 5V入力 + 逆接保護 | ユニット、中央 |
 | `status_led` | 状態LED x3 | ユニット、中央 |
 | MCU最小構成 | G474+水晶+SWD+BOOT0(CANable流用) | ユニット。将来の汎用G474 CANノードに転用可 |
@@ -76,10 +76,10 @@ hardware/
 
 - STM32G474RET6 + 最小構成(水晶、デカップリング、VDDA、NRST、BOOT0、SWD)
 - 中央CANトランシーバ
-- 中央CAN終端(ソルダージャンパ、末端ユニットのみON)
+- 中央CAN終端(`JS102011SAQN`スライドスイッチ、末端ユニットのみON)
 - C620_CANトランシーバ
 - C620_CAN終端
-- TVS(PESD1CAN x2)
+- TVS(`ESD2CAN24DBZRQ1` x2)
 - AMT22コネクタ(全信号直結。分圧なし)
 - LDO
 - IDジャンパ
