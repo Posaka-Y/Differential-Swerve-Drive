@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>差動ステアユニット基板 参照回路図＋簡易BOM</title>
+<style>
+  @page { size: A3 landscape; margin: 10mm 12mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; color: #172033; font-family: "Yu Gothic", "Meiryo", sans-serif; }
+  body { background: #fff; font-size: 9.2pt; }
+  .sheet { height: 278mm; page-break-after: always; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: 3mm; }
+  .sheet:last-child { page-break-after: auto; }
+  header { display: flex; align-items: end; justify-content: space-between; border-bottom: 1.2mm solid #194f83; padding-bottom: 2mm; }
+  h1 { margin: 0; font-size: 17pt; letter-spacing: .02em; }
+  .meta { color: #536274; font-size: 8pt; text-align: right; line-height: 1.45; }
+  .diagram { min-height: 0; display: flex; align-items: center; justify-content: center; border: .25mm solid #b8c5d3; border-radius: 1.5mm; padding: 2.5mm; background: #fbfdff; }
+  .diagram img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+  .caption { margin: 0; color: #3e5064; line-height: 1.35; }
+  .warn { color: #8b2c20; font-weight: 700; }
+  h2 { margin: 0 0 1.5mm; font-size: 10.5pt; color: #194f83; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 8.2pt; }
+  th, td { border: .2mm solid #8fa1b3; padding: 1.25mm 1.6mm; vertical-align: top; line-height: 1.28; overflow-wrap: anywhere; }
+  th { background: #dceaf6; color: #183b5b; text-align: left; font-weight: 700; }
+  tbody tr:nth-child(even) td { background: #f5f8fb; }
+  .ref { width: 13%; white-space: nowrap; }
+  .kind { width: 15%; }
+  .value { width: 30%; }
+  .pkg { width: 17%; }
+  .note { width: 25%; }
+  code { font-family: "Cascadia Mono", Consolas, monospace; font-size: .94em; }
+  footer { display: flex; justify-content: space-between; border-top: .2mm solid #b8c5d3; padding-top: 1.4mm; color: #68788a; font-size: 7.5pt; }
+</style>
+</head>
+<body>
+
+<section class="sheet">
+  <header><h1>Block 1 — 電源入力・保護・3.3 V生成</h1><div class="meta">差動ステアユニット基板 Rev.A<br>Reference schematic / not a manufacturing drawing</div></header>
+  <div class="diagram"><img src="figures/unit-board-block1.svg" alt="電源チェーン回路図"></div>
+  <p class="caption"><span class="warn">重要:</span> U101のCE_N=VOUTは意図的なRPP+RCB構成。U201のタブはVOUTであり、GNDへ接続しない。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">容量・値・型番</th><th class="pkg">サイズ/パッケージ</th><th class="note">備考</th></tr></thead><tbody>
+    <tr><td>J101</td><td>電源コネクタ</td><td><code>SM02B-GHS-TB</code></td><td>JST GH, 2 pin, 1.25 mm, 横挿し</td><td>1=PWR_5V_IN, 2=GND</td></tr>
+    <tr><td>U101</td><td>理想ダイオード</td><td><code>LM66100DCKR</code></td><td>SC70-6</td><td>1.5 A; CE_N=VOUT, ST=open</td></tr>
+    <tr><td>U201</td><td>3.3 V LDO</td><td><code>TLV1117LV33DCYR</code></td><td>SOT-223</td><td>タブ=VOUT</td></tr>
+    <tr><td>C101</td><td>セラミックC</td><td>2.2 µF以上, X7R</td><td>0603以上（DC bias要確認）</td><td>U101 VIN直近</td></tr>
+    <tr><td>C201, C203</td><td>デカップリング</td><td>100 nF, X7R</td><td>0603</td><td>LDO入力/出力</td></tr>
+    <tr><td>C202, C204</td><td>バルクC</td><td>10 µF, X7R</td><td>0805推奨</td><td>DC bias後の実効容量を確認</td></tr>
+  </tbody></table></div>
+  <footer><span>Source: UNIT_BOARD_SCHEMATIC_REFERENCE.md</span><span>1 / 8</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 2 — CANインターフェース</h1><div class="meta">中央CAN: 400番台<br>C620 CAN: 500番台で同一回路</div></header>
+  <div class="diagram"><img src="figures/unit-board-block2.svg" alt="CANインターフェース回路図"></div>
+  <p class="caption"><span class="warn">配置:</span> コネクタ → TVS → トランシーバの順。D401はコネクタ直近、スタブは20 mm以下。SピンはGND固定。</p>
+  <div><h2>簡易BOM（1 ch分）</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">容量・値・型番</th><th class="pkg">サイズ/パッケージ</th><th class="note">備考</th></tr></thead><tbody>
+    <tr><td>U401 / U501</td><td>CANトランシーバ</td><td><code>TCAN1051VDRQ1</code></td><td>SOIC-8</td><td>VCC=5 V, VIO=3.3 V, Classic CAN 1 Mbps</td></tr>
+    <tr><td>D401 / D501</td><td>CAN TVS</td><td><code>ESD2CAN24DBZRQ1</code></td><td>SOT-23-3</td><td>2 ch, 24 V working; pin 3=GND</td></tr>
+    <tr><td>R401 / R501</td><td>終端抵抗</td><td>120 Ω, <code>RC0603FR-07120RL</code></td><td>0603</td><td>バス物理両端のみON</td></tr>
+    <tr><td>C401/C402</td><td>デカップリング</td><td>100 nF, X7R</td><td>0603</td><td>VCCとVIOに各1個、IC直近</td></tr>
+    <tr><td>SW401/SW501</td><td>SPDTスライドSW</td><td><code>JS102011SAQN</code></td><td>J-hook SMT</td><td>Common+片throwを使用</td></tr>
+    <tr><td>J401/J402</td><td>CANコネクタ</td><td><code>SM03B-GHS-TB</code> ×2</td><td>JST GH, 3 pin, 1.25 mm, 横挿し</td><td>1=COMM_A, 2=COMM_B, 3=GND</td></tr>
+  </tbody></table></div>
+  <footer><span>C620側コネクタは型番/個数/ピン順が未確定</span><span>2 / 8</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 3 — MCU電源・デカップリング</h1><div class="meta">U301: STM32G474RET6<br>LQFP64</div></header>
+  <div class="diagram"><img src="figures/unit-board-block3.svg" alt="MCU電源とデカップリング回路図"></div>
+  <p class="caption">各VDD/VSSピン対に100 nFを1個ずつ割り当てる。VDDA/VREF+の帰路はVSSA pin 27近傍へ最短で戻す。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">容量・値・型番</th><th class="pkg">サイズ/パッケージ</th><th class="note">備考</th></tr></thead><tbody>
+    <tr><td>U301</td><td>MCU</td><td><code>STM32G474RET6</code></td><td>LQFP64, 10×10 mm, 0.5 mm pitch</td><td>3.3 V</td></tr>
+    <tr><td>C301–C305</td><td>デカップリング</td><td>100 nF, <code>GRM188R71A104KA01D</code></td><td>0603</td><td>VDD ×4 + VBAT ×1</td></tr>
+    <tr><td>FB301</td><td>フェライトビーズ</td><td><code>BLM18AG601SN1D</code>, 600 Ω @100 MHz</td><td>0603</td><td>3V3→VDDA_A</td></tr>
+    <tr><td>C306/C307</td><td>VDDAフィルタ</td><td>100 nF / 1 µF, X7R</td><td>0603</td><td>VDDA pin 29直近</td></tr>
+    <tr><td>R301</td><td>VREF+リンク</td><td>0 Ω, <code>RC0603JR-070RL</code></td><td>0603</td><td>将来の外部基準用</td></tr>
+    <tr><td>C308/C309</td><td>VREF+フィルタ</td><td>10 nF C0G / 1 µF X7R</td><td>0603</td><td>VREF+ pin 28直近</td></tr>
+    <tr><td>C310</td><td>3.3 Vバルク</td><td>4.7 µF, <code>GRM21BR71A475KA73L</code></td><td>0805</td><td>3.3 Vレール</td></tr>
+  </tbody></table></div>
+  <footer><span>VSS: pins 15/31/47/63; VDD: pins 16/32/48/64</span><span>3 / 8</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 4 — HSE・NRST・BOOT0</h1><div class="meta">Clock / reset / boot configuration<br>STM32G474RET6</div></header>
+  <div class="diagram"><img src="figures/unit-board-block4.svg" alt="HSE NRST BOOT0回路図"></div>
+  <p class="caption"><span class="warn">実装前確認:</span> X301の4 pad番号とECS図面を照合。水晶・負荷容量はPF0/PF1直近に置き、他信号を下に通さない。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">容量・値・型番</th><th class="pkg">サイズ/パッケージ</th><th class="note">備考</th></tr></thead><tbody>
+    <tr><td>X301</td><td>HSE水晶</td><td><code>ECS-80-8-33Q-JES-TR</code>, 8 MHz, CL=8 pF</td><td>3225, 4 pad</td><td>±20 ppm, ESR max 500 Ω</td></tr>
+    <tr><td>C311/C312</td><td>負荷容量</td><td>10 pF, C0G, <code>GRM1885C1H100JA01D</code></td><td>0603</td><td>実機で8.2/10/12 pFを評価</td></tr>
+    <tr><td>R302</td><td>HSE直列抵抗</td><td>0 Ω（初期）</td><td>0603</td><td>OSC_OUT側、drive level評価用</td></tr>
+    <tr><td>C313</td><td>NRSTコンデンサ</td><td>100 nF, X7R, 50 V, <code>GRM188R71H104KA93D</code></td><td>0603</td><td>外付けpull-upなし</td></tr>
+    <tr><td>R303</td><td>BOOT0 pull-down</td><td>10 kΩ, <code>RC0603FR-0710KL</code></td><td>0603</td><td>PB8はGPIOに使用しない</td></tr>
+  </tbody></table></div>
+  <footer><span>NRSTはJ701-4とテストポイントに接続</span><span>4 / 8</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 5 — 5 V監視ADC</h1><div class="meta">ADC_5V_MON → U301 PA0<br>分圧比 0.4</div></header>
+  <div class="diagram"><img src="figures/unit-board-block5.svg" alt="5V監視ADC回路図"></div>
+  <p class="caption"><span class="warn">修正済み:</span> D301下側クランプのカソードをADC_5V_MONに明示配線。ファームは13.2 kΩのソースインピーダンスに合う長いADCサンプル時間を使う。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">容量・値・型番</th><th class="pkg">サイズ/パッケージ</th><th class="note">備考</th></tr></thead><tbody>
+    <tr><td>R304</td><td>分圧上側</td><td>33 kΩ, 1%, <code>RC0603FR-0733KL</code></td><td>0603</td><td>PWR_5V→ADC_5V_MON</td></tr>
+    <tr><td>R305</td><td>分圧下側</td><td>22 kΩ, 1%, <code>RC0603FR-0722KL</code></td><td>0603</td><td>ADC_5V_MON→GND</td></tr>
+    <tr><td>C314</td><td>LPF</td><td>10 nF, X7R, <code>GRM188R71H103KA01D</code></td><td>0603</td><td>約1.2 kHz</td></tr>
+    <tr><td>D301</td><td>上下クランプ</td><td><code>BAT54SLT1G</code></td><td>SOT-23</td><td>1=GND, 2=3V3, 3=ADC; 内部向き要照合</td></tr>
+  </tbody></table></div>
+  <footer><span>5.5 V入力時のADC入力は約2.2 V</span><span>5 / 8</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 6 — AMT22・デバッグ・ID・LED</h1><div class="meta">External I/O / service interface<br>未確定値はTBDで表記</div></header>
+  <div class="diagram"><img src="figures/unit-board-block6.svg" alt="AMT22 デバッグ ID LED回路図"></div>
+  <p class="caption">J701はターゲット自己給電のため電源ピンなし。DBG_TX/RXの方向とID DIPの正式型番は未確定。DIPはON=Lowでファーム側で反転する。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">容量・値・型番</th><th class="pkg">サイズ/パッケージ</th><th class="note">備考</th></tr></thead><tbody>
+    <tr><td>J601</td><td>AMT22コネクタ</td><td><code>SM06B-GHS-TB</code></td><td>JST GH, 6 pin, 1.25 mm, 横挿し</td><td>AMT22と同ピン順</td></tr>
+    <tr><td>R601–R604</td><td>SPI直列抵抗</td><td>TBD（初期0 Ω候補）</td><td>0603</td><td>実機波形で22–100 Ωも評価</td></tr>
+    <tr><td>J701</td><td>SWD/UARTコネクタ</td><td><code>BM06B-GHS-TBT</code></td><td>JST GH, 6 pin, 1.25 mm, 上挿し</td><td>1=GND; 電源ピンなし</td></tr>
+    <tr><td>SW701</td><td>ID DIPスイッチ</td><td>3 bit, SMT, 型番TBD</td><td>3-position SMT DIP</td><td>PC6/PC7/PC8, ON=GND</td></tr>
+    <tr><td>R701–R704</td><td>LED電流制限</td><td>1 kΩ, <code>RC0603FR-071KL</code></td><td>0603</td><td>PWR/RUN/COMM/ERR</td></tr>
+    <tr><td>D701/D702</td><td>緑LED</td><td><code>LTST-C190KGKT</code></td><td>0603</td><td>PWR / RUN</td></tr>
+    <tr><td>D703 / D704</td><td>黄 / 赤LED</td><td><code>LTST-C190KSKT</code> / <code>LTST-C190KRKT</code></td><td>0603</td><td>COMM / ERR</td></tr>
+  </tbody></table></div>
+  <footer><span>PA13/PA14はSWD専用</span><span>6 / 8</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 7 — STM32G474 インターフェース別ピン割当</h1><div class="meta">U301: STM32G474RET6 / LQFP64<br>自作ユニット基板の確定割当</div></header>
+  <div class="diagram" style="display:block;padding:4mm 7mm;overflow:hidden">
+    <h2 style="font-size:13pt;margin-bottom:3mm">CAN / SPI / Debug / Power connections</h2>
+    <table style="font-size:9.2pt"><thead><tr><th style="width:18%">用途</th><th style="width:18%">MCU信号</th><th style="width:18%">GPIO / 物理pin</th><th style="width:10%">AF</th><th>接続先</th></tr></thead><tbody>
+      <tr><td>中央CAN RX / TX</td><td>FDCAN1_RX / TX</td><td>PA11 / 45<br>PA12 / 46</td><td>AF9</td><td>U401 RXD pin 4から / TXD pin 1へ</td></tr>
+      <tr><td>C620 CAN RX / TX</td><td>FDCAN2_RX / TX</td><td>PB12 / 34<br>PB13 / 35</td><td>AF9</td><td>U501 RXD pin 4から / TXD pin 1へ</td></tr>
+      <tr><td>AMT22 SPI</td><td>SPI3_SCK / MISO / MOSI</td><td>PC10 / 52<br>PC11 / 53<br>PC12 / 54</td><td>AF6</td><td>R601→J601-2 / J601-5→R603 / R602→J601-3</td></tr>
+      <tr><td>AMT22 chip select</td><td>AMT22_CS_N</td><td>PD2 / 55</td><td>GPIO</td><td>R604経由J601-6へ（ソフトCS）</td></tr>
+      <tr><td>Debug UART</td><td>LPUART1_TX / RX</td><td>PA2 / 14<br>PA3 / 17</td><td>AF12</td><td>J701-5 / J701-6（基板視点TX/RX）</td></tr>
+      <tr><td>SWD / Reset / SWO</td><td>SWDIO / SWCLK / NRST / SWO</td><td>PA13 / 49<br>PA14 / 50<br>PG10 / 7<br>PB3 / 56</td><td>AF0 / —</td><td>J701-3 / J701-2 / J701-4 / SWO TP</td></tr>
+      <tr><td>5 V監視</td><td>ADC_5V_MON</td><td>PA0 / 12</td><td>ADC</td><td>R304/R305分圧 + C314 + D301</td></tr>
+      <tr><td>ID DIP</td><td>UNIT_ID0 / 1 / 2</td><td>PC6 / 38<br>PC7 / 39<br>PC8 / 40</td><td>GPIO IN</td><td>SW701; internal pull-up, ON=Low</td></tr>
+      <tr><td>Status LEDs</td><td>RUN / COMM / ERR</td><td>PA5 / 19<br>PB10 / 30<br>PB11 / 33</td><td>GPIO OUT</td><td>R702/D702, R703/D703, R704/D704</td></tr>
+      <tr><td>HSE / BOOT0</td><td>OSC_IN / OUT / BOOT0</td><td>PF0 / 5<br>PF1 / 8<br>PB8 / 61</td><td>—</td><td>X301/C311/C312/R302; R303 pull-down</td></tr>
+      <tr><td>拡張I2C予約</td><td>I2C1_SCL / SDA</td><td>PA15 / 51<br>PB7 / 60</td><td>AF4</td><td>拡張ヘッダTBD</td></tr>
+    </tbody></table>
+  </div>
+  <p class="caption"><span class="warn">注意:</span> Matek CAN-G474試験機のCAN2=PB5/PB6・SPI2=PB13/PB14/PB15は別のボード定義で、この自作基板には使用しない。</p>
+  <div><h2>電源ピン</h2><table><thead><tr><th style="width:20%">物理pin</th><th style="width:18%">名称</th><th>接続</th></tr></thead><tbody>
+    <tr><td>1</td><td>VBAT</td><td>3V3; C305 100 nF</td></tr><tr><td>16 / 32 / 48 / 64</td><td>VDD</td><td>3V3; C301–C304 100 nFを各pinに1個</td></tr><tr><td>15 / 31 / 47 / 63</td><td>VSS</td><td>GND plane</td></tr><tr><td>29 / 28 / 27</td><td>VDDA / VREF+ / VSSA</td><td>VDDA_A / R301経由VDDA_A / GND</td></tr>
+  </tbody></table></div>
+  <footer><span>Physical pin numbers: ST DS12288 Rev.6, Figure 7</span><span>7 / 8</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 8 — STM32G474RET6 LQFP64 全ピン一覧</h1><div class="meta">使用 / 予約 / NC<br>NC=回路図上で未接続</div></header>
+  <div class="diagram" style="display:block;padding:4mm 6mm;overflow:hidden">
+    <table style="font-size:7.8pt"><thead><tr><th style="width:5%">pin</th><th style="width:12%">名称</th><th style="width:8%">状態</th><th style="width:25%">用途</th><th style="width:5%">pin</th><th style="width:12%">名称</th><th style="width:8%">状態</th><th style="width:25%">用途</th></tr></thead><tbody>
+      <tr><td>1</td><td>VBAT</td><td>使用</td><td>3V3</td><td>33</td><td>PB11</td><td>使用</td><td>LED_ERR</td></tr>
+      <tr><td>2</td><td>PC13</td><td>NC</td><td>未使用</td><td>34</td><td>PB12</td><td>使用</td><td>FDCAN2_RX</td></tr>
+      <tr><td>3</td><td>PC14</td><td>NC</td><td>LSE未使用</td><td>35</td><td>PB13</td><td>使用</td><td>FDCAN2_TX</td></tr>
+      <tr><td>4</td><td>PC15</td><td>NC</td><td>LSE未使用</td><td>36</td><td>PB14</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>5</td><td>PF0</td><td>使用</td><td>HSE OSC_IN</td><td>37</td><td>PB15</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>6</td><td>PF1</td><td>使用</td><td>HSE OSC_OUT</td><td>38</td><td>PC6</td><td>使用</td><td>UNIT_ID0</td></tr>
+      <tr><td>7</td><td>PG10-NRST</td><td>使用</td><td>NRST</td><td>39</td><td>PC7</td><td>使用</td><td>UNIT_ID1</td></tr>
+      <tr><td>8</td><td>PC0</td><td>NC</td><td>未使用</td><td>40</td><td>PC8</td><td>使用</td><td>UNIT_ID2</td></tr>
+      <tr><td>9</td><td>PC1</td><td>NC</td><td>未使用</td><td>41</td><td>PC9</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>10</td><td>PC2</td><td>NC</td><td>未使用</td><td>42</td><td>PA8</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>11</td><td>PC3</td><td>NC</td><td>未使用</td><td>43</td><td>PA9</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>12</td><td>PA0</td><td>使用</td><td>ADC_5V_MON</td><td>44</td><td>PA10</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>13</td><td>PA1</td><td>NC</td><td>未使用</td><td>45</td><td>PA11</td><td>使用</td><td>FDCAN1_RX</td></tr>
+      <tr><td>14</td><td>PA2</td><td>使用</td><td>LPUART1_TX</td><td>46</td><td>PA12</td><td>使用</td><td>FDCAN1_TX</td></tr>
+      <tr><td>15</td><td>VSS</td><td>使用</td><td>GND</td><td>47</td><td>VSS</td><td>使用</td><td>GND</td></tr>
+      <tr><td>16</td><td>VDD</td><td>使用</td><td>3V3</td><td>48</td><td>VDD</td><td>使用</td><td>3V3</td></tr>
+      <tr><td>17</td><td>PA3</td><td>使用</td><td>LPUART1_RX</td><td>49</td><td>PA13</td><td>使用</td><td>SWDIO</td></tr>
+      <tr><td>18</td><td>PA4</td><td>NC</td><td>未使用</td><td>50</td><td>PA14</td><td>使用</td><td>SWCLK</td></tr>
+      <tr><td>19</td><td>PA5</td><td>使用</td><td>LED_RUN</td><td>51</td><td>PA15</td><td>予約</td><td>I2C1_SCL</td></tr>
+      <tr><td>20</td><td>PA6</td><td>NC</td><td>未使用</td><td>52</td><td>PC10</td><td>使用</td><td>SPI3_SCK</td></tr>
+      <tr><td>21</td><td>PA7</td><td>NC</td><td>未使用</td><td>53</td><td>PC11</td><td>使用</td><td>SPI3_MISO</td></tr>
+      <tr><td>22</td><td>PB0</td><td>NC</td><td>未使用</td><td>54</td><td>PC12</td><td>使用</td><td>SPI3_MOSI</td></tr>
+      <tr><td>23</td><td>PB1</td><td>NC</td><td>未使用</td><td>55</td><td>PD2</td><td>使用</td><td>AMT22_CS_N</td></tr>
+      <tr><td>24</td><td>PB2</td><td>NC</td><td>未使用</td><td>56</td><td>PB3</td><td>予約</td><td>SWO TP</td></tr>
+      <tr><td>25</td><td>PC4</td><td>NC</td><td>未使用</td><td>57</td><td>PB4</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>26</td><td>PC5</td><td>NC</td><td>未使用</td><td>58</td><td>PB5</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>27</td><td>VSSA</td><td>使用</td><td>GND</td><td>59</td><td>PB6</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>28</td><td>VREF+</td><td>使用</td><td>VREF+</td><td>60</td><td>PB7</td><td>予約</td><td>I2C1_SDA</td></tr>
+      <tr><td>29</td><td>VDDA</td><td>使用</td><td>VDDA_A</td><td>61</td><td>PB8-BOOT0</td><td>使用</td><td>BOOT0</td></tr>
+      <tr><td>30</td><td>PB10</td><td>使用</td><td>LED_COMM</td><td>62</td><td>PB9</td><td>NC</td><td>未使用</td></tr>
+      <tr><td>31</td><td>VSS</td><td>使用</td><td>GND</td><td>63</td><td>VSS</td><td>使用</td><td>GND</td></tr>
+      <tr><td>32</td><td>VDD</td><td>使用</td><td>3V3</td><td>64</td><td>VDD</td><td>使用</td><td>3V3</td></tr>
+    </tbody></table>
+  </div>
+  <p class="caption">NCピンは回路上で未接続。ファームでは原則アナログ入力・プル無しとし、CubeMX設定時にAN5093と再照合する。</p>
+  <div><h2>専用・予約ピンの禁止事項</h2><table><tbody><tr><td>PB8</td><td>BOOT0専用。GPIOに再利用しない。</td><td>PA13 / PA14</td><td>SWD専用。</td><td>PB3</td><td>SWO用テストポイントとして予約。</td></tr></tbody></table></div>
+  <footer><span>Detailed source: STM32G474_UNIT_BOARD_PIN_ASSIGNMENT.md</span><span>8 / 8</span></footer>
+</section>
+
+</body>
+</html>

@@ -42,7 +42,7 @@ hardware/
 - AF表でFDCAN1(中央CAN)とFDCAN2(C620 CAN)のTX/RXを決め、morphoコネクタに出ていることを確認する。
 - SPI SCLK/MISO/MOSIを同じSPIペリフェラルで揃える。
 - AMT22は全信号3.3V直結でよい(要件ドキュメント参照)。5Vトレラント要件は不要になった。
-- CS、IDジャンパ、LED、デバッグ用GPIOを割り当てる。
+- CS、ID DIPスイッチ、LED、デバッグ用GPIOを割り当てる。
 - CAN-G474のhwdef(CAN1=PA11/PA12、CAN2=PB5/PB6、SPI2=PB13/PB14/PB15、CS=PB12)と、NUCLEO-G474RE用の現行割当をボード別設定として管理する。
 
 完了条件:
@@ -59,7 +59,7 @@ hardware/
 - NUCLEO単体でAMT22をSPI読み取りする。
 - NUCLEOからC620_CANトランシーバ経由でC620通信する。
 - 中央CANトランシーバ経由でTeensyとの通信を確認する。
-- IDジャンパ読み取りを確認する。
+- ID DIPスイッチ読み取りを確認する。
 - 5V、3.3V、GNDの安定性を確認する。
 
 完了条件:
@@ -82,10 +82,10 @@ hardware/
 - TVS(`ESD2CAN24DBZRQ1` x2)
 - AMT22コネクタ(全信号直結。分圧なし)
 - LDO
-- IDジャンパ
+- ID用3bit DIPスイッチ(PC6-8、内部プルアップ、ON=GND)
 - 状態LED、テストポイント
-- 電源入力
-- COMM_A/COMM_B/VIN_CONTROL/GND_CTRL 4線ハーネスコネクタ
+- 電源入力(5V/GNDのGH 2pin横挿し、CANとは別ハーネス)
+- 中央CANパススルーコネクタ(COMM_A/COMM_B/GNDのGH 3pin横挿し x2、基板上でIN/OUT直結)
 
 回路図ルール:
 
@@ -106,7 +106,7 @@ hardware/
 - SWDヘッダは組付け後もアクセスできる位置に置く。
 - AMT22のSPI配線を短くする。
 - 終端ジャンパのON/OFF状態がシルクで分かるようにする。
-- IDジャンパのビット意味をシルクで分かるようにする。
+- ID DIPスイッチのビット意味をシルクで分かるようにする。
 
 ## フェーズ4: 初回実装
 
@@ -117,7 +117,7 @@ hardware/
 3. 中央CANトランシーバを実装してTeensyとの通信確認。
 4. C620_CANトランシーバを実装してC620通信確認。
 5. AMT22まわりを実装してSPI確認。
-6. IDジャンパを確認。
+6. ID DIPスイッチを確認。
 7. C620 x2と接続して低速動作確認。
 
 ## フェーズ5: 実機検証
