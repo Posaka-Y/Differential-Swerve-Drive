@@ -18,7 +18,7 @@ hardware/
 
 | 参照 | 形式 | 流用するブロック | ライセンス |
 |---|---|---|---|
-| `candleLightFD/` ([linux-automation/candleLightFD](https://github.com/linux-automation/candleLightFD)) | **KiCadソース**(階層シート: MCU / PSU / transceiver) | CANトランシーバ周り(TJA1051T/3 + 100nF + 120Ω)→ TCAN332に置換して `blocks/can_interface` の下敷きにする。階層シートの切り方・リリースフォルダ構成(製造データの出し方)も運用の手本になる | CERN-OHL v1.2(流用時はライセンス表記を維持) |
+| `candleLightFD/` ([linux-automation/candleLightFD](https://github.com/linux-automation/candleLightFD)) | **KiCadソース**(階層シート: MCU / PSU / transceiver) | CANトランシーバ周り(TJA1051T/3 + 100nF + 120Ω)→ `TCAN1051VDRQ1`に置換して `blocks/can_interface` の下敷きにする。階層シートの切り方・リリースフォルダ構成(製造データの出し方)も運用の手本になる | CERN-OHL v1.2(流用時はライセンス表記を維持) |
 | `mks-canable-v2.0-schematic.pdf` ([makerbase-mks/CANable-MKS](https://github.com/makerbase-mks/CANable-MKS)) | PDF回路図 | STM32G431のMCU最小構成(電源、BOOT0、水晶、SWD)。G474RET6版を起こすときの照合用 | 回路図公開(リポジトリ記載に従う) |
 | `nucleo-g474re-mb1367-c05-schematic.pdf`(ST MB1367)**※未取得** | PDF回路図 | **G474RET6そのものの最小構成の正解例**(VDD/VDDA処理、NRST、BOOT0、HSE周り)。ピンごとのデカップリング数の確認はこれを正とする | ST評価ボード回路図(参照用) |
 | `ARK_CANNODE/` ([ARK-Electronics/ARK_CANNODE](https://github.com/ARK-Electronics/ARK_CANNODE)) | PDF回路図 + BOM(`Hardware/Rev 1/`) | 逆接保護(LM66100)、CANコネクタ2個並列のデイジーチェーン渡り、外部信号のESDダイオード、TJA1051+FET切替終端(参考のみ)。詳細は`CARRIER_BOARD_REQUIREMENTS.md`「回路図作成メモ」 | リポジトリのLICENSE参照 |
