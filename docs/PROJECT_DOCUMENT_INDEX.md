@@ -23,6 +23,7 @@
 | 9.8 | `electrical/CAN_COMMON_BLOCK_PART_SELECTION.md` | 全基板共通CANブロックの正式部品、比較、回路・配置配線制約、実機確認 |
 | 9.9 | `electrical/POWER_5V_COMMON_BLOCK_PART_SELECTION.md` | 5V枝保護、G474入力逆接保護、3.3V LDO、GH2、枝LEDの正式部品と熱・配置条件 |
 | 9.95 | `electrical/STM32G474_MINIMUM_CIRCUIT_PART_SELECTION.md` | G474の8MHz HSE、負荷容量、VDDA/VREF+、デカップリング正式部品と配置条件 |
+| 9.97 | `electrical/UNIT_BOARD_SCHEMATIC_REFERENCE.md` | ユニット基板回路図のKiCad転記用リファレンス(階層シート案、接続表、RefDes割当、ERC非検出注意点、未確定事項) |
 | 10 | `electrical/CARRIER_BOARD_BUILD_PLAN.md` | 基板製作の進め方、検証順序 |
 | 11 | `testing/NUCLEO_BENCH_TEST_PLAN.md` | CAN-G474主試験機、CAN-L431対向ノード、NUCLEO予備での通信・差動制御実証手順 |
 | 11.5 | `../firmware/docs/MATEK_CAN_G474_PORT.md` | CAN-G474へのファーム移植、ST-LINK書込み、ArduPilot参照範囲 |
