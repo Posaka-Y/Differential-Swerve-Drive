@@ -1,0 +1,412 @@
+% =====================================================================
+% unit-board-circuitikz.tex
+% Differential Swerve Drive - Unit board reference schematics (6 blocks)
+%
+% Source of truth : docs/electrical/UNIT_BOARD_SCHEMATIC_REFERENCE.md
+%                   (Section 3 "接続表" is authoritative; nothing here
+%                    is invented beyond that table.)
+% Generated       : 2026-07-20
+%
+% Notes:
+%  - Parts whose pin numbers are "-" in the source table are drawn with
+%    pin NAMES only (no pin numbers): LM66100, TLV1117LV33, crystal,
+%    BOOT0/OSC pins of the MCU, SW401, R/C parts, SW701, LEDs.
+%  - Annotations are kept in ASCII/English on purpose so this file
+%    compiles with plain pdflatex (no CJK package required).
+%    "UNCONFIRMED" marks items listed in Section 6 of the source doc.
+%  - Rendered SVG versions (with Japanese notes) are generated with
+%    schemdraw: unit-board-block1.svg ... unit-board-block6.svg.
+% =====================================================================
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=14mm]{geometry}
+\usepackage{circuitikz}
+\usetikzlibrary{calc,positioning,arrows.meta}
+\usepackage{float}
+\ctikzset{bipoles/length=0.9cm}
+\tikzset{icbox/.style={draw,thick,fill=white},
+         note/.style={font=\scriptsize\itshape,text=black!70,align=left}}
+
+\begin{document}
+
+\section*{Unit board reference schematics (Rev.A, STM32G474RET6)}
+Source of truth: \texttt{UNIT\_BOARD\_SCHEMATIC\_REFERENCE.md} Section~3.
+Generated 2026-07-20.
+
+% =====================================================================
+% FIGURE 1 : Power chain  (power_input_5v + power_3v3)
+% =====================================================================
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[american,scale=0.95,every node/.style={transform shape}]
+  % --- J101 (GH2, side entry) ---
+  \draw (0,0)   node[left]{J101-1 (SM02B-GHS-TB)} to[short,o-] (1.2,0);
+  \draw (0,-2.5) node[left]{J101-2} to[short,o-] (1.2,-2.5) node[ground]{};
+  \node[note] at (0.4,-3.1) {harness GND\_CTRL = board GND};
+  % net label
+  \node[above] at (1.8,0) {\small PWR\_5V\_IN};
+  % C101 near VIN
+  \draw (2.6,0) to[C,l={C101 2.2uF+}] (2.6,-2) node[ground]{};
+  \draw (1.2,0) to[short] (4.0,0);
+  % --- U101 LM66100 (pin numbers not given in table -> names only) ---
+  \draw[icbox] (4.0,-1.6) rectangle (6.6,0.6);
+  \node at (5.3,0.9) {\small U101 LM66100DCKR};
+  \node[right] at (4.0,0)    {\scriptsize VIN};
+  \node[left]  at (6.6,0)    {\scriptsize VOUT};
+  \node[left]  at (6.6,-0.8) {\scriptsize CE\_N};
+  \node[right] at (4.0,-0.8) {\scriptsize ST};
+  \node[above] at (5.3,-1.6) {\scriptsize GND};
+  % ST open
+  \draw (4.0,-0.8) to[short] (3.5,-0.8);
+  \node[left,note] at (3.5,-0.8) {open (unused)};
+  % GND pin
+  \draw (5.3,-1.6) to[short] (5.3,-2.2) node[ground]{};
+  % VOUT and CE_N tied together (RPP+RCB)
+  \draw (6.6,0) to[short] (8.2,0);
+  \draw (6.6,-0.8) to[short] (7.4,-0.8) to[short] (7.4,0) node[circ]{};
+  \node[note,align=left] at (7.6,-1.6)
+    {CE\_N = VOUT (intentional!)\\ RPP+RCB, TI DS sec.8.3\\ do NOT ``fix'' to GND};
+  % PWR_5V rail
+  \node[above] at (8.6,0) {\small PWR\_5V};
+  \draw (8.2,0) to[short] (11.4,0);
+  % input caps of LDO
+  \draw (9.0,0)  to[C,l={C201 100nF}] (9.0,-2)  node[ground]{};
+  \draw (10.4,0) to[C,l={C202 10uF}]  (10.4,-2) node[ground]{};
+  % --- U201 TLV1117LV33 (pin numbers not given -> names only) ---
+  \draw[icbox] (11.4,-1.6) rectangle (13.8,0.6);
+  \node at (12.6,0.9) {\small U201 TLV1117LV33DCYR};
+  \node[right] at (11.4,0)   {\scriptsize IN};
+  \node[left]  at (13.8,0)   {\scriptsize OUT+tab};
+  \node[above] at (12.6,-1.6){\scriptsize GND};
+  \draw (12.6,-1.6) to[short] (12.6,-2.2) node[ground]{};
+  \node[note,align=left] at (12.8,-3.0)
+    {tab = VOUT!\\ never tie tab to GND plane};
+  % output caps and 3V3
+  \draw (13.8,0) to[short,-o] (17.2,0) node[right]{\small 3V3};
+  \draw (14.6,0) to[C,l={C203 100nF}] (14.6,-2) node[ground]{};
+  \draw (16.0,0) to[C,l={C204 10uF}]  (16.0,-2) node[ground]{};
+  % note about spare buck
+  \node[note,align=left] at (4.5,-3.4)
+    {U102 spare buck (OKI-78SR-5 compatible FP, DNP + bypass jumper): omitted here};
+\end{circuitikz}
+\caption{Block 1 -- Power input/protection and 3.3\,V LDO.
+J101-1 $\rightarrow$ LM66100 (CE\_N tied to VOUT, RPP+RCB) $\rightarrow$
+PWR\_5V $\rightarrow$ TLV1117LV33 $\rightarrow$ 3V3.
+LM66100 / TLV1117 pin numbers intentionally not drawn (verify against DS,
+source doc sec.~6 items 4--5).}
+\end{figure}
+
+% =====================================================================
+% FIGURE 2 : CAN interface (central CAN shown; C620 side identical)
+% =====================================================================
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[american,scale=0.95,every node/.style={transform shape}]
+  % --- U401 TCAN1051VDRQ1 box, pin numbers 1..8 from table ---
+  \draw[icbox] (4,-4.4) rectangle (7.4,0.6);
+  \node at (5.7,0.9) {\small U401 TCAN1051VDRQ1 (SOIC-8)};
+  % left pins
+  \node[right] at (4,0)    {\scriptsize 1 TXD};
+  \node[right] at (4,-1.0) {\scriptsize 4 RXD};
+  \node[right] at (4,-2.0) {\scriptsize 3 VCC};
+  \node[right] at (4,-3.0) {\scriptsize 5 VIO};
+  \node[right] at (4,-3.9) {\scriptsize 2 GND};
+  % right pins
+  \node[left] at (7.4,0)    {\scriptsize 7 CANH};
+  \node[left] at (7.4,-1.0) {\scriptsize 6 CANL};
+  \node[left] at (7.4,-3.9) {\scriptsize 8 S};
+  % --- MCU-side signals with direction arrows ---
+  \draw[-{Stealth}] (0.6,0) -- (4,0);
+  \node[left] at (0.6,0) {\small COMM\_TX (U301 PA12, FDCAN1\_TX)};
+  \draw[{Stealth}-] (0.6,-1.0) -- (4,-1.0);
+  \node[left] at (0.6,-1.0) {\small COMM\_RX (U301 PA11, FDCAN1\_RX)};
+  % VCC 5V + C401
+  \draw (4,-2.0) to[short] (2.6,-2.0) node[left]{\small PWR\_5V};
+  \draw (3.2,-2.0) node[circ]{} to[C,l_={C401 100nF}] (3.2,-3.4) node[ground]{};
+  % VIO 3V3 + C402
+  \draw (4,-3.0) to[short] (1.4,-3.0) node[left]{\small 3V3};
+  \draw (2.0,-3.0) node[circ]{} to[C,l_={C402 100nF}] (2.0,-4.4) node[ground]{};
+  \node[note] at (2.2,-5.0) {VIO = 3V3 fixed (never NC / 5V)};
+  % GND pin2
+  \draw (4,-3.9) to[short] (3.4,-3.9) to[short] (3.4,-4.6) node[ground]{};
+  % S pin8 to GND
+  \draw (7.4,-3.9) to[short] (8.0,-3.9) to[short] (8.0,-4.6) node[ground]{};
+  \node[note,align=left] at (9.4,-4.2) {S = GND fixed\\ (Normal mode, no float)};
+  % --- bus lines ---
+  \draw (7.4,0)  to[short] (13.6,0);
+  \node[above] at (8.6,0) {\small COMM\_A};
+  \draw (7.4,-1.0) to[short] (12.6,-1.0);
+  \node[above] at (8.6,-1.0) {\small COMM\_B};
+  % --- D401 ESD2CAN24DBZRQ1 (pins 1,2,3 from table) ---
+  \draw[icbox] (9.6,-3.4) rectangle (11.4,-1.9);
+  \node at (10.5,-1.6) {};
+  \node[note] at (10.5,-3.7) {D401 ESD2CAN24DBZRQ1};
+  \node[above] at (10.0,-2.55) {\scriptsize 1};
+  \node[above] at (11.0,-2.55) {\scriptsize 2};
+  \node[right] at (10.5,-3.15) {\scriptsize 3};
+  \draw (10.0,-1.9) to[short] (10.0,0) node[circ]{};   % pin1 -> COMM_A
+  \draw (11.0,-1.9) to[short] (11.0,-1.0) node[circ]{};% pin2 -> COMM_B
+  \draw (10.5,-3.4) to[short] (10.5,-4.0) node[ground]{}; % pin3 -> GND
+  % --- termination 120R + slide switch ---
+  \draw (12.0,0) node[circ]{} to[R,l={R401 120$\Omega$}] (12.0,-2.2);
+  \draw (12.0,-2.2) node[spdt,anchor=in,rotate=-90](sw){};
+  \node[right] at (12.6,-2.9) {\scriptsize SW401 JS102011SAQN};
+  \node[right] at (12.6,-3.3) {\scriptsize silk: TERM ON/OFF};
+  \draw (sw.out 1) to[short] (12.6,-1.0) node[circ]{}; % one throw -> COMM_B
+  \node[note] at (13.5,-2.0) {other throw: NC};
+  % --- J401 / J402 pass-through GH3 ---
+  \draw[icbox] (13.6,-1.6) rectangle (14.8,0.6);
+  \node[above] at (14.2,0.6) {\small J401};
+  \node[left] at (14.8,0.2)  {\scriptsize 1};
+  \node[left] at (14.8,-0.5) {\scriptsize 2};
+  \node[left] at (14.8,-1.2) {\scriptsize 3};
+  \draw[icbox] (16.0,-1.6) rectangle (17.2,0.6);
+  \node[above] at (16.6,0.6) {\small J402};
+  \node[right] at (16.0,0.2)  {\scriptsize 1};
+  \node[right] at (16.0,-0.5) {\scriptsize 2};
+  \node[right] at (16.0,-1.2) {\scriptsize 3};
+  % wiring J401/J402 in parallel (no IN/OUT distinction)
+  % COMM_A: bus line at y=0 enters J401 pin1; branch up-and-over to J402 pin1
+  \draw (13.6,0.2) -- (13.4,0.2) -- (13.4,0) node[circ]{};
+  \draw (13.0,0) node[circ]{} -- (13.0,1.4) -- (15.4,1.4)
+        -- (15.4,0.2) -- (16.0,0.2);
+  % COMM_B: bus line at y=-1.0 to J401 pin2; branch to J402 pin2
+  \draw (13.6,-0.5) -- (13.2,-0.5) -- (13.2,-1.0) node[circ]{};
+  \draw (12.9,-1.0) node[circ]{} -- (12.9,1.1) -- (15.7,1.1)
+        -- (15.7,-0.5) -- (16.0,-0.5);
+  % GND pin3 of both connectors
+  \draw (13.6,-1.2) -- (13.3,-1.2) -- (13.3,-2.6) node[ground]{};
+  \draw (16.0,-1.2) -- (15.8,-1.2) -- (15.8,-2.6) node[ground]{};
+  \node[note,align=left] at (15.3,-3.4)
+    {J401/J402 = SM03B-GHS-TB pass-through pair,\\
+     wired in parallel (no IN/OUT distinction), GND (pin3) never omitted};
+  \node[note,align=left] at (5.5,-6.0)
+    {C620 side (U501/D501/R501/SW501, 500-series refdes) is the same circuit with\\
+     nets C620\_CAN\_TX = PB13 (FDCAN2\_TX), C620\_CAN\_RX = PB12 (FDCAN2\_RX),\\
+     bus nets C620\_CAN\_H / C620\_CAN\_L.
+     Connector: \textbf{UNCONFIRMED} (source doc sec.6 item 1) -- not drawn};
+\end{circuitikz}
+\caption{Block 2 -- CAN interface (central CAN, 400-series). Placement
+order: connector $\rightarrow$ TVS (D401) $\rightarrow$ transceiver.
+TXD: MCU$\rightarrow$transceiver, RXD: transceiver$\rightarrow$MCU.}
+\end{figure}
+
+% =====================================================================
+% FIGURE 3 : MCU power / decoupling
+% =====================================================================
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[american,scale=0.95,every node/.style={transform shape}]
+  % --- U301 box ---
+  \draw[icbox] (6.0,-6.4) rectangle (9.6,0.6);
+  \node at (7.8,0.9) {\small U301 STM32G474RET6 (LQFP64)};
+  % left pins: VBAT + 4x VDD
+  \node[right] at (6.0,0)    {\scriptsize 1 VBAT};
+  \node[right] at (6.0,-1.0) {\scriptsize 16 VDD};
+  \node[right] at (6.0,-2.0) {\scriptsize 32 VDD};
+  \node[right] at (6.0,-3.0) {\scriptsize 48 VDD};
+  \node[right] at (6.0,-4.0) {\scriptsize 64 VDD};
+  \node[right] at (6.0,-5.6) {\scriptsize 15/31/47/63 VSS};
+  % right pins: VDDA, VREF+, VSSA
+  \node[left] at (9.6,0)    {\scriptsize 29 VDDA};
+  \node[left] at (9.6,-2.0) {\scriptsize 28 VREF+};
+  \node[left] at (9.6,-4.0) {\scriptsize 27 VSSA};
+  % 3V3 rail on the left
+  \draw (2.0,1.4) node[above]{\small 3V3} to[short,o-] (2.0,-4.0);
+  % VBAT
+  \draw (2.0,0) node[circ]{} to[short] (6.0,0);
+  \draw (4.6,0) node[circ]{} to[C,l_={C305 100nF}] (4.6,-0.8) node[ground]{};
+  % VDD x4, each with own 100nF (C301-304)
+  \draw (2.0,-1.0) node[circ]{} to[short] (6.0,-1.0);
+  \draw (4.6,-1.0) node[circ]{} to[C,l_={C301 100nF}] (4.6,-1.8) node[ground]{};
+  \draw (2.0,-2.0) node[circ]{} to[short] (6.0,-2.0);
+  \draw (4.6,-2.0) node[circ]{} to[C,l_={C302 100nF}] (4.6,-2.8) node[ground]{};
+  \draw (2.0,-3.0) node[circ]{} to[short] (6.0,-3.0);
+  \draw (4.6,-3.0) node[circ]{} to[C,l_={C303 100nF}] (4.6,-3.8) node[ground]{};
+  \draw (2.0,-4.0) to[short] (6.0,-4.0);
+  \draw (4.6,-4.0) node[circ]{} to[C,l_={C304 100nF}] (4.6,-4.8) node[ground]{};
+  % bulk 4.7uF on 3V3
+  \draw (1.0,1.0) node[circ]{} to[C,l_={C310 4.7uF (bulk)}] (1.0,-0.4) node[ground]{};
+  \draw (2.0,1.0) node[circ]{} to[short] (1.0,1.0);
+  % VSS
+  \draw (6.0,-5.6) to[short] (5.2,-5.6) to[short] (5.2,-6.2) node[ground]{};
+  % --- VDDA island (VDDA_A = net between pin 29 and FB301) ---
+  \draw (9.6,0) to[short] (12.4,0);
+  \draw (12.4,0) to[L,l={FB301 BLM18AG601SN1D}] (14.6,0);
+  \draw (14.6,0) to[short,-o] (15.6,0) node[right]{\small 3V3};
+  \node[above] at (10.1,0.1) {\small VDDA\_A};
+  \draw (10.6,0) node[circ]{} to[C,l_={C306 100nF}] (10.6,-1.2) node[ground]{};
+  \draw (11.6,0) node[circ]{} to[C,l={C307 1uF}]   (11.6,-1.2) node[ground]{};
+  % --- VREF+ fed from VDDA_A through R301 0R ---
+  \draw (9.6,-2.0) to[short] (12.9,-2.0);
+  \node[above] at (10.0,-1.9) {\small VREF+};
+  \draw (12.9,-2.0) to[R,l={R301 0$\Omega$}] (12.9,-0.4)
+        -- (12.2,-0.4) -- (12.2,0) node[circ]{}; % ties to VDDA_A island
+  \draw (10.9,-2.0) node[circ]{} to[C,l_={C308 10nF}] (10.9,-3.2) node[ground]{};
+  \draw (11.9,-2.0) node[circ]{} to[C,l={C309 1uF}]  (11.9,-3.2) node[ground]{};
+  % VSSA
+  \draw (9.6,-4.0) to[short] (10.4,-4.0) to[short] (10.4,-4.8) node[ground]{};
+  \node[note,align=left] at (12.4,-4.4)
+    {VDDA/VREF+ cap return path\\ close to VSSA (pin 27)};
+\end{circuitikz}
+\caption{Block 3 -- MCU power and decoupling. One 100\,nF per VDD pin
+(16/32/48/64), VBAT (pin 1) 100\,nF, VDDA (pin 29) fed from 3V3 through
+FB301 (VDDA\_A island, 100\,nF + 1\,$\mu$F), VREF+ (pin 28) fed from
+VDDA\_A through R301 0\,$\Omega$ (10\,nF + 1\,$\mu$F), C310 4.7\,$\mu$F
+bulk on 3V3.}
+\end{figure}
+
+% =====================================================================
+% FIGURE 4 : HSE + NRST + BOOT0
+% =====================================================================
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[american,scale=0.95,every node/.style={transform shape}]
+  % ---- HSE ----
+  \node[left] at (0.6,0) {\small U301 PF0-OSC\_IN};
+  \draw (0.6,0) to[short,o-] (2.4,0);
+  \draw (2.4,0) to[crystal,l=X301 ECS-80-8-33Q] (4.8,0);
+  \draw (4.8,0) to[R,l={R302 R\_HSE 0$\Omega$ (initial)}] (7.6,0);
+  \draw (7.6,0) to[short,-o] (9.2,0) node[right]{\small U301 PF1-OSC\_OUT};
+  \draw (2.4,0) node[circ]{} to[C,l_={C311 10pF C0G}] (2.4,-1.6) node[ground]{};
+  \draw (4.8,0) node[circ]{} to[C,l={C312 10pF C0G}] (4.8,-1.6) node[ground]{};
+  \node[note,align=left] at (3.6,1.0)
+    {crystal case / GND pads $\rightarrow$ GND\\
+     pad numbering vs.\ symbol: verify ECS drawing (UNCONFIRMED, sec.6 item 6)};
+  % ---- NRST ----
+  \node[left] at (0.6,-3.4) {\small U301 PG10-NRST (pin 7)};
+  \draw (0.6,-3.4) to[short,o-] (3.4,-3.4);
+  \draw (3.4,-3.4) node[circ]{} to[C,l={C313 100nF}] (3.4,-5.0) node[ground]{};
+  \draw (3.4,-3.4) to[short,-o] (5.4,-3.4) node[right]{\small NRST $\rightarrow$ J701-4, TP};
+  \node[note,align=left] at (3.4,-5.7)
+    {no external pull-up (internal pull-up used, intentional)};
+  % ---- BOOT0 ----
+  \node[left] at (10.6,-3.4) {\small U301 PB8-BOOT0};
+  \draw (10.6,-3.4) to[short,o-] (12.4,-3.4);
+  \draw (12.4,-3.4) node[circ]{} to[R,l={R303 10k$\Omega$}] (12.4,-5.2) node[ground]{};
+  \draw (12.4,-3.4) to[short,-o] (14.2,-3.4) node[right]{\small TP (BOOT0, adjacent TP=3V3)};
+  \node[note,align=left] at (13.2,-5.9)
+    {pull-down; PB8 must not be used as GPIO};
+\end{circuitikz}
+\caption{Block 4 -- HSE oscillator, NRST and BOOT0. PF0--X301--R302(0\,$\Omega$)--PF1,
+10\,pF on each leg; NRST only 100\,nF (internal pull-up); BOOT0 10\,k$\Omega$
+pull-down.}
+\end{figure}
+
+% =====================================================================
+% FIGURE 5 : 5V monitor ADC
+% =====================================================================
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[american,scale=0.95,every node/.style={transform shape}]
+  \draw (0,0) node[left]{\small PWR\_5V} to[short,o-] (1.0,0);
+  \draw (1.0,0) to[R,l={R304 33k$\Omega$}] (3.4,0);
+  \draw (3.4,0) to[short] (8.4,0);
+  \node[above] at (4.6,0) {\small ADC\_5V\_MON (max 2.2V)};
+  \draw (8.4,0) to[short,-o] (9.6,0) node[right]{\small U301 PA0 (ADC)};
+  \draw (3.8,0) node[circ]{} to[R,l_={R305 22k$\Omega$}] (3.8,-2.2) node[ground]{};
+  \draw (5.6,0) node[circ]{} to[C,l_={C314 10nF}] (5.6,-2.2) node[ground]{};
+  \node[note] at (5.6,-2.9) {$\approx$1.2 kHz LPF};
+  % BAT54S clamp: pin1=GND, pin2=3V3, pin3=PA0 (series pair)
+  \draw (7.6,2.6) node[above]{\small 3V3} to[short,o-] (7.6,2.2);
+  \draw (7.6,0.9) to[D,l_={}] (7.6,2.2);   % anode at pin3 node side, cathode to 3V3
+  \draw (7.6,0) node[circ]{} to[short] (7.6,0.9);
+  \draw (7.6,-2.2) to[D,l_={}] (7.6,-0.9); % anode at GND, cathode to pin3 node
+  \draw (7.6,-0.9) to[short] (7.6,0);
+  \draw (7.6,-2.2) to[short] (7.6,-2.5) node[ground]{};
+  \node[note,align=left] at (9.9,1.6)
+    {D301 BAT54SLT1G (series pair)\\ pin 1 = GND\\ pin 2 = 3V3\\ pin 3 = PA0 (ADC\_5V\_MON)\\
+     verify internal diode orientation vs.\ DS};
+  \node[above,font=\scriptsize] at (7.9,1.35) {2};
+  \node[below,font=\scriptsize] at (7.9,-1.55) {1};
+  \node[right,font=\scriptsize] at (7.7,0.45) {3};
+\end{circuitikz}
+\caption{Block 5 -- 5\,V supply monitor. 33k/22k divider (0.4$\times$),
+10\,nF filter, BAT54S dual clamp to 3V3/GND on PA0. Only point where the
+5\,V domain reaches an ADC input.}
+\end{figure}
+
+% =====================================================================
+% FIGURE 6 : AMT22 SPI + debug + ID DIP + LEDs
+% =====================================================================
+\begin{figure}[H]
+\centering
+\begin{circuitikz}[american,scale=0.92,every node/.style={transform shape}]
+  % ---- J601 AMT22 (GH6 side entry) ----
+  \draw[icbox] (0,-5.2) rectangle (1.6,0.6);
+  \node[above] at (0.8,0.6) {\small J601 SM06B-GHS-TB (AMT22)};
+  \node[left] at (1.6,0)    {\scriptsize 1 +5V};
+  \node[left] at (1.6,-1.0) {\scriptsize 2 SCLK};
+  \node[left] at (1.6,-2.0) {\scriptsize 3 MOSI};
+  \node[left] at (1.6,-3.0) {\scriptsize 4 GND};
+  \node[left] at (1.6,-4.0) {\scriptsize 5 MISO};
+  \node[left] at (1.6,-5.0) {\scriptsize 6 CS};
+  \draw (1.6,0) to[short,-o] (3.2,0) node[right]{\small PWR\_5V};
+  \draw (1.6,-1.0) to[R,l_={R601}] (3.6,-1.0) to[short,-o] (6.0,-1.0)
+        node[right]{\small SPI3\_SCK (U301 PC10)};
+  \draw (1.6,-2.0) to[R,l_={R602}] (3.6,-2.0) to[short,-o] (6.0,-2.0)
+        node[right]{\small SPI3\_MOSI (U301 PC12)};
+  \draw (1.6,-3.0) to[short] (2.4,-3.0) to[short] (2.4,-3.6) node[ground]{};
+  \draw (1.6,-4.0) to[R,l_={R603}] (3.6,-4.0) to[short,-o] (6.0,-4.0)
+        node[right]{\small SPI3\_MISO (U301 PC11)};
+  \draw (1.6,-5.0) to[R,l_={R604}] (3.6,-5.0) to[short,-o] (6.0,-5.0)
+        node[right]{\small AMT22\_CS\_N (U301 PD2, soft CS)};
+  \node[note,align=left] at (3.4,-6.0)
+    {R601--R604: 0603 footprint only; value UNCONFIRMED\\
+     (initial 0$\Omega$ candidate, source doc sec.6 item 3)};
+  % ---- J701 debug (GH6 top entry) ----
+  \draw[icbox] (11.4,-5.2) rectangle (13.0,0.6);
+  \node[above] at (12.2,0.6) {\small J701 BM06B-GHS-TBT (debug)};
+  \node[right] at (11.4,0)    {\scriptsize 1 GND};
+  \node[right] at (11.4,-1.0) {\scriptsize 2 SWCLK};
+  \node[right] at (11.4,-2.0) {\scriptsize 3 SWDIO};
+  \node[right] at (11.4,-3.0) {\scriptsize 4 NRST};
+  \node[right] at (11.4,-4.0) {\scriptsize 5 DBG\_TX};
+  \node[right] at (11.4,-5.0) {\scriptsize 6 DBG\_RX};
+  \draw (11.4,0) to[short] (10.8,0) to[short] (10.8,-0.6) node[ground]{};
+  \draw (11.4,-1.0) to[short,-o] (9.2,-1.0) node[left]{\small SWCLK (U301 PA14)};
+  \draw (11.4,-2.0) to[short,-o] (9.2,-2.0) node[left]{\small SWDIO (U301 PA13)};
+  \draw (11.4,-3.0) to[short,-o] (9.2,-3.0) node[left]{\small NRST (U301 PG10 pin 7)};
+  \draw (11.4,-4.0) to[short,-o] (9.2,-4.0) node[left]{\small DBG\_TX (U301 PA2, LPUART1\_TX)};
+  \draw (11.4,-5.0) to[short,-o] (9.2,-5.0) node[left]{\small DBG\_RX (U301 PA3, LPUART1\_RX)};
+  \node[note,align=left] at (11.6,-6.1)
+    {DBG\_TX/RX direction = board-view TX (UNCONFIRMED,\\
+     source doc sec.6 item 7; check against WeAct debugger)\\
+     no power pin on J701 (debugger power NOT wired, intentional)};
+  % ---- SW701 ID DIP ----
+  \draw[icbox] (0,-9.6) rectangle (1.8,-7.4);
+  \node[above] at (0.9,-7.4) {\small SW701 3bit DIP (part UNCONFIRMED)};
+  \node[left] at (1.8,-7.8) {\scriptsize bit0};
+  \node[left] at (1.8,-8.5) {\scriptsize bit1};
+  \node[left] at (1.8,-9.2) {\scriptsize bit2};
+  \node[right] at (0,-8.5) {\scriptsize com};
+  \draw (1.8,-7.8) to[short,-o] (4.2,-7.8) node[right]{\small UNIT\_ID0 (U301 PC6)};
+  \draw (1.8,-8.5) to[short,-o] (4.2,-8.5) node[right]{\small UNIT\_ID1 (U301 PC7)};
+  \draw (1.8,-9.2) to[short,-o] (4.2,-9.2) node[right]{\small UNIT\_ID2 (U301 PC8)};
+  \draw (0,-8.5) to[short] (-0.6,-8.5) to[short] (-0.6,-9.1) node[ground]{};
+  \node[note,align=left] at (1.6,-10.4)
+    {internal pull-up, ON = short to GND\\ $\Rightarrow$ ON = Low, firmware inverts reading};
+  % ---- LEDs ----
+  \draw (8.6,-7.6) node[left]{\small 3V3} to[short,o-] (9.2,-7.6)
+        to[R,l={R701 1k$\Omega$}] (11.2,-7.6)
+        to[full led,l={D701 PWR grn}] (13.0,-7.6)
+        to[short] (13.6,-7.6) node[ground]{};
+  \draw (8.6,-8.6) node[left]{\small LED\_RUN (U301 PA5)} to[short,o-] (9.2,-8.6)
+        to[R,l={R702 1k$\Omega$}] (11.2,-8.6)
+        to[full led,l={D702 RUN grn}] (13.0,-8.6)
+        to[short] (13.6,-8.6) node[ground]{};
+  \draw (8.6,-9.6) node[left]{\small LED\_COMM (U301 PB10)} to[short,o-] (9.2,-9.6)
+        to[R,l={R703 1k$\Omega$}] (11.2,-9.6)
+        to[full led,l={D703 COMM yel}] (13.0,-9.6)
+        to[short] (13.6,-9.6) node[ground]{};
+  \draw (8.6,-10.6) node[left]{\small LED\_ERR (U301 PB11)} to[short,o-] (9.2,-10.6)
+        to[R,l={R704 1k$\Omega$}] (11.2,-10.6)
+        to[full led,l={D704 ERR red}] (13.0,-10.6)
+        to[short] (13.6,-10.6) node[ground]{};
+\end{circuitikz}
+\caption{Block 6 -- AMT22 SPI relay connector (straight pin order to the
+encoder), debug GH6 (no power pin), 3-bit ID DIP (ON = GND, reading
+inverted in firmware), and the four status LEDs (source drive,
+GPIO/3V3 $\rightarrow$ 1\,k$\Omega$ $\rightarrow$ LED $\rightarrow$ GND).}
+\end{figure}
+
+\end{document}

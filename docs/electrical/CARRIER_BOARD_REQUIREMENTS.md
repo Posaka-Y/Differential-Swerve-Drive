@@ -53,7 +53,7 @@ NUCLEO-G474REのmorphoに全ピンが出ており、開発ボードと自作基�
 | SPI3_MOSI(AMT22) | PC12 | AF6 | |
 | AMT22_CS_N | PD2 | GPIO | バイト間ウェイトが必要なのでソフト制御CS |
 | デバッグUART | PA2 / PA3 | LPUART1 | NUCLEOのST-LINK VCPと同一。開発時printfがそのまま使える |
-| UNIT_ID0/1/2 | PC6 / PC7 / PC8 | GPIO入力 | 内部プルアップ、DIPスイッチでGNDへ |
+| UNIT_ID0/1/2 | PC6 / PC7 / PC8 | GPIO入力 | 内部プルアップ、3bit DIPスイッチでGNDへ(ON=Low、読み値反転)。起動時に1回読取り、RUN LEDをID回数点滅 |
 | LED(電源/動作) | PA5 | GPIO | NUCLEOのLD2と同一。開発時の動作確認互換 |
 | LED(通信) | PB10 | GPIO | |
 | LED(エラー) | PB11 | GPIO | |
@@ -80,9 +80,9 @@ NUCLEO-G474REのmorphoに全ピンが出ており、開発ボードと自作基�
 | COMM_A / COMM_B | 中央制御との通信。実体は中央CANのCAN_H/L |
 | C620 CAN | C620 x2との通信 |
 | AMT22 SPI | ステア角取得 |
-| IDジャンパ | ユニットID設定 |
+| ID DIPスイッチ | ユニットID設定(3bit) |
 
-C620用24V大電流線はキャリア基板の制御4線と分ける。
+C620用24V大電流線はキャリア基板の制御ハーネス(5V/GNDのGH 2pin、COMM_A/B/GNDのGH 3pin)と分ける。
 
 ## 中央通信(中央CAN)
 
@@ -158,7 +158,7 @@ AMT22は5V駆動(VDD 3.8〜5.5V)、MCUは3.3V系。
 
 バイト間ウェイトが必要なため、2バイトを連続DMA転送すると読めない。1バイトずつ送る。応答上位2bitはチェックビット(奇偶パリティ)なので必ず検証する。
 
-コネクタ: AMT22側はMolex 502578-0600(Pico-Lock 6pin)。検証用ケーブルはAMT-06C-1-036。キャリア側は同コネクタのハーネスを受けるピンヘッダまたはXHで中継する。
+コネクタ: AMT22側はMolex 502578-0600(Pico-Lock 6pin)。検証用ケーブルはAMT-06C-1-036。キャリア側はJST GH 6pin横挿し(`SM06B-GHS-TB`)で中継し、Pico-Lock⇔GHの変換ハーネスを作る(GH側ハウジングはデバッグ用と共通の`GHR-06V-S`+`SSHL-002T-P0.2`)。
 
 AMT22コネクタのピン配置(データシートrev1.10で確認済み、`hardware/reference/datasheets/`に保存):
 
@@ -171,7 +171,7 @@ AMT22コネクタのピン配置(データシートrev1.10で確認済み、`har
 | 5 | MISO |
 | 6 | CHIP SELECT |
 
-基板側XH 6pinも同じピン順にすると、ハーネスがストレート結線になる。
+基板側GH 6pinも同じピン順にすると、ハーネスがストレート結線になる。
 
 ## 電源
 
@@ -214,9 +214,9 @@ AMT22コネクタのピン配置(データシートrev1.10で確認済み、`har
 | 水晶 | `ECS-80-8-33Q-JES-TR` + `GRM1885C1H100JA01D` x2 | 8MHz、3225-4pad、10pF C0G x2 |
 | SWD/デバッグUART | JST GH: `GHR-06V-S` + `SSHL-002T-P0.2`、基板側は上挿し`BM06B-GHS-TBT` | WeAct SH 10pin→ロボットGH 6pin専用ケーブルを作る |
 | BOOT0 | `RC0603FR-0710KL` + BOOT0/3V3 `S1751-46R` | 10kΩ pull-down、隣接TPを治具で短絡 |
-| ID設定 | 3bit DIPスイッチ または 2.54mmジャンパ | 手ハンダ可 |
+| ID設定 | 3bit DIPスイッチ(型番は部品選定で確定) | PC6-8、内部プルアップ、ON=GND短絡。起動時にRUN LEDをID回数点滅、ID=0(全OFF)は未設定エラー扱い |
 | デカップリング | VDD 100nF x4 + 4.7uF、VBAT 100nF、VDDA用`BLM18AG601SN1D`+100nF+1uF、VREF+ 10nF+1uF | 0603/0805、詳細はG474最小構成選定書 |
-| AMT22中継 | JST XH 6pin(AMT22側は純正Molex Pico-Lockケーブル) | 2.5mm |
+| AMT22中継 | `SM06B-GHS-TB` + `GHR-06V-S` + `SSHL-002T-P0.2`(AMT22側は純正Molex Pico-Lockケーブル、変換ハーネス自作) | 横挿しGH6、1.25mm、AMT22と同ピン順でストレート結線 |
 | 外部電源 | `SM02B-GHS-TB` + `GHR-02V-S` | 横挿しGH2、1=5V、2=GND、AWG26、CANと分離 |
 | 中央CANパススルー | 横挿しJST GH 3pin x2(COMM_A/COMM_B/GND) | `SM03B-GHS-TB`、基板上でIN/OUT直結 |
 | 予備降圧 | OKI-78SR-5互換フットプリント + バイパスジャンパ(通常未実装) | スルーホール |
