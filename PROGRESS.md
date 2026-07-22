@@ -930,3 +930,20 @@
 - 未確定注記を図中に明記: C620側コネクタ(6章#1)、DIP型番(#2)、R601-604値(#3)、LM66100/TLV1117
   ピン番号(#4,#5)、水晶pad番号(#6)、DBG_TX/RX方向(#7)。
 - 生成スクリプトはscratchpad(セッションtemp)の`gen_figs.py`。再生成が必要ならschemdrawで同様に可能。
+
+## 2026-07-23 ユニット基板 回路図ブロック作成・AI監査セーブポイント
+
+- KiCadの`hardware/unit-board/unit-board.kicad_sch`を親シートとして、電源入力/3.3V生成、
+  5V監視、STM32G474最小回路、中央CAN、C620 CAN、AMT22/デバッグ/ID DIP/LEDの各ブロックを作成。
+- 階層シートからモジュール基板PCBを作成する段階へ進む方針。ユニット基板を正本として整備し、
+  オドメトリ基板など派生基板は用途別プロジェクトへ複製して不要ブロックを差し替える。
+- AI監査で、5V監視ADCノードの未接続とAMT22 SPI配線の微小ギャップを修正。
+- 2026-07-23の保存時点でKiCad CLIから回路図を読み込み可能。ERCは71件
+  （Errors 52 / Warnings 19）で、まだPCB更新へ進める品質ではない。
+- 未解決の重要項目:
+  - 電源入力GH2のpin 1/2極性を要件（pin 1=PWR_5V、pin 2=GND）と一致させる。
+  - 4pad水晶Y1を`Device:Crystal_GND24`相当へ変更し、信号pad 1/3、GND pad 2/4を正しく接続する。
+  - 親子シート間で`PWR_5V`、`CAN_TX/RX`、`SPI3_MOSI/MISO`などの階層ラベル名を統一する。
+  - PWR_FLAG、未使用ピンのNo Connect、電源ピン駆動元を整理してERCを収束させる。
+  - J7を縦型`BM06B-GHS-TBT`へ、COMM/ERR LED色とD7/R14のvalueを部品表どおりに直す。
+- 次の作業: 上記の重要項目を回路図へ反映し、ERC/BOM/netlistを再検証してからPCBレイアウトへ進む。
