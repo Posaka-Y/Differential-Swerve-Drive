@@ -34,3 +34,15 @@ hardware/
 - シンボル・フットプリントは`lib/`に置き、KiCad標準ライブラリ依存を減らす(後続プロジェクトへの持ち出しやすさ優先)。
 - プロジェクト固有ライブラリの収録範囲と標準ライブラリ割当は`lib/LIBRARY_MANIFEST.md`を正本とする。標準部品を無理由に複製しない。
 - 発注前チェックは `docs/checklists/REVIEW_CHECKLIST.md`。
+
+## CLI検証
+
+KiCad 10で保存した回路図・PCBは、リポジトリルートから次で検証する。
+
+```powershell
+.\tools\kicad\check.ps1
+```
+
+既定では `hardware/unit-board/unit-board` を対象にERC、回路図PDF出力、DRCを実行し、結果を
+`$env:TEMP\differential-swerve-kicad-check` へ保存する。CI相当の厳格な確認では
+`-FailOnViolations`を付け、ERC/DRC違反があれば終了コードを非0にする。
