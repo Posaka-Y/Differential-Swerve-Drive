@@ -5,7 +5,7 @@
 	(uuid "902d1696-b686-472b-a104-e0c03f0522c9")
 	(paper "A4")
 	(title_block
-	(title "unit board")
+		(title "unit board")
 		(date "2026-07-21")
 	)
 	(lib_symbols
@@ -1447,22 +1447,10 @@
 		(uuid "4e355299-0793-4f3a-977c-d25ce2428ab1")
 	)
 	(junction
-		(at 43.18 120.65)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6aa3570c-0034-4ed7-8ad8-27005038035a")
-	)
-	(junction
 		(at 262.89 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6adac986-9945-46e9-b138-402a0701202c")
-	)
-	(junction
-		(at 43.18 130.81)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6cf942fc-c21c-4d5a-8acc-5436bfd58bb8")
 	)
 	(junction
 		(at 30.48 59.69)
@@ -1483,18 +1471,6 @@
 		(uuid "ab766129-12d5-43f8-8375-7879f0ad9c46")
 	)
 	(junction
-		(at 43.18 123.19)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b3849e3b-56f7-4264-87a5-4d67f363df33")
-	)
-	(junction
-		(at 43.18 128.27)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c1e2f4e9-3cfa-492b-8ade-6f703553d9da")
-	)
-	(junction
 		(at 76.2 36.83)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1505,12 +1481,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e1bcf77d-e7db-4b02-a6bf-078cb3afa396")
-	)
-	(junction
-		(at 43.18 118.11)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f5e46481-7fe7-4f63-83fc-1af982c11a26")
 	)
 	(no_connect
 		(at 137.16 52.07)

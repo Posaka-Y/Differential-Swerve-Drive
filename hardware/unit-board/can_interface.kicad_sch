@@ -347,146 +347,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Device:R"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "R"
-				(at 2.032 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "R"
-				(at 0 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at -1.778 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "R_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "DifferentialSwerve:ESD2CAN24DBZRQ1"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -662,198 +522,6 @@
 					(at 27.94 0 180)
 					(length 5.08)
 					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "DifferentialSwerve:JS102011SAQN"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "SW"
-				(at 19.05 7.62 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Value" "JS102011SAQN"
-				(at 19.05 5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Footprint" "DifferentialSwerve:JS102011SAQN"
-				(at 19.05 -94.92 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Datasheet" "https://www.littelfuse.com/assetdocs/littelfuse-ck-slide-js-series-datasheet?assetguid=aba42b08-0d2c-423b-813d-a2faa5a3bb14"
-				(at 19.05 -194.92 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Description" "Slide Switch SPDT Surface Mount, Right Angle 300mA (DC) 6V Gull Wing -40C ~ 85C"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Height" "3.5"
-				(at 19.05 -394.92 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Manufacturer_Name" "LITTELFUSE"
-				(at 19.05 -494.92 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Manufacturer_Part_Number" "JS102011SAQN"
-				(at 19.05 -594.92 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Mouser Part Number" "611-JS102011SAQN"
-				(at 19.05 -694.92 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/CK/JS102011SAQN?qs=LgMIjt8LuD%252B69bNM9a%2FozQ%3D%3D"
-				(at 19.05 -794.92 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left top)
-				)
-			)
-			(symbol "JS102011SAQN_1_1"
-				(rectangle
-					(start 5.08 2.54)
-					(end 17.78 -7.62)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin passive line
-					(at 0 0 0)
-					(length 5.08)
-					(name "N.C."
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -2.54 0)
-					(length 5.08)
-					(name "COM"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 0)
-					(length 5.08)
-					(name "N.O."
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1282,12 +950,6 @@
 		(uuid "71c2f24b-d086-4528-9bfd-74d54fcac57f")
 	)
 	(junction
-		(at 129.54 68.58)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "8e4074fc-1c38-4ae6-bbec-946cf73b5e07")
-	)
-	(junction
 		(at 146.05 71.12)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1306,20 +968,10 @@
 		(uuid "aecce68c-df0f-45e7-b831-43b65aeffa73")
 	)
 	(junction
-		(at 127 71.12)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "d62ba4dc-4371-4e6c-bfbb-eb4fcce59a1c")
-	)
-	(junction
 		(at 68.58 71.12)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e1d36004-b977-40c6-b5a7-0ad92c9111ef")
-	)
-	(no_connect
-		(at 132.08 95.25)
-		(uuid "ade8aabc-0a39-4f99-8615-bfdbd3947d99")
 	)
 	(wire
 		(pts
@@ -1383,16 +1035,6 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 87.63) (xy 129.54 95.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "37d17526-a2c5-4048-b305-90a55adc2cbd")
-	)
-	(wire
-		(pts
 			(xy 49.53 71.12) (xy 68.58 71.12)
 		)
 		(stroke
@@ -1433,23 +1075,13 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 68.58) (xy 148.59 68.58)
+			(xy 113.03 68.58) (xy 148.59 68.58)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "5d368c53-9a84-44d9-bc62-6228f85a9b50")
-	)
-	(wire
-		(pts
-			(xy 113.03 68.58) (xy 129.54 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "69856814-7c8b-4a92-a811-370f26519d4f")
 	)
 	(wire
 		(pts
@@ -1460,26 +1092,6 @@
 			(type default)
 		)
 		(uuid "6d91ad6b-b546-4861-8f64-2e4310cdcc64")
-	)
-	(wire
-		(pts
-			(xy 129.54 68.58) (xy 129.54 80.01)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "795cebd0-ae4c-4b2b-8404-83ee0849d30d")
-	)
-	(wire
-		(pts
-			(xy 127 71.12) (xy 146.05 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7d753d95-190a-4441-be20-113bc1bd8080")
 	)
 	(wire
 		(pts
@@ -1500,16 +1112,6 @@
 			(type default)
 		)
 		(uuid "c03b93fc-d2d8-48d0-b31e-1bb64bcf2fc6")
-	)
-	(wire
-		(pts
-			(xy 127 71.12) (xy 127 95.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c957db30-2176-4c90-812a-11b425ba4f08")
 	)
 	(wire
 		(pts
@@ -1603,7 +1205,7 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 71.12) (xy 127 71.12)
+			(xy 113.03 71.12) (xy 146.05 71.12)
 		)
 		(stroke
 			(width 0)
@@ -1613,12 +1215,22 @@
 	)
 	(label "C620_CAN_H"
 		(at 113.03 68.58 0)
-		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
 		(uuid "232b6a1b-3ba5-4fde-b1ee-7903f4584164")
 	)
 	(label "C620_CAN_L"
 		(at 113.03 71.12 0)
-		(effects (font (size 1.27 1.27)) (justify left bottom))
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
 		(uuid "84aab52e-846f-48fe-b6cf-b1810ed46d72")
 	)
 	(hierarchical_label "PWR_5V"
@@ -1805,10 +1417,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "D1")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "D2")
 					(unit 1)
@@ -1887,10 +1495,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "#PWR011")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "#PWR030")
 					(unit 1)
@@ -1969,10 +1573,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "#PWR014")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "#PWR039")
 					(unit 1)
@@ -2133,10 +1733,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "U3")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "U5")
 					(unit 1)
@@ -2215,10 +1811,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "#PWR012")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "#PWR040")
 					(unit 1)
@@ -2301,10 +1893,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "C1")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "C17")
 					(unit 1)
@@ -2383,10 +1971,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "#PWR016")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "#PWR031")
 					(unit 1)
@@ -2472,98 +2056,8 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "J2")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "J4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 129.54 83.82 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a42a3c41-88ae-4305-9ec8-0f461f2f5106")
-		(property "Reference" "R5"
-			(at 132.08 82.5499 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "120R"
-			(at 132.08 85.0899 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127.762 83.82 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 129.54 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 129.54 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "94453d3f-2c8f-4486-a722-a103ffaf16fe")
-		)
-		(pin "2"
-			(uuid "99ff12e2-f3a4-4c40-8583-ebbbb41339d3")
-		)
-		(instances
-			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "R1")
-					(unit 1)
-				)
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
-					(reference "R5")
 					(unit 1)
 				)
 			)
@@ -2647,10 +2141,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "J3")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "J5")
 					(unit 1)
@@ -2729,10 +2219,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "#PWR015")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "#PWR028")
 					(unit 1)
@@ -2811,10 +2297,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "#PWR010")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "#PWR029")
 					(unit 1)
@@ -2893,10 +2375,6 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "#PWR013")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "#PWR041")
 					(unit 1)
@@ -2918,6 +2396,7 @@
 		(uuid "f1df0c50-e30e-4ed2-ac1b-2c73d1bc1522")
 		(property "Reference" "C18"
 			(at 124.46 83.8199 0)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2929,6 +2408,7 @@
 		)
 		(property "Value" "100nF"
 			(at 124.46 86.3599 0)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -2979,162 +2459,8 @@
 		)
 		(instances
 			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "C2")
-					(unit 1)
-				)
 				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
 					(reference "C18")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "DifferentialSwerve:JS102011SAQN")
-		(at 132.08 95.25 270)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "f38a961a-272f-4a40-ac19-4a2902b87040")
-		(property "Reference" "SW2"
-			(at 121.412 115.062 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "JS102011SAQN"
-			(at 121.412 117.602 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "DifferentialSwerve:JS102011SAQN"
-			(at 37.16 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(property "Datasheet" "https://www.littelfuse.com/assetdocs/littelfuse-ck-slide-js-series-datasheet?assetguid=aba42b08-0d2c-423b-813d-a2faa5a3bb14"
-			(at -62.84 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(property "Description" "Slide Switch SPDT Surface Mount, Right Angle 300mA (DC) 6V Gull Wing -40C ~ 85C"
-			(at 132.08 95.25 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Height" "3.5"
-			(at -262.84 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(property "Manufacturer_Name" "LITTELFUSE"
-			(at -362.84 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(property "Manufacturer_Part_Number" "JS102011SAQN"
-			(at -462.84 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(property "Mouser Part Number" "611-JS102011SAQN"
-			(at -562.84 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/CK/JS102011SAQN?qs=LgMIjt8LuD%252B69bNM9a%2FozQ%3D%3D"
-			(at -662.84 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(pin "2"
-			(uuid "d7588217-33aa-4e48-b1f2-7b576d1c8dff")
-		)
-		(pin "3"
-			(uuid "e915a88c-a5e4-4aee-943c-3b6391b18ca8")
-		)
-		(pin "1"
-			(uuid "f1eb01ed-933d-4603-9838-d6fcbec75424")
-		)
-		(instances
-			(project "unit-board"
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/5ac06cbd-b502-4521-8633-c0ee32817a8a"
-					(reference "SW1")
-					(unit 1)
-				)
-				(path "/902d1696-b686-472b-a104-e0c03f0522c9/cab26001-77ec-434b-926d-f98d40ad2c49"
-					(reference "SW2")
 					(unit 1)
 				)
 			)

@@ -14,6 +14,30 @@
 
 ---
 
+## 2026-07-23 (ユニット基板 4層・配線ルール初期設定)
+
+### やったこと
+
+- `unit-board.kicad_pcb`を4層構成として整理し、`In1.Cu`をGND plane、`In2.Cu`をPower / Signal層として命名した。板厚は既定の1.6mmを維持した。
+- PCBの製造最小制約を試作しやすい値へ設定した: clearance 0.20mm、silk clearance 0.15mm、silk文字線幅0.12mm、via最小径0.60mm、annular ring最小0.15mm。外形銅箔離隔0.50mmは維持した。
+- 配線幅プリセット0.20/0.25/0.40/0.50/0.75/1.00mm、ビアプリセット0.60/0.30、0.70/0.35、0.80/0.40mmを追加した。
+- `CAN`、`POWER_5V`、`POWER_3V3`、`HSE`、`SPI`、`ADC_ANALOG`ネットクラスを追加し、現行ネット名へ割り当てた。
+- `unit-board.kicad_dru`を追加し、CAN、5V、3.3V、HSE、アナログの最小線幅・離隔とHSEのF.Cu限定・ビア禁止ルールを定義した。KiCad 10で非対応の`constraint layer`を使わず、条件式+`disallow track/via`で記述した。
+- `JS102011SAQN.stp`を`hardware/lib/DifferentialSwerve.3dshapes/`へ追加し、専用footprintと基板内footprintの3Dモデル参照を`${KIPRJMOD}`基準の相対パスへ修正した。
+
+### 現在の状態
+
+- `.kicad_pro`はNode.jsのJSONパーサで構文正常を確認済み。
+- 製造会社固有の4層stackup、CAN差動インピーダンス、基板外形、取付穴、ゾーン形状は未確定のため設定していない。
+- Windows版KiCad CLIによる読込み/DRCは、WSL interopの`UtilBindVsockAnyPort`エラーで起動できず未確認。基板にはまだ外形・配線・ゾーンがない。
+
+### 次の作業
+
+1. KiCad GUIで基板を開き、Board SetupのPhysical Stackup、Constraints、Net Classes、Custom Rulesが読み込まれることを確認する。
+2. 機体CADから基板外形、取付穴、コネクタ差込方向、高さ制限を確定する。
+3. 外形確定後に配置し、`In1.Cu`全面GND、`In2.Cu`の5V/3.3Vゾーン、表裏GNDゾーンとスティッチングビアを作成する。
+4. 発注先決定後、その標準4層stackupを入力し、必要ならCAN配線幅/間隔を再計算する。
+
 ## 2026-07-23 (ユニット基板 ERC 0件・ネットリスト整合修正)
 
 ### やったこと
