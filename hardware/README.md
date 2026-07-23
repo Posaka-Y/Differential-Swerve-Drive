@@ -46,3 +46,9 @@ KiCad 10で保存した回路図・PCBは、リポジトリルートから次で
 既定では `hardware/unit-board/unit-board` を対象にERC、回路図PDF出力、DRCを実行し、結果を
 `$env:TEMP\differential-swerve-kicad-check` へ保存する。CI相当の厳格な確認では
 `-FailOnViolations`を付け、ERC/DRC違反があれば終了コードを非0にする。
+
+PCB未着手の段階で回路図だけを厳格確認する場合は、空PCBのDRCを省く。
+
+```powershell
+.\tools\kicad\check.ps1 -FailOnViolations -SkipDrc
+```

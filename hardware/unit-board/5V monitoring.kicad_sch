@@ -788,6 +788,16 @@
 	)
 	(wire
 		(pts
+			(xy 132.08 43.18) (xy 132.08 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "13184150-c318-4125-a975-8417968d1636")
+	)
+	(wire
+		(pts
 			(xy 87.63 59.69) (xy 87.63 55.88)
 		)
 		(stroke
@@ -798,7 +808,7 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 55.88) (xy 127 55.88)
+			(xy 118.11 55.88) (xy 137.16 55.88)
 		)
 		(stroke
 			(width 0)
@@ -848,16 +858,6 @@
 	)
 	(wire
 		(pts
-			(xy 132.08 40.64) (xy 132.08 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b81ee316-6f54-40da-9ecb-29ca80e419b9")
-	)
-	(wire
-		(pts
 			(xy 118.11 67.31) (xy 118.11 74.93)
 		)
 		(stroke
@@ -866,25 +866,38 @@
 		)
 		(uuid "c2e66484-df5f-4d3e-9e98-8de9a7e888ac")
 	)
-	(label "PWR_5V"
-		(at 55.88 55.88 0)
+	(hierarchical_label "PWR_5V"
+		(shape input)
+		(at 55.88 55.88 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right)
 		)
-		(uuid "2f3e1e2b-6960-4f28-b13d-e6b09b503e1b")
+		(uuid "012b5829-e314-4ea1-aca7-b738c7241a9c")
 	)
-	(label "3.3V"
-		(at 132.08 40.64 270)
+	(hierarchical_label "ADC_5V_MON"
+		(shape input)
+		(at 137.16 55.88 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left)
 		)
-		(uuid "4504d757-3926-4e5a-9586-0ab0afd0e938")
+		(uuid "53a6263a-8cb8-41a3-8e43-6e1d3eb016b8")
+	)
+	(hierarchical_label "3.3V"
+		(shape input)
+		(at 132.08 43.18 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e7d7ca5d-9344-4ebf-8a87-c72205512cb3")
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -1224,7 +1237,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "RC0603FR-0733KL 22k"
+		(property "Value" "RC0603FR-0722KL 22k"
 			(at 89.662 65.278 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1285,7 +1298,7 @@
 	)
 	(symbol
 		(lib_id "Diode:BAT54S")
-		(at 132.08 55.88 270)
+		(at 132.08 55.88 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -1295,7 +1308,7 @@
 		(dnp no)
 		(uuid "eff514a4-dc2d-40d8-aaec-37a58e601c78")
 		(property "Reference" "D7"
-			(at 136.144 48.26 90)
+			(at 128.016 63.5 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -1305,8 +1318,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "BAT54S"
-			(at 136.144 50.8 90)
+		(property "Value" "BAT54SLT1G"
+			(at 128.016 60.96 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -1317,7 +1330,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
-			(at 135.255 57.785 0)
+			(at 128.905 53.975 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1329,7 +1342,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds11005.pdf"
-			(at 132.08 52.832 0)
+			(at 132.08 58.928 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

@@ -14,6 +14,37 @@
 
 ---
 
+## 2026-07-23 (ユニット基板 ERC 0件・ネットリスト整合修正)
+
+### やったこと
+
+- KiCad 10.0.4で現行ユニット基板を再解析し、開始時のERC 52エラー/19警告を0エラー/0警告まで収束させた。
+- 親子階層名と方向を修正した: `PWR_5V`、`CAN_TX/RX`、`SPI3_MOSI/MISO`、`LED_RUN/COMM/ERR`、`DBG_TX/RX`。誤記`5.5V`、`CANFD]_TX`も除去した。
+- MCUのRev.A未使用GPIO 26本へNo Connectを設定し、LM66100のSTにも意図的NCを設定した。入力5V/GNDとVDDAへ`PWR_FLAG`を追加した。
+- ERCでは検出できなかったCAN論理方向の逆接続をネットリストで発見し、両バスとも`MCU TX -> TCAN TXD(pin 1)`、`TCAN RXD(pin 4) -> MCU RX`へ修正した。
+- GH2電源入力のピン極性を`J1-1=PWR_5V_IN`、`J1-2=GND`へ修正した。
+- 中央CANへ2個目のGH3(J3)を追加し、J2/J3を`COMM_A/COMM_B/GND`の並列パススルーにした。C620側J4/J5は`C620_CAN_H/L/GND`で維持した。
+- 主要ローカルネットを`PWR_5V_IN`、`COMM_A/B`、`C620_CAN_H/L`、`HSE_IN/OUT`、`VDDA_A`、`VREF_PLUS`へ正規化した。
+- デバッグGH6を確定部品`BM06B-GHS-TBT`と垂直footprintへ修正し、COMM/ERR LEDを黄`LTST-C190KSKT`/赤`LTST-C190KRKT`、ADCクランプを`BAT54SLT1G`、22kΩを`RC0603FR-0722KL`表記へ揃えた。
+- 45箇所の主要ピン接続、MCU NC 26本、BOM 62部品のValue/Footprint有無、Ref重複なしをネットリストで自動確認した。
+- `tools/kicad/check.ps1`へ`-SkipDrc`を追加し、PCB未着手でも`-FailOnViolations -SkipDrc`で回路図だけを厳格確認できるようにした。使用例を`hardware/README.md`へ追記した。
+- 最終ERCレポート、ネットリスト、回路図PDFを`output/kicad/`へ、回路図PDFを`output/pdf/unit-board-schematic.pdf`へ出力した。
+
+### 現在の状態
+
+- `tools/kicad/check.ps1 -FailOnViolations -SkipDrc -OutputDirectory output/kicad`は成功し、ERCは0エラー/0警告。
+- 電源、中央CAN、C620 CAN、AMT22、SWD/UART、UNIT_ID、LED、5V監視の主要ピン番号はネットリスト上で正本と一致している。
+- PDF/SVG書き出しは成功したが、この実行環境にPoppler/Python画像レンダラと利用可能なアプリ内ブラウザがなかったため、ページ画像による目視レビューは未完了。
+- PCBは空のままで、DRC/部品配置/配線は未着手。`untitled.kicad_sch`の要否も未確定のため削除していない。
+
+### 次の作業
+
+1. KiCad GUIまたはPDFレンダラのある環境で全6ページを目視し、ラベル重なり、線の交差、可読性を確認する。
+2. 正本で要求する主要テストポイント(`PWR_5V_IN`、`PWR_5V`、3.3V、`VDDA_A`、GND、NRST、BOOT0、SWO、両CAN線)を回路図へ追加する。
+3. CAN終端抵抗、LED抵抗、残りの受動部品Valueを正式型番表記へ揃え、JS102011SAQN footprintのメーカー推奨ランド照合を完了する。
+4. `untitled.kicad_sch`をGUIで確認し、不要な複製なら削除する。
+5. 回路図目視レビュー後、PCB外形・配置・配線へ進み、DRCを収束させる。
+
 ## 2026-07-22 (ユニット基板 全ブロック回路図入力完了)
 
 ### やったこと

@@ -2,7 +2,8 @@
 param(
     [string]$Project = "hardware/unit-board/unit-board",
     [string]$OutputDirectory = (Join-Path $env:TEMP "differential-swerve-kicad-check"),
-    [switch]$FailOnViolations
+    [switch]$FailOnViolations,
+    [switch]$SkipDrc
 )
 
 $ErrorActionPreference = "Stop"
@@ -54,7 +55,7 @@ if ($LASTEXITCODE -ne 0) {
 
 $outputs = @($ercReport, $schematicPdf)
 
-if (Test-Path -LiteralPath $board) {
+if ((Test-Path -LiteralPath $board) -and -not $SkipDrc) {
     $drcReport = Join-Path $OutputDirectory "$projectName-drc.rpt"
     $drcArguments = @("pcb", "drc", "--output", $drcReport)
     if ($FailOnViolations) {
