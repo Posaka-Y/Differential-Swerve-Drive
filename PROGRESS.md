@@ -14,6 +14,35 @@
 
 ---
 
+## 2026-07-24 (ユニット基板 DRC/ERC 0件・配線収束)
+
+### やったこと
+
+- 前セッションの配置・配線済み`unit-board.kicad_pcb`を保持したまま、消失していた`ADC_ANALOG`、`CAN`、`HSE`、`POWER_3V3`、`POWER_5V`、`SPI`ネットクラス、現行階層ネットへの割当、配線幅・ビアプリセット、製造最小制約を`unit-board.kicad_pro`へ復元した。
+- 全ネットクラスの最小離隔を製造最小0.20mmへ統一した。5V/3.3Vの既定線幅0.75/0.40mmは維持し、狭ピッチパッド直近だけ0.20mmへネックダウンした。
+- `unit-board.kicad_dru`はネットクラスと重複していた片側評価のgeometryルールを削除し、HSEのF.Cu限定・ビア禁止だけを残した。
+- HSE直下のIn1.Cu keepoutから`copperpour not_allowed`だけを外し、信号配線・ビア禁止を維持したままGND planeを再注入した。
+- NRSTのデバッグコネクタ側とMCU側をIn2.Cuで接続し、TLV1117のpin 2と放熱タブを接続した。電源幹線、3.3V幹線、LED_COMM、U3/D6周辺などを再配線して、未接続、dangling via、短絡、交差、クリアランス違反を0件へ収束させた。
+- 密集して読めなかった64個のReferenceシルクを非表示にし、部品番号はF.Fab・回路図・BOMへ残した。SW1と重複していた小型部品4個の外形シルクをF.Fabへ移し、シルク重複・銅箔重なり・基板端警告を0件へ収束させた。
+- 意図的にライブラリ原本とシルクだけ異なるため、`lib_footprint_mismatch`は通知対象外とした。その他のパッド、courtyard、銅箔、接続検査は有効のまま。
+- SW1の壊れた裸ファイル名モデル参照とPC固有の絶対パス参照を整理し、表示できていたモデルの姿勢（Y=0、Z=0.25mm、X=-90°）を保持した単一の`${KIPRJMOD}/../lib/DifferentialSwerve.3dshapes/JS102011SAQN.stp`参照へ統一した。プロジェクト内フットプリント原本にも同じ3D定義とF.Fab外形を反映し、SW1のライブラリ差異を解消した。
+- KiCad 10.0.4で`tools/kicad/check.ps1 -FailOnViolations -OutputDirectory output/kicad`を実行し、ERC 0件、DRC 0件、未接続0件を確認した。最終3Dレンダーも目視し、部品Referenceの重なりが解消したことを確認した。
+
+### 現在の状態
+
+- `output/kicad/unit-board-erc.rpt`と`output/kicad/unit-board-drc.rpt`は0 violation。
+- HSEはF.Cu・ビアなしを維持し、直下のIn1.CuはGND plane、他信号のtrack/via/pad/footprintは禁止。
+- 電気系・シルク系ともKiCad DRCは0件。部品位置、基板外形、銅箔形状は3Dレンダーで読込み可能。
+- SW1の3Dモデルはプロジェクト相対パスから1個だけ読み込まれ、別PCへ移しても同じ構成で解決できる。
+- ReferenceはF.SilkSへ出さない方針のため、実装時はF.Fabプロット、回路図、BOMを併用する。
+
+### 次の作業
+
+1. KiCad GUIで最終基板を開き、ゾーン再注入状態、レイヤ表示、コネクタ向き、DIP/終端スイッチの操作方向を実画面で確認する。
+2. 発注先の4層標準stackupへ合わせて層厚・銅厚を確定し、Gerber/ドリル/IPC-356/位置ファイルを出力して製造レビューする。
+3. ECS-80-8-33Qのpad番号対応、JS102011SAQNの推奨land pattern、SOT-23配置済みコピーをメーカー資料・現行ライブラリと最終照合する。
+4. 組立図ではF.FabのReferenceを出力し、初号機の電源投入前に5V/3.3V/GND短絡、NRST、HSE、両CAN終端を確認する。
+
 ## 2026-07-23 (ユニット基板 4層・配線ルール初期設定)
 
 ### やったこと

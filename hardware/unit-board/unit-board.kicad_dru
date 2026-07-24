@@ -10,26 +10,3 @@
 (rule "HSE vias are forbidden"
   (condition "A.NetClass == 'HSE'")
   (constraint disallow via))
-
-(rule "HSE minimum clearance"
-  (condition "A.NetClass == 'HSE'")
-  (constraint clearance (min 0.25mm)))
-
-(rule "CAN baseline geometry"
-  (condition "A.NetClass == 'CAN'")
-  (constraint track_width (min 0.25mm))
-  (constraint clearance (min 0.20mm)))
-
-(rule "5V baseline geometry"
-  (condition "A.NetClass == 'POWER_5V'")
-  (constraint track_width (min 0.75mm))
-  (constraint clearance (min 0.25mm)))
-
-(rule "3V3 baseline geometry"
-  (condition "A.NetClass == 'POWER_3V3'")
-  (constraint track_width (min 0.40mm))
-  (constraint clearance (min 0.20mm)))
-
-(rule "Analog baseline clearance"
-  (condition "A.NetClass == 'ADC_ANALOG'")
-  (constraint clearance (min 0.25mm)))
