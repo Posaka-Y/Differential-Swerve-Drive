@@ -16,3 +16,20 @@ fp-info-cache
 ~*.lck
 _autosave-*
 *.kicad_prl
+
+# Third-party vendor CAD downloads (GrabCAD/PARTcommunity/manufacturer portals;
+# redistribution generally restricted by the source site's terms of use)
+cad/current/ver3/HAMMER_CASTER_420GR38/
+cad/current/ver3/RoboMaster M2006 P36.SLDPRT
+cad/current/ver4/RoboMaster*
+cad/current/ver4/*.snapshot.*.zip
+cad/current/ver4/*.snapshot.*/
+cad/current/ver5/Hokuyo UTM-30LX v12.SLDASM
+cad/current/ver5/Hokuyo UTM-30LX v12.SLDPRT
+cad/current/ver5/differencial drive unit/RoboMaster*
+cad/current/ver5/differencial drive unit/c620.SLDASM
+cad/current/ver5/oddom unit/amt102-v*
+cad/current/ver5/xt30g-f-amass-1.snapshot.4/
+
+# Vendor installer binaries (Hokuyo proprietary tools, not ours to redistribute)
+docs/UTM-30LX/**/*.exe
