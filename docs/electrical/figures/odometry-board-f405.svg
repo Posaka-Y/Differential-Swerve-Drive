@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="540" viewBox="0 0 1200 540">
+  <style>
+    text{font-family:"Yu Gothic",Meiryo,sans-serif;fill:#172033}
+    .wire{fill:none;stroke:#172033;stroke-width:3}
+    .box{fill:#fff;stroke:#172033;stroke-width:3}
+    .mcu{fill:#fff8cf;stroke:#172033;stroke-width:3}
+    .net{font:700 16px Consolas,monospace;fill:#194f83}
+    .ref{font:bold 18px Consolas,monospace}
+    .value{font:15px "Yu Gothic",sans-serif}
+    .pin{font:14px Consolas,monospace}
+    .note{font:15px "Yu Gothic",sans-serif;fill:#8b2c20}
+  </style>
+  <rect class="mcu" x="480" y="55" width="250" height="420" rx="6"/>
+  <text class="ref" x="605" y="88" text-anchor="middle">U301</text>
+  <text class="value" x="605" y="112" text-anchor="middle">STM32F405RGT6 / LQFP64</text>
+
+  <text class="pin" x="495" y="150">VDD 19/32/48/64</text>
+  <text class="pin" x="495" y="182">VBAT 1</text>
+  <text class="pin" x="495" y="230">VDDA 13</text>
+  <text class="pin" x="495" y="262">VSSA 12*</text>
+  <text class="pin" x="495" y="326">VCAP_1 31</text>
+  <text class="pin" x="495" y="358">VCAP_2 47</text>
+  <text class="pin" x="625" y="150">PH0 5 / OSC_IN</text>
+  <text class="pin" x="625" y="182">PH1 6 / OSC_OUT</text>
+  <text class="pin" x="625" y="230">NRST 7</text>
+  <text class="pin" x="625" y="278">BOOT0 60</text>
+  <text class="pin" x="495" y="420">VSS 18/63</text>
+
+  <!-- ===== VDD/VBAT: single 3V3 rail at y=100, decoupling hangs below; labels sit above (empty area) ===== -->
+  <text class="ref" x="195" y="55">C309</text>
+  <text class="value" x="185" y="75">4.7 µF</text>
+  <text class="ref" x="330" y="40">C301-C305</text>
+  <text class="value" x="330" y="58">100 nF each</text>
+  <text class="value" x="325" y="76">(VDD x4 + VBAT)</text>
+  <path class="wire" d="M480 145H460V100H180"/>
+  <path class="wire" d="M480 177H440V100"/>
+  <text class="net" x="170" y="105" text-anchor="end">3V3</text>
+  <path class="wire" d="M230 100V128"/>
+  <path class="wire" d="M210 128H250M210 140H250M230 140V158"/>
+  <path class="wire" d="M215 158H245M220 167H240M226 176H234"/>
+  <path class="wire" d="M380 100V128"/>
+  <path class="wire" d="M360 128H400M360 140H400M380 140V158"/>
+  <path class="wire" d="M365 158H395M370 167H390M376 176H384"/>
+
+  <!-- ===== VDDA: FB301 ferrite + C307/C308, own lane below the VDD/VBAT group ===== -->
+  <path class="wire" d="M480 230H400"/>
+  <rect class="box" x="320" y="214" width="80" height="32"/>
+  <text class="ref" x="360" y="235" text-anchor="middle">FB301</text>
+  <text class="value" x="360" y="205" text-anchor="middle">BLM18AG601SN1D</text>
+  <path class="wire" d="M320 230H270"/>
+  <text class="net" x="260" y="235" text-anchor="end">3V3</text>
+  <path class="wire" d="M440 230V290"/>
+  <path class="wire" d="M420 290H460M420 302H460M440 302V320"/>
+  <path class="wire" d="M425 320H455M430 329H450M436 338H444"/>
+  <text class="ref" x="300" y="308">C307/C308</text>
+  <text class="value" x="300" y="328">100 nF + 1 µF</text>
+
+  <!-- VSSA: direct GND tie, no component -->
+  <path class="wire" d="M480 262H455"/>
+  <text class="net" x="445" y="267" text-anchor="end">GND</text>
+
+  <!-- ===== VCAP_1 / VCAP_2 ===== -->
+  <path class="wire" d="M480 326H430V354"/>
+  <path class="wire" d="M410 354H450M410 366H450M430 366V392"/>
+  <path class="wire" d="M415 392H445M420 401H440M426 410H434"/>
+  <text class="ref" x="340" y="358">C310</text><text class="value" x="325" y="380">2.2 µF</text>
+  <path class="wire" d="M480 358H455V392"/>
+  <path class="wire" d="M435 392H475M435 404H475M455 404V430"/>
+  <path class="wire" d="M440 430H470M445 439H465M451 448H459"/>
+  <text class="ref" x="360" y="411">C311</text><text class="value" x="352" y="432">2.2 µF</text>
+
+  <!-- ===== VSS: own lane, offset left of C311 so grounds don't crowd ===== -->
+  <path class="wire" d="M480 415H400V450"/>
+  <path class="wire" d="M385 450H415M390 459H410M396 468H404"/>
+  <text class="net" x="370" y="455" text-anchor="end">GND</text>
+
+  <!-- ===== HSE crystal (top-right lane, stays above y=260) ===== -->
+  <path class="wire" d="M730 145H800M730 177H800"/>
+  <rect class="box" x="800" y="130" width="110" height="62"/>
+  <text class="ref" x="855" y="155" text-anchor="middle">Y301</text>
+  <text class="value" x="855" y="178" text-anchor="middle">8 MHz</text>
+  <path class="wire" d="M770 145V205"/>
+  <path class="wire" d="M750 205H790M750 217H790M770 217V240"/>
+  <path class="wire" d="M755 240H785M760 249H780M766 258H774"/>
+  <text class="ref" x="695" y="212">C306</text><text class="value" x="690" y="232">10 pF</text>
+  <path class="wire" d="M940 177V205"/>
+  <path class="wire" d="M920 205H960M920 217H960M940 217V240"/>
+  <path class="wire" d="M925 240H955M930 249H950M936 258H944"/>
+  <text class="ref" x="975" y="212">C312</text><text class="value" x="975" y="232">10 pF</text>
+  <path class="wire" d="M910 177H940"/>
+
+  <!-- ===== NRST + BOOT0 (bottom-right lane, y>=300, clear of HSE above) ===== -->
+  <path class="wire" d="M730 225H730V300H1050"/>
+  <path class="wire" d="M1050 300V320"/>
+  <path class="wire" d="M1030 320H1070M1030 332H1070M1050 332V350"/>
+  <path class="wire" d="M1035 350H1065M1040 359H1060M1046 368H1054"/>
+  <text class="ref" x="1080" y="325">C313</text><text class="value" x="1080" y="345">100 nF</text>
+
+  <path class="wire" d="M730 278V406H850"/>
+  <rect class="box" x="850" y="390" width="80" height="32"/>
+  <text class="ref" x="890" y="411" text-anchor="middle">R301</text>
+  <text class="value" x="940" y="411">10 kΩ pull-down</text>
+  <path class="wire" d="M930 406H960V430"/>
+  <path class="wire" d="M945 430H975M950 439H970M956 448H964"/>
+
+  <text class="note" x="60" y="485">*VSSA=pin12はST DS8626データシート記載値。STM32F405_ODOMETRY_PIN_ASSIGNMENT.mdのピン表に未転記のため要追記。</text>
+  <text class="note" x="60" y="505">VCAP_1/2は各2.2 µF以外へ接続しない</text>
+  <text class="note" x="60" y="525">VDD 4本・VSS 2本を省略せず全て接続</text>
+</svg>

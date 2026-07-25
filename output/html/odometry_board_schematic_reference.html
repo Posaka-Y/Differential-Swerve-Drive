@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STM32F405 オドメトリ基板 Rev.A 回路図転記表</title>
+  <style>
+    @font-face {
+      font-family: "Noto Sans JP";
+      src: url("file:///C:/Windows/Fonts/NotoSansJP-VF.ttf") format("truetype");
+      font-weight: 100 900;
+    }
+    :root {
+      --ink: #17202a;
+      --muted: #566573;
+      --line: #c8d3dc;
+      --navy: #16324f;
+      --blue: #1877a8;
+      --cyan: #e9f7fb;
+      --green: #1f7a55;
+      --green-bg: #edf8f2;
+      --orange: #bd6418;
+      --orange-bg: #fff6e9;
+      --red: #a93636;
+      --paper: #fff;
+      --canvas: #eef2f5;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--canvas); }
+    body {
+      margin: 0 auto;
+      max-width: 1120px;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Noto Sans JP", "Yu Gothic", sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    main { padding: 42px 54px 60px; }
+    header {
+      padding: 42px 54px 34px;
+      color: #fff;
+      background: linear-gradient(130deg, #102a43 0%, #155d82 70%, #168aad 100%);
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #aee8ff;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: 31px; line-height: 1.35; }
+    header .sub { margin: 12px 0 0; color: #d9f1fb; font-size: 15px; }
+    h2 {
+      margin: 34px 0 14px;
+      padding-bottom: 7px;
+      color: var(--navy);
+      border-bottom: 2px solid #5bb6d6;
+      font-size: 21px;
+      line-height: 1.35;
+    }
+    h3 { margin: 24px 0 9px; color: var(--navy); font-size: 16px; }
+    p { margin: 8px 0; }
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #17324d;
+      background: #edf3f7;
+      font-family: Consolas, monospace;
+      font-size: .92em;
+    }
+    .lead {
+      margin: 0 0 20px;
+      padding: 15px 18px;
+      border-left: 5px solid var(--blue);
+      background: var(--cyan);
+      font-size: 15px;
+    }
+    .badge {
+      display: inline-block;
+      margin-right: 7px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #d7f4ff;
+      color: #0e5578;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: 1fr 34px 1fr 34px 1.2fr 34px 1fr;
+      align-items: stretch;
+      margin: 16px 0 18px;
+    }
+    .flow .box {
+      min-height: 82px;
+      padding: 13px 12px;
+      border: 1.5px solid #8bb7ca;
+      border-radius: 8px;
+      background: #f7fcfe;
+      text-align: center;
+    }
+    .flow .box strong { display: block; margin-bottom: 5px; color: var(--navy); }
+    .flow .arrow { align-self: center; color: var(--blue); text-align: center; font-size: 24px; }
+    .zones {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+      padding: 13px;
+      border: 1px solid var(--line);
+      background: #fafcfd;
+    }
+    .zone {
+      padding: 13px;
+      border: 1px solid #b7c7d2;
+      border-radius: 6px;
+      background: #fff;
+    }
+    .zone strong { color: var(--navy); }
+    .zone.center { grid-row: span 2; display: flex; align-items: center; justify-content: center; text-align: center; }
+    .zone.bottom { grid-column: 1 / 4; }
+    table {
+      width: 100%;
+      margin: 10px 0 18px;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    th {
+      padding: 8px 9px;
+      color: #fff;
+      background: var(--navy);
+      border: 1px solid var(--navy);
+      text-align: left;
+    }
+    td {
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) { background: #f7f9fb; }
+    .pin-table td:first-child, .pin-table th:first-child { width: 18%; }
+    .callout {
+      margin: 14px 0;
+      padding: 12px 15px;
+      border: 1px solid #f0c27b;
+      border-left: 5px solid var(--orange);
+      background: var(--orange-bg);
+    }
+    .ok {
+      border-color: #9ed1ba;
+      border-left-color: var(--green);
+      background: var(--green-bg);
+    }
+    .signal-path {
+      margin: 12px 0;
+      padding: 13px;
+      border: 2px solid #77a8bd;
+      border-radius: 7px;
+      color: var(--navy);
+      background: #f1f9fc;
+      text-align: center;
+      font-family: Consolas, "Noto Sans JP", monospace;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+    ul, ol { margin: 8px 0 12px; padding-left: 23px; }
+    li { margin: 4px 0; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .small { color: var(--muted); font-size: 12px; }
+    .net-list {
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      background: #f8fafb;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.85;
+      word-spacing: 8px;
+    }
+    footer {
+      padding: 18px 54px;
+      color: #d9e6ed;
+      background: var(--navy);
+      font-size: 11px;
+    }
+    a { color: #0b6c9c; }
+    .page-break { break-before: page; }
+    @media print {
+      @page { size: A4 landscape; margin: 11mm; }
+      html, body { background: #fff; max-width: none; }
+      body { font-size: 10.5px; line-height: 1.45; }
+      header { padding: 8mm 10mm 6mm; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      main { padding: 4mm 8mm 6mm; }
+      h1 { font-size: 24px; }
+      h2 { margin-top: 18px; font-size: 17px; break-after: avoid; }
+      h3 { margin-top: 14px; font-size: 13px; break-after: avoid; }
+      table { font-size: 9px; margin-bottom: 10px; break-inside: avoid; }
+      th, td { padding: 4px 6px; }
+      .lead, .callout, .signal-path, .flow, .zones, .two-col { break-inside: avoid; }
+      .flow .box { min-height: 57px; padding: 8px; }
+      .zone { padding: 8px; }
+      footer { display: none; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="eyebrow">Differential Swerve / Hardware Design</p>
+    <h1>STM32F405 オドメトリ基板 Rev.A<br>回路図転記表</h1>
+    <p class="sub">AMT102-V x3 + ICM-42688-P + Classic CAN / 2026-07-25</p>
+  </header>
+
+  <main>
+    <p class="lead">
+      <span class="badge">確定</span>
+      これは回路図そのものではなく、KiCadへ転記するための人間向け一覧。
+      <strong>部品名・値・Footprint・接続先</strong>を1か所で追えるようにした。
+      回路図は階層シートを使わずA3横1枚で作る。
+    </p>
+
+    <h2>1. シート全体構成</h2>
+    <div class="zones">
+      <div class="zone"><strong>左上: 電源</strong><br>5V入力、LM66100、3.3V LDO</div>
+      <div class="zone center"><strong>中央: STM32F405RGT6</strong><br>電源、HSE、VCAP、Reset、BOOT</div>
+      <div class="zone"><strong>右上: センサーCAN</strong><br>TCAN1051V、ESD、終端、GH x2</div>
+      <div class="zone"><strong>左中: Debug / ID / LED</strong><br>SWD/UART、3bit DIP、状態LED</div>
+      <div class="zone"><strong>右中: IMU</strong><br>ICM-42688-P、SPI3、INT1/2</div>
+      <div class="zone bottom"><strong>下段: AMT102入力 x3</strong><br>各輪を同じ並びで反復: GH4 → TVS → 100Ω → Schmitt buffer → Timer Encoder input</div>
+    </div>
+
+    <table>
+      <thead><tr><th>RefDes帯</th><th>ブロック</th><th>主な部品</th></tr></thead>
+      <tbody>
+        <tr><td>100</td><td>5V入力・保護</td><td>J101、U101 LM66100、C101</td></tr>
+        <tr><td>200</td><td>3.3V LDO</td><td>U201 TLV1117LV33、C201-C204</td></tr>
+        <tr><td>300</td><td>F405最小回路</td><td>U301、Y301、FB301、C301-C313、R301-R302</td></tr>
+        <tr><td>400</td><td>センサーCAN</td><td>U401、D401、SW401、R401、C401-C402、J401-J402</td></tr>
+        <tr><td>500</td><td>AMT102入力 x3</td><td>J501-J503、D501-D503、U501-U503、R511-R516、C511-C516</td></tr>
+        <tr><td>600</td><td>ICM-42688-P</td><td>J601、C601-C602</td></tr>
+        <tr><td>700</td><td>Debug・ID・LED</td><td>J701、SW701、D701-D704、R701-R705</td></tr>
+        <tr><td>800</td><td>テストポイント</td><td>TP801以降</td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. 部品・値・Footprint一覧</h2>
+    <table>
+      <thead><tr><th>RefDes</th><th>部品 / Value</th><th>KiCad Footprint</th><th>用途・接続先</th></tr></thead>
+      <tbody>
+        <tr><td>J101</td><td><code>SM02B-GHS-TB</code></td><td><code>Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal</code></td><td>5V入力。1=PWR_5V_IN、2=GND</td></tr>
+        <tr><td>U101</td><td><code>LM66100DCKR</code></td><td><code>Package_TO_SOT_SMD:SOT-363_SC-70-6</code></td><td>5V逆接・逆流保護。VIN=PWR_5V_IN、VOUT/CE_N=PWR_5V</td></tr>
+        <tr><td>U201</td><td><code>TLV1117LV33DCYR</code></td><td><code>Package_TO_SOT_SMD:SOT-223-3_TabPin2</code></td><td>5V→3.3V。pin 1=GND、2/tab=3V3、3=PWR_5V</td></tr>
+        <tr><td>U301</td><td><code>STM32F405RGT6</code></td><td><code>Package_QFP:LQFP-64_10x10mm_P0.5mm</code></td><td>オドメトリ演算、SPI IMU、Classic CAN、Timer Encoder x3</td></tr>
+        <tr><td>Y301</td><td><code>ECS-80-8-33Q-JES-TR</code> 8MHz</td><td><code>Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm</code></td><td>PH0/PH1。信号padとGND padは公式推奨ランドと再照合</td></tr>
+        <tr><td>FB301</td><td><code>BLM18AG601SN1D</code></td><td><code>Resistor_SMD:R_0603_1608Metric</code></td><td>3V3→VDDA_A</td></tr>
+        <tr><td>U401</td><td><code>TCAN1051VDRQ1</code></td><td><code>Package_SO:SOIC-8_3.9x4.9mm_P1.27mm</code></td><td>PA12/PA11↔COMM_A/B。VCC=5V、VIO=3.3V</td></tr>
+        <tr><td>D401</td><td><code>ESD2CAN24DBZRQ1</code></td><td><code>Package_TO_SOT_SMD:SOT-23</code></td><td>COMM_A/BのCAN ESD保護。pin 3=GND</td></tr>
+        <tr><td>SW401</td><td><code>JS102011SAQN</code></td><td><code>DifferentialSwerve:JS102011SAQN</code></td><td>R401 120Ω終端をCOMM_A/B間でON/OFF</td></tr>
+        <tr><td>J401-J402</td><td><code>SM03B-GHS-TB</code></td><td><code>Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal</code></td><td>1=COMM_A、2=COMM_B、3=GND。完全並列</td></tr>
+        <tr><td>J501-J503</td><td><code>SM04B-GHS-TB</code></td><td><code>Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal</code></td><td>AMT102-V。1=5V、2=GND、3=A、4=B</td></tr>
+        <tr><td>D501-D503</td><td><code>ESDS452DBZR</code></td><td><code>Package_TO_SOT_SMD:SOT-23</code></td><td>各輪A/Bの5.5V対応2ch双方向TVS。pin 3=GND</td></tr>
+        <tr><td>R511-R516</td><td>100Ω 初期値</td><td><code>Resistor_SMD:R_0603_1608Metric</code></td><td>TVS後、Schmitt buffer前の直列抵抗</td></tr>
+        <tr><td>C511-C516</td><td>DNP</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>バッファ入力-GND間のRC調整用</td></tr>
+        <tr><td>U501-U503</td><td><code>SN74LVC2G17DBVR</code></td><td><code>Package_TO_SOT_SMD:SOT-23-6</code></td><td>3.3V給電、5V tolerant Schmitt入力。A/BをF405へ</td></tr>
+        <tr><td>J601</td><td><code>ICM-42688-P</code>ブレークアウト</td><td><strong>TBD: 現物到着後</strong></td><td>3.3V、SPI3、CS=PD2、INT1=PC4、INT2=PC5</td></tr>
+        <tr><td>J701</td><td><code>BM06B-GHS-TBT</code></td><td><code>Connector_JST:JST_GH_BM06B-GHS-TBT_1x06-1MP_P1.25mm_Vertical</code></td><td>GND/SWCLK/SWDIO/NRST/DBG_TX/DBG_RX</td></tr>
+        <tr><td>SW701</td><td><code>A6S-3104-H</code></td><td>部品ライブラリ登録時に公式寸法照合</td><td>PC6/PC7/PC8→GND、内部pull-up、ON=Low</td></tr>
+        <tr><td>D701-D704</td><td>PWR/RUN/COMM/ERR LED</td><td><code>LED_SMD:LED_0603_1608Metric</code></td><td>各1kΩ。緑/緑/黄/赤</td></tr>
+        <tr><td>R/C共通</td><td>本文記載値</td><td><code>R_0603_1608Metric</code> / <code>C_0603_1608Metric</code></td><td>unit board採用品を優先流用</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3. 電源とF405最小回路</h2>
+    <div class="flow">
+      <div class="box"><strong>J101</strong>GH 2pin<br>5V / GND</div><div class="arrow">→</div>
+      <div class="box"><strong>U101</strong>LM66100DCKR<br>逆流・逆接保護</div><div class="arrow">→</div>
+      <div class="box"><strong>U201</strong>TLV1117LV33DCYR<br>5V → 3.3V</div><div class="arrow">→</div>
+      <div class="box"><strong>U301</strong>STM32F405RGT6<br>LQFP64</div>
+    </div>
+
+    <table class="pin-table">
+      <thead><tr><th>機能</th><th>接続</th><th>注意点</th></tr></thead>
+      <tbody>
+        <tr><td>VDD</td><td>pin 19 / 32 / 48 / 64 → 3V3</td><td>各pinに100nF、全体に4.7uF</td></tr>
+        <tr><td>VSS</td><td>pin 18 / 63 → GND</td><td>両方を接続</td></tr>
+        <tr><td>VBAT</td><td>pin 1 → 3V3</td><td>100nFを近接</td></tr>
+        <tr><td>VDDA/VSSA</td><td>3V3 → FB301 → VDDA、VSSA → GND</td><td>100nF + 1uF</td></tr>
+        <tr><td>VCAP_1/2</td><td>pin 31 / 47 → 各2.2uF → GND</td><td><strong>他ネットへ接続禁止、ESR &lt; 2Ω</strong></td></tr>
+        <tr><td>HSE</td><td>PH0 pin 5 / PH1 pin 6</td><td>8MHz水晶 + C0G 10pF x2</td></tr>
+        <tr><td>NRST</td><td>pin 7</td><td>100nF to GND、Debug header、TP</td></tr>
+        <tr><td>BOOT0</td><td>pin 60</td><td>10kΩ pull-down、3V3隣接TP</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>F405固有:</strong> G474と違いVCAP_1/VCAP_2が必須。HSEはPH0/PH1、デバッグUARTはUSART2、
+      BOOT0はGPIO非共用の専用pin。
+    </div>
+
+    <div class="page-break"></div>
+    <h2>4. センサーCAN</h2>
+    <table>
+      <thead><tr><th>Net</th><th>接続</th></tr></thead>
+      <tbody>
+        <tr><td><code>COMM_TX</code></td><td>F405 PA12 → U401 TXD pin 1</td></tr>
+        <tr><td><code>COMM_RX</code></td><td>U401 RXD pin 4 → F405 PA11</td></tr>
+        <tr><td><code>COMM_A</code></td><td>U401 CANH pin 7、D401、120Ω終端、J401/J402 pin 1</td></tr>
+        <tr><td><code>COMM_B</code></td><td>U401 CANL pin 6、D401、120Ω終端、J401/J402 pin 2</td></tr>
+        <tr><td><code>GND</code></td><td>U401 pin 2 / S pin 8、D401 pin 3、J401/J402 pin 3</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>U401: <code>TCAN1051VDRQ1</code>、VCC=5V、VIO=3.3V、S=GND。</li>
+      <li>D401: <code>ESD2CAN24DBZRQ1</code>をCANコネクタ側へ置く。</li>
+      <li><code>COMM_A - R401 120Ω - SW401 - COMM_B</code>。SW401は<code>JS102011SAQN</code>。</li>
+      <li>J401/J402: <code>SM03B-GHS-TB</code>の完全並列パススルー。</li>
+    </ul>
+
+    <h2>5. AMT102-V入力 x3</h2>
+    <p>各コネクタは<code>SM04B-GHS-TB</code>、pin 1=5V、2=GND、3=A、4=B。Z相は配線しない。</p>
+    <div class="signal-path">GH4 → ESDS452DBZR → 100Ω → SN74LVC2G17DBVR → STM32 Timer Encoder input</div>
+
+    <table>
+      <thead><tr><th>Wheel</th><th>A相経路</th><th>B相経路</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1 / TIM2</td>
+          <td>J501-3 → D501-1 → R511 → U501-1 → U501-6 → PA0</td>
+          <td>J501-4 → D501-2 → R512 → U501-3 → U501-4 → PA1</td>
+        </tr>
+        <tr>
+          <td>2 / TIM3</td>
+          <td>J502-3 → D502-1 → R513 → U502-1 → U502-6 → PA6</td>
+          <td>J502-4 → D502-2 → R514 → U502-3 → U502-4 → PA7</td>
+        </tr>
+        <tr>
+          <td>3 / TIM4</td>
+          <td>J503-3 → D503-1 → R515 → U503-1 → U503-6 → PB6</td>
+          <td>J503-4 → D503-2 → R516 → U503-3 → U503-4 → PB7</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="two-col">
+      <div>
+        <h3>ESD保護</h3>
+        <ul>
+          <li>D501-D503: <code>ESDS452DBZR</code></li>
+          <li>pin 1/2=A/B、pin 3=GND</li>
+          <li>5.5V working、2ch双方向、SOT-23-3</li>
+          <li>コネクタ直近配置、GND帰路を短くする</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Schmitt buffer</h3>
+        <ul>
+          <li>U501-U503: <code>SN74LVC2G17DBVR</code></li>
+          <li>3.3V給電、各100nF</li>
+          <li>pin 1=1A、2=GND、3=2A</li>
+          <li>pin 4=2Y、5=3V3、6=1Y</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout ok">
+      R511-R516は100Ω初期値。C511-C516は入力からGNDへのRC調整用0603で初期DNP。
+      容量は最大入力周波数と実波形を確認してから決める。
+    </div>
+
+    <h2>6. ICM-42688-Pブレークアウト</h2>
+    <table>
+      <thead><tr><th>モジュール信号</th><th>Net</th><th>F405</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr><td>VCC</td><td>3V3</td><td>-</td><td>本基板では3.3V固定</td></tr>
+        <tr><td>GND</td><td>GND</td><td>-</td><td>-</td></tr>
+        <tr><td>AD0 / MISO</td><td>SPI3_MISO</td><td>PC11</td><td>4-wire SPI</td></tr>
+        <tr><td>SDA / MOSI</td><td>SPI3_MOSI</td><td>PC12</td><td>4-wire SPI</td></tr>
+        <tr><td>SCL / SCLK</td><td>SPI3_SCK</td><td>PC10</td><td>Mode 0でbring-up</td></tr>
+        <tr><td>CS</td><td>IMU_CS_N</td><td>PD2</td><td>Low active</td></tr>
+        <tr><td>INT1</td><td>IMU_INT1</td><td>PC4</td><td>Data Ready</td></tr>
+        <tr><td>INT2</td><td>IMU_INT2</td><td>PC5</td><td>予備割り込み</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>J601直近に100nF + 2.2uF。</li>
+      <li>回路図へ<strong>VCC=3.3V ONLY ON THIS BOARD</strong>と注記。</li>
+      <li>pin 1方向、pitch、固定穴、オンボード回路は現物到着後に確定。</li>
+      <li>初回確認: SPI Mode 0、SCK 1MHz以下、WHO_AM_I <code>0x75</code> → <code>0x47</code>。</li>
+    </ul>
+
+    <h2>7. Debug・ID・LED</h2>
+    <table>
+      <thead><tr><th>部品</th><th>接続</th></tr></thead>
+      <tbody>
+        <tr><td>J701 / GH 6pin</td><td>1=GND、2=SWCLK(PA14)、3=SWDIO(PA13)、4=NRST、5=DBG_TX(PA2)、6=DBG_RX(PA3)</td></tr>
+        <tr><td>SW701 / A6S-3104-H</td><td>PC6 / PC7 / PC8を各switch経由でGND。内部pull-up、ON=Low。unitId=4はbit2のみON</td></tr>
+        <tr><td>D701</td><td>PWR緑、3V3表示</td></tr>
+        <tr><td>D702</td><td>RUN緑、PA5、1kΩ</td></tr>
+        <tr><td>D703</td><td>COMM黄、PB10、1kΩ</td></tr>
+        <tr><td>D704</td><td>ERR赤、PB11、1kΩ</td></tr>
+        <tr><td>TP</td><td>PB3へSWOテストポイント</td></tr>
+      </tbody>
+    </table>
+
+    <h2>8. ローカルネットラベル</h2>
+    <div class="net-list">
+      PWR_5V_IN PWR_5V 3V3 VDDA_A GND<br>
+      COMM_TX COMM_RX COMM_A COMM_B<br>
+      W1_A W1_B W2_A W2_B W3_A W3_B<br>
+      SPI3_SCK SPI3_MISO SPI3_MOSI IMU_CS_N IMU_INT1 IMU_INT2<br>
+      SWCLK SWDIO NRST DBG_TX DBG_RX<br>
+      UNIT_ID0 UNIT_ID1 UNIT_ID2 LED_RUN LED_COMM LED_ERR
+    </div>
+
+    <h2>9. 初回ERC前チェック</h2>
+    <ol>
+      <li>F405の全VDD/VSS、VDDA/VSSA、VBAT、VCAP_1/2が接続されている。</li>
+      <li>VCAPは各2.2uF以外へ接続されていない。</li>
+      <li>CANはPA12 → TXD、RXD → PA11であり逆でない。</li>
+      <li>TCANのVCC=5V、VIO=3.3V、S=GND。</li>
+      <li>TLV1117のtab/pin 2が3V3であり、GNDでない。</li>
+      <li>AMT102コネクタは1=5V、2=GND、3=A、4=B。</li>
+      <li>ESDS452はpin 1/2=A/B、pin 3=GND。TVSが100Ω抵抗よりコネクタ側にある。</li>
+      <li>SN74LVC2G17のVCC=3.3V、各ICへ100nF。</li>
+      <li>IMUは3.3V給電で、CSのLow activeとINT方向を注記している。</li>
+      <li>UNIT_IDはPC6/7/8で、unitId=4設定がシルクで読める。</li>
+      <li>未使用MCU pinにNo Connectを明示している。</li>
+      <li>ERC後にPDFを出し、本書の接続表と1:1照合する。</li>
+    </ol>
+
+    <p class="small">
+      正本: docs/electrical/STM32F405_ODOMETRY_PIN_ASSIGNMENT.md、
+      docs/electrical/ODOMETRY_BOARD_REQUIREMENTS.md、
+      docs/electrical/ODOMETRY_BOARD_SCHEMATIC_REFERENCE.md
+    </p>
+  </main>
+  <footer>Generated for Differential Swerve Drive hardware design / Rev.A</footer>
+</body>
+</html>

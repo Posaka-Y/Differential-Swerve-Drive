@@ -84,4 +84,6 @@ C620のID設定: SETボタンでモーター1=ID1、モーター2=ID2に設定�
 
 ## 補足: オドメトリユニット
 
-3輪オドメトリ(AMT102 x3、Z相なし4線VCC/GND/A/B)+専用G474基板(`docs/electrical/ODOMETRY_BOARD_REQUIREMENTS.md`)。オドメトリのベンチ検証もNUCLEOで可能(TIM2/TIM3/TIM4 Encoder Mode + 手回しでカウント連続性・方向符号・1回転count数の確認)。駆動ユニットのテスト完了後に同じNUCLEOで実施できる。
+3輪オドメトリ(AMT102 x3、Z相なし4線VCC/GND/A/B)+専用STM32F405RGT6基板(`docs/electrical/ODOMETRY_BOARD_REQUIREMENTS.md`)。
+G474 NUCLEOではタイマEncoder Modeと上位ロジックの先行試験だけを行えるが、F405固有のクロック、VCAPを含む電源、USART2、bxCAN、Flash sectorは検証できない。
+最終ベンチ試験はF405オドメトリ基板またはF405評価ボードで、TIM2/TIM3/TIM4の手回しカウント、方向符号、1回転count数まで確認する。

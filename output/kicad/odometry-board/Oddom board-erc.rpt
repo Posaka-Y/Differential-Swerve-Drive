@@ -1,0 +1,74 @@
+ERC report (2026-07-26T01:33:38, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+
+***** Sheet /AMT102_input/
+[missing_power_pin]: Symbol U5 has input power pins in units [ C ] that are not placed
+    ; error
+    @(134.62 mm, 69.85 mm): Symbol U5 [74LVC2G17]
+[missing_power_pin]: Symbol U3 has input power pins in units [ C ] that are not placed
+    ; error
+    @(137.16 mm, 102.87 mm): Symbol U3 [74LVC2G17]
+[missing_input_pin]: Symbol U5 has input pins in units [ A ] that are not placed
+    ; warning
+    @(134.62 mm, 69.85 mm): Symbol U5 [74LVC2G17]
+[missing_unit]: Symbol U5 has unplaced units [ A, C ]
+    ; warning
+    @(134.62 mm, 69.85 mm): Symbol U5 [74LVC2G17]
+[missing_input_pin]: Symbol U3 has input pins in units [ A ] that are not placed
+    ; warning
+    @(137.16 mm, 102.87 mm): Symbol U3 [74LVC2G17]
+[missing_unit]: Symbol U3 has unplaced units [ A, C ]
+    ; warning
+    @(137.16 mm, 102.87 mm): Symbol U3 [74LVC2G17]
+
+***** Sheet /AMT102_input1/
+[missing_power_pin]: Symbol U6 has input power pins in units [ C ] that are not placed
+    ; error
+    @(134.62 mm, 69.85 mm): Symbol U6 [74LVC2G17]
+[missing_power_pin]: Symbol U7 has input power pins in units [ C ] that are not placed
+    ; error
+    @(137.16 mm, 102.87 mm): Symbol U7 [74LVC2G17]
+[missing_input_pin]: Symbol U6 has input pins in units [ A ] that are not placed
+    ; warning
+    @(134.62 mm, 69.85 mm): Symbol U6 [74LVC2G17]
+[missing_unit]: Symbol U6 has unplaced units [ A, C ]
+    ; warning
+    @(134.62 mm, 69.85 mm): Symbol U6 [74LVC2G17]
+[missing_input_pin]: Symbol U7 has input pins in units [ A ] that are not placed
+    ; warning
+    @(137.16 mm, 102.87 mm): Symbol U7 [74LVC2G17]
+[missing_unit]: Symbol U7 has unplaced units [ A, C ]
+    ; warning
+    @(137.16 mm, 102.87 mm): Symbol U7 [74LVC2G17]
+
+***** Sheet /AMT102_input2/
+[missing_power_pin]: Symbol U8 has input power pins in units [ C ] that are not placed
+    ; error
+    @(134.62 mm, 69.85 mm): Symbol U8 [74LVC2G17]
+[missing_power_pin]: Symbol U9 has input power pins in units [ C ] that are not placed
+    ; error
+    @(137.16 mm, 102.87 mm): Symbol U9 [74LVC2G17]
+[missing_input_pin]: Symbol U8 has input pins in units [ A ] that are not placed
+    ; warning
+    @(134.62 mm, 69.85 mm): Symbol U8 [74LVC2G17]
+[missing_unit]: Symbol U8 has unplaced units [ A, C ]
+    ; warning
+    @(134.62 mm, 69.85 mm): Symbol U8 [74LVC2G17]
+[missing_input_pin]: Symbol U9 has input pins in units [ A ] that are not placed
+    ; warning
+    @(137.16 mm, 102.87 mm): Symbol U9 [74LVC2G17]
+[missing_unit]: Symbol U9 has unplaced units [ A, C ]
+    ; warning
+    @(137.16 mm, 102.87 mm): Symbol U9 [74LVC2G17]
+
+***** Sheet /CAN_interface/
+
+ ** ERC messages: 18  Errors 6  Warnings 12
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

@@ -14,6 +14,267 @@
 
 ---
 
+## 2026-07-26 (F405オドメトリ回路図 転記中の部品・接続確認)
+
+### やったこと
+
+- ユーザーがKiCad上でA3横1枚のオドメトリ回路図を転記する過程で、AMT102入力回路とF405最小回路の接続を再確認した。
+- `ESDS452DBZR`はAMT102のA/B各信号をGNDへクランプする2ch双方向TVSであり、A-B間を短絡する部品ではないことを確認した。pin 1/2をA/B、pin 3をGNDとし、AMTコネクタ1個につき1個をコネクタ直近へ配置する。
+- KiCad 10標準ライブラリには`ESDS452DBZR`の型番固有シンボルがないことを確認した。SOT-23フットプリントは標準にあるため、シンボルは双方向2ch・pin 1/2=IO・pin 3=GNDを満たすものを作成またはピン割当を検証して使用する。
+- `SN74LVC2G17DBVR`はKiCad 10標準`74xGxx:74LVC2G17`を使用でき、DBVには`Package_TO_SOT_SMD:SOT-23-6`を割り当てることを確認した。3.3V給電、最大5.5V入力対応の非反転2ch Schmitt bufferとして、AMTの5V A/B信号を整形してF405へ3.3V出力する。
+- `C511-C516`は`R511-R516`とRCローパスを構成する入力-GND間の調整用パッドで、初期実装はDNPと再確認した。`C501-C503`の100nFはSchmitt bufferの必須デカップリングであり、役割を区別した。
+- STM32F405RGT6のpin 63はVSSであることをST資料とKiCad 10標準`STM32F405RGTx`で再確認した。KiCadシンボルではpin 18のVSSと同一座標に重ねた非表示pinのため、表示上はpin 18だけに見えるが、VSSをGNDへ接続すればpin 63も同一ネットになる。
+- BOOT0は専用pin 60から10kΩでGNDへpull-downし、BOOT0テストポイントと隣接3V3テストポイントを設け、ROM bootloader使用時だけ短絡してリセットする接続と再確認した。
+
+### 現在の状態
+
+- 回路図の正本要件、簡易回路図、部品・Footprint・接続表は揃っており、ユーザーがKiCadへ手動転記中。
+- 今回はKiCad回路図本体を変更していない。
+- AMT入力は`connector -> ESDS452 -> 100Ω -> SN74LVC2G17 -> F405 timer input`、RCコンデンサは初期DNPで確定済み。
+
+### 次の作業
+
+1. `hardware/odometry-board/Oddom board/`の回路図転記を続け、F405電源、BOOT0、AMT102 x3、CAN、IMU、Debug/ID/LEDをA3横1枚へ配置・配線する。
+2. `ESDS452DBZR`はpin 1/2=保護IO、pin 3=GNDとなる型番固有シンボルを用意するか、採用する代用シンボルのピン番号と双方向表現をTIデータシートに照合する。
+3. 転記完了後、ERC、ネットリスト、PDFを出力し、特にVSS pin 18/63、VDD pin 19/32/48/64、VCAP_1/2、BOOT0 pin 60、AMT A/B全6chを接続表と照合する。
+
+---
+
+## 2026-07-25 (オドメトリ基板 簡易回路図＋BOM作成)
+
+### やったこと
+
+- unit board版`UNIT_BOARD_SCHEMATIC_WITH_BOM`と同じA3横レイアウトで、ブロック別の簡易回路図＋BOMを作成した。
+- 6ページ構成: 5V/3.3V電源、F405最小回路、センサーCAN、AMT102 x3、ICM-42688-P、Debug/ID/LED。
+- 各ページへRefDes、部品名/値、KiCad Footprint、接続先・注意事項を併記した。
+- 電源はunit board共通図を流用し、F405固有回路とCAN/AMT102/IMU/Debug図はオドメトリ用信号名で新規作成した。
+- PDF全6ページをレンダリングし、文字切れ・重なり・図欠落がないことを目視確認した。
+
+### 現在の状態
+
+- HTML: `docs/electrical/ODOMETRY_BOARD_SCHEMATIC_WITH_BOM.html`
+- PDF: `docs/electrical/ODOMETRY_BOARD_SCHEMATIC_WITH_BOM.pdf`
+- 配布用PDF: `output/pdf/odometry-board-schematic-with-bom.pdf`
+- KiCad回路図本体は変更していない。
+
+### 次の作業
+
+1. 簡易回路図を見ながらKiCadのA3横1枚へ回路を転記する。
+2. IMU現物到着後にJ601 Footprint、pin 1、pitch、外形、固定穴を追記する。
+3. 転記後にERC/PDF出力し、簡易回路図の各ネットと1:1照合する。
+
+---
+
+## 2026-07-25 (オドメトリ回路図リファレンス HTML/PDF化)
+
+### やったこと
+
+- Markdown版の接続仕様を、図表・機能ゾーン・信号フロー付きのHTMLへ再構成した。
+- ユーザー意図に合わせ、回路図そのものではなく「部品名・値・KiCad Footprint・接続先」を追える回路図転記表へ修正した。
+- Chrome印刷用CSSでA4横7ページのPDFを生成した。
+- PDF全7ページをPNGへレンダリングし、文字化け、表の切れ、重なりがないことを目視確認した。
+- 一時的に作成したKiCad自動生成ドラフトは要求範囲外と判明したため、正規成果物から除外した。ユーザー編集中の`Oddom board.kicad_sch`は変更していない。
+
+### 現在の状態
+
+- HTML: `output/html/odometry_board_schematic_reference.html`
+- PDF: `output/pdf/odometry_board_schematic_reference.pdf`
+- 回路図本体はKiCad GUIでロック中のため未変更。
+
+### 次の作業
+
+1. HTML/PDFを横に表示しながら、KiCadのA3横1枚へ100番台順で部品を配置する。
+2. 回路図保存・終了後、ERC/PDF出力と接続表の1:1照合を行う。
+
+---
+
+## 2026-07-25 (オドメトリ基板 フラット回路図方針確定)
+
+### やったこと
+
+- オドメトリ基板Rev.Aは階層シートを使わず、A3横1枚のフラット回路図へまとめる方針を確定した。
+- 電源、F405、CAN、AMT102 x3、ICM-42688-P、Debug/ID/LEDのゾーン配置、100番台RefDes、ローカルネットラベル、接続表を`ODOMETRY_BOARD_SCHEMATIC_REFERENCE.md`へ整理した。
+- AMT102入力は`ESDS452DBZR` x3を正式選定し、connector -> TVS -> 100Ω初期値の直列抵抗 -> Schmitt buffer -> MCUの順に確定した。RCはDNP footprintのみ用意する。
+- `hardware/odometry-board/Oddom board/`にKiCad 10の新規プロジェクトが作成されていることを確認した。
+
+### 現在の状態
+
+- 新規回路図は空のA4シートで、KiCad GUIにより編集中ロックされている。
+- 同時編集による破損を避けるため、今回はこちらから`.kicad_sch`本体を書き換えていない。
+- 1枚へ転記する接続仕様とRefDesは準備完了。
+
+### 次の作業
+
+1. KiCad上で用紙をA3横へ変更し、リファレンス資料のゾーン順に部品を配置・配線する。
+2. 保存・終了後、`tools/kicad/check.ps1`でERC/PDF出力を行い、接続表とネットリストを照合する。
+
+---
+
+## 2026-07-25 (ICM-42688-P IMUモジュール購入反映)
+
+### やったこと
+
+- ユーザー購入品を`ICM-42688-P`搭載ブレークアウトモジュールとして採用確定した。購入先はAliExpress item `1005012473450791`。
+- TDK公式仕様で6軸、VDD/VDDIO=1.71～3.6V、I2C/I3C/SPI対応を確認し、オドメトリ基板では3.3V・4-wire SPIを使用する方針とした。
+- F405側をSPI3 PC10=SCK、PC11=MISO、PC12=MOSI、PD2=`IMU_CS_N`、PC4=`IMU_INT1` Data Ready、PC5=`IMU_INT2`予約に確定した。
+- キャリア側のIMU電源デカップリングはunit board採用品の100nF+2.2µFを流用する。
+- 初回bring-upはSPI Mode 0・1MHz以下で`WHO_AM_I` register `0x75`から`0x47`を確認し、その後に周期取得と速度引上げを行う手順へ確定した。
+- 購入モジュールが5V/3.3V給電、I2C/SPI両対応の8pin構成
+  (`VCC/GND/AD0(MISO)/SDA(MOSI)/SCL(SCLK)/CS/INT1/INT2`)であることをユーザー情報から確認した。
+  本基板ではVCC=3.3V固定、4-wire SPI、INT1/INT2両方を配線する。
+
+### 現在の状態
+
+- IC型式とMCU側信号割当は確定した。
+- ヘッダ信号構成は確定。物理pin 1方向、pitch、外形、固定穴、オンボードLDO/レベル変換回路は未確認。
+
+### 次の作業
+
+1. 到着後にモジュールの表裏写真、pin 1方向、pitch、外形寸法、固定穴を確認する。
+2. 3.3V/GNDとIC VDD/VDDIO、SPI/INT端子の導通を確認し、オンボード回路を確定する。
+3. 確定した外形とpin順をF405オドメトリ回路図・PCB固定方法へ反映する。
+
+---
+
+## 2026-07-25 (F405オドメトリ資料レビュー・unit board部品流用確定)
+
+### やったこと
+
+- Claude作成のF405変更資料を、ST公式DS8626 Rev.12、AN4488、KiCad 10標準`STM32F405RGTx`シンボルと照合した。
+- 初稿の「PD2はF405 LQFP64に存在しない」は誤りで、PD2はpin 54に存在することを確認した。SPI IMUのCSはG474案と同じPD2を維持し、PA15はハードウェアNSSが必要な場合だけの代替候補へ戻した。
+- 初稿のLQFP64物理pin表にあった複数のずれを修正した。CAN1=PA11/PA12(pin 44/45)、SWD=PA13/PA14(pin 46/49)、VCAP_2=pin 47、SPI3=PC10/11/12(pin 51/52/53)を含む使用pinを確定した。
+- F405の電源pinをVDD=19/32/48/64、VSS=18/63と確定し、VDD各100nF+全体4.7µF以上、VCAP_1/2各2.2µF・ESR<2Ωを要件化した。KiCadシンボルではなくSTデータシートを正本とする記述へ修正した。
+- F405固有部を除き、unit board採用品を優先流用する方針を確定した。`LM66100DCKR`、`TLV1117LV33DCYR`、`TCAN1051VDRQ1`、8MHz HSE、VDD/VDDAコンデンサ、GHコネクタ、LED、SWD/UART回路を共通化し、VCAP 2.2µFにも在庫共通化できる`GCM21BR71E225KA73L`を割り当てた。
+- `AGENTS.md`、`hardware/README.md`、G474最小回路資料、NUCLEOベンチ試験資料に残っていた「オドメトリ=G474」をF405へ更新した。既存`unit_controller`は差動ステア専用のため、オドメトリへそのまま流用しないことも明記した。
+
+### 現在の状態
+
+- F405採用判断は妥当。Classic CAN 1Mbps、TIM2/TIM3/TIM4 Encoder Mode、USART2、SPI3の機能割当競合はない。
+- ドキュメント上のF405 pinoutと必須電源回路は確定し、KiCad回路図へ転記できる状態。
+- `hardware/odometry-board/`はG474の旧階層シート断片だけで、F405スキーマへの置換は未着手。
+
+### 次の作業
+
+1. `hardware/odometry-board/`へルート回路図とF405最小回路シートを作り、unit boardの電源/CANブロックを流用して接続する。
+2. VCAP用`GCM21BR71E225KA73L`のメーカー特性で実装条件におけるESR < 2Ωを確認する。
+3. F405回路図完成後にERCを0件へ収束させ、電源pin、CAN TX/RX、3組のEncoder入力をネットリストで自動照合する。
+
+---
+
+## 2026-07-25 (LEDテープ制御を独立CANノード化)
+
+### やったこと
+
+- LEDテープを中央Teensyの直接DATA配線ではなく、独立したCANノード基板で制御する方針を確定した。
+- CANではモード、色、明るさ、速度、状態などの高位コマンドだけを送り、全ピクセルRGBの連続転送は行わず、アニメーションをLEDノード側で生成する要件を追加した。
+- LED電力は中央PCBを経由させず、24V分電点から専用ヒューズ経由でLED制御基板へ供給する方針を維持した。
+
+### 現在の状態
+
+- 中央基板にはLED専用DATA線を設けず、LEDノードは拡張CANへ接続する。
+- LEDテープは12V WS2815系または24Vアドレサブル系を候補とし、2m・高密度を想定している。電圧、密度、最大電力は製品選定後に確定する。
+- LEDノードへの`STM32G474RET6`採用はオーバースペックとして不採用。第一候補は64MHz Cortex-M0+、FDCAN x2、128KB Flash、32pin QFNの`STM32G0B1KBU6N`。2026-07-25確認時点でDigiKey在庫2,768個、少量単価US$4.24。手実装・修理性を優先する場合は同系列LQFP32品を在庫と価格から再確認する。
+- DC-DC、枝数、ヒューズ定格、電流監視回路は未選定。
+
+### 次の作業
+
+1. 12V個別アドレス品と24Vセグメントアドレス品からテープを正式選定する。
+2. `STM32G0B1KBU6N`の電源、FDCAN、SWD、LED出力、ADCピンを割り当て、QFN32実装性を確認して正式採用する。
+3. CANメッセージIDとLED高位コマンドを`docs/communication/COMMUNICATION_NAMING_AND_IDS.md`へ割り当てる。
+4. テープ実電力からDC-DC、ヒューズ、AWG20電源線、XT30、基板配線幅を確定する。
+
+## 2026-07-25 (オドメトリ基板 MCUをSTM32F405RGT6へ変更)
+
+### やったこと
+
+- 部室在庫から発掘した`STM32F405RGT6`(LQFP64)をオドメトリ基板のMCUとして採用することを確定した。
+  オドメトリ基板はセンサーCAN1系統のみ必要で、ユニット基板がG474を選んだ決め手だった
+  「FDCANが2系統必要」という制約が掛からないため成立する。センサーCANはClassic CAN 1Mbps固定
+  (CAN FD未使用)なので、F405の`bxCAN`(Classic CAN専用)で要件を満たす。
+- データシート(`STM32F405xx/STM32F407xx` Doc ID 022152)のピン定義表を確認し、AMT102用TIM2/TIM3/TIM4
+  (PA0/PA1、PA6/PA7、PB6/PB7)、CAN1(PA11/PA12)、SWD(PA13/PA14)、LED(PA5/PB10/PB11)、
+  ID DIP(PC6/PC7/PC8)、SPI IMU候補(PC10/PC11/PC12)がG474版と同じGPIO名で使えることを確認した。
+- F405固有で新規に必要な回路差分を洗い出した: VCAP_1/VCAP_2用2.2µF×2(必須、省略不可)、
+  HSEがPF0/PF1→PH0/PH1へ移動、デバッグUARTがLPUART1(無し)→USART2へ変更、BOOT0がG474の
+  GPIO共用(PB8)から専用ピンへ変更、VREF+専用ピンが無く内部でVDDAに直結することを確認した。
+  SPI IMU CSのPD2に関する初回確認は誤りだったため、直上のレビュー記録で訂正済み。
+- ドキュメントを更新: `docs/electrical/ODOMETRY_BOARD_REQUIREMENTS.md`(MCU記載とF405固有要件の節を追加)、
+  新規`docs/electrical/STM32F405_ODOMETRY_PIN_ASSIGNMENT.md`(旧`STM32G474_ODOMETRY_PIN_ASSIGNMENT.md`は
+  廃止注記を付けて履歴として保持)、`docs/ARCHITECTURE_DECISIONS.md`(オドメトリ関連行とMCU調達数の更新、
+  新規決定行を追加)、`docs/PROJECT_DOCUMENT_INDEX.md`の該当説明文。
+- KiCadスキーマ(`hardware/odometry-board/*.kicad_sch`)は未着手。MCUシンボルの差し替えはKiCad GUIで
+  公式`STM32F405RGTx`シンボルへ置き換える方針とし、本セッションではドキュメントのみ更新した
+  (物理ピン番号はデータシートTable 5のテキスト抽出では折り返しの影響で一部確定できず、
+  GPIO名を正本として記載し、物理番号はシンボル配置時に照合する方針とした)。
+
+### 現在の状態
+
+- オドメトリ基板は依然スキーマブロックのみの段階(`.kicad_pro`/`.kicad_pcb`未作成)。MCU変更はドキュメント上で完了、
+  KiCad上の反映はこれから。
+- ファームウェアのオドメトリ実装はまだ存在しない(`firmware/src`はユニット基板用のSTM32G4専用実装のみ)。
+  F405用のクロック・GPIO・USART・bxCANドライバは新規実装が必要になる。
+- ユニット基板の調達計画(2026-07-25付BOM等)は旧来の「オドメトリ含め必要4個」を前提に計算済みのままなので、
+  次回G474調達を見直す際は「ユニットx3のみで必要3個」に更新すること。
+
+### 次の作業
+
+1. `hardware/odometry-board/STM32G474 Minimum System.kicad_sch`をKiCad GUIで開き、公式`STM32F405RGTx`
+   シンボルに差し替えて`STM32F405_ODOMETRY_PIN_ASSIGNMENT.md`の割当で再配線する。VCAP_1/VCAP_2の追加、
+   HSE/BOOT0/UARTの回路変更を反映する。
+2. 確定済み物理pin番号を回路図へ転記し、STデータシートとネットリストで再照合する。
+3. F405向けファーム platform層(クロック初期化、GPIO、USART、bxCAN)を新規実装する。
+
+---
+
+## 2026-07-25 (中央基板 `ESTOP_CTRL`ポート要件追加)
+
+### やったこと
+
+- 中央基板へ24V制御系を収容する方針に合わせ、2個のE-stop操作パネルを1本のハーネスで接続する専用`ESTOP_CTRL`ポートを追加した。
+- 暫定6pinを、ハード直列NCループ往復、独立保護した24V LED電源/GND、E-stop 1/2補助接点リターンへ割り当てた。
+- コネクタ抜去・断線時にNCループが開いてコンタクタが解放されるfail-safe要件と、LED系短絡が安全ループへ波及しない別保護要件を明記した。
+
+### 現在の状態
+
+- `docs/ARCHITECTURE_DECISIONS.md`と`docs/electrical/CENTRAL_BOARD_REQUIREMENTS.md`へ確定事項として反映済み。
+- コネクタはキー付き・ロック付き・60V以上を条件とし、正式型番と電流定格はメインコンタクタの24Vコイル電流確定後に選定する。
+
+### 次の作業
+
+1. メインコンタクタの正式型番とコイル電流を確定する。
+2. `ESTOP_LOOP_RETURN`と補助接点入力の絶縁・保護回路を選定する。
+3. 中央基板回路図へ`ESTOP_CTRL` 6pin、分離保護、コンタクタドライバを実装する。
+
+## 2026-07-25 (ユニット基板 最新シルク反映・製造ZIP再生成)
+
+### やったこと
+
+- ユーザー更新後の`unit-board.kicad_pcb`を再検証し、追加ロゴ、QR、裏面説明シルクを含む最新版を製造出力へ反映した。
+- QRフットプリント名に入っていたSSH URLがKiCadからライブラリIDとして誤解釈される問題を修正した。QR図形・格納内容は変更していない。
+- 裏面説明文へミラー指定を追加し、基板外へ伸びていた文字揃えを修正した。既知の基板内シルク差異に対する`lib_footprint_mismatch`通知除外も復元した。
+- ロゴフットプリントをB.Cu側へ正しく反転し、完成基板の裏面から正向きに読めることを3Dレンダーで確認した。
+- KiCad 10.0.4でERC 0件、DRC 0件、未接続0件を確認した。
+- 旧`output/fabrication/unit-board-revA`とZIPを削除し、表面ステンシル用`F.Paste`を含むGerber 10層、PTH/NPTHドリル、IPC-D-356、位置CSV、統計、STEPからなる21ファイルの製造ZIPを再生成した。裏面実装パッドは0個のため空の`B.Paste`は含めていない。
+- `tools/kicad/fabricate.ps1`へJLCPCB列名のBOM自動出力を追加した。`unit-board-jlcpcb-bom.csv`は32品目・実装対象60個・Designator重複0。LCSC部品番号は回路図に未登録のため全行空欄で、登録済みメーカー型番は4品目に保持した。BOM追加後の製造ZIPは22ファイル。
+- 追加製作4枚を基準に、全60リファレンスを31調達品へ割り当てた`tools/kicad/digikey-bom.ps1`を追加した。汎用値の抵抗・コンデンサにもメーカー型番とDigiKey品番を設定し、漏れ・重複・空品番0を自動検査する。
+- 4枚の実装必要数240点に対して、受動部品は20%以上かつ2個以上、その他は1個の予備を加え、注文数334点とした。購入済み`STM32G474RET6`は手持ち10個を計上し、必要4個・追加注文0個とした。
+- DigiKey投入用30行の`unit-board-digikey-bom-4boards.csv`と、手持ち・必要数・予備を含む31行の`unit-board-procurement-plan-4boards.csv`を製造スクリプトから自動生成し、製造ZIPへ同梱した。
+- 今後のG474/CAN系基板でも流用できる`LabStock`調達プロファイルを追加した。4枚の必要数240点は維持しつつ、100nF・0Ω・1kΩは各100個、10k/22k/33kは各50個、その他の受動部品は20～25個、コネクタ・IC・保護部品は用途に応じ10～30個を在庫目標とし、注文合計887点とした。
+- 最低限版334点に加えて、在庫込みの`unit-board-digikey-bom-4boards-plus-stock.csv`と数量根拠を含む`unit-board-procurement-plan-4boards-plus-stock.csv`を自動生成する。高価な`STM32G474RET6`は手持ち10個で在庫目標を満たすため、どちらの購入CSVでも追加0個。
+- DigiKey調達で使用するコンデンサAVLとLM66100/TLV1117LV周辺の正式型番を、正本の部品選定資料へ2026-07-25付で追記した。HSE/VREF+はC0G、ADCフィルタはX7Rという回路要件を維持している。
+
+### 現在の状態
+
+- 最新製造ZIPは`output/fabrication/unit-board-revA.zip`。
+- 最新ZIPは最低限版と共通在庫版のDigiKey BOM計4ファイルを含む26ファイルで、DRC 0件・未接続0件を再確認済み。
+- ZIPのSHA-256は`eb22ae9fc2c7c63369b402a837e13c7f1a63ab9febd1684b24c7d99eb1dbc7b0`。
+
+### 次の作業
+
+1. 発注先オンラインビューアへZIPを投入し、表裏シルク、QR、内層、PTH/NPTH、外形の向きを最終目視確認する。
+2. 発注先の4層標準stackupと現行1.6mm設定を照合する。
+3. 通常はDigiKeyへ`unit-board-digikey-bom-4boards-plus-stock.csv`を投入する。予算を抑える場合だけ最低限版`unit-board-digikey-bom-4boards.csv`を使い、注文時点の在庫、価格、梱包単位、特にJST GH 3極/6極を再確認する。
+
 ## 2026-07-24 (ユニット基板 DRC/ERC 0件・配線収束)
 
 ### やったこと
@@ -26,6 +287,11 @@
 - 密集して読めなかった64個のReferenceシルクを非表示にし、部品番号はF.Fab・回路図・BOMへ残した。SW1と重複していた小型部品4個の外形シルクをF.Fabへ移し、シルク重複・銅箔重なり・基板端警告を0件へ収束させた。
 - 意図的にライブラリ原本とシルクだけ異なるため、`lib_footprint_mismatch`は通知対象外とした。その他のパッド、courtyard、銅箔、接続検査は有効のまま。
 - SW1の壊れた裸ファイル名モデル参照とPC固有の絶対パス参照を整理し、表示できていたモデルの姿勢（Y=0、Z=0.25mm、X=-90°）を保持した単一の`${KIPRJMOD}/../lib/DifferentialSwerve.3dshapes/JS102011SAQN.stp`参照へ統一した。プロジェクト内フットプリント原本にも同じ3D定義とF.Fab外形を反映し、SW1のライブラリ差異を解消した。
+- 消失していた追加6ネットクラスと現行階層ネット16件への割当を再復元した。全クラスclearance 0.20mm、製造最小via 0.60/0.30mm、annular ring 0.15mmを適用し、電源既定幅は3.3V=0.40mm、5V=0.75mmを維持した。
+- ECS公式ECX-33Q、Littelfuse/C&K公式JS、JST公式GH図面と照合し、Y1はpad 1/3=信号・2/4=GND、SW1は端子2.5mm pitch・1.2x2.5mm land・φ0.9mm NPTH中心間6.8mm、J7/GH3はpad寸法・pin 1方向が基板と一致することを確認した。
+- `tools/kicad/fabricate.ps1`を追加し、Gerber 9ファイル、PTH/NPTH Excellon、ドリルマップ/集計、IPC-D-356、位置CSV、統計、実装済みSTEP、製造ZIPを`output/fabrication/unit-board-revA`へ生成した。gbrjob参照欠落0、Gerber/Excellon終端異常0、STEP内SW1モデル有りを確認した。
+- 操作・デバッグ用シルクを追加した。表面はLED `PWR/RUN/COM/ERR`、MCU pin 1、`TERM`、UNIT IDの`1/2/4`を部品近傍へ表示し、裏面は基板名、LED凡例、J1〜J7・SW1・SW3用途一覧を表示した。
+- 裏面に`https://github.com/Posaka-Y/Differential-Swerve-Drive`を示す約12.25mm角のQRコード（誤り訂正H）をB.SilkSの矩形として追加した。SW1位置決め穴とのシルク干渉を避け、3Dレンダーで外観を確認した。リンク先は現在privateのため、一般利用前にGitHub側をpublicへ変更する。
 - KiCad 10.0.4で`tools/kicad/check.ps1 -FailOnViolations -OutputDirectory output/kicad`を実行し、ERC 0件、DRC 0件、未接続0件を確認した。最終3Dレンダーも目視し、部品Referenceの重なりが解消したことを確認した。
 
 ### 現在の状態
@@ -34,13 +300,15 @@
 - HSEはF.Cu・ビアなしを維持し、直下のIn1.CuはGND plane、他信号のtrack/via/pad/footprintは禁止。
 - 電気系・シルク系ともKiCad DRCは0件。部品位置、基板外形、銅箔形状は3Dレンダーで読込み可能。
 - SW1の3Dモデルはプロジェクト相対パスから1個だけ読み込まれ、別PCへ移しても同じ構成で解決できる。
+- 裏面QRコードはGitHubリポジトリのHTTPS URLを直接保持し、Gerberへ画像依存なしで出力される。
+- 製造データ一式と機体CAD照合用`unit-board.step`は生成済み。ただしPCBのphysical stackupは1.6mm・4層・各銅35µmの仮設定で、発注先標準stackupとの照合は未完了。
 - ReferenceはF.SilkSへ出さない方針のため、実装時はF.Fabプロット、回路図、BOMを併用する。
 
 ### 次の作業
 
-1. KiCad GUIで最終基板を開き、ゾーン再注入状態、レイヤ表示、コネクタ向き、DIP/終端スイッチの操作方向を実画面で確認する。
-2. 発注先の4層標準stackupへ合わせて層厚・銅厚を確定し、Gerber/ドリル/IPC-356/位置ファイルを出力して製造レビューする。
-3. ECS-80-8-33Qのpad番号対応、JS102011SAQNの推奨land pattern、SOT-23配置済みコピーをメーカー資料・現行ライブラリと最終照合する。
+1. `output/fabrication/unit-board-revA/unit-board.step`を機体CADへ挿入し、45x45mm外形、39x39mm取付穴、SW1張出し、GH挿抜/曲げ空間、最大高さを承認する。
+2. 発注先の4層標準stackupへ合わせて層厚・銅厚・表面処理・最小穴径を確定し、必要ならCAN配線条件を再確認して製造ZIPを再生成する。
+3. KiCad Gerber Viewerまたは発注先オンラインビューアで、全9 GerberとPTH/NPTHの層対応・向き・外形を目視確認する。
 4. 組立図ではF.FabのReferenceを出力し、初号機の電源投入前に5V/3.3V/GND短絡、NRST、HSE、両CAN終端を確認する。
 
 ## 2026-07-23 (ユニット基板 4層・配線ルール初期設定)
@@ -1031,3 +1299,16 @@
   - PWR_FLAG、未使用ピンのNo Connect、電源ピン駆動元を整理してERCを収束させる。
   - J7を縦型`BM06B-GHS-TBT`へ、COMM/ERR LED色とD7/R14のvalueを部品表どおりに直す。
 - 次の作業: 上記の重要項目を回路図へ反映し、ERC/BOM/netlistを再検証してからPCBレイアウトへ進む。
+
+## 2026-07-26 (オドメトリ基板 ERC 0件収束)
+
+- `hardware/odometry-board/Oddom board/`のKiCadプロジェクトを対象に、前セッションからの続きでERCを54件→0件（Errors 0 / Warnings 0）まで収束させた。
+- 前セッション分（このセッション開始時点で未コミット）: ルートシート未使用MCUピン25本へNo-Connect追加、電源系PWR_FLAG追加（VIN/VDDA/VSSA系統3箇所）、BOOT0の無効な`hierarchical_label`を`label`へ修正、浮いた配線・GNDシンボル整理。`Oddom board/`にsym-lib-table/fp-lib-tableを追加しDifferentialSwerveライブラリ未認識警告を解消。CAN_interfaceシートはVCCへPWR_FLAG追加で0件化。ルートシートとCAN_interfaceシートはこの時点で0件。
+- このセッション: 残り18件（AMT102_inputテンプレート、3輪分×6件）を解消。
+  - `AMT102_input.kicad_sch`（3シートAMT102_input/1/2で共有するテンプレート）で、チャンネルA/Bを別々の74LVC2G17（2部品、各ゲートB=unit2のみ使用、電源unit3未配置）で受けていた構成を、承認済み方針どおり1部品3ユニット構成へ統合。
+    - unit1（ゲートA、pin1/6）= 旧チャンネルA用チップの位置・配線をそのまま流用（座標が同一のため配線変更不要）。
+    - unit2（ゲートB、pin3/4）= 既存のチャンネルB用ブロックをそのまま維持。
+    - unit3（電源、pin2=GND/pin5=VCC）を新規配置し、GNDシンボルと`global_label "PWR_3.3V"`（ルートシートの3.3Vレールと同名。`ODOMETRY_BOARD_SCHEMATIC_REFERENCE.md`の電源表でバッファは3V3給電と確定済み）へ接続。
+    - 各ユニットブロックの`instances`パスを3シート分（U3/U7/U9）に統一し、旧チャンネルA用の重複リファレンス（U5/U6/U8）を削除。GND新規シンボルの参照は`#PWR044`〜`046`。
+  - `kicad-cli sch erc`で0 violations確認済み（`fresh_erc*.rpt`はスクラッチ確認用で削除済み、リポジトリには残していない）。
+- 次の作業: PCBレイアウト（`Oddom board.kicad_pcb`）側へ配置配線を進める。まだ`hardware/odometry-board/Oddom board/`一式は未コミット（`git status`で確認要）。

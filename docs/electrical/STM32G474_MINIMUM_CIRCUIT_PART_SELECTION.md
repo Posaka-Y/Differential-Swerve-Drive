@@ -2,7 +2,9 @@
 
 ## 適用範囲
 
-差動ステアユニット基板x3とオドメトリ基板x1で共通使用する、`STM32G474RET6`のHSE、電源デカップリング、VDDA/VREF+フィルタを対象とする。NRST、BOOT0、SWD/UARTコネクタは各基板要件の既決定を使う。
+差動ステアユニット基板x3で使用する`STM32G474RET6`のHSE、電源デカップリング、VDDA/VREF+フィルタを対象とする。
+オドメトリ基板は2026-07-25に`STM32F405RGT6`へ変更したため本書のMCU最小回路は適用せず、採用品の流用範囲だけ
+`STM32F405_ODOMETRY_PIN_ASSIGNMENT.md`に従う。NRST、BOOT0、SWD/UARTコネクタは各基板要件の既決定を使う。
 
 正本はSTの[STM32G474REデータシート DS12288 Rev.6](https://www.st.com/resource/en/datasheet/stm32g474re.pdf)、[AN5093 STM32G4 hardware development](https://www.st.com/resource/en/application_note/an5093-getting-started-with-stm32g4-series--hardware-development-boards-stmicroelectronics.pdf)、[AN2867 oscillator design guide](https://www.st.com/resource/en/application_note/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf)とする。
 
@@ -30,6 +32,21 @@
 | 主要テストポイント | `S1751-46R` | Harwin SMT loop、3.25x1.63x2.0mm | 5V/3V3/GND/NRST/BOOT0/SWO等。リフロー対応 |
 
 水晶メーカー資料: [ECS製品ページ](https://ecsxtal.com/products/crystals/surface-mount-crystals/ecs-80-8-33q-jes-tr/)。フェライト仕様: [Murata BLM18AG601SN1データシート](https://www.murata.com/en-us/api/pdfdownloadapi?cate=cgsubChipFerriBead&partno=BLM18AG601SN1%23)。
+
+### 2026-07-25 DigiKey調達AVL
+
+Rev.Aを4枚組み立てる購入BOMでは、電気仕様を変えずにDigiKeyで型番認識できる次の代替品を使用する。HSEとVREF+の容量はC0Gを維持し、ADCフィルタだけをX7Rとする。
+
+| 用途/基板リファレンス | 調達品 | DigiKey品番 | 仕様 |
+|---|---|---|---|
+| HSE負荷 `C3,C4` | `CL10C100JB8NNNC` | `1276-1027-1-ND` | 10pF、C0G、±5%、50V、0603 |
+| 100nF `C1,C2,C5-C9,C13,C15,C17,C18,C201,C203` | `C0603C104K5RACTU` | `399-C0603C104K5RACTUCT-ND` | 100nF、X7R、±10%、50V、0603 |
+| VDDA/VREF+ `C11,C14` | `TMK107B7105KA-T` | `587-2984-1-ND` | 1uF、X7R、±10%、25V、0603 |
+| VREF+ `C12` | `CGA3E2NP01H103J080AA` | `445-12383-1-ND` | 10nF、C0G、±5%、50V、0603 |
+| 3V3バルク `C10` | `GRM21BZ71E475KE15K` | `490-GRM21BZ71E475KE15KCT-ND` | 4.7uF、X7R、±10%、25V、0805 |
+| ADCフィルタ `C16` | `GRM188R72A103KA01D` | `490-GRM188R72A103KA01DCT-ND` | 10nF、X7R、±10%、100V、0603 |
+
+AVL品を別型番へ再置換する場合も、容量、誘電体、許容差、定格電圧、外形を同等以上とし、HSE負荷容量は実機評価なしに値を変えない。
 
 ## 回路
 

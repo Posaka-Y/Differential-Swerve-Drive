@@ -33,3 +33,7 @@ cad/current/ver5/xt30g-f-amass-1.snapshot.4/
 
 # Vendor installer binaries (Hokuyo proprietary tools, not ours to redistribute)
 docs/UTM-30LX/**/*.exe
+
+# Scratch/session working directory (may contain automation browser profiles
+# with login data/history; never intended for the repo)
+tmp/

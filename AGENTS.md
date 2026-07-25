@@ -16,9 +16,9 @@
 - 中央制御: Teensy 4.1(汎用CANマスタボードとして設計)。mini PCとはUSB-CDC
 - 給電: 中央24V→5V降圧を4線ハーネス(COMM_A/B+5V+GND)で分配。基板上で3.3V生成
 - エンコーダ: AMT222A-V(12bit、5mmボア)をステア軸1:1直結。ゼロ点はMCU Flash保存
-- オドメトリ: 3輪構成(AMT102 x3、Z相なし4線VCC/GND/A/B、TIM2/TIM3/TIM4 Encoder Mode)。専用G474基板(unitId=4)がx/y/θを中央CANへ配信。I2C磁気エンコーダ案は2026-07-08廃止
+- オドメトリ: 3輪構成(AMT102 x3、Z相なし4線VCC/GND/A/B、TIM2/TIM3/TIM4 Encoder Mode)。専用STM32F405RGT6基板(unitId=4、2026-07-25にG474から変更)がx/y/θを中央CANへ配信。I2C磁気エンコーダ案は2026-07-08廃止
 - コネクタ: 信号JST XH、電源XTシリーズ
-- 推奨ピン割当: `docs/electrical/CARRIER_BOARD_REQUIREMENTS.md` の表が正本
+- 推奨ピン割当: ユニット基板は`docs/electrical/CARRIER_BOARD_REQUIREMENTS.md`、オドメトリ基板は`docs/electrical/STM32F405_ODOMETRY_PIN_ASSIGNMENT.md`の表が正本
 
 ## ルール
 

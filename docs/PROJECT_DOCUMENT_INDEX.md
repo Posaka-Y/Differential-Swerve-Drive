@@ -18,7 +18,9 @@
 | 7 | `electrical/POWER_DISTRIBUTION_AND_ESTOP.md` | 6S LiPo x2、分電、降圧、非常停止 |
 | 8 | `electrical/CARRIER_BOARD_REQUIREMENTS.md` | ユニット基板(STM32G474自作基板)の設計要件 |
 | 9 | `electrical/CENTRAL_BOARD_REQUIREMENTS.md` | 中央制御ボード(Teensy 4.1)の設計要件 |
-| 9.5 | `electrical/ODOMETRY_BOARD_REQUIREMENTS.md` | オドメトリ基板(AMT102 A/B相 x3、G474)の設計要件 |
+| 9.5 | `electrical/ODOMETRY_BOARD_REQUIREMENTS.md` | オドメトリ基板(AMT102 A/B相 x3、STM32F405RGT6)の設計要件。ピン割当は`electrical/STM32F405_ODOMETRY_PIN_ASSIGNMENT.md` |
+| 9.55 | `electrical/ODOMETRY_BOARD_SCHEMATIC_REFERENCE.md` | F405オドメトリ基板をA3横1枚へ転記するための配置、RefDes、接続表、ERCチェック |
+| 9.56 | `electrical/ODOMETRY_BOARD_SCHEMATIC_WITH_BOM.html` / `.pdf` | unit board資料と同形式のブロック別簡易回路図＋部品名・値・KiCad Footprint・接続先BOM |
 | 9.7 | `electrical/SCHEMATIC_DESIGN_OPEN_ITEMS.md` | 3基板の回路設計前に解消する未確定事項、優先度、ブロック作成順、PCB配置配線の役割分担 |
 | 9.8 | `electrical/CAN_COMMON_BLOCK_PART_SELECTION.md` | 全基板共通CANブロックの正式部品、比較、回路・配置配線制約、実機確認 |
 | 9.9 | `electrical/POWER_5V_COMMON_BLOCK_PART_SELECTION.md` | 5V枝保護、G474入力逆接保護、3.3V LDO、GH2、枝LEDの正式部品と熱・配置条件 |

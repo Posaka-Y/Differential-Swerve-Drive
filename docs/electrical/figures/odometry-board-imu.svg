@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470">
+  <style>
+    text{font-family:"Yu Gothic",Meiryo,sans-serif;fill:#172033}
+    .wire{fill:none;stroke:#172033;stroke-width:3}
+    .box{fill:#fff;stroke:#172033;stroke-width:3}
+    .module{fill:#e8f4fb;stroke:#172033;stroke-width:3}
+    .mcu{fill:#fff8cf;stroke:#172033;stroke-width:3}
+    .net{font:700 15px Consolas,monospace;fill:#194f83}
+    .ref{font:bold 18px Consolas,monospace}
+    .value{font:15px "Yu Gothic",sans-serif}
+    .pin{font:14px Consolas,monospace}
+    .note{font:700 16px "Yu Gothic",sans-serif;fill:#8b2c20}
+  </style>
+  <rect class="module" x="70" y="55" width="310" height="350" rx="8"/>
+  <text class="ref" x="225" y="88" text-anchor="middle">J601 / ICM-42688-P breakout</text>
+  <text class="pin" x="95" y="135">VCC</text><text class="pin" x="95" y="172">GND</text>
+  <text class="pin" x="95" y="209">AD0 / MISO</text><text class="pin" x="95" y="246">SDA / MOSI</text>
+  <text class="pin" x="95" y="283">SCL / SCLK</text><text class="pin" x="95" y="320">CS</text>
+  <text class="pin" x="95" y="357">INT1</text><text class="pin" x="95" y="394">INT2</text>
+  <path class="wire" d="M380 130H535M380 167H535M380 204H535M380 241H535M380 278H535M380 315H535M380 352H535M380 389H535"/>
+  <text class="net" x="420" y="122">3V3</text><text class="net" x="420" y="160">GND</text>
+  <text class="net" x="405" y="198">SPI3_MISO</text><text class="net" x="405" y="235">SPI3_MOSI</text>
+  <text class="net" x="405" y="272">SPI3_SCK</text><text class="net" x="405" y="309">IMU_CS_N</text>
+  <text class="net" x="405" y="346">IMU_INT1</text><text class="net" x="405" y="383">IMU_INT2</text>
+  <rect class="mcu" x="535" y="55" width="310" height="350" rx="8"/>
+  <text class="ref" x="690" y="88" text-anchor="middle">U301 STM32F405RGT6</text>
+  <text class="pin" x="560" y="135">3V3</text><text class="pin" x="560" y="172">GND</text>
+  <text class="pin" x="560" y="209">PC11 / SPI3_MISO</text><text class="pin" x="560" y="246">PC12 / SPI3_MOSI</text>
+  <text class="pin" x="560" y="283">PC10 / SPI3_SCK</text><text class="pin" x="560" y="320">PD2 / GPIO CS_N</text>
+  <text class="pin" x="560" y="357">PC4 / EXTI / Data Ready</text><text class="pin" x="560" y="394">PC5 / EXTI / reserve</text>
+  <path class="wire" d="M900 130V180"/>
+  <path class="wire" d="M880 180H920M880 192H920M900 192V220"/>
+  <path class="wire" d="M885 220H915M890 229H910M896 238H904"/>
+  <text class="ref" x="930" y="186">C601</text><text class="value" x="930" y="207">100 nF</text>
+  <path class="wire" d="M1040 130V180"/>
+  <path class="wire" d="M1020 180H1060M1020 192H1060M1040 192V220"/>
+  <path class="wire" d="M1025 220H1055M1030 229H1050M1036 238H1044"/>
+  <text class="ref" x="1070" y="186">C602</text><text class="value" x="1070" y="207">2.2 µF</text>
+  <path class="wire" d="M845 130H1040"/>
+  <text class="note" x="890" y="305">VCC = 3.3 V ONLY</text>
+  <text class="note" x="890" y="335">物理pin順・pitch・固定穴は</text>
+  <text class="note" x="890" y="360">現物到着後に確定</text>
+</svg>

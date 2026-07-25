@@ -20,6 +20,15 @@ G474基板: GH 2pin -> LM66100 -> PWR_5V -> 5V負荷
 | 5V電源コネクタ | `SM02B-GHS-TB` | 横挿しSMT | GH 2極、1.25mm、ロック付き。ハウジング`GHR-02V-S`、圧着端子`SSHL-002T-P0.2`、AWG26を原則とする |
 | 枝電源LED | `LTST-C190KGKT` | 0603 | Active、緑、広く流通する標準部品。5V表示は`RC0603FR-071K5L` 1.5kΩを直列にする |
 
+Rev.Aの2026-07-25 DigiKey調達BOMでは、入力・LDO周辺コンデンサを次の型番で固定する。
+
+| 基板リファレンス | 採用品 | DigiKey品番 | 仕様/注意 |
+|---|---|---|---|
+| `C101` | `GCM21BR71E225KA73L` | `490-4787-1-ND` | 2.2uF、25V、X7R、±10%、0805。LM66100 VIN直近 |
+| `C202,C204` | `C2012X7R1A106K125AC` | `445-6857-1-ND` | 10uF、10V、X7R、±10%、0805。TLV1117LV入出力 |
+
+`C202,C204`は5V/3.3V印加時のDC bias後実効容量を実装前にメーカー特性表で確認する。TLV1117LVの安定動作に必要な最小容量を下回る代替品へ置換しない。
+
 正本資料:
 
 - [TI TLV1117LV製品ページ](https://www.ti.com/product/TLV1117LV/part-details/TLV1117LV33DCYR)、[データシート](https://www.ti.com/lit/ds/symlink/tlv1117lv.pdf)

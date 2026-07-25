@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>STM32F405オドメトリ基板 参照回路図＋簡易BOM</title>
+<style>
+  @page { size: A3 landscape; margin: 10mm 12mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; color: #172033; font-family: "Yu Gothic", "Meiryo", sans-serif; }
+  body { background: #fff; font-size: 9.2pt; }
+  .sheet { height: 278mm; page-break-after: always; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: 3mm; }
+  .sheet:last-child { page-break-after: auto; }
+  header { display: flex; align-items: end; justify-content: space-between; border-bottom: 1.2mm solid #194f83; padding-bottom: 2mm; }
+  h1 { margin: 0; font-size: 17pt; letter-spacing: .02em; }
+  .meta { color: #536274; font-size: 8pt; text-align: right; line-height: 1.45; }
+  .diagram { min-height: 0; display: flex; align-items: center; justify-content: center; border: .25mm solid #b8c5d3; border-radius: 1.5mm; padding: 2.5mm; background: #fbfdff; }
+  .diagram img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+  .caption { margin: 0; color: #3e5064; line-height: 1.35; }
+  .warn { color: #8b2c20; font-weight: 700; }
+  h2 { margin: 0 0 1.5mm; font-size: 10.5pt; color: #194f83; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 8.2pt; }
+  th, td { border: .2mm solid #8fa1b3; padding: 1.25mm 1.6mm; vertical-align: top; line-height: 1.28; overflow-wrap: anywhere; }
+  th { background: #dceaf6; color: #183b5b; text-align: left; font-weight: 700; }
+  tbody tr:nth-child(even) td { background: #f5f8fb; }
+  .ref { width: 13%; white-space: nowrap; }
+  .kind { width: 15%; }
+  .value { width: 27%; }
+  .pkg { width: 22%; }
+  .note { width: 23%; }
+  code { font-family: "Cascadia Mono", Consolas, monospace; font-size: .94em; }
+  footer { display: flex; justify-content: space-between; border-top: .2mm solid #b8c5d3; padding-top: 1.4mm; color: #68788a; font-size: 7.5pt; }
+</style>
+</head>
+<body>
+
+<section class="sheet">
+  <header><h1>Block 1 — 5 V入力・保護・3.3 V生成</h1><div class="meta">STM32F405オドメトリ基板 Rev.A<br>Reference schematic / not a manufacturing drawing</div></header>
+  <div class="diagram"><img src="figures/unit-board-block1.svg" alt="電源入力と3.3V生成の簡易回路図"></div>
+  <p class="caption"><span class="warn">unit board共通回路:</span> U101のCE_N=VOUTは意図的。U201のtab/pin 2はVOUTであり、GNDへ接続しない。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J101</td><td>5 V入力</td><td><code>SM02B-GHS-TB</code></td><td><code>Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal</code></td><td>1=PWR_5V_IN, 2=GND</td></tr>
+    <tr><td>U101</td><td>理想ダイオード</td><td><code>LM66100DCKR</code></td><td><code>Package_TO_SOT_SMD:SOT-363_SC-70-6</code></td><td>VIN=PWR_5V_IN; VOUT/CE_N=PWR_5V; ST/NC=open</td></tr>
+    <tr><td>U201</td><td>3.3 V LDO</td><td><code>TLV1117LV33DCYR</code></td><td><code>Package_TO_SOT_SMD:SOT-223-3_TabPin2</code></td><td>1=GND, 2/tab=3V3, 3=PWR_5V</td></tr>
+    <tr><td>C101</td><td>入力C</td><td>2.2 µF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>U101 VIN直近</td></tr>
+    <tr><td>C201/C203</td><td>デカップリング</td><td>100 nF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>LDO入力/出力</td></tr>
+    <tr><td>C202/C204</td><td>バルクC</td><td>10 µF, X7R</td><td><code>Capacitor_SMD:C_0805_2012Metric</code></td><td>DC bias後の実効容量を確認</td></tr>
+  </tbody></table></div>
+  <footer><span>Common block source: POWER_5V_COMMON_BLOCK_PART_SELECTION.md</span><span>1 / 6</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 2 — STM32F405最小回路</h1><div class="meta">U301: STM32F405RGT6 / LQFP64<br>Power / HSE / Reset / Boot</div></header>
+  <div class="diagram"><img src="figures/odometry-board-f405.svg" alt="STM32F405最小回路"></div>
+  <p class="caption"><span class="warn">F405固有:</span> VCAP_1/VCAP_2へ各2.2 µFが必須。専用VREF+ pinはなくVDDAへ内部接続。HSEはPH0/PH1。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>U301</td><td>MCU</td><td><code>STM32F405RGT6</code></td><td><code>Package_QFP:LQFP-64_10x10mm_P0.5mm</code></td><td>VDD=19/32/48/64; VSS=18/63</td></tr>
+    <tr><td>Y301</td><td>HSE水晶</td><td><code>ECS-80-8-33Q-JES-TR</code>, 8 MHz</td><td><code>Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm</code></td><td>PH0 pin 5 / PH1 pin 6。pad番号は公式図と再照合</td></tr>
+    <tr><td>C301–C304</td><td>VDD C</td><td>100 nF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>各VDD pinに1個</td></tr>
+    <tr><td>C305/C306</td><td>HSE負荷C</td><td>10 pF, C0G</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>実機で8.2/10/12 pFを評価</td></tr>
+    <tr><td>FB301</td><td>VDDAビーズ</td><td><code>BLM18AG601SN1D</code></td><td><code>Resistor_SMD:R_0603_1608Metric</code></td><td>3V3→VDDA_A</td></tr>
+    <tr><td>C307/C308</td><td>VDDA C</td><td>100 nF / 1 µF</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>VDDA pin 13直近; VSSA pin 12=GND</td></tr>
+    <tr><td>C309</td><td>3.3 V bulk</td><td>4.7 µF, X7R</td><td><code>Capacitor_SMD:C_0805_2012Metric</code></td><td>MCU電源全体</td></tr>
+    <tr><td>C310/C311</td><td>VCAP C</td><td><code>GCM21BR71E225KA73L</code>, 2.2 µF</td><td><code>Capacitor_SMD:C_0805_2012Metric</code></td><td>VCAP_1 pin 31 / VCAP_2 pin 47; ESR&lt;2 Ω</td></tr>
+    <tr><td>C312/C313</td><td>VBAT / NRST</td><td>100 nF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>VBAT=3V3; NRST→GND</td></tr>
+    <tr><td>R301</td><td>BOOT0 pull-down</td><td>10 kΩ</td><td><code>Resistor_SMD:R_0603_1608Metric</code></td><td>BOOT0 pin 60→GND</td></tr>
+  </tbody></table></div>
+  <footer><span>Physical pins: ST DS8626 Rev.12</span><span>2 / 6</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 3 — センサーCAN</h1><div class="meta">Classic CAN 1 Mbps<br>PA11 RX / PA12 TX</div></header>
+  <div class="diagram"><img src="figures/odometry-board-can.svg" alt="センサーCAN簡易回路図"></div>
+  <p class="caption"><span class="warn">unit board共通回路:</span> コネクタ→TVS→トランシーバの順。J401/J402は完全並列。終端はバス物理両端だけON。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>U401</td><td>CANトランシーバ</td><td><code>TCAN1051VDRQ1</code></td><td><code>Package_SO:SOIC-8_3.9x4.9mm_P1.27mm</code></td><td>TXD←PA12; RXD→PA11; VCC=5 V; VIO=3.3 V; S=GND</td></tr>
+    <tr><td>D401</td><td>CAN TVS</td><td><code>ESD2CAN24DBZRQ1</code></td><td><code>Package_TO_SOT_SMD:SOT-23</code></td><td>1/2=COMM_A/B, 3=GND</td></tr>
+    <tr><td>R401</td><td>終端抵抗</td><td>120 Ω, <code>RC0603FR-07120RL</code></td><td><code>Resistor_SMD:R_0603_1608Metric</code></td><td>COMM_A–SW401–COMM_B</td></tr>
+    <tr><td>SW401</td><td>終端スイッチ</td><td><code>JS102011SAQN</code></td><td><code>DifferentialSwerve:JS102011SAQN</code></td><td>Common+片throwを使用</td></tr>
+    <tr><td>C401/C402</td><td>デカップリング</td><td>100 nF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>VCC/VIOに各1個</td></tr>
+    <tr><td>J401/J402</td><td>CANコネクタ</td><td><code>SM03B-GHS-TB</code> ×2</td><td><code>Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal</code></td><td>1=COMM_A, 2=COMM_B, 3=GND</td></tr>
+  </tbody></table></div>
+  <footer><span>F405 bxCAN / CAN FDは使用しない</span><span>3 / 6</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 4 — AMT102-V入力 ×3</h1><div class="meta">5 V quadrature input<br>TIM2 / TIM3 / TIM4 Encoder Mode</div></header>
+  <div class="diagram"><img src="figures/odometry-board-amt102.svg" alt="AMT102入力簡易回路図"></div>
+  <p class="caption"><span class="warn">各輪同一回路:</span> Connector → ESDS452 → 100 Ω → SN74LVC2G17 → MCU。Z相はコネクタにも配線しない。</p>
+  <div><h2>簡易BOM（3輪分）</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J501–J503</td><td>AMT102</td><td><code>SM04B-GHS-TB</code> ×3</td><td><code>Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal</code></td><td>1=5 V, 2=GND, 3=A, 4=B</td></tr>
+    <tr><td>D501–D503</td><td>2ch TVS</td><td><code>ESDS452DBZR</code> ×3</td><td><code>Package_TO_SOT_SMD:SOT-23</code></td><td>5.5 V working; 1/2=A/B, 3=GND; コネクタ直近</td></tr>
+    <tr><td>R511–R516</td><td>直列抵抗</td><td>100 Ω 初期値</td><td><code>Resistor_SMD:R_0603_1608Metric</code></td><td>実波形で0–100 Ωを調整</td></tr>
+    <tr><td>C511–C516</td><td>RC調整用</td><td>DNP</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>Schmitt入力–GND。必要時のみ実装</td></tr>
+    <tr><td>U501–U503</td><td>Schmitt buffer</td><td><code>SN74LVC2G17DBVR</code> ×3</td><td><code>Package_TO_SOT_SMD:SOT-23-6</code></td><td>3.3 V給電; 5.5 V tolerant input</td></tr>
+    <tr><td>C501–C503</td><td>デカップリング</td><td>100 nF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>各U501–U503直近</td></tr>
+  </tbody></table></div>
+  <footer><span>W1=PA0/PA1; W2=PA6/PA7; W3=PB6/PB7</span><span>4 / 6</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 5 — ICM-42688-Pブレークアウト</h1><div class="meta">4-wire SPI3 / 3.3 V only<br>Purchased module</div></header>
+  <div class="diagram"><img src="figures/odometry-board-imu.svg" alt="ICM-42688-P接続簡易回路図"></div>
+  <p class="caption"><span class="warn">現物待ち:</span> 信号名と接続先は確定。物理pin 1、pitch、外形、固定穴、オンボードLDO/レベル変換は到着後に確認する。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J601</td><td>IMU module</td><td><code>ICM-42688-P</code> 8pin breakout</td><td><span class="warn">TBD: 現物到着後</span></td><td>VCC/GND/MISO/MOSI/SCLK/CS/INT1/INT2</td></tr>
+    <tr><td>C601</td><td>デカップリング</td><td>100 nF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>J601 VCC直近</td></tr>
+    <tr><td>C602</td><td>バルクC</td><td>2.2 µF, X7R</td><td><code>Capacitor_SMD:C_0603_1608Metric</code></td><td>J601 VCC直近</td></tr>
+    <tr><td>—</td><td>SPI</td><td>Mode 0, bring-up ≤1 MHz</td><td>—</td><td>PC10=SCK, PC11=MISO, PC12=MOSI, PD2=CS_N</td></tr>
+    <tr><td>—</td><td>Interrupt</td><td>INT1=Data Ready, INT2=reserve</td><td>—</td><td>PC4=INT1, PC5=INT2</td></tr>
+  </tbody></table></div>
+  <footer><span>WHO_AM_I register 0x75 → expected 0x47</span><span>5 / 6</span></footer>
+</section>
+
+<section class="sheet">
+  <header><h1>Block 6 — Debug・Unit ID・LED</h1><div class="meta">Service interface / status<br>unitId = 4</div></header>
+  <div class="diagram"><img src="figures/odometry-board-debug.svg" alt="Debug ID LED簡易回路図"></div>
+  <p class="caption">J701はターゲット自己給電のため電源出力を結線しない。DIPは内部pull-upを使いON=Low。LEDはGPIO→1 kΩ→LED→GND。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J701</td><td>SWD/UART</td><td><code>BM06B-GHS-TBT</code></td><td><code>Connector_JST:JST_GH_BM06B-GHS-TBT_1x06-1MP_P1.25mm_Vertical</code></td><td>1=GND, 2=SWCLK, 3=SWDIO, 4=NRST, 5=TX, 6=RX</td></tr>
+    <tr><td>SW701</td><td>ID DIP</td><td><code>A6S-3104-H</code></td><td><span class="warn">公式寸法照合後に確定</span></td><td>PC6/PC7/PC8→GND; ON=Low; unitId=4</td></tr>
+    <tr><td>R701–R704</td><td>LED抵抗</td><td>1 kΩ</td><td><code>Resistor_SMD:R_0603_1608Metric</code></td><td>PWR/RUN/COMM/ERR</td></tr>
+    <tr><td>D701/D702</td><td>緑LED</td><td><code>LTST-C190KGKT</code></td><td><code>LED_SMD:LED_0603_1608Metric</code></td><td>PWR / RUN(PA5)</td></tr>
+    <tr><td>D703</td><td>黄LED</td><td><code>LTST-C190KSKT</code></td><td><code>LED_SMD:LED_0603_1608Metric</code></td><td>COMM(PB10)</td></tr>
+    <tr><td>D704</td><td>赤LED</td><td><code>LTST-C190KRKT</code></td><td><code>LED_SMD:LED_0603_1608Metric</code></td><td>ERR(PB11)</td></tr>
+    <tr><td>TP801</td><td>SWO TP</td><td>PB3 / SWO</td><td>標準test point</td><td>任意デバッグ用</td></tr>
+  </tbody></table></div>
+  <footer><span>Detailed source: STM32F405_ODOMETRY_PIN_ASSIGNMENT.md</span><span>6 / 6</span></footer>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500">
+  <style>
+    text{font-family:"Yu Gothic",Meiryo,sans-serif;fill:#172033}
+    .wire{fill:none;stroke:#172033;stroke-width:3}
+    .box{fill:#fff;stroke:#172033;stroke-width:3}
+    .gate{fill:#fff8cf;stroke:#172033;stroke-width:3}
+    .net{font:700 16px Consolas,monospace;fill:#194f83}
+    .ref{font:bold 18px Consolas,monospace}
+    .value{font:15px "Yu Gothic",sans-serif}
+    .pin{font:14px Consolas,monospace}
+    .note{font:700 16px "Yu Gothic",sans-serif;fill:#8b2c20}
+  </style>
+  <rect class="box" x="40" y="90" width="125" height="250"/>
+  <text class="ref" x="102" y="120" text-anchor="middle">J501</text>
+  <text class="value" x="102" y="145" text-anchor="middle">SM04B-GHS-TB</text>
+  <text class="pin" x="58" y="190">1 VCC</text><text class="pin" x="58" y="235">2 GND</text>
+  <text class="pin" x="58" y="280">3 A</text><text class="pin" x="58" y="325">4 B</text>
+  <path class="wire" d="M165 185H220"/><text class="net" x="230" y="191">PWR_5V</text>
+  <path class="wire" d="M165 230H220"/><text class="net" x="230" y="236">GND</text>
+  <path class="wire" d="M165 275H300M165 320H300"/>
+
+  <rect class="box" x="300" y="220" width="125" height="125"/>
+  <text class="ref" x="362" y="250" text-anchor="middle">D501</text>
+  <text class="value" x="362" y="276" text-anchor="middle">ESDS452DBZR</text>
+  <text class="pin" x="310" y="306">1=A  2=B</text><text class="pin" x="310" y="330">3=GND</text>
+  <path class="wire" d="M362 345V380"/>
+  <path class="wire" d="M347 380H377M352 389H372M358 398H366"/>
+
+  <path class="wire" d="M425 275H475"/>
+  <rect class="box" x="475" y="255" width="105" height="40"/>
+  <text class="ref" x="527" y="280" text-anchor="middle">R511 100Ω</text>
+  <path class="wire" d="M580 275H670"/>
+  <path class="wire" d="M425 320H475"/>
+  <rect class="box" x="475" y="300" width="105" height="40"/>
+  <text class="ref" x="527" y="325" text-anchor="middle">R512 100Ω</text>
+  <path class="wire" d="M580 320H670"/>
+
+  <path class="wire" d="M625 275V365M625 320V410"/>
+  <path class="wire" d="M607 365H643M607 377H643M625 377V398"/>
+  <path class="wire" d="M610 398H640M615 407H635M621 416H629"/>
+  <text class="ref" x="570" y="372">C511</text><text class="value" x="570" y="393">DNP</text>
+  <path class="wire" d="M690 410H660M695 419H655M701 428H649"/>
+  <text class="ref" x="710" y="415">C512</text><text class="value" x="710" y="437">DNP</text>
+
+  <path class="gate" d="M670 235L670 305L790 270Z"/>
+  <text class="ref" x="715" y="255">U501A</text><text class="value" x="700" y="292">Schmitt</text>
+  <path class="gate" d="M670 300L670 370L790 335Z"/>
+  <text class="ref" x="715" y="320">U501B</text><text class="value" x="700" y="357">Schmitt</text>
+  <text class="value" x="670" y="205">SN74LVC2G17DBVR / 3.3 V</text>
+  <path class="wire" d="M790 270H900M790 335H900"/>
+  <text class="net" x="810" y="260">W1_A</text><text class="net" x="810" y="360">W1_B</text>
+
+  <rect class="box" x="900" y="215" width="245" height="175"/>
+  <text class="ref" x="1022" y="245" text-anchor="middle">U301 STM32F405</text>
+  <text class="pin" x="925" y="285">PA0 / TIM2_CH1</text>
+  <text class="pin" x="925" y="350">PA1 / TIM2_CH2</text>
+  <text class="value" x="925" y="375">Encoder Mode x4 decode</text>
+  <text class="note" x="40" y="455">Wheel 2: J502/D502/U502 → PA6/PA7 (TIM3)　　Wheel 3: J503/D503/U503 → PB6/PB7 (TIM4)</text>
+</svg>
