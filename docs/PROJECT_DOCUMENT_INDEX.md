@@ -28,6 +28,8 @@
 | 9.97 | `electrical/UNIT_BOARD_SCHEMATIC_REFERENCE.md` | ユニット基板回路図のKiCad転記用リファレンス(階層シート案、接続表、RefDes割当、ERC非検出注意点、未確定事項) |
 | 10 | `electrical/CARRIER_BOARD_BUILD_PLAN.md` | 基板製作の進め方、検証順序 |
 | 11 | `testing/NUCLEO_BENCH_TEST_PLAN.md` | CAN-G474主試験機、CAN-L431対向ノード、NUCLEO予備での通信・差動制御実証手順 |
+| 11.2 | `testing/SINGLE_MODULE_LOAD_EVALUATION_PLAN.md` | 単一モジュールの負荷ロバスト性評価: 4隅従動輪治具方針、動作包絡線(理論値・10%マージン)、計測項目、実施順序 |
+| 11.3 | `testing/ODOMETRY_IMU_EVALUATION_PLAN.md` | オドメトリ+IMUモジュール評価: 直線スライダー/回頭ピボット試験、センサフュージョン重み付け方針、更新周波数の考え方 |
 | 11.5 | `../firmware/docs/MATEK_CAN_G474_PORT.md` | CAN-G474へのファーム移植、ST-LINK書込み、ArduPilot参照範囲 |
 | 12 | `software/MINIPC_GUI_AND_TEENSY.md` | mini PC GUI、Teensy、ユニットMCUの役割 |
 | 13 | `checklists/REVIEW_CHECKLIST.md` | 回路・制御・実装レビュー用チェックリスト |
