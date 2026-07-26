@@ -1257,6 +1257,30 @@
 		)
 		(uuid "b6172e1d-9e31-446e-a67c-b2ebc8f8e578")
 	)
+	(global_label "PWR_3.3V"
+		(shape input)
+		(at 134.62 35.56 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "237e0722-3cf5-4f70-b76d-4ec4564c3039")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 134.62 35.56 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
 	(hierarchical_label "W1_B"
 		(shape output)
 		(at 124.46 102.87 180)
@@ -1461,6 +1485,92 @@
 				)
 				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6b620a29-8bb4-4149-b42a-2d9191ba5545"
 					(reference "R9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 134.62 55.88 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "49795c06-9ca5-4836-aac1-abe4a6a61399")
+		(property "Reference" "#PWR044"
+			(at 134.62 62.23 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 134.62 60.96 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 134.62 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 134.62 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 134.62 55.88 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "fa377ae8-fe75-44d6-8ef2-100669ab2620")
+		)
+		(instances
+			(project "Oddom board"
+				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/23269436-26fb-417a-a3a6-ce38dc93169d"
+					(reference "#PWR044")
+					(unit 1)
+				)
+				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6a5e2450-3d09-4f25-8f35-f26d3b9197d2"
+					(reference "#PWR045")
+					(unit 1)
+				)
+				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6b620a29-8bb4-4149-b42a-2d9191ba5545"
+					(reference "#PWR046")
 					(unit 1)
 				)
 			)
@@ -1909,6 +2019,106 @@
 		)
 	)
 	(symbol
+		(lib_id "74xGxx:74LVC2G17")
+		(at 134.62 45.72 0)
+		(unit 3)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a2076365-a654-43ac-b76e-39e2f434325e")
+		(property "Reference" "U3"
+			(at 140.97 42.545 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "74LVC2G17"
+			(at 140.97 45.085 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 134.62 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "http://www.ti.com/lit/sg/scyt129e/scyt129e.pdf"
+			(at 134.62 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Dual Buffer, Schmitt Triggered, Low-Voltage CMOS"
+			(at 134.62 45.72 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "34eea507-e79c-4b13-9cf6-92eaead95fec")
+		)
+		(pin "6"
+			(uuid "9543ca77-ecd8-4fd9-ba9d-b1e130883ae1")
+		)
+		(pin "3"
+			(uuid "f650fcd0-f3f5-4f19-a34e-e29688d9c42d")
+		)
+		(pin "4"
+			(uuid "4e80e15d-5dad-49be-8474-4cf662b992fd")
+		)
+		(pin "5"
+			(uuid "6f5ba73f-96b7-4118-8028-4cfd67ce0701")
+		)
+		(pin "2"
+			(uuid "c822cf6a-84f0-4ccf-8873-f139b6250c0d")
+		)
+		(instances
+			(project "Oddom board"
+				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/23269436-26fb-417a-a3a6-ce38dc93169d"
+					(reference "U3")
+					(unit 3)
+				)
+				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6a5e2450-3d09-4f25-8f35-f26d3b9197d2"
+					(reference "U7")
+					(unit 3)
+				)
+				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6b620a29-8bb4-4149-b42a-2d9191ba5545"
+					(reference "U9")
+					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C")
 		(at 152.4 106.68 0)
 		(unit 1)
@@ -2165,22 +2375,22 @@
 			)
 		)
 		(pin "1"
-			(uuid "34eea507-e79c-4b13-9cf6-92eaead95fea")
+			(uuid "34eea507-e79c-4b13-9cf6-92eaead95feb")
 		)
 		(pin "6"
-			(uuid "9543ca77-ecd8-4fd9-ba9d-b1e130883adf")
+			(uuid "9543ca77-ecd8-4fd9-ba9d-b1e130883ae0")
 		)
 		(pin "3"
-			(uuid "f650fcd0-f3f5-4f19-a34e-e29688d9c42b")
+			(uuid "f650fcd0-f3f5-4f19-a34e-e29688d9c42c")
 		)
 		(pin "4"
-			(uuid "4e80e15d-5dad-49be-8474-4cf662b992fb")
+			(uuid "4e80e15d-5dad-49be-8474-4cf662b992fc")
 		)
 		(pin "5"
-			(uuid "6f5ba73f-96b7-4118-8028-4cfd67ce06ff")
+			(uuid "6f5ba73f-96b7-4118-8028-4cfd67ce0700")
 		)
 		(pin "2"
-			(uuid "c822cf6a-84f0-4ccf-8873-f139b6250c0b")
+			(uuid "c822cf6a-84f0-4ccf-8873-f139b6250c0c")
 		)
 		(instances
 			(project "Oddom board"
@@ -2196,216 +2406,6 @@
 					(reference "U9")
 					(unit 1)
 				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "74xGxx:74LVC2G17")
-		(at 134.62 45.72 0)
-		(unit 3)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a2076365-a654-43ac-b76e-39e2f434325e")
-		(property "Reference" "U3"
-			(at 140.97 42.545 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "74LVC2G17"
-			(at 140.97 45.085 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 134.62 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/sg/scyt129e/scyt129e.pdf"
-			(at 134.62 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Dual Buffer, Schmitt Triggered, Low-Voltage CMOS"
-			(at 134.62 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "34eea507-e79c-4b13-9cf6-92eaead95fea")
-		)
-		(pin "6"
-			(uuid "9543ca77-ecd8-4fd9-ba9d-b1e130883adf")
-		)
-		(pin "3"
-			(uuid "f650fcd0-f3f5-4f19-a34e-e29688d9c42b")
-		)
-		(pin "4"
-			(uuid "4e80e15d-5dad-49be-8474-4cf662b992fb")
-		)
-		(pin "5"
-			(uuid "6f5ba73f-96b7-4118-8028-4cfd67ce06ff")
-		)
-		(pin "2"
-			(uuid "c822cf6a-84f0-4ccf-8873-f139b6250c0b")
-		)
-		(instances
-			(project "Oddom board"
-				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/23269436-26fb-417a-a3a6-ce38dc93169d"
-					(reference "U3")
-					(unit 3)
-				)
-				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6a5e2450-3d09-4f25-8f35-f26d3b9197d2"
-					(reference "U7")
-					(unit 3)
-				)
-				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6b620a29-8bb4-4149-b42a-2d9191ba5545"
-					(reference "U9")
-					(unit 3)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 134.62 55.88 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "49795c06-9ca5-4836-aac1-abe4a6a61399")
-		(property "Reference" "#PWR044"
-			(at 134.62 62.23 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 134.62 60.96 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 134.62 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 134.62 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 134.62 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fa377ae8-fe75-44d6-8ef2-100669ab2620")
-		)
-		(instances
-			(project "Oddom board"
-				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/23269436-26fb-417a-a3a6-ce38dc93169d"
-					(reference "#PWR044")
-					(unit 1)
-				)
-				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6a5e2450-3d09-4f25-8f35-f26d3b9197d2"
-					(reference "#PWR045")
-					(unit 1)
-				)
-				(path "/fb6eb458-0fd8-4f13-9fe8-a6967e1b6388/6b620a29-8bb4-4149-b42a-2d9191ba5545"
-					(reference "#PWR046")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(global_label "PWR_3.3V"
-		(shape input)
-		(at 134.62 35.56 90)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "237e0722-3cf5-4f70-b76d-4ec4564c3039")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 134.62 35.56 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 			)
 		)
 	)
