@@ -14,6 +14,87 @@
 
 ---
 
+## 2026-07-29 (シルク手直し後 Gerber・ステンシルZIP再生成)
+
+### やったこと
+
+- ユーザーによる表面シルク手直し後のPCB(2026-07-29 13:12:32保存)を対象に製造出力を再生成した。
+- ゾーン再フィル込みDRCで違反0件・未接続0件・Footprint error 0件を確認した。
+- 既存のGerber ZIP、ステンシルZIP、展開ディレクトリを最新内容で置き換えた。
+- F.Pasteは234開口、B.Pasteは0開口のため、ステンシルZIPはF.Paste+Edge.Cutsの片面用とした。
+
+### 現在の状態
+
+- `output/fabrication/odometry-board-revA-gerbers.zip`と`odometry-board-revA-stencil.zip`はシルク手直し後の最新版。
+
+### 次の作業
+
+1. 発注サイトのGerber viewerで手直し後シルク、基板外形、穴を最終確認する。
+
+---
+
+## 2026-07-29 (F405オドメトリ基板 Gerber・ステンシル製造ZIP作成)
+
+### やったこと
+
+- 保存後の最新PCBで、IMUコネクタ機能シルク6文字を0.6mmから基板制約の0.8mmへ修正した。
+- 埋込みQR/ロゴおよび意図的なローカルFootprint差分について、ライブラリ比較DRCをignoreへ設定した。
+- ゾーン再フィル込みDRCで違反0件・未接続0件・Footprint error 0件を確認した。
+- 4層銅、表裏マスク/シルク、外形、PTH/NPTHドリルを含む`odometry-board-revA-gerbers.zip`を作成した。
+- F.Paste(234開口)+Edge.Cutsを含む片面用`odometry-board-revA-stencil.zip`を作成した。B.Pasteは0開口のためステンシルZIPから除外した。
+
+### 現在の状態
+
+- 製造用Gerber ZIPと表面ステンシルZIPは`output/fabrication/`に作成・検証済み。
+
+### 次の作業
+
+1. 発注サイトのGerber viewerで層構成、外形、表裏シルク、穴を最終目視確認する。
+2. ステンシル発注では片面(F.Paste)として指定し、厚さとフレーム有無を選択する。
+
+---
+
+## 2026-07-29 (F405オドメトリ基板 機能シルク仮配置)
+
+### やったこと
+
+- 基板名/Rev、AMT WHEEL 1/2/3とpin配列、PWR/RUN/COMM/ERR、SENSOR CAN、CAN TERM、5V IN、SWD/UART、ID DIP、IMUの機能シルクをF.SilkSへ仮配置した。
+- 後から人が個別に移動できるよう、26個の独立したPCB textとして配置した。
+- シルク文字高さを基板制約の0.8mm以上、線幅を0.1mmへ統一し、長いSWD/IMU pin列は2行へ分割した。
+- KiCad 10トップ面レンダリングで内容を確認し、ゾーン再フィル込みDRCで違反0件・未接続0件・Footprint error 0件を確認した。
+
+### 現在の状態
+
+- 機能シルクは基板内へ仮配置済み。密集部では部品外形・コネクタ・他ラベルとの重なりがあるため、最終位置はPCB Editorで人が調整する。
+
+### 次の作業
+
+1. PCB Editorで各ラベルを見やすい位置へ移動し、コネクタ実装後も読めることを確認する。
+2. F.SilkS Gerberを出力し、基板端欠け・パッド上・コネクタ下の文字がないことを最終確認する。
+
+---
+
+## 2026-07-29 (F405オドメトリ基板 部品番号非表示・DRC 0件化)
+
+### やったこと
+
+- PCB上の全68個のFootprint Referenceを非表示にし、部品外形・pin 1/極性マークは残した。
+- 同一座標に重複していたGND viaを1個削除し、意図的なローカルFootprint差分チェックはDRCでignoreへ設定した。
+- ゾーン再フィル込みのKiCad 10 CLI DRCで、違反0件・未接続0件・Footprint error 0件を確認した。
+- 残すべき機能シルクを`ODOMETRY_BOARD_REQUIREMENTS.md`へ列挙した。
+
+### 現在の状態
+
+- 部品番号シルクは非表示。基板上には機能シルクを今後配置する余地がある。
+- 電気的DRCは0件。シルククリアランス、Footprintライブラリ差分などの意図的なチェックはignore設定。
+
+### 次の作業
+
+1. 要件書の一覧に従い、基板名/Rev、コネクタ信号、AMT輪番号、LED、ID DIP、CAN終端、デバッグ、IMU軸方向の機能シルクをPCBへ配置する。
+2. F.SilkS Gerberを出力し、コネクタ下・パッド上・基板端で文字が欠けないことを確認する。
+
+---
+
 ## 2026-07-28 (F405オドメトリ基板 配線DRC収束・共有)
 
 ### やったこと
