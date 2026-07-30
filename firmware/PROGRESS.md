@@ -1,6 +1,155 @@
 # Firmware progress
 
-最終更新: 2026-07-08(WebUIのωsを「目的角への収束速度」セマンティクスへ変更、実機検証合格)
+最終更新: 2026-07-31(リアルタイムベクトルGUI・空走制御セーブポイント)
+
+## セーブポイント(2026-07-31 リアルタイムベクトルGUI・次工程確定)
+
+- `unit_web_ui.py`のベクトルパッドをEnable中約30Hzのリアルタイム送信へ変更。
+  矢印/Shift微調整/ドラッグ/Escゼロを実装し、pointer clickの重複送信経路を除去した。
+- Enable時はAMT実角度を目標へseedし、wheel目標/実効値を0へ初期化する。Disable中のdraftは
+  モータを動かさず、以前のwheel指令もEnable直後に再開しない。
+- 実機30Hz相当でwheel=100rpm、steer=59.854→69.854degを連続指令し、
+  最終70.049deg/104.2rpm、`MOTION_SETTLED=1`を確認。STOP後wheel 0rpmを確認した。
+- 構文/セルフチェック/JavaScript構文/差分チェックは合格。Web UIはport 8080で稼働中。
+  保存時点は実wheel/実効wheel=0rpmだがUnit Enable=true。終了時はSTOP/Disableを行う。
+- 次工程はAMT機械ゼロ校正を先に実施し、その後に固定治具・ガード付きの代表荷重試験を行う。
+  0/90/180/270deg検証後、75/265/1200rpm、正逆90deg、急反転、連続8の字を評価する。
+
+## 完了(2026-07-31 理論時間x2軌道・STATUS3収束判定)
+
+- `unit_web_ui.py`へhard 469rpm/planned 422.1rpm(10%予備)の2包絡、非対称台形/三角形
+  `Tmin`、time scale=2を実装。steer速度1/2・加速度1/4、wheel ramp 1/2で目標生成する。
+- G474はSTATUS1/3を20ms、STATUS2を50msで通常送信する。idx22=1〜100msはSTATUS1/2の
+  ベンチoverride、0は通常周期復帰。STATUS2からGUIが実steer軸rpmを算出する。
+- STATUS3 bit6 `MOTION_SETTLED`を実装。角度誤差<=0.5deg、実steer軸<=1rpm、steer FF<=0.1rpm、
+  wheel誤差<=max(12rpm,6%)、wheel加速度FF<=1rpm/sを100ms連続で満たしたときだけ立つ。
+  前指令のHigh誤認を避けるため、受信側は新指令後のLow→Highを完了として使う。
+- `SET_TARGET_FF`のwheel加速度欄へWebプロファイルの実微分を送信し、純wheelランプ中も
+  `MOTION_SETTLED`がLowになることを0→265rpm実機試験で確認した。
+- 起動時既定を現最良値へ更新: steer Kp/Ki=120/50、mode LPF=2ms、angle hold/moving Kp=4/1、
+  deadband=0.3deg、steer accel/decel FF=0.5/0.5。build成功(FLASH 10716B/RAM 1352B)、
+  ST-Link connect-under-resetでFlash/verify済み。
+- 最終受入`firmware/logs/auto-tune/2026-07-30T17-50-43Z/`: wheel=0/265rpm x 正逆90deg x3、
+  time scale=2で12/12 CAN収束・12/12 deadline 1.273s以内、平均1.146s、中央値1.130s、
+  最悪1.250s、最大overshoot 1.054deg。
+- GUIへ理論時間/期限/収束flag表示と2D速度ベクトルパッドを追加。矢印キー/ドラッグで先端を動かすと、
+  Enable中は約30Hzで方向=steer角、長さ=wheel rpmをリアルタイム送信する。Disable中はdraftのみ、
+  Enable時は実角度+wheel 0から開始する。最大長はplanned pure-wheel上限1228rpm。
+- 実機30Hz相当の連続指令をwheel=100rpm、steer=59.854→69.854degで確認。
+  最終70.049deg/104.2rpmで`MOTION_SETTLED=1`、STOP後はDisable・wheel 0rpmへ復帰した。
+- wheel=1200rpm定常でplanned steer上限6.98軸rpm、time scale=2後の指令3.49軸rpmを実測確認。
+  wheel profile rpmを使って200Hzでsteer上限を再計算するため、wheel増加時は包絡に沿って減少する。
+
+### 現在の状態
+
+- 最新ファームFlash済み。Web UI起動中、ユニットはDisable。本番同様にwheel rpm+指定角度で指令可能。
+- time scale=2は空走受入合格。倍率1のゲイン限界回帰は収束11/12、2*Tmin期限内7/12で、
+  wheel回転中の終端摩擦が残る。
+
+### 次の作業
+
+1. 接地/荷重/床材で12試行以上を取り、0.35s残差予算をp99で更新する。
+2. Teensyへ3輪共通time scaling、10% planned包絡、全STATUS3収束集約を移植する。
+3. 終端静止摩擦へDOB/推定型補償を検討し、gain-only限界を超える。
+
+## 完了(2026-07-31 ステア理論速度への接近・校正フレーム拡張)
+
+- `unit_auto_tuner.py`を粗→細の実機pattern searchとして拡張し、Kp/Ki/angle P/deadband、
+  mode速度LPF、電流上限、加速度FF、最大速度、ステア加速/制動を統一的に探索可能にした。
+  各trial/summaryへ運動学的下限比、指令/実測電流peakを追加し、CSV/SVG/metadataを逐次保存する。
+- Web目標生成を50Hzから200Hzへ上げ、`SET_TARGET_FF`は0を含め毎周期送信するよう修正した。
+  最終zeroを省略したときの200ms FF残留を解消した。
+- ステア加速と制動を別パラメータに分離した。最大速度へは3600deg/s^2で立ち上げ、
+  `sqrt(2*a_decel*distance)`の制動側は2250deg/s^2として早めに減速を開始する。
+- 空走自動探索の採用値:
+  - steer mode Kp/Ki=`80/25`, angle Kp=`4`, deadband=`0.5deg`
+  - mode速度LPF tau=`10ms`, acceleration FF gain=`0.75`
+  - 最大`240deg/s`, 加速`3600deg/s^2`, 制動`2250deg/s^2`, current limit=`4000 raw`
+- 電流上限3000/4000/5000/6000 rawを比較したが、最大指令電流は約2,000rawで上限に届かず、
+  上限増加による高速化はなかった。律速要因は20ms速度LPFの位相遅れと対称制動プロファイルだった。
+- 最終値をbuild/flash/verifyし、wheel=0/265rpm x 正逆90deg x 3反復を回帰:
+  **12/12成功、平均収束0.760s、最悪0.924s、平均理論比2.03、最大overshoot 2.64deg、
+  指令/実測電流peak 2057/1665raw、温度peak 30degC**。旧採用平均1.185sから約36%短縮。
+- `docs/testing/UNIT_AUTO_TUNER.md`へ、内周速度PI→外周angle P→FF/プロファイル→
+  負荷/床材シナリオの順で行うパッケージ校正手順を追記した。
+- その後、巡航中に移動目標を2〜6deg追い越した際、hold用angle Kp=4が速度指令を
+  40rpmから約28〜35rpmへ一度落として戻す「中間カクつき」をログで確認した。
+  moving angle Kpを別パラメータにした2自由度外周を実装し、FF>=5rpmではKp=1、
+  減速終盤にKp=4へ連続補間するよう変更。ユーザー目視でもカクつきと収束が改善した。
+- 加速FF=0.75と制動FF=1.0を分離してflash済み。加速/制動を同一係数にせず、慣性加速と
+  ブレーキを独立校正できる。
+- 最大速度上限を試験時だけ40→60軸rpmへ広げ、240/300/360deg/sを比較したが、平均収束は
+  0.838/0.884/0.904s、overshootは3.95/6.59/8.44degで240が最良。360deg/sで制動率を
+  1350まで早めても平均0.879sで、rpm/電流包絡線ではなく内周速度帯域が律速と判断した。
+  採用上限は40軸rpm=240deg/sへ戻した。
+- 終端摩擦対策のsteer_min_rpm=2.5/5とsteer Coulomb FF=200/400rawはいずれも未収束数を
+  増やしたため不採用(両方0)。一定floor/FFではなく、次は内周単独同定とDOB/摩擦推定で扱う。
+- 2自由度化後は12/12・平均0.833s・最悪0.964sのバッチがある一方、別の冷間開始バッチでは
+  最初のwheel=0移動が0.527deg残り11/12、worst 2.37sとなった。定常応答は主に0.68〜0.92s
+  だが、積分0からの初回と絶対角依存の再現性は未解決。ログは
+  `firmware/logs/auto-tune/2026-07-30T17-01-13Z/`ほかに保存済み。
+
+### 現在の状態
+
+- 最新ファームをFlash済み。Web UIは200Hz版で起動中、ユニットはDisable。
+- 空走採用値はコード、Web UI、自動調整器の既定値で一致している。
+
+### 次の作業
+
+1. **次セッション最優先:** 自動調整器/ファームへ外周を切ったステアmode速度step/PRBS同定
+   モードを追加する。10ms LPF+PIを基準に、5ms以下のLPFでKp/Kiを再同定し、内周帯域を上げる。
+2. 接地後は空走値を中心に狭幅探索し、荷重/床材を跨ぐ最悪応答で共通ゲインを選ぶ。
+3. Teensy中央プロファイルへ200Hzベンチで検証した非対称ステア加速/制動を移植する。
+
+## 完了(2026-07-31 低抵抗化後の操舵高速収束・包絡線・安全減速)
+
+- 機構抵抗低下後の発振を進行中WebUIログから切り分けた。wheel=265rpm定常自体は
+  p-p約6rpmで安定していたが、操舵を240deg/sで動かした区間は到着時にFFが40rpmから
+  0へ瞬時に落ち、実角が目標を約16〜19deg通過して逆向き補正する往復挙動だった。
+- `tools/linux/unit_web_ui.py`のステア目標生成を、定速スルーから加速度制限付き台形/三角形
+  プロファイルへ変更した。残距離から`sqrt(2*a*distance)`で制動開始速度を求め、
+  `SET_TARGET_FF`を到着前に連続的に0へ落とす。短時間に目的角が変わって停止距離が不足する
+  場合もFFを不連続に切らず、小さなプロファイルオーバーシュート後に滑らかに戻す。
+- ステア加減速を実機A/B:
+  - 60deg/s・180deg/s^2・wheel=0の+90deg: 到着オーバーシュート約0.18deg、発振なし。
+  - 要求240deg/s・360deg/s^2・wheel=265rpmの+90deg: 短距離のため実ピーク約180deg/s、
+    到着後約0.35deg以内。旧方式の16〜19deg往復を解消。
+  - 720deg/s^2: 90deg目標プロファイル約0.7s、最大追従誤差約3.2deg、到着直後の振れ
+    約+2.5/-1.1deg後に±0.3deg以内へ収束。速度と減衰の両立が最良のため既定値に採用。
+  - 1080deg/s^2: 目標約0.60sだが到着後に約±2.2deg往復したため不採用。
+- ギア比`DRIVE=32/11`, `STEER=8/11`から単一モジュールのrpm包絡線をWebUI目標生成へ接続した。
+  従来は超過警告の表示だけだったが、現在はwheel目標を保つ範囲へsteerプロファイル速度を
+  自動制限する。wheel=1300rpm・steer要求240deg/sでは数式どおり96.5deg/sへ制限され、
+  実wheel 1302〜1310rpm、+90deg到達後誤差0.44deg以内、温度32degCで完走した。
+- 高rpm急停止の回生電圧上昇対策として、WebUI中央側へwheelの非対称ランプを追加した。
+  既定は加速1000rpm/s、減速500rpm/s。正逆反転は必ず0rpmを1サンプル経由し、通常STOPは
+  `現在のprofile rpm/減速率+0.5s`待ってからdisableする。ファーム内部の4000rpm/sランプは
+  最終安全ガードとして残る。500rpm実機試験ではSTOP待ち1.51s、disable時実測0.015rpm。
+- 低抵抗化後のdrive積分フロアA/Bを途中まで実施。25rpmはfloor=200でmean 26.3rpm/
+  p-p 48.2rpm/固着22.5%、floor=0でmean 25.0rpm/p-p 45.7rpm/固着25.0%となり、旧floorだけ
+  では新機構の25rpm固着を解消できない。40rpm floor=200はmean45.7rpm/p-p14.3rpm/固着0%。
+  40rpm floor=0は試験中断で未取得。終了後floor=200へ復帰した。
+- `python3 tools/linux/unit_web_ui.py --check`、`py_compile`、`git diff --check`はPASS。
+  `bash firmware/scripts/build.sh debug`成功(FLASH 8896B / RAM 1280B)。制御ファームの実動作変更は
+  今回なく、実機Flashは行っていない。WebUIは改良版で起動中、ユニットはDisable状態。
+
+### 現在の状態
+
+- ユニット局所ループは既存どおり1kHz。中央の主指令は`omega_w, theta_s`で、軌道から得た
+  steer rate/wheel accelをFFとして併送する構成。
+- ステア90degの現採用プロファイルは最大240deg/s、加減速720deg/s^2。
+- wheel中央プロファイルは加速1000rpm/s、減速500rpm/s。高rpm停止の急変は禁止。
+- runtimeのdrive積分フロアは安全のため既定200rawへ戻している。
+
+### 次の作業
+
+1. wheelランプ有効状態で40rpm floor=0を再取得し、25/40rpmのfloor採否を確定する。
+2. 今回WebUIで検証したステア制動プロファイル、rpm包絡線、非対称wheelランプをTeensyの
+   100Hz協調制御へ移植する。3輪では1輪だけを削らず、最悪モジュールに合わせて全体をデサチュレートする。
+3. `LOAD_ADAPTIVE_CONTROL_ROADMAP.md` Level 0に従い、mode積分値とC620 torque currentを
+   テレメトリへ追加し、低速固着と機構抵抗変化をログで分離する。
+4. `targetWheelAccelRpmMilliPerS`をdrive加速度FFへ接続する前に、加速/減速方向別の係数を同定する。
+5. DCバス電圧を計測可能にし、高rpm減速時の電圧ピークから安全な減速率500rpm/sを再評価する。
 
 ## 完了(2026-07-08 WebUI ωsセマンティクス変更: 収束速度+到達キープ)
 

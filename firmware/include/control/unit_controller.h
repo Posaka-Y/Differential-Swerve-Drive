@@ -11,6 +11,10 @@ typedef struct {
     float steer_min_rpm;
     float steer_accel_rpm_per_s;
     float angle_kp_rpm_per_deg;
+    /* Lower outer-loop gain used while steer-rate FF is large. It prevents
+     * small moving-reference errors from kicking the cruise-rate command.
+     * The controller blends back to angle_kp_rpm_per_deg as FF approaches 0. */
+    float moving_angle_kp_rpm_per_deg;
     float angle_deadband_deg;
 
     /* Ramp on the drive (wheel) target, mirroring steer_accel_rpm_per_s.
@@ -36,6 +40,16 @@ typedef struct {
 
     float current_limit;
     float steer_motor_sign;
+
+    /* Steer acceleration feedforward. The CAN layer differentiates the
+     * profiled steer-axis rate command at its update period and holds the
+     * resulting axis rpm/s until the next FF frame. This gain converts the
+     * corresponding motor-mode rpm/s into C620 current-command units. */
+    float steer_accel_ff_current_per_mode_rpm_per_s;
+    float steer_decel_ff_current_per_mode_rpm_per_s;
+    /* Coulomb-friction feedforward in steer mode. Applied in the direction
+     * of a nonzero steer-mode target; zero disables. */
+    float steer_friction_ff_current;
 
     /* Kinetic-friction feedforward: while |filtered drive-mode rpm| exceeds
      * drive_motion_threshold_rpm (i.e. the wheel is actually moving), this
@@ -73,6 +87,7 @@ typedef struct {
      * unit_controller_set_target() so a CAN-side FF timeout can zero it
      * without touching the angle/wheel targets. */
     float steer_rate_ff_rpm;
+    float steer_accel_ff_rpm_per_s;
 } unit_target_t;
 
 typedef struct {
@@ -94,7 +109,16 @@ typedef struct {
     float steer_mode_measured_rpm;
     float drive_mode_measured_rpm;
     float steer_mode_current;
+    float steer_accel_ff_current;
     float drive_mode_current;
+    /* Integral states are exposed for tuning telemetry.  They are the stored
+     * mode-PI I terms before P addition/current scaling. */
+    float steer_mode_integral;
+    float drive_mode_integral;
+    uint8_t drive_in_motion;
+    uint8_t drive_onset_active;
+    uint8_t drive_integral_floor_active;
+    uint32_t drive_onset_count;
     uint8_t limiting_active;
     /* Set when the combined per-motor current exceeded current_limit and both
      * mode currents were scaled down proportionally. */
@@ -116,6 +140,7 @@ typedef struct {
     /* Previous-cycle drive_in_motion state, used to detect the stuck->moving
      * rising edge for drive_onset_integral_clamp_current. */
     uint8_t drive_was_in_motion;
+    uint32_t drive_onset_count;
 } unit_controller_t;
 
 void unit_controller_init(unit_controller_t *controller,
@@ -127,6 +152,8 @@ void unit_controller_set_target(unit_controller_t *controller,
  * so the FF cannot get stuck at a stale nonzero value. */
 void unit_controller_set_steer_rate_ff_rpm(unit_controller_t *controller,
                                            float steer_rate_ff_rpm);
+void unit_controller_set_steer_accel_ff_rpm_per_s(
+    unit_controller_t *controller, float steer_accel_ff_rpm_per_s);
 void unit_controller_reset(unit_controller_t *controller);
 void unit_controller_update(unit_controller_t *controller,
                             const unit_measurement_t *measurement,

@@ -1,0 +1,48 @@
+{
+  "started_utc": "2026-07-30T17:50:43.167725+00:00",
+  "arguments": {
+    "params": "steer_kp",
+    "center": [
+      "steer_kp=120"
+    ],
+    "span": [],
+    "fixed": [],
+    "rounds": 3,
+    "shrink": 0.5,
+    "wheel_rpm": 265.0,
+    "move_deg": 90.0,
+    "trial_timeout": 3.0,
+    "poll_hz": 100.0,
+    "settle_band_deg": 0.5,
+    "settle_dwell": 0.5,
+    "temp_limit_c": 55.0,
+    "wheel_accel": 500.0,
+    "wheel_decel": 500.0,
+    "trajectory_time_scale": 2.0,
+    "full_scenarios": true,
+    "repeats": 1,
+    "seed": 20260731,
+    "web_url": "http://127.0.0.1:8080",
+    "can_iface": "can0",
+    "output_dir": "/home/tirobot/Differential-Swerve-Drive/firmware/logs/auto-tune",
+    "apply_best": false,
+    "evaluate_only": true,
+    "yes_wheel_lifted": true,
+    "self_check": false
+  },
+  "starting_center": {
+    "steer_kp": 120.0
+  },
+  "starting_spans": {
+    "steer_kp": 40.0
+  },
+  "score_formula": "mean(trial_score)+0.35*max(trial_score)",
+  "completed_utc": "2026-07-30T17:51:05.902220+00:00",
+  "best": {
+    "steer_kp": 120.0,
+    "score": 3.8448758273338752
+  },
+  "left_applied": {
+    "steer_kp": 120.0
+  }
+}

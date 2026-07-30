@@ -14,6 +14,134 @@
 
 ---
 
+## 2026-07-31 (リアルタイムベクトル操作・空走制御セーブポイント)
+
+### やったこと
+
+- 2D速度ベクトルGUIを、Enter確定式からEnable中約30Hzのリアルタイム指令へ変更した。
+  矢印キー/Shift微調整/ドラッグ/Escゼロをサポートし、最新入力だけを送信する。
+- Enable時はAMT実角度をsteer初期目標に採用し、wheel目標/プロファイルを0へ初期化することで、
+  Disable中のdraftや以前の指令による意図しない発進を防ぐ。
+- wheel rpmから200Hzでplanned/hard包絡線を再計算し、高wheel rpmほどsteer rpmを連続的に
+  減らす本番目標生成をGUIにも適用した。
+- 実機でwheel=100rpm、steer=59.854→69.854degを30Hz相当で連続入力し、
+  最終70.049deg/104.2rpm、`MOTION_SETTLED=1`を確認した。試験後のSTOPでwheel 0へ復帰した。
+- Python構文、Web UIセルフチェック、JavaScript構文、`git diff --check`は合格。
+
+### 現在の状態
+
+- 空走単体制御は、本番形式のwheel rpm+指定角度、time scale=2、rpm包絡線、CAN収束判定、
+  リアルタイムGUIまで一続きで動作している。現最良制御はG474へFlash済み。
+- Web UIはport 8080で稼働中。保存時点の実wheel/実効wheelは0rpm。Unit Enable状態はtrueのため、
+  操作終了時はGUIのSTOPまたはDisableで明示的に停止すること。
+- 空走の手応えは強いが、手で回転輪へ負荷を与える試験は再現性と安全性がないため今後行わない。
+
+### 次の作業
+
+1. モータDisable・ステア静止を条件に、治具で機械正面を合わせてAMTゼロオフセットをFlash保存する。
+   再起動後に0/90/180/270degと回転方向を検証する。GUIからのゼロ保存操作も追加候補。
+2. 固定治具・ガード・非常停止を用意し、代表実車輪荷重でwheel=75/265/1200rpm、正逆90deg、
+   急反転、連続8の字を実施する。手で負荷は掛けない。
+3. `2*Tmin+0.35s`、角度定常誤差0.5deg、wheel誤差`max(12rpm, 6%)`を暫定受入条件とし、
+   電流・母線電圧・温度・包絡線制限率を保存する。失敗時は摩擦補償/トルクFFを先に調整する。
+
+## 2026-07-31 (理論時間x2軌道・CAN収束フラグ・現最良制御の焼込み)
+
+### やったこと
+
+- wheel rpmによる差動モータ包絡、steer最大rpm、非対称加減速を含む台形/三角形の
+  `hard Tmin`/10%予備付き`planned Tmin`をWeb UIへ実装した。通常指令はtime scale=2とし、
+  steer速度1/2・加速度1/4、wheel rpmランプ1/2で本番相当の目標を生成する。
+- G474へSTATUS3を実装し、角度0.5deg、実steer軸1rpm、wheel追従、steer/wheel FF停止を
+  100ms連続で満たすと`MOTION_SETTLED`を立てるようにした。STATUS1/3=20ms、STATUS2=50msを
+  通常送信し、idx22はベンチ高周期overrideへ変更した。
+- 現最良の空走値`steer PI=120/50、mode LPF=2ms、angle Kp=4/moving=1、deadband=0.3deg、
+  accel/decel FF=0.5/0.5`を起動時既定へ反映し、G474へFlash/verifyした。
+- 本番契約と同じ`SET_TARGET(wheel rpm, 指定角度)`+`SET_TARGET_FF`で、wheel=0/265rpm、
+  正負90degを各3回回帰した。time scale=2の12試行はCAN収束12/12、監視期限
+  `2*Tmin+0.35s=1.273s`以内12/12、平均1.146s、最悪1.250s、最大overshoot 1.054degだった。
+- GUIへwheel/steer実rpm、hard/planned理論時間、2倍軌道、CAN収束状態を表示した。
+  2D速度ベクトルの先端を矢印キー/ドラッグで動かすと、Enable中は約30Hzで
+  方向=steer角、長さ=wheel rpmをリアルタイム送信するパッドを追加した。Disable中はdraftのみで、
+  Enable時は実角度+wheel 0から安全に開始する。最大長は10%予備付きpure-wheel上限1228rpm。
+- 実機へ30Hz相当で59.854→69.854degを連続入力しながらwheel=100rpmを指令した。
+  最終70.049deg/104.2rpmでCAN収束flagを確認し、STOP後はDisable・wheel 0rpmへ復帰した。
+- wheel=1200rpm定常ではplanned steer上限6.98軸rpm、time scale=2後の実指令3.49軸rpmを確認。
+  wheel rpmの増減に応じて毎200Hz周期で包絡線を再計算し、steer rpm上限を連続的に増減する。
+
+### 現在の状態
+
+- 最終ファームをG474へ書込み・検証済み。リアルタイム版Web UIはport 8080で起動中、ユニットはDisable。
+- 単一ユニット空走では2倍軌道+0.35s監視余裕を12/12で満たす。倍率1の厳しいゲイン試験は
+  収束11/12・2*Tmin以内7/12で、終端静止摩擦は残る。
+
+### 次の作業
+
+1. 接地荷重・床材・バッテリー電圧を跨ぐ回帰で追従残差p99を測り、0.35s監視余裕を更新する。
+2. Teensy中央100Hzへ10%予備包絡、3輪共通time scaling、STATUS3完了集約を移植する。
+3. 終端摩擦は一定floorでなく、摩擦推定/DOBまたは終端専用補償で改善する。
+
+## 2026-07-31 (ステア自動校正・理論速度への接近)
+
+### やったこと
+
+- 実機の粗→細自動探索をKp/Kiだけでなく、angle P/deadband、mode速度LPF、電流上限、
+  加速度FF、ステア加速/制動へ拡張した。指令/実測電流peakと運動学的下限比も自動集計する。
+- 中央側ベンチ目標生成を200Hzへ上げ、ステア加速3600deg/s^2と制動2250deg/s^2を分離した。
+- 局所既定値をsteer mode Kp/Ki=80/25、angle Kp=4、速度LPF=10ms、加速度FF=0.75へ更新し、
+  build/flash/verifyした。
+- wheel=0/265rpm、正逆90degを各3反復したFlash後回帰は12/12成功。平均0.760s、最悪0.924s、
+  理論0.375s比の平均2.03、最大overshoot 2.64deg、温度peak 30degCだった。旧平均1.185sから約36%短縮。
+- 電流上限3000〜6000raw比較では指令peakが約2000rawに留まり、電流クランプが律速でないことを確認した。
+- 校正を「内周速度PI→外周angle P→FF/プロファイル→負荷・床材ロバスト検証」に分ける手順を
+  `docs/testing/UNIT_AUTO_TUNER.md`へ記録し、非対称ステア加速/制動を設計決定へ追加した。
+- 巡航中の外周Kp干渉による中間カクつきへ、moving angle Kp=1からhold Kp=4へ連続補間する
+  2自由度外周を追加しflashした。加速FF=0.75、制動FF=1.0も分離した。
+- 300/360deg/sはovershoot増加で240deg/sより遅く、内周速度帯域が次の律速と判定した。
+  最低速度floorと一定steer摩擦FFも悪化したため0へ戻した。
+- 定常の多くは0.68〜0.92sだが、冷間1発目が0.527deg残る11/12バッチもあり、初回静止摩擦と
+  絶対角依存の再現性は未解決。全ログは`firmware/logs/auto-tune/`へ保存済み。
+
+### 現在の状態
+
+- 最新ファームを書込み済み。200Hz Web UIは起動中、ユニットはDisable。
+- 空走採用値はファーム/Web UI/自動調整器で一致している。
+
+### 次の作業
+
+1. **次セッション最優先:** 外周を切ったsteer mode速度step/PRBS同定モードを追加し、
+   10ms→5ms以下の速度LPFで内周Kp/Kiを再同定する。
+2. 接地時は空走値近傍だけ再探索し、床材・荷重を跨いだ最悪値で共通ゲインを決める。
+3. Teensy中央制御へ非対称ステア加速/制動と200Hz相当の目標生成を移植・検証する。
+
+## 2026-07-31 (差動ステア制御の高速収束・rpm包絡線・回生減速方針)
+
+### やったこと
+
+- 機構抵抗低下後の操舵発振を実機ログで切り分け、中央側目標生成を定速スルーから制動付き
+  台形/三角形プロファイルへ変更した。90deg収束は最大240deg/s・加減速720deg/s^2を採用。
+- `KINEMATICS_AND_RPM.md`の実測済みステア比`8/11`を正本として照合し、
+  `DYNAMIC_CONTROL_PLAN.md`と`CENTRAL_COORDINATED_CONTROL.md`に残っていた旧`2/11`の
+  包絡線式・数値表を修正した。
+- 中央からユニットへの主目標を`omega_w, theta_s`、軌道微分をFFとして併送、中央100Hz・
+  ユニット局所1kHzとする指令契約を`CENTRAL_COORDINATED_CONTROL.md`へ明記した。
+- 単一モジュール式`|n_drive|/1364 + |n_steer|/341.1 <= 1`をWebUI目標生成へ接続し、
+  wheel=1300rpm時のsteer要求240deg/sが96.5deg/sへ自動制限されることを実機確認した。
+- 高rpm急減速の回生電圧上昇対策として、中央でwheelを非対称ランプに通し、反転は0rpm経由、
+  通常STOPは減速完了見込み後にdisableする方針を`ARCHITECTURE_DECISIONS.md`へ確定事項として追加した。
+
+### 現在の状態
+
+- 改良版WebUIは起動中、ユニットはDisable。ファーム局所ループは1kHzのまま。
+- WebUI既定はsteer加減速720deg/s^2、wheel加速1000rpm/s・減速500rpm/s。
+- 500rpmからのSTOPは1.51s待機し、disable時実測0.015rpm。ビルド・セルフチェック合格。
+
+### 次の作業
+
+1. WebUIで検証したプロファイル・包絡線・非対称wheelランプを中央Teensy 100Hz制御へ移植する。
+2. DCバス電圧を測定し、高rpm減速率500rpm/sの安全余裕を確認する。
+3. 低抵抗化後の25/40rpm積分フロアA/Bを完了し、摩擦補償値を再同定する。
+
 ## 2026-07-29 (シルク手直し後 Gerber・ステンシルZIP再生成)
 
 ### やったこと

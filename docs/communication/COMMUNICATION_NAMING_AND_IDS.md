@@ -212,8 +212,13 @@ STATUS2(8バイト):
 
 | フィールド | 型 | 単位 |
 |---|---|---|
-| `motor1RpmMilli` | int32 | rpm x1000 |
-| `motor2RpmMilli` | int32 | rpm x1000 |
+| `motor1RpmMilli` | int32 | モータrotor rpm x1000 |
+| `motor2RpmMilli` | int32 | モータrotor rpm x1000 |
+
+M3508+C620ではC620フィードバックのrotor rpmを格納する。減速機出力軸rpmや
+drive/steer mode rpmへ変換せず、受信側がM3508内部減速比19と差動運動学を適用する。
+通常周期はSTATUS1=20ms、STATUS2=50ms。ベンチ同定時は`SET_CONFIG idx22`に周期ms
+(1〜100)を設定して両方を高頻度送信できる。idx22=0は通常周期へ戻す。
 
 STATUS3(8バイト):
 
@@ -223,7 +228,22 @@ STATUS3(8バイト):
 | `statusFlags` | uint16 | 状態フラグ |
 | `errorFlags` | uint32 | エラーフラグ |
 
-STATUS1は高頻度(制御周期に近い)、STATUS2/3は低頻度(例えば10Hz)で送り分けてよい。
+`busVoltageMv=0xffff`は電圧計測未実装を表す。現行G474ベンチ実装の`statusFlags`:
+
+| bit | 名前 | 条件 |
+|---:|---|---|
+| 0 | `ACTIVE` | 局所制御が有効 |
+| 1 | `TARGET_FRESH` | SET_TARGETがtimeout内 |
+| 2 | `FEEDBACK_OK` | C620 x2 feedbackがfresh |
+| 3 | `AMT_OK` | AMT22読出し/check bit正常 |
+| 4 | `STEER_IN_BAND` | 角度誤差0.5deg以下、実steer軸1rpm以下、steer FF 0.1rpm以下 |
+| 5 | `WHEEL_IN_BAND` | wheel誤差がmax(12rpm, 目標の6%)以下、wheel加速度FFが±1rpm/s以下 |
+| 6 | `MOTION_SETTLED` | bit4/5を100ms連続で満たした |
+| 7 | `LIMITING_ACTIVE` | ユニット内rpm包絡の保護制限が作動 |
+
+中央は新しい指令後に一度`MOTION_SETTLED=0`を確認してから立上りを採用し、前指令の残留フラグを
+完了と誤認しない。中央自身のプロファイル完了も同時に必要で、フラグ単独を経路完了にしない。
+現行周期はSTATUS1/3=20ms、STATUS2=50ms。idx22使用時もSTATUS3は20msを維持する。
 
 ## オドメトリユニット(unitId=4)のSTATUS payload
 

@@ -1,5 +1,9 @@
 # 動的制御 実装計画
 
+> **ギア比訂正(2026-07-31)**: ステア経路は40:55段だけを通るため、以下の
+> `STEER_RATIO`は実機検証済みの`8/11 = 0.7273`を使用する。旧値`2/11 = 0.1818`は
+> 60:15ドライブ段を誤ってステア経路にも含めた値であり、使用しない。
+
 > **位置づけの更新(2026-07-06)**: 本書の配分・優先ポリシーは**ユニット単体の保護動作**。
 > 車体全体の飽和解消は中央Teensyが3輪同時のデサチュレーション(最悪モジュールに合わせた
 > ツイストスケーリング)で先に行う(`CENTRAL_COORDINATED_CONTROL.md`)。1輪だけがローカルに
@@ -24,7 +28,7 @@
 
 $$
 n_{drive\_max} =
-\left(N_{MAX} - \frac{n_{steer\_fixed}}{0.1818}\right) \times 2.909
+\left(N_{MAX} - \frac{n_{steer\_fixed}}{0.7273}\right) \times 2.909
 $$
 
 検証:
@@ -39,13 +43,13 @@ $$
 
 $$
 n_{drive\_max}(t) =
-\left(N_{MAX} - \frac{|n_{steer}(t)|}{0.1818}\right) \times 2.909
+\left(N_{MAX} - \frac{|n_{steer}(t)|}{0.7273}\right) \times 2.909
 $$
 
 ```cpp
 double dynamicDriveMax(double motorMaxRpm, double steerCmdRpm) {
     constexpr double DRIVE_RATIO = 2.909090909;
-    constexpr double STEER_RATIO = 0.181818182;
+    constexpr double STEER_RATIO = 0.727272727;
 
     double steerCost = std::abs(steerCmdRpm) / STEER_RATIO;
     double driveBudget = motorMaxRpm - steerCost;
@@ -103,13 +107,12 @@ double lowPass(double target, double previous, double tau, double dt) {
 | n_steer | モーター換算操舵消費 | n_drive_max |
 |---:|---:|---:|
 | 0 rpm | 0 rpm | 1364 rpm |
-| 20 rpm | 110 rpm | 1044 rpm |
-| 40 rpm | 220 rpm | 724 rpm |
-| 60 rpm | 330 rpm | 404 rpm |
-| 80 rpm | 440 rpm | 84 rpm |
-| 85.3 rpm | 469 rpm | 0 rpm |
+| 20 rpm | 27.5 rpm | 1284 rpm |
+| 40 rpm | 55 rpm | 1204 rpm |
+| 60 rpm | 82.5 rpm | 1124 rpm |
+| 80 rpm | 110 rpm | 1044 rpm |
+| 341.1 rpm | 469 rpm | 0 rpm |
 
 ## リスク
 
 この制御は運動学ベースで、タイヤの横滑り限界は含まない。高速旋回で滑る場合は、速度に応じた操舵rpm制限を別レイヤーで追加する。
-

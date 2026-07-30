@@ -98,7 +98,10 @@ PARAM_INDEX_HELP = (
     "1=drive_kp 2=drive_ki 3=steer_kp 4=steer_ki 5=angle_kp 6=angle_deadband_deg "
     "7=steer_max_rpm 8=steer_min_rpm 9=steer_accel 10=wheel_accel 11=integral_limit "
     "12=current_limit 13=rpm_filter_tau 14=drive_kinetic_ff_current "
-    "15=drive_integral_floor_current 16=drive_motion_threshold_rpm"
+    "15=drive_integral_floor_current 16=drive_motion_threshold_rpm "
+    "17=drive_onset_integral_clamp 18=steer_accel_ff_gain 19=moving_angle_kp "
+    "20=steer_decel_ff_gain 21=steer_friction_ff_current "
+    "22=status_period_ms(0=normal 20/50ms, bench identification override)"
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -405,8 +408,8 @@ def cmd_set_param(args):
     sock = open_can_socket(args.can_iface)
     try:
         for i, (index, value) in enumerate(zip(args.index, args.value)):
-            if not (1 <= index <= 17):
-                raise ValueError(f"param index out of range (1-17): {index}")
+            if not (1 <= index <= 22):
+                raise ValueError(f"param index out of range (1-22): {index}")
             send_set_config(sock, index, value)
             print(f"set-param: index={index} value={value} (milli={int(round(value * 1000))})")
             if i != len(args.index) - 1:
@@ -536,7 +539,7 @@ def build_parser():
     )
     p_set.add_argument(
         "--index", type=int, action="append", required=True,
-        help="param index (1-17, repeatable, paired in order with --value). " + PARAM_INDEX_HELP,
+        help="param index (1-22, repeatable, paired in order with --value). " + PARAM_INDEX_HELP,
     )
     p_set.add_argument(
         "--value", type=float, action="append", required=True,

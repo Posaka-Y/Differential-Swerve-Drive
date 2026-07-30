@@ -113,6 +113,8 @@ void unit_controller_init(unit_controller_t *controller,
     controller->config.steer_min_rpm = config->steer_min_rpm;
     controller->config.steer_accel_rpm_per_s = config->steer_accel_rpm_per_s;
     controller->config.angle_kp_rpm_per_deg = config->angle_kp_rpm_per_deg;
+    controller->config.moving_angle_kp_rpm_per_deg =
+        config->moving_angle_kp_rpm_per_deg;
     controller->config.angle_deadband_deg = config->angle_deadband_deg;
     controller->config.wheel_accel_rpm_per_s = config->wheel_accel_rpm_per_s;
     controller->config.steer_mode_kp = config->steer_mode_kp;
@@ -123,6 +125,12 @@ void unit_controller_init(unit_controller_t *controller,
     controller->config.mode_rpm_filter_tau_s = config->mode_rpm_filter_tau_s;
     controller->config.current_limit = config->current_limit;
     controller->config.steer_motor_sign = config->steer_motor_sign;
+    controller->config.steer_accel_ff_current_per_mode_rpm_per_s =
+        config->steer_accel_ff_current_per_mode_rpm_per_s;
+    controller->config.steer_decel_ff_current_per_mode_rpm_per_s =
+        config->steer_decel_ff_current_per_mode_rpm_per_s;
+    controller->config.steer_friction_ff_current =
+        config->steer_friction_ff_current;
     controller->config.drive_kinetic_ff_current = config->drive_kinetic_ff_current;
     controller->config.drive_integral_floor_current =
         config->drive_integral_floor_current;
@@ -133,6 +141,7 @@ void unit_controller_init(unit_controller_t *controller,
     controller->target.target_wheel_rpm = 0.0f;
     controller->target.target_steer_deg = 0.0f;
     controller->target.steer_rate_ff_rpm = 0.0f;
+    controller->target.steer_accel_ff_rpm_per_s = 0.0f;
     unit_controller_reset(controller);
 }
 
@@ -149,6 +158,13 @@ void unit_controller_set_steer_rate_ff_rpm(unit_controller_t *controller,
     controller->target.steer_rate_ff_rpm = steer_rate_ff_rpm;
 }
 
+void unit_controller_set_steer_accel_ff_rpm_per_s(
+    unit_controller_t *controller, float steer_accel_ff_rpm_per_s)
+{
+    controller->target.steer_accel_ff_rpm_per_s =
+        steer_accel_ff_rpm_per_s;
+}
+
 void unit_controller_reset(unit_controller_t *controller)
 {
     controller->steer_rpm_state = 0.0f;
@@ -159,6 +175,7 @@ void unit_controller_reset(unit_controller_t *controller)
     controller->drive_mode_filtered_rpm = 0.0f;
     controller->combined_saturated = 0U;
     controller->drive_was_in_motion = 0U;
+    controller->drive_onset_count = 0U;
 }
 
 void unit_controller_update(unit_controller_t *controller,
@@ -179,11 +196,23 @@ void unit_controller_update(unit_controller_t *controller,
      * (docs/control/CENTRAL_COORDINATED_CONTROL.md "SET_TARGET_FF"):
      * steer_rpm_cmd = angle_kp*error + FF. With steer_rate_ff_rpm == 0
      * (default / FF timed out) this reduces exactly to the pre-FF behavior. */
+    /* Two-degree-of-freedom outer loop. During fast reference motion, a
+     * small target-tracking error must not pull a saturated cruise command
+     * sharply down and then release it (visible mid-move jerk). Blend from a
+     * lower moving-reference gain to the full hold gain over the final 5rpm
+     * of rate FF, so terminal stiffness is unchanged and the transition is
+     * continuous. */
+    const float moving_gain_blend = clampf(
+        absf(controller->target.steer_rate_ff_rpm) / 5.0f, 0.0f, 1.0f);
+    const float angle_kp =
+        controller->config.angle_kp_rpm_per_deg + moving_gain_blend *
+        (controller->config.moving_angle_kp_rpm_per_deg -
+         controller->config.angle_kp_rpm_per_deg);
     float requested_steer_rpm = 0.0f;
     if (absf(output->angle_error_deg) >
         controller->config.angle_deadband_deg) {
         requested_steer_rpm =
-            controller->config.angle_kp_rpm_per_deg * output->angle_error_deg;
+            angle_kp * output->angle_error_deg;
     }
     requested_steer_rpm += controller->target.steer_rate_ff_rpm;
     if (requested_steer_rpm > 0.0f &&
@@ -206,7 +235,8 @@ void unit_controller_update(unit_controller_t *controller,
     output->steer_rpm_command = controller->steer_rpm_state;
 
     /* Motor-space mode targets: steer mode is the common-mode rpm, drive mode is
-     * the differential-mode rpm (matches wheelRpm=1.4545*(m1-m2), steerRpm=0.0909*(m1+m2)). */
+     * the differential-mode rpm (matches wheelRpm=1.4545*(m1-m2),
+     * steerRpm=0.3636*(m1+m2)). */
     const float steer_mode_target = sign * output->steer_rpm_command / steer_ratio;
     float available_drive_motor_rpm =
         controller->config.motor_max_rpm - absf(steer_mode_target);
@@ -258,6 +288,11 @@ void unit_controller_update(unit_controller_t *controller,
     const uint8_t drive_in_motion =
         absf(controller->drive_mode_filtered_rpm) >
         controller->config.drive_motion_threshold_rpm;
+    output->drive_in_motion = drive_in_motion;
+    output->drive_onset_active = 0U;
+    output->drive_integral_floor_active =
+        drive_in_motion &&
+        controller->config.drive_integral_floor_current > 0.0f;
 
     /* Onset clamp: the instant the drive mode transitions stuck->moving
      * (rising edge), clamp the drive integral magnitude down before this
@@ -266,6 +301,8 @@ void unit_controller_update(unit_controller_t *controller,
      * is preserved; steer integral is untouched. Zero clamp value disables. */
     if (drive_in_motion && !controller->drive_was_in_motion &&
         controller->config.drive_onset_integral_clamp_current > 0.0f) {
+        output->drive_onset_active = 1U;
+        controller->drive_onset_count++;
         const float clamp = controller->config.drive_onset_integral_clamp_current;
         if (controller->drive_mode_integral > clamp) {
             controller->drive_mode_integral = clamp;
@@ -274,6 +311,7 @@ void unit_controller_update(unit_controller_t *controller,
         }
     }
     controller->drive_was_in_motion = drive_in_motion;
+    output->drive_onset_count = controller->drive_onset_count;
 
     output->steer_mode_current = pi_update_mode(
         steer_mode_target, controller->steer_mode_filtered_rpm,
@@ -283,6 +321,27 @@ void unit_controller_update(unit_controller_t *controller,
         controller->combined_saturated,
         0.0f, 0U,
         &controller->steer_mode_integral);
+    /* Two-degree-of-freedom acceleration feedforward: the PI still rejects
+     * model/friction error, while predictable trajectory acceleration does
+     * not have to wait for a velocity error. Gain=0 preserves old behavior. */
+    const float steer_accel_ff_mode_rpm_per_s =
+        sign * controller->target.steer_accel_ff_rpm_per_s / steer_ratio;
+    const uint8_t steer_ff_is_braking =
+        absf(controller->target.steer_accel_ff_rpm_per_s) > 0.01f &&
+        controller->target.steer_accel_ff_rpm_per_s *
+        controller->target.steer_rate_ff_rpm <= 0.0f;
+    const float steer_accel_ff_gain = steer_ff_is_braking
+        ? controller->config.steer_decel_ff_current_per_mode_rpm_per_s
+        : controller->config.steer_accel_ff_current_per_mode_rpm_per_s;
+    output->steer_accel_ff_current =
+        steer_accel_ff_gain * steer_accel_ff_mode_rpm_per_s;
+    output->steer_mode_current += output->steer_accel_ff_current;
+    if (absf(steer_mode_target) > 0.01f &&
+        controller->config.steer_friction_ff_current > 0.0f) {
+        output->steer_mode_current += steer_mode_target > 0.0f
+            ? controller->config.steer_friction_ff_current
+            : -controller->config.steer_friction_ff_current;
+    }
     output->drive_mode_current = pi_update_mode(
         drive_mode_target, controller->drive_mode_filtered_rpm,
         controller->config.drive_mode_kp, controller->config.drive_mode_ki,
@@ -291,6 +350,8 @@ void unit_controller_update(unit_controller_t *controller,
         controller->combined_saturated,
         controller->config.drive_integral_floor_current, drive_in_motion,
         &controller->drive_mode_integral);
+    output->steer_mode_integral = controller->steer_mode_integral;
+    output->drive_mode_integral = controller->drive_mode_integral;
 
     /* Kinetic-friction feedforward, added in the direction of actual motion
      * before mode-current combination and the current_limit clamp below.

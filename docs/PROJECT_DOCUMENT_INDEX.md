@@ -30,6 +30,7 @@
 | 11 | `testing/NUCLEO_BENCH_TEST_PLAN.md` | CAN-G474主試験機、CAN-L431対向ノード、NUCLEO予備での通信・差動制御実証手順 |
 | 11.2 | `testing/SINGLE_MODULE_LOAD_EVALUATION_PLAN.md` | 単一モジュールの負荷ロバスト性評価: 4隅従動輪治具方針、動作包絡線(理論値・10%マージン)、計測項目、実施順序 |
 | 11.3 | `testing/ODOMETRY_IMU_EVALUATION_PLAN.md` | オドメトリ+IMUモジュール評価: 直線スライダー/回頭ピボット試験、センサフュージョン重み付け方針、更新周波数の考え方 |
+| 11.4 | `testing/UNIT_AUTO_TUNER.md` | 単一ユニットの粗→細実機パラメータ探索、応答倍率、CSV/SVG出力、空走→接地の再探索手順 |
 | 11.5 | `../firmware/docs/MATEK_CAN_G474_PORT.md` | CAN-G474へのファーム移植、ST-LINK書込み、ArduPilot参照範囲 |
 | 12 | `software/MINIPC_GUI_AND_TEENSY.md` | mini PC GUI、Teensy、ユニットMCUの役割 |
 | 13 | `checklists/REVIEW_CHECKLIST.md` | 回路・制御・実装レビュー用チェックリスト |
