@@ -34,8 +34,9 @@ C620 x2
 | レイヤー | 物理層 | 役割 |
 |---|---|---|
 | mini PC - Teensy | USBシリアル、将来Ethernet | GUI、ログ、設定 |
-| Teensy - Unit MCU | 中央CAN(クラシックCAN 1Mbps、FDCAN1想定) | 目標値、状態、キャリブレーション |
+| Teensy CAN3 - Unit MCU FDCAN1 | 駆動中央CAN(CAN FD nominal 1Mbps/data 2Mbps、BRS) | 時刻付き軌道、状態、キャリブレーション |
 | Unit MCU - C620 | C620専用CAN(1Mbps固定、FDCAN2想定) | M3508制御、フィードバック取得 |
+| Teensy CAN1 - F405 | センサーCAN(Classic CAN 1Mbps) | オドメトリ/IMU |
 | Unit MCU - AMT22 | SPI | ステア絶対角取得 |
 
 ## ネット名
@@ -124,15 +125,20 @@ UNIT_ID2
 
 ファーム上の名前は位置名ではなく `unitId` とする。位置対応は中央側の設定で管理する。
 
-## 中央CANプロトコル案
+## 駆動中央CANプロトコル
 
 (旧RS485フレーム案は2026-07-02に廃止。SOF/CRC16/SEQ等の独自フレームはCANのアービトレーション・CRC・ACKで置き換えられるため不要になった)
 
 前提:
 
-- クラシックCAN 2.0A、11bit ID、1Mbps。ペイロードは最大8バイト。
-- Teensyが周期送信(SET_TARGETを例えば100Hz)、各ユニットも周期送信(STATUSを例えば50Hz)。ポーリング往復は基本使わない。
-- 古い指令の検出はシーケンス番号ではなく「周期送信+受信タイムアウト」で行う。
+- CAN FD、標準11bit ID、nominal 1Mbps/data 2Mbps、BRS有効。ペイロードは最大64バイト。
+- Teensyは`TRAJECTORY_FD`を200〜250Hzで3ユニットへ送り、最後に
+  `TRAJECTORY_COMMIT`をbroadcastする。各G474は受信区間を局所1kHzで補間する。
+- G474は`UNIT_STATUS_FD`を200Hzで返す。実ハーネスでbit stuffing込みbus loadを測り、
+  定常50%以下を目標とする。
+- C620専用CANとF405センサーCANはClassic CAN 1Mbpsのまま別物理バスに置く。
+- 既存8byte `SET_TARGET`/`SET_TARGET_FF`/`STATUS1..3`はベンチ・移行期の互換経路として残す。
+- FD軌道の古い指令はsequenceと受信タイムアウトの両方で検出する。
 - ユニット同士は直接送信しない(IDを持たない)。
 
 ### CAN ID設計
@@ -142,18 +148,46 @@ UNIT_ID2
 | CAN ID | 方向 | 名前 | 内容 |
 |---:|---|---|---|
 | `0x010` | Teensy -> 全体 | `ESTOP` | 緊急停止ブロードキャスト。最優先 |
+| `0x020` | Teensy -> Unit x3 | `TRAJECTORY_COMMIT` | 同一sequenceの軌道を全3輪で同時適用 |
 | `0x100+id` | Teensy -> Unit | `SET_TARGET` | 目標ステア角、目標ホイールrpm |
 | `0x110+id` | Teensy -> Unit | `SET_TARGET_FF` | ステア角速度FF、ホイール加速度FF(協調制御用、2026-07-06追加) |
 | `0x120+id` | Teensy -> Unit | `UNIT_CTRL` | enable/disable、キャリブレーション指令(サブコマンド式) |
+| `0x130+id` | Teensy -> Unit | `TRAJECTORY_FD` | 1区間のsteer/wheel状態・微分、32byte |
 | `0x140+id` | Teensy -> Unit | `SET_CONFIG` | 制御パラメータ書込 |
 | `0x150+id` | Teensy -> Unit | `REQUEST` | CONFIG/CALIB_RESULT等の読出要求 |
 | `0x180+id` | Unit -> Teensy | `STATUS1` | 現在ステア角、現在ホイールrpm |
 | `0x190+id` | Unit -> Teensy | `STATUS2` | モーター1/2のrpm |
 | `0x1A0+id` | Unit -> Teensy | `STATUS3` | バス電圧、状態フラグ、エラーフラグ |
+| `0x1B0+id` | Unit -> Teensy | `UNIT_STATUS_FD` | 追従状態・mode電流・制約状態、48byte |
 | `0x1C0+id` | Unit -> Teensy | `CONFIG` / `CALIB_RESULT` | REQUESTへの応答 |
 
 - `id` = unitId 1〜7。`0x100+0` のようなid=0はブロードキャスト用に予約。
-- ユニットは自分宛(下位3bit一致)と `ESTOP` のみ受信するようFDCANフィルタを設定する。
+- ユニットは自分宛(下位3bit一致)、`ESTOP`、`TRAJECTORY_COMMIT`のみ受信するようFDCANフィルタを設定する。
+
+## TRAJECTORY_FD / COMMIT payload
+
+`TRAJECTORY_FD`は32バイト。3ユニット分を先にpendingへ受信し、同じsequenceの
+`TRAJECTORY_COMMIT`を受けた時点で一斉に適用する。これによりTeensy/G474間の絶対時刻同期を
+必須にせず、3輪の開始時刻断面を揃える。
+
+| offset | フィールド | 型 | 単位 |
+|---:|---|---|---|
+| 0 | `sequence` | uint32 | 制御区間番号 |
+| 4 | `segmentDurationUs` | uint32 | 区間時間 |
+| 8 | `targetSteerMdeg` | int32 | 連続unwrap mdeg |
+| 12 | `targetSteerRateMdegPerS` | int32 | mdeg/s |
+| 16 | `targetSteerAccelMdegPerS2` | int32 | mdeg/s^2 |
+| 20 | `targetWheelRpmMilli` | int32 | rpm x1000 |
+| 24 | `targetWheelAccelRpmMilliPerS` | int32 | rpm/s x1000 |
+| 28 | `flagsReserved` | uint32 | 初期0、将来拡張 |
+
+`TRAJECTORY_COMMIT`は8バイトの短い高優先度フレームとし、`sequence` uint32と
+`controllerTimeUs` uint32を載せる。各ユニットは同sequenceのpendingがなければ前区間を
+安全に継続し、`TRAJECTORY_MISSING`を立てる。古いsequence、重複commit、duration=0は拒否する。
+
+`UNIT_STATUS_FD`は48バイトとし、少なくともsequence echo、ユニット時刻、連続steer角、
+実steer/wheel rpm、motor 1/2 rpm、steer/drive mode電流と積分値、bus電圧、最高温度、
+planned/hard包絡scale、状態/エラーフラグを含める。詳細offsetは実装時に固定する。
 
 ### UNIT_CTRL サブコマンド(payload byte0)
 

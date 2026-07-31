@@ -150,7 +150,9 @@ $$
 
 - ユニットは FF を速度指令に直接加算する: `steer_rpm_cmd = θ̇_FF/6 + angle_kp × 角度誤差`
 - FF未受信・タイムアウト時は FF=0 として現行動作へフォールバック(後方互換)。
-- 帯域: 100Hz × 6フレーム(TARGET+FF × 3ユニット)≈ 80kbps < 1Mbpsの10%。問題なし。
+- 移行後は駆動中央バスをCAN FD nominal 1Mbps/data 2Mbps+BRSとし、32byte
+  `TRAJECTORY_FD`を200〜250Hzで3ユニットへ送った後、短いbroadcast commitで同時適用する。
+  各G474は1kHz補間するため、CANを1kHz化せずpayloadの原子性と将来区間情報に帯域を使う。
 
 ## ユニット側ファームへの影響(契約の変更点)
 
@@ -162,6 +164,169 @@ $$
 | `steer_min_rpm` フロア+deadband | ステップ応答のスティックスリップ対策 | 低速連続追従では交互ステップ挙動(過剰進入→deadband停止→誤差蓄積→再キック)を生みうる。**FF導入後は「FFレートがフロア未満のときのみフロア適用」等へ再設計候補** |
 
 ベンチで調整済みの角度ループ(angle_kp、モードPI)はそのまま流用できる。変わるのは目標の与え方。
+
+## ステア応答高速化の実装・試験ロードマップ
+
+最大steer rpmだけを先に広げない。現行の90deg応答は、最大40軸rpm、加速
+3600deg/s^2、制動2250deg/s^2で`planned Tmin=0.462s`に対し、time scale=1の
+実測収束が平均約0.76sである。40→60軸rpmの単純な上限拡張では収束時間と
+overshootが悪化したため、次の順序で追従残差を削ってから速度・加速度包絡を広げる。
+
+1. **ステアmode速度ループ単体同定**
+   - `unit_steer_mode_id.py`で外周angle P、加速度FF、摩擦FFを切り、速度LPF+PI+機構だけを測る。
+   - wheel=0から開始し、steer軸5/10/20/40rpmの正負stepとPRBSを取得する。
+   - Ki=0でLPF tau=2/1/0.5/0msとKpの安定限界を比較し、その後Kiで定常偏差を消す。
+   - wheel=265/600/1000/1200rpmへ展開し、差動mode間の帯域変化と残留カップリングを測る。
+2. **加速・制動FFの同定**
+   - 正負、加速/制動、冷間/暖機、絶対角0/90/180/270degを分けて電流対加速度を回帰する。
+   - 一定Coulomb FFは再採用せず、必要なら電流・速度残差を使うDOB/静止摩擦推定へ進む。
+3. **time scaleの縮小**
+   - 2.0→1.5→1.25→1.1→1.0の順に縮小し、wheel=0/265rpm、正逆90degを反復する。
+   - 目標は0.5deg/100ms収束24/24、平均`Tsettle/Tfeasible<=1.3`、最悪1.5以下、
+     overshoot 1deg以下、電流/温度/包絡線の安全制約内とする。
+4. **速度・加速度包絡の拡張**
+   - time scale=1の安定後に、最大steerを40→60→80→100軸rpm、加速を
+     3600→4500→6000deg/s^2、制動を2250→3000→4500deg/s^2で個別A/Bする。
+   - 40/60/80/100rpmは性能試験を段階的に安全に進めるcommissioning guardであり、
+     本番の恒久上限にはしない。検証済み範囲が広がるごとにguardを上げ、最終的には
+     wheel rpmに応じたplanned包絡そのものを通常運転上限にする。
+   - 現加減速度の90deg三角軌道ピークは約83軸rpmであるため、それを超える最大速度は
+     180deg動作や加減速度拡張後に評価する。
+   - ファームのruntime `steer_max_rpm`上限60rpmと対称加速度ガードは、この段階で
+     hard包絡内へ拡張し、加速/制動を別ガードにする。
+5. **接地・3輪回帰**
+   - wheel=0/75/265/600/1000/1200rpm、steer=±10/45/90/180deg、正逆、絶対角、
+     冷間1回目、代表荷重、床材、急反転、連続8の字を評価する。
+   - 3輪は個別時間へ崩さず、全モジュールで成立する同一時刻断面を保つ。
+
+最終的な`Tfeasible`はrpm包絡だけでなく、実測した電流・トルク由来の加速度制約、
+回生時DCバス電圧、温度、接地横力も含める。固定のtime scale=2を恒久仕様にはせず、
+制約内の最短到着時間と実測追従残差から計画時間を決める。
+
+### wheel rpm=0でのステア制御
+
+wheel rpmが0でもsteer角を独立に指令できることを正式な制御契約とする。差動modeでは
+純操舵は`n1=n2`、純wheel停止はdrive mode=0であり、現ユニットファームと空走試験では
+wheel=0の正逆90deg操舵がすでに成立している。
+
+主要ユースケースは「指定poseへ到着→その場でタスク→別poseへ移動」である。このため、
+低wheel rpm域のsteer応答は補助機能ではなく出発待ち時間を決める主要性能として扱う。
+中央のタスク状態は次を基本とする。
+
+1. `ARRIVE_SETTLED`: wheel=0とpose/steer収束を確認する。
+2. `TASK_HOLD`: タスク中はwheel=0、最後のsteer角を保持する。
+3. `PRESTEER`: 次目標と操舵許可が得られたら、wheel=0のまま次の出発角へ最短時間で操舵する。
+4. `DEPART`: pre-steer完了後、または全体ETAが短くなる時刻からwheelを立ち上げる。
+
+タスク中の操舵が作業精度や接地横力へ影響する場合があるため、`PRESTEER`はタスク側の
+明示的な許可を条件とする。許可がない場合は角度保持し、タスク完了後の最短軌道へ含める。
+
+中央側では車体速度ベクトルが0になると進行方向が未定義になるため、速度ベクトルから
+steer角を再計算して0degへ戻したり、角度指令を破棄したりしてはならない。次を実装する。
+
+- `omega_w=0`でも明示的な連続unwrap `theta_s`とsteer rate/accel FFを送信する。
+- 通常停止時は最後のsteer角を保持し、次動作のための明示的なpre-steer指令が来た場合だけ
+  wheel=0のまま目的角へ変更する。
+- 軌道最適化は停止中のpre-steer時間もETAへ含め、後続の走行開始と同時最適化する。
+- 低速しきい値付近で進行方向が不定になっても、最後の有効角または明示目標を保持し、
+  角度の飛びをヒステリシスで防ぐ。
+- wheel=0試験では角度収束だけでなく、実wheel rpm、drive mode電流、タイヤの正味回転量を測り、
+  純操舵中にホイールが転がらないことを合格条件にする。
+
+低速域では固定40軸rpmを最終上限にせず、wheel rpmに応じたplanned包絡と実測した
+加速・制動・電流制約から`Tfeasible`を求める。wheel=0のplanned速度包絡は約307軸rpmだが、
+90deg動作で実際に使えるピークrpmは加減速度にも制約されるため、307rpmを直接指令値にせず、
+速度mode単体同定後にcommissioning guardを40→60→80→100rpmと段階拡張する。低速域の受入目標は
+`Tsettle/Tfeasible`平均1.3以下、最悪1.5以下とし、理論値へ近づいたかをrpm値ではなく
+到着時間比で判定する。
+
+### 固定40rpm上限の廃止と動的包絡
+
+現Webプロファイラの`min(STEER_AXIS_MAX_RPM=40, 包絡上限)`は試験初期の安全制限であり、
+本番仕様にはしない。中央の通常運転上限は、時刻ごとの実効wheel profile rpmを用いて
+
+```text
+steerPlannedMax =
+  max(0, Nplanned - abs(wheelProfileRpm)/(32/11)) * (8/11)
+Nplanned = margin * 469rpm
+```
+
+とする。初期marginは0.90、すなわち`Nplanned=422.1rpm`とし、hard保護は469rpm包絡を使う。
+10% margin時の代表値は次のとおり。
+
+| wheel rpm | planned steer軸上限 |
+|---:|---:|
+| 0 | 307.0rpm |
+| 100 | 282.0rpm |
+| 265 | 240.7rpm |
+| 600 | 157.0rpm |
+| 1000 | 57.0rpm |
+| 1200 | 6.98rpm |
+
+速度包絡だけでは停止から307rpmへ瞬時に到達できないため、steer加速・制動、電流、温度、
+DCバス電圧の制約は独立に適用する。中央はplanned包絡で通常指令を生成し、ユニットは
+469rpmのhard包絡を最終保護として再計算する。commissioning中だけ設定可能な追加上限を
+重ねるが、これは試験段階の安全guardであり、完成時の固定性能制限ではない。
+
+実装時はWeb UIの固定`STEER_AXIS_MAX_RPM`を通常計算から外し、`None`で無効化可能な
+`steer_commissioning_cap_rpm`へ置き換える。中央とユニットで同じ比・margin定義を共有し、
+包絡超過によるclamp値と`LIMITING_ACTIVE`をテレメトリへ出して、計画器のモデル不一致を検出する。
+
+## 制御実装の変更優先度
+
+単ユニットは、いきなり非線形MPCへ置き換えず、1kHzの2自由度カスケード制御を
+モデルFF+DOB付きへ発展させる。最短時間の経路・時間最適化はmini PC、時刻付き軌道の
+配信と全3輪同期はTeensy、局所追従とhard保護はユニットG474の責務とする。
+
+### P0: 軌道契約と制約処理
+
+1. **連続unwrap角へ変更する**
+   - 現ユニットは受信角を0～360degへ正規化し、常にshortest angle errorを使っている。
+     これは中央が選んだ巻き方向、pre-steer、`theta+180deg / -wheel`候補を壊す。
+   - AMT22単回転値からユニット内で連続角を追跡し、中央からのint32 mdegを連続目標として扱う。
+     shortest化とflip判断は中央だけが行う。
+2. **時刻付き局所補間へ変更する**
+   - 現在は中央200Hzのsteer rate差分からユニットが加速度FFを推定するため、CAN到着jitterが
+     加速度電流へ入る。CAN FD 32byte `TRAJECTORY_FD`で`theta/thetaDot/thetaDDot`、
+     wheel/加速度、sequence、区間時間を原子的に渡し、G474が1kHzで補間する。
+   - Teensyは3ユニット分を送った後、短い`TRAJECTORY_COMMIT`をbroadcastし、同一sequenceを
+     一斉適用する。通常周期は200〜250Hz、実ハーネスbus loadは50%以下を目標とする。
+   - ファーム内のsteer rampは通常軌道生成に使わず、中央planned値より外側の加速/制動別
+     hard guardにする。二重プロファイルによる遅れをなくす。
+3. **mode要求を包絡へ射影する**
+   - 現在の「steerを先にclampし、残りでwheelをclamp」は保護時に暗黙のsteer優先になる。
+   - 通常は中央planned包絡で解消し、ユニットhard保護では要求
+     `(driveMode, steerMode)`を469rpm diamondへ共通scaleまたは最小距離射影する。
+     発動時はscale、clamp理由、両mode要求/適用値を送信する。
+
+### P1: 局所servoの帯域と終端収束
+
+1. `unit_steer_mode_id.py`のstep/PRBSで速度プラントを同定し、LPF、Kp、Kiを順に決める。
+2. PIのconditional freezeだけでなく、combined current scaling後の実適用電流との差を使う
+   back-calculation anti-windupをsteer/drive各積分器へ入れる。
+3. steer加速/制動電流FFを符号・方向別の実測慣性モデルから求め、速度PIはモデル誤差だけを補う。
+4. hard deadbandを、AMT22量子化に合わせたヒステリシスまたは連続な誤差整形へ変更し、
+   deadband境界で指令が不連続に0へ落ちる挙動をなくす。
+5. motor mode速度の高帯域値とAMT22絶対角の低周波補正を合わせた相補observerを作り、
+   実steer角速度推定と機械的滑り/バックラッシュ診断に使う。
+
+### P2: 負荷変動とmode非干渉
+
+1. 一定Coulomb FFではなく、PI電流残差と速度/加速度から低帯域外乱を推定するbounded DOBを追加する。
+   冷間静止摩擦、絶対角依存、接地横力を推定値として補償し、異常値では無効化する。
+2. steer/driveへ独立PIを置く理想変換だけで非干渉にならない場合は、両mode PRBSで2x2プラントを
+   同定し、交差項の静的/動的decoupling FFを追加する。
+3. wheel rpm、電源電圧、推定負荷で必要な場合だけFF/DOB帯域をscheduleする。床材名など
+   観測できない条件による手動ゲイン切替は行わない。
+
+### P3: 中央の最短時間最適化
+
+- mini PCで車体pose、各module連続角、wheel/steer rpmを状態とし、rpm diamond、実測電流・
+  加速度、回生電圧、横力、障害物を制約にして到着時間を最小化する。
+- まず固定幾何経路のtime-optimal parameterization、次に複数曲線候補、最後に経路形状と
+  時間の同時最適化へ進む。停止/pre-steer/曲線通過は候補を固定せず同じ目的関数で比較する。
+- 実機モデル誤差に備えてplanned marginと追従残差を持ち、G474のhard保護発動時は
+  速度を押し込まず再計画する。
 
 ## 検証項目
 

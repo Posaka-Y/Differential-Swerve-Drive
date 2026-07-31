@@ -2,7 +2,9 @@
 
 ## 適用範囲
 
-中央Teensy基板、差動ステアユニット基板、オドメトリ基板のClassic CAN 1Mbps回路へ共通適用する。価格・在庫は2026-07-19時点の少量購入スナップショットであり、発注時に再確認する。
+中央Teensy基板、差動ステアユニット基板、オドメトリ基板のCAN物理層へ共通適用する。
+駆動中央バスはCAN FD nominal 1Mbps/data 2Mbps、C620/センサーバスはClassic CAN 1Mbps。
+価格・在庫は2026-07-19時点の少量購入スナップショットであり、発注時に再確認する。
 
 ## 確定構成
 
@@ -24,7 +26,7 @@
 
 | 候補 | 電源/MCU I/O | バス耐性 | 実装・流通 | 採用判断 |
 |---|---|---|---|---|
-| `TCAN1051VDRQ1` | VCC=5V、VIO=3.3V | AEC-Q100、バスフォルト±58V、IEC ESD最大±15kV、Classic CAN対応 | SOIC-8、TI Active。DigiKey/Mouser/LCSCの複数正規流通。2026-07-19時点でDigiKey約2,969個、LCSC約129個、少量約US$0.82～2.50 | **採用**。24V誤配線・ノイズ余裕と修理性を優先 |
+| `TCAN1051VDRQ1` | VCC=5V、VIO=3.3V | AEC-Q100、バスフォルト±58V、IEC ESD最大±15kV、CAN FD最大2Mbps | SOIC-8、TI Active。DigiKey/Mouser/LCSCの複数正規流通。2026-07-19時点でDigiKey約2,969個、LCSC約129個、少量約US$0.82～2.50 | **採用**。駆動FD 2MbpsとClassic 1Mbpsへ共通使用 |
 | `TJA1051T/3` | VCC=5V、VIO=3.3V | 車載CAN向け、高いバスフォルト耐性 | SOIC-8。candleLightFD、ARK CANnode等の公開設計で採用。基本ピン配列が採用品と一致 | **代替候補**。基板互換性を回路図レビューで維持 |
 | `TCAN332DR` | 3.3V単一 | 動作コモンモード±12V、バス端子絶対最大±14V | SOIC-8、流通良好、約US$1.3～2.3 | 不採用。部品数は少ないが24V系での誤配線余裕が小さい |
 | `SN65HVD230DR` | 3.3V単一 | 旧来品 | SOIC-8、採用例多数 | 不採用。RSピン処理を含め、TCAN1051Vより保護余裕が小さい |
@@ -68,6 +70,8 @@ TVSはGHコネクタ直近に置き、`connector -> TVS -> transceiver`の順に
 
 - 電源OFFでバス両端TERM ON時にCOMM_A-B間が約60Ω、片側だけONで約120Ωになること。
 - 各中間ノードTERM OFFで抵抗値を変えないこと。
-- 1Mbps連続通信でTX/RXエラーカウンタが増えないこと。
+- Classic 1Mbps、および駆動中央バスのCAN FD nominal 1Mbps/data 2Mbps+BRSで
+  TX/RXエラーカウンタが増えないこと。FD試験はTeensy+G474 x3の実ハーネス、両端120Ω、
+  最大想定スタブ、モータ駆動ノイズ条件で行う。
 - ESD試験前に通常動作波形とリセッシブ/ドミナント電圧を保存すること。
 - C620バスはC620内部終端の実測後に基板側TERMの既定状態を決めること。

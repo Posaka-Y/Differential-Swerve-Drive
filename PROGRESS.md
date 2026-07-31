@@ -14,6 +14,43 @@
 
 ---
 
+## 2026-07-31 (ステア応答高速化・wheel=0操舵 実装計画)
+
+### やったこと
+
+- 最高steer rpmだけを広げず、速度mode単体同定→加速/制動FF同定→time scale縮小→
+  速度/加速度包絡拡張→接地3輪回帰の順で理論限界へ近づけるロードマップを
+  `docs/control/CENTRAL_COORDINATED_CONTROL.md`へ追加した。
+- wheel rpm=0でもsteer角を独立制御することを正式な契約とし、停止角保持、明示pre-steer、
+  ETAへの操舵時間算入、ゼロ速度付近の角度ヒステリシス、純操舵非干渉試験を計画へ追加した。
+- 主要運用を「指定poseへ到着→タスク→別poseへ移動」とし、`ARRIVE_SETTLED→TASK_HOLD→
+  PRESTEER→DEPART`を中央状態遷移へ追加した。低速域は固定40rpmを最終値にせず、
+  `Tsettle/Tfeasible`で理論限界への接近を評価する。
+- 現行の`min(40rpm, planned包絡)`はcommissioning guardへ格下げし、本番は
+  `margin*469rpm`から実効wheel profile rpmを差し引く連続包絡を通常上限にする方針を追加した。
+  初期margin=0.90ではwheel=0/265/1200rpm時の上限は307.0/240.7/6.98 steer軸rpmとなる。
+- 現コードレビューから、連続unwrap角、時刻付き1kHz局所補間、mode要求の包絡射影、
+  back-calculation anti-windup、motor速度+AMT角observer、モデル加速FF、bounded DOB、
+  2x2 mode非干渉補償を優先度付き実装項目として追加した。
+- 駆動中央バスをTeensy CAN3-G474 FDCAN1のCAN FD nominal 1Mbps/data 2Mbps+BRSへ更新した。
+  32byte軌道を200〜250Hzで3輪へ送り、broadcast commit後にG474が1kHz補間する。
+  F405センサーCANとC620 CANはClassic 1Mbpsを維持する。
+
+### 現在の状態
+
+- wheel=0の正逆90deg操舵は現ファームと空走試験ですでに成立している。
+- 速度mode単体同定ツールは実装済みだが、`firmware/logs/steer-mode-id/`の実測ログはまだない。
+
+### 次の作業
+
+1. 固定治具・ガード・非常停止を準備し、現行Kp=120/Ki=50/LPF=2msのwheel=0速度step/PRBS基準ログを取る。
+2. 純操舵中の実wheel rpmと正味回転量を記録し、mode非干渉を確認する。
+3. タスク側からpre-steer許可を受ける中央状態遷移と、ゼロ速度時の明示steer目標保持を実装する。
+4. Web UIの固定40rpm上限を無効化可能なcommissioning guardへ変更し、planned/hard動的包絡を中央・ユニットで共通化する。
+5. 連続unwrap角と時刻付き軌道契約を先に実装し、中央プロファイルとファーム内ランプの二重化を解消する。
+6. G474 FDCAN1とTeensy CAN3を64byte/BRS対応にし、32byte軌道+commitと48byte状態を実装する。
+7. 内周速度帯域を確定後、time scaleを2.0から段階的に1.0へ縮小する。
+
 ## 2026-07-31 (リアルタイムベクトル操作・空走制御セーブポイント)
 
 ### やったこと

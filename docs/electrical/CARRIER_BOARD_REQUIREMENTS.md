@@ -89,7 +89,7 @@ C620用24V大電流線はキャリア基板の制御ハーネス(5V/GNDのGH 2pi
 要件:
 
 - 各ユニットに中央CAN用トランシーバを1個載せる(C620用とは別に、計2個)。
-- 中央CANはクラシックCAN 1Mbps。ノードはTeensy+ユニットx3。
+- 中央駆動CANはCAN FD、nominal 1Mbps/data 2Mbps、BRS有効。ノードはTeensy CAN3+G474ユニットx3。
 - 外部コネクタのシルクは `COMM_A/B` とする(`CAN_H/L` とは書かない)。
 - MCU側ネットは `COMM_TX` / `COMM_RX` とし、FDCAN1に割り当てる(C620はFDCAN2)。
 
@@ -100,7 +100,9 @@ C620用24V大電流線はキャリア基板の制御ハーネス(5V/GNDのGH 2pi
 - COMM_A/Bラインに`ESD2CAN24DBZRQ1`を入れる。
 - CANはドミナント/リセッシブ方式なので、RS485で必要だったDE/RE制御やフェイルセーフバイアスは不要。
 
-部品選定: C620側と共通化して **`TCAN1051VDRQ1` x2** とする。VCC=5V、VIO=3.3V。詳細は`CAN_COMMON_BLOCK_PART_SELECTION.md`。
+部品選定: C620側と共通化して **`TCAN1051VDRQ1` x2** とする。VCC=5V、VIO=3.3V。
+中央側は同部品のCAN FD 2Mbps対応を使い、C620側はClassic 1Mbpsで使う。詳細は
+`CAN_COMMON_BLOCK_PART_SELECTION.md`。
 
 ## C620 CAN
 

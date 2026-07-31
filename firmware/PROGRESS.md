@@ -1,6 +1,32 @@
 # Firmware progress
 
-最終更新: 2026-07-31(リアルタイムベクトルGUI・空走制御セーブポイント)
+最終更新: 2026-07-31(ステア応答高速化・wheel=0操舵 実装計画)
+
+## 計画追加(2026-07-31 ステア応答高速化・wheel=0操舵)
+
+- `docs/control/CENTRAL_COORDINATED_CONTROL.md`へ、速度mode単体同定、加速/制動FF同定、
+  time scale段階縮小、steer速度/加速度包絡拡張、接地3輪回帰の実装・試験順を追加した。
+- wheel=0でもsteer角を独立制御する契約を明記した。現ファームではすでにwheel=0の
+  正逆90deg操舵が成立しているため、中央側で停止角保持、明示pre-steer、ETA算入、
+  ゼロ速度付近の角度ヒステリシスを実装する。
+- 主要運用「指定poseへ到着→タスク→別poseへ移動」に対し、中央状態を
+  `ARRIVE_SETTLED→TASK_HOLD→PRESTEER→DEPART`とする。タスク側の許可がある場合だけ
+  wheel=0で先行操舵し、低速応答は`Tsettle/Tfeasible`で理論限界への接近を評価する。
+- 固定40 steer軸rpmは恒久上限にせずcommissioning guardへ格下げする。本番通常上限は
+  `margin*469 - abs(wheelProfile)/(32/11)`へsteer比`8/11`を掛けた連続planned包絡とし、
+  ユニット側は469rpm hard包絡を最終保護として再計算する。初期marginは0.90。
+- 現コードの改善項目として、0～360deg正規化/shortest errorを連続unwrap目標へ変更、
+  時刻付き`theta/thetaDot/thetaDDot`の1kHz局所補間、二重ramp解消、mode要求のhard包絡射影、
+  combined scaling後のback-calculation anti-windup、motor速度+AMT角observerをP0/P1に追加した。
+- 速度loop同定後は実測慣性FFとbounded DOBを追加し、残留mode干渉があれば両mode PRBSから
+  2x2 decoupling FFを同定する。単ユニット局所MPCより、この2自由度servoを先に完成させる。
+- 駆動中央バスはTeensy CAN3-G474 FDCAN1のCAN FD nominal 1Mbps/data 2Mbps+BRSへ更新する。
+  32byte `TRAJECTORY_FD`を200〜250Hzで受信し、3輪共通commit後にG474が1kHz補間する。
+  48byte状態を200Hzで返信し、実ハーネスbus load 50%以下を合格目標とする。
+- G474 `fdcan.c`は中央バスだけFDOE/BRSE、data 2Mbps、最大64byte message RAM/DLCへ拡張し、
+  FDCAN2-C620は既存Classic 1Mbps/8byteを維持する。
+- 次は`unit_steer_mode_id.py`で現行Kp=120/Ki=50/LPF=2msのwheel=0基準step/PRBSを取り、
+  純操舵中のwheel非干渉も同時に確認する。実測ログはまだない。
 
 ## セーブポイント(2026-07-31 リアルタイムベクトルGUI・次工程確定)
 

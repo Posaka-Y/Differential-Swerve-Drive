@@ -36,7 +36,7 @@ Rev.Aは受動部品0603以上、LQFP/SOIC/TSSOP/SOT系ICを優先する。BGA/W
 | DOC-01 | ~~ユニット要件と製作計画に旧`JST XH`、電源+CAN一体4線が残る~~ | 全基板コネクタ、共通CANブロック | **解消(2026-07-20): AMT22中継を横挿しGH 6pin `SM06B-GHS-TB`へ、製作計画の旧4線コネクタ記述をGH 2pin電源+GH 3pin CAN x2(渡り)へ更新。docs/electricalから旧XH/一体4線記述を除去済み** |
 | DOC-02 | ~~SWDが2.54mm/Tag-Connect記載とSTDC14確定事項で不一致~~ | G474共通最小構成 | **解消(2026-07-19): ロボット側をGH 6pinへ統一し、WeAct MiniDebugger側SH 10pinとの専用変換ケーブルを使う** |
 | DOC-03 | ~~`can_interface`共通ブロックの旧定義が4pin(COMM_A/B/5V/GND)~~ | 共通階層シート | **解消(2026-07-20): 製作計画の`can_interface`定義は横挿しGH 3pin x2(COMM_A/B/GND)+電源別GH 2pinへ更新済み。旧4pin定義は正本から消滅** |
-| DOC-04 | ~~中央CAN3をCAN FD化するか、初版は全バスClassic CAN 1Mbpsにするか未確定~~ | 中央・オドメトリCANトランシーバ | **解消(2026-07-19): Rev.Aは全バスClassic CAN 1Mbpsで統一し、CAN FDは対象外。正式選定で`TCAN1051VDRQ1`を採用** |
+| DOC-04 | ~~中央CAN3をCAN FD化するか、初版は全バスClassic CAN 1Mbpsにするか未確定~~ | 中央・ユニットCANトランシーバ | **更新(2026-07-31): Teensy CAN3-G474 x3の駆動中央バスをCAN FD nominal 1Mbps/data 2Mbps+BRSとする。F405センサーCANとC620 CANはClassic 1Mbpsを維持。`TCAN1051VDRQ1`はCAN FD 2Mbps対応のためBOM変更なし** |
 
 ## 全基板共通ブロック
 

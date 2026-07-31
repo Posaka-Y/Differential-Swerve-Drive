@@ -38,9 +38,13 @@ mini PC本体はGMKtec NucBox G2を採用する(2026-07-19)。G2は常時通電1
 
 | 系統 | 用途 | トランシーバ |
 |---|---|---|
-| CAN1 | 駆動CAN(ユニットx3、Classic CAN 1Mbps) | `TCAN1051VDRQ1` |
+| CAN1 | センサーCAN(オドメトリ/IMU、Classic CAN 1Mbps) | `TCAN1051VDRQ1` |
 | CAN2 | 汎用拡張/デバッグ/予備 | フットプリント実装、初期BOMはDNP可 |
-| CAN3 | センサーCAN(オドメトリ/IMU、Classic CAN 1Mbps) | `TCAN1051VDRQ1` |
+| CAN3 | 駆動CAN(G474ユニットx3、CAN FD nominal 1Mbps/data 2Mbps、BRS) | `TCAN1051VDRQ1` |
+
+Teensy 4.1でCAN FDに対応するのはCAN3だけなので、駆動ユニット用バスをCAN3へ固定する。
+F405オドメトリ基板はbxCANのためCAN1側Classic 1Mbpsへ分離する。採用済み
+`TCAN1051VDRQ1`はCAN FD 2Mbps対応であり、FD化によるトランシーバBOM変更はない。
 
 要件:
 
