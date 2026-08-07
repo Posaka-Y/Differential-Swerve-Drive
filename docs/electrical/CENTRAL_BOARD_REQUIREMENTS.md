@@ -24,6 +24,9 @@ Teensy 4.1を載せる中央制御ボードをKiCadで設計する。
 | USB | micro USBネイティブ(USB-CDC)。mini PCとの接続に使う |
 | 電源 | VIN 3.6〜5.5V。**外部5V給電とUSB接続を併用する場合、裏面のVUSB-VINパッドを必ずカットする**(切らないとPC USBと5V系が衝突する) |
 
+全ピン割当、Teensyソケットの回路図pin番号、予約I/Oは
+`TEENSY41_CENTRAL_PIN_ASSIGNMENT.md`を正本とする。
+
 ## mini PC接続(2026-07-02決定)
 
 第一候補: **Teensyネイティブのmicro USB(USB-CDCシリアル)**。
@@ -126,20 +129,26 @@ E-stopのNC接点はコンタクタコイル電源ループに**ハードワイ�
 - 入力: 購入済み24V→5V/5A DC-DCから5V。主入力コネクタはXT30等の5A対応品。
 - 中央基板上でTeensy、G474ユニットx3、F405オドメトリ/IMU基板へ5V/GNDをスター分配する。MCUノード4枝は`1206L050/15YR`で個別保護し、PPTC後に`LTST-C190KGKT`+1.5kΩの電源表示とテストポイントを設ける。Teensy/拡張枝は負荷実測後に別定格を選定する。
 - Teensy VINへ5V直結。3.3VはTeensy内蔵レギュレータ(外部負荷は250mA程度まで)。拡張デバイスの3.3V消費が増える場合は基板に3.3V LDOを追加。
-- 5A主入力の逆接/逆流保護は未選定。1.5A定格の`LM66100DCKR`は中央主入力には使用しない。
+- 5A主入力はAMASS `XT30PW-M`からTI `TPS259470LRPWR`へ入力し、逆流、突入、過電流、過熱を保護する(2026-08-04確定)。`RILM=750Ω`のtyp 4.45Aを初期値とする。UVLO/OVLOはDC-DC出力公差、TPS259470 comparator公差、抵抗公差を含むworst-case計算後に確定する。Teensy VIN推奨上限5.5Vに近いOVLO nominal 5.45Vをそのまま確定値にしない。入力逆接はeFuseとは別に60V級series保護を設ける。2mm角QFNは4層GND copperとthermal viaを必須とする。
+- Teensy枝は`1206L075/16YR`、拡張5V枝は`1206L050/15YR`を初期値とする。Teensy 3.3Vから外部へ供給する合計はRev.Aで100mA以下とする。
 
 ## 部品リスト(主要)
 
 | ブロック | 部品 | 備考 |
 |---|---|---|
 | MCUボード | Teensy 4.1(ピンソケット実装) | 抜き差し交換可能に |
+| Teensyソケット | Sullins `PPPC241LFBN-RC`または`PPTC241LFBN-RC` x2 | PJRC推奨1x24、2.54mm pitch、列間17.78mm。Teensy側header候補はAmphenol `68000-224HLF` |
+| 5V主入力 | AMASS `XT30PW-M` | 横向きTHT、連続15A定格 |
+| 5V主保護 | TI `TPS259470LRPWR` | 5.5A級eFuse、true RCB、latch-off |
 | CAN | `TCAN1051VDRQ1`、駆動用x1、センサー用x1、汎用x1(DNP可) | SOIC-8、5V VCC/3.3V VIO |
 | CAN保護 | `ESD2CAN24DBZRQ1` | SOT-23 |
 | CAN終端 | `RC0603FR-07120RL` + `JS102011SAQN` | 120Ω + スライドスイッチ |
-| コイルドライバ | ロジックレベルNch MOSFET(Vgs(th) 2V以下、3.3V GPIO駆動前提) + 1N4007フライバック | コイル電流約75〜80mA @ 24V(2026-07-26、E228コイル仕様より計算)。Vds耐圧は最大印加28V DC+フライバックマージンで40〜60V級を選定 |
-| E-stop入力 | フォトカプラ(PC817等)または分圧+ツェナー | 24Vループ監視 |
+| コイルドライバ | `IRLML0100TRPBF` + diode/TVS clamp | 100V Nch SOT-23、Gate 100Ω/47kΩ pulldown。3.3V駆動とcoil解放時間を実測。1N4007単独clampは初期案にしない |
+| E-stop入力 | `LTV-847S` | 4ch、直列ループ＋補助接点x2＋予備を絶縁監視 |
 | E-stop操作パネル | `ESTOP_CTRL` 6pin x1 | NC直列ループ往復、独立LED電源/GND、補助接点x2。抜去時停止 |
+| E-stop connector | Molex `43650-0600` / `43645-0600` | Micro-Fit 3.0 single-row 6pin mating pair。`43025-0600`はdual-row housingで嵌合しない |
 | 24Vセンス | 分圧抵抗 + クランプダイオード | ADC入力 |
+| バッテリー監視 | `INA238AIDGSR` + 外付け100A/75mV Kelvin shunt | 83A時62.25mV/約5.17W。主電流はPCBへ通さない |
 | コネクタ | GH(CAN/分岐電源)、XT30等(5V主入力) | CANと電源を別コネクタにする |
 | G474枝保護 | `1206L050/15YR` x4 | 20℃ Ihold 0.50A。高温deratingと突入を実測確認 |
 | 5V分岐 | `SM02B-GHS-TB` + `GHR-02V-S` | 横挿しGH2、1=5V、2=GND、AWG26 |

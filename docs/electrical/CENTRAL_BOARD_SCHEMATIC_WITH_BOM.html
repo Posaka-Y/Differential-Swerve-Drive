@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Teensy 4.1中央基板 参照回路図＋簡易BOM</title>
+<style>
+  @page { size: A3 landscape; margin: 10mm 12mm 9mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; color: #172033; font-family: "Yu Gothic", "Meiryo", sans-serif; }
+  body { background: #fff; font-size: 9.2pt; }
+  .sheet { height: 278mm; page-break-after: always; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; gap: 3mm; }
+  .sheet:last-child { page-break-after: auto; }
+  body:has(.sheet:target) .sheet:not(:target) { display: none; }
+  header { display: flex; align-items: end; justify-content: space-between; border-bottom: 1.2mm solid #194f83; padding-bottom: 2mm; }
+  h1 { margin: 0; font-size: 17pt; letter-spacing: .02em; }
+  .meta { color: #536274; font-size: 8pt; text-align: right; line-height: 1.45; }
+  .diagram { min-height: 0; display: flex; align-items: center; justify-content: center; border: .25mm solid #b8c5d3; border-radius: 1.5mm; padding: 2mm; background: #fbfdff; }
+  svg { width: 100%; height: 100%; }
+  .wire { stroke: #254b68; stroke-width: 3; fill: none; }
+  .bus { stroke: #0a7b83; stroke-width: 5; fill: none; }
+  .power { stroke: #b94a2f; stroke-width: 5; fill: none; }
+  .safe { stroke: #c43c35; stroke-width: 6; fill: none; }
+  .signal { stroke: #3976a8; stroke-width: 3; fill: none; }
+  .box { fill: #eef6fb; stroke: #3976a8; stroke-width: 2.5; rx: 10; }
+  .protect { fill: #fff4e7; stroke: #d27b24; stroke-width: 2.5; rx: 10; }
+  .safety { fill: #fff0ee; stroke: #c43c35; stroke-width: 2.8; rx: 10; }
+  .connector { fill: #f7f9fb; stroke: #566b7d; stroke-width: 2.5; rx: 7; }
+  .part { font: 700 20px "Yu Gothic", sans-serif; fill: #153650; }
+  .small { font: 16px "Yu Gothic", sans-serif; fill: #334b5f; }
+  .tiny { font: 14px "Yu Gothic", sans-serif; fill: #4a6072; }
+  .net { font: 700 16px "Cascadia Mono", Consolas, monospace; fill: #185e79; }
+  .warnsvg { font: 700 16px "Yu Gothic", sans-serif; fill: #9b3328; }
+  .caption { margin: 0; color: #3e5064; line-height: 1.35; }
+  .warn { color: #8b2c20; font-weight: 700; }
+  h2 { margin: 0 0 1.5mm; font-size: 10.5pt; color: #194f83; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 8pt; }
+  th, td { border: .2mm solid #8fa1b3; padding: 1.15mm 1.5mm; vertical-align: top; line-height: 1.26; overflow-wrap: anywhere; }
+  th { background: #dceaf6; color: #183b5b; text-align: left; font-weight: 700; }
+  tbody tr:nth-child(even) td { background: #f5f8fb; }
+  .ref { width: 13%; white-space: nowrap; }
+  .kind { width: 15%; }
+  .value { width: 27%; }
+  .pkg { width: 22%; }
+  .note { width: 23%; }
+  code { font-family: "Cascadia Mono", Consolas, monospace; font-size: .94em; }
+  footer { display: flex; justify-content: space-between; border-top: .2mm solid #b8c5d3; padding-top: 1.4mm; color: #68788a; font-size: 7.5pt; }
+</style>
+</head>
+<body>
+
+<section class="sheet" id="page-1">
+  <header><h1>Block 1 - 5 V入力・eFuse・スター分配</h1><div class="meta">Teensy 4.1中央基板 Rev.A<br>Reference schematic / not a manufacturing drawing</div></header>
+  <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="5V入力保護とスター分配">
+    <rect class="connector" x="35" y="170" width="135" height="100"/><text class="part" x="102" y="205" text-anchor="middle">J101</text><text class="small" x="102" y="235" text-anchor="middle">XT30PW-M</text><text class="net" x="102" y="258" text-anchor="middle">5V / GND</text>
+    <path class="power" d="M170 195 H245"/><rect class="protect" x="245" y="155" width="130" height="80"/><text class="part" x="310" y="187" text-anchor="middle">F101</text><text class="small" x="310" y="213" text-anchor="middle">5 A / TBD</text>
+    <path class="power" d="M375 195 H455"/><rect class="protect" x="455" y="105" width="290" height="180"/><text class="part" x="600" y="145" text-anchor="middle">U101 TPS259470L</text><text class="small" x="600" y="175" text-anchor="middle">eFuse / true reverse current block</text><text class="small" x="600" y="203" text-anchor="middle">RILM=750 Ω initial</text><text class="warnsvg" x="600" y="238" text-anchor="middle">UVLO / OVLO = tolerance calculation TBD</text>
+    <path class="power" d="M745 195 H850"/><text class="net" x="797" y="180" text-anchor="middle">+5V_SYS</text>
+    <rect class="protect" x="250" y="300" width="210" height="100"/><text class="part" x="355" y="333" text-anchor="middle">D101 + reverse protection</text><text class="small" x="355" y="363" text-anchor="middle">TVS / 60 V-class series device</text><text class="warnsvg" x="355" y="390" text-anchor="middle">exact parts TBD</text>
+    <path class="wire" d="M170 245 H215 V430 H1320"/><text class="net" x="235" y="452">GND_CTRL</text>
+    <path class="wire" d="M455 260 V430 M745 260 V430 M355 400 V430"/>
+    <path class="power" d="M850 195 V65 H925 M850 195 V135 H925 M850 195 H925 M850 195 V265 H925 M850 195 V335 H925 M850 195 V405 H925"/>
+    <g><rect class="box" x="925" y="30" width="210" height="65"/><text class="part" x="1030" y="57" text-anchor="middle">F111 0.50 A</text><text class="small" x="1030" y="82" text-anchor="middle">UNIT 1 - GH2</text></g>
+    <g><rect class="box" x="925" y="100" width="210" height="65"/><text class="part" x="1030" y="127" text-anchor="middle">F112 0.50 A</text><text class="small" x="1030" y="152" text-anchor="middle">UNIT 2 - GH2</text></g>
+    <g><rect class="box" x="925" y="170" width="210" height="65"/><text class="part" x="1030" y="197" text-anchor="middle">F113 0.50 A</text><text class="small" x="1030" y="222" text-anchor="middle">UNIT 3 - GH2</text></g>
+    <g><rect class="box" x="925" y="240" width="210" height="65"/><text class="part" x="1030" y="267" text-anchor="middle">F114 0.50 A</text><text class="small" x="1030" y="292" text-anchor="middle">ODOMETRY - GH2</text></g>
+    <g><rect class="box" x="925" y="310" width="210" height="65"/><text class="part" x="1030" y="337" text-anchor="middle">F115 0.75 A</text><text class="small" x="1030" y="362" text-anchor="middle">TEENSY VIN</text></g>
+    <g><rect class="box" x="925" y="380" width="210" height="65"/><text class="part" x="1030" y="407" text-anchor="middle">F116 0.50 A</text><text class="small" x="1030" y="432" text-anchor="middle">EXPANSION 5 V</text></g>
+    <text class="small" x="1160" y="94">Branch LED + 1.5 kΩ + TP</text><text class="small" x="1160" y="122">GH2: 1=5 V / 2=GND</text><text class="warnsvg" x="1160" y="160">VUSB-VIN link: CUT</text>
+  </svg></div>
+  <p class="caption"><span class="warn">未確定:</span> U101のOVLOを5.45 V nominalで固定しない。DC-DC出力、comparator、抵抗の全公差を含めてTeensy VIN 5.5 Vを越えない設定へ確定する。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J101</td><td>5 V入力</td><td><code>XT30PW-M</code></td><td><code>Connector_AMASS:AMASS_XT30PW-M_1x02_P5.00mm_Horizontal</code></td><td>購入済み5 V / 5 A DC-DCから入力。極性を現物照合</td></tr>
+    <tr><td>U101</td><td>eFuse</td><td><code>TPS259470LRPWR</code></td><td><code>WQFN-10-1EP 2x2 mm</code></td><td>RILM=750 Ω initial。thermal via必須</td></tr>
+    <tr><td>F111-F114/F116</td><td>PPTC</td><td><code>1206L050/15YR</code></td><td><code>Fuse:Fuse_1206_3216Metric</code></td><td>Unit x3、Odometry、Expansion</td></tr>
+    <tr><td>F115</td><td>PPTC</td><td><code>1206L075/16YR</code></td><td><code>Fuse:Fuse_1206_3216Metric</code></td><td>Teensy branch</td></tr>
+    <tr><td>J111-J114</td><td>5 V出力</td><td><code>SM02B-GHS-TB</code></td><td><code>Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal</code></td><td>1=5 V, 2=GND</td></tr>
+  </tbody></table></div>
+  <footer><span>Source: CENTRAL_BOARD_SCHEMATIC_REFERENCE.md / TPS25947 datasheet</span><span>1 / 7</span></footer>
+</section>
+
+<section class="sheet" id="page-2">
+  <header><h1>Block 2 - Teensy 4.1ソケット・ピン機能</h1><div class="meta">J201 / J202: 1x24 socket<br>Top view / USB connector at left</div></header>
+  <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="Teensyソケットと機能別ピン">
+    <rect class="box" x="410" y="55" width="580" height="390"/><text class="part" x="700" y="92" text-anchor="middle">TEENSY 4.1</text><text class="small" x="700" y="120" text-anchor="middle">socketed module / 17.78 mm row spacing</text>
+    <rect class="connector" x="435" y="145" width="80" height="250"/><text class="tiny" x="475" y="138" text-anchor="middle">J201 1-24</text>
+    <rect class="connector" x="885" y="145" width="80" height="250"/><text class="tiny" x="925" y="138" text-anchor="middle">J202 25-48</text>
+    <rect class="protect" x="575" y="165" width="250" height="115"/><text class="part" x="700" y="197" text-anchor="middle">UNDERSIDE KEEPOUT</text><text class="small" x="700" y="226" text-anchor="middle">部品 / TP / exposed pad禁止</text><text class="small" x="700" y="254" text-anchor="middle">microSD / Program / USB access</text>
+    <rect class="connector" x="260" y="210" width="120" height="70"/><text class="part" x="320" y="240" text-anchor="middle">micro USB</text><text class="small" x="320" y="264" text-anchor="middle">USB-CDC</text><path class="wire" d="M380 245 H410"/>
+    <g><rect class="box" x="30" y="40" width="300" height="105"/><text class="part" x="180" y="70" text-anchor="middle">CAN</text><text class="net" x="180" y="99" text-anchor="middle">CAN1 22/23 - CAN2 0/1</text><text class="net" x="180" y="125" text-anchor="middle">CAN3 30/31 (FD)</text><path class="signal" d="M330 95 H435"/></g>
+    <g><rect class="safety" x="30" y="165" width="300" height="160"/><text class="part" x="180" y="195" text-anchor="middle">SAFETY I/O</text><text class="net" x="180" y="224" text-anchor="middle">MOTOR_PWR_EN - pin 2</text><text class="net" x="180" y="250" text-anchor="middle">ESTOP *_OK_N - pins 3/4/5</text><text class="net" x="180" y="276" text-anchor="middle">REARM_SW_N - pin 6</text><text class="net" x="180" y="302" text-anchor="middle">AUX_OUTPUT_EN - pin 9</text><path class="signal" d="M330 245 H435"/></g>
+    <g><rect class="box" x="1070" y="40" width="300" height="120"/><text class="part" x="1220" y="70" text-anchor="middle">I2C / MONITOR</text><text class="net" x="1220" y="100" text-anchor="middle">I2C0 18/19 - I2C1 16/17</text><text class="net" x="1220" y="128" text-anchor="middle">A0 sense 14 / A1 alert 15</text><path class="signal" d="M965 105 H1070"/></g>
+    <g><rect class="box" x="1070" y="185" width="300" height="140"/><text class="part" x="1220" y="215" text-anchor="middle">EXPANSION</text><text class="net" x="1220" y="244" text-anchor="middle">UART7 28/29 - UART8 34/35</text><text class="net" x="1220" y="270" text-anchor="middle">SPI 10/11/12/13 + CS1 36</text><text class="net" x="1220" y="298" text-anchor="middle">GPIO/ADC x8</text><path class="signal" d="M965 255 H1070"/></g>
+    <path class="power" d="M700 445 V490 H1030"/><text class="net" x="1040" y="496">VIN=+5V_TEENSY</text><path class="wire" d="M650 445 V470 H370"/><text class="net" x="250" y="476">GND_CTRL x3</text><path class="signal" d="M750 445 V468 H860"/><text class="net" x="870" y="474">3V3 output / external ≤100 mA</text>
+  </svg></div>
+  <p class="caption"><span class="warn">組立:</span> Teensy裏面のVUSB-VIN linkをcutし、外部5 VとPC USBの衝突を防ぐ。ソケット下は全面keepoutとし、USB、microSD、Program buttonへ組付け後もアクセス可能にする。</p>
+  <div><h2>主要部品・固定pin</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">機械条件</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J201/J202</td><td>1x24 socket</td><td><code>PPPC241LFBN-RC</code> / <code>PPTC241LFBN-RC</code></td><td>2.54 mm pitch, row spacing 17.78 mm</td><td>PJRC推奨候補。Teensy側header候補<code>68000-224HLF</code></td></tr>
+    <tr><td>R201/R202</td><td>安全出力pull-down</td><td>47 kΩ</td><td>0603</td><td><code>MOTOR_PWR_EN</code> / <code>AUX_OUTPUT_EN</code>を起動前Low</td></tr>
+    <tr><td>SW201</td><td>Rearm option</td><td>board-local tact switch / DNP可</td><td>TBD</td><td>operator panel配置との二者択一</td></tr>
+    <tr><td>Pin map</td><td>正本</td><td colspan="2"><code>TEENSY41_CENTRAL_PIN_ASSIGNMENT.md</code></td><td>socket pad 1-48とTeensy GPIOを混同しない</td></tr>
+  </tbody></table></div>
+  <footer><span>Only the 48 edge through-hole pins are used in Rev.A</span><span>2 / 7</span></footer>
+</section>
+
+<section class="sheet" id="page-3">
+  <header><h1>Block 3 - CANインターフェース x3</h1><div class="meta">CAN1 Sensor / CAN2 Expansion<br>CAN3 Drive CAN FD</div></header>
+  <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="中央基板CAN共通回路">
+    <text class="part" x="45" y="42">1 channel common circuit</text>
+    <rect class="box" x="55" y="165" width="190" height="120"/><text class="part" x="150" y="198" text-anchor="middle">Teensy FlexCAN</text><text class="net" x="150" y="230" text-anchor="middle">CANx_TX</text><text class="net" x="150" y="260" text-anchor="middle">CANx_RX</text>
+    <path class="signal" d="M245 215 H350"/><path class="signal" d="M350 255 H245"/>
+    <rect class="box" x="350" y="115" width="275" height="220"/><text class="part" x="487" y="150" text-anchor="middle">TCAN1051VDRQ1</text><text class="small" x="487" y="182" text-anchor="middle">1 TXD / 4 RXD</text><text class="small" x="487" y="212" text-anchor="middle">3 VCC=5 V / 5 VIO=3.3 V</text><text class="small" x="487" y="242" text-anchor="middle">6 CANL / 7 CANH</text><text class="small" x="487" y="272" text-anchor="middle">8 S=GND</text><text class="small" x="487" y="306" text-anchor="middle">C301/C302 100 nF</text>
+    <path class="bus" d="M625 195 H770"/><text class="net" x="690" y="180">CANH</text><path class="bus" d="M625 255 H770"/><text class="net" x="690" y="282">CANL</text>
+    <rect class="protect" x="770" y="150" width="175" height="155"/><text class="part" x="857" y="188" text-anchor="middle">ESD2CAN24</text><text class="small" x="857" y="222" text-anchor="middle">2ch TVS</text><text class="small" x="857" y="252" text-anchor="middle">pin 3=GND</text><text class="warnsvg" x="857" y="282" text-anchor="middle">connector直近</text>
+    <path class="bus" d="M945 195 H1040 M945 255 H1040"/>
+    <rect class="connector" x="1040" y="105" width="170" height="120"/><text class="part" x="1125" y="140" text-anchor="middle">Jx01 GH3</text><text class="small" x="1125" y="172" text-anchor="middle">1=COMM_A</text><text class="small" x="1125" y="200" text-anchor="middle">2=COMM_B / 3=GND</text>
+    <rect class="connector" x="1040" y="250" width="170" height="120"/><text class="part" x="1125" y="285" text-anchor="middle">Jx02 GH3</text><text class="small" x="1125" y="317" text-anchor="middle">parallel pass-through</text><text class="small" x="1125" y="345" text-anchor="middle">CAN monitor access</text>
+    <path class="bus" d="M1000 195 V430 H720"/><rect class="protect" x="435" y="390" width="285" height="80"/><text class="part" x="578" y="422" text-anchor="middle">RTERM 120 Ω + SW TERM</text><text class="small" x="578" y="451" text-anchor="middle">RC0603FR-07120RL + JS102011SAQN</text><path class="bus" d="M435 430 H330 V255 H350"/>
+    <g><rect class="box" x="50" y="370" width="280" height="105"/><text class="part" x="190" y="402" text-anchor="middle">Bus assignment</text><text class="small" x="190" y="432" text-anchor="middle">CAN1 Sensor / CAN2 Expansion</text><text class="small" x="190" y="458" text-anchor="middle">CAN3 Drive FD</text></g>
+  </svg></div>
+  <p class="caption"><span class="warn">共通配置:</span> GH connector - ESD - transceiverの順。CANH/CANLは対で配線し、終端は物理端だけON。CAN3のみFD nominal 1 Mbps / data 2 Mbps + BRS。</p>
+  <div><h2>簡易BOM・bus割当</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>U301/U401/U501</td><td>CAN transceiver</td><td><code>TCAN1051VDRQ1</code></td><td><code>Package_SO:SOIC-8_3.9x4.9mm_P1.27mm</code></td><td>CAN1/CAN2/CAN3。CAN2は初期DNP可</td></tr>
+    <tr><td>D301/D401/D501</td><td>CAN TVS</td><td><code>ESD2CAN24DBZRQ1</code></td><td><code>Package_TO_SOT_SMD:SOT-23</code></td><td>1/2=CANH/L, 3=GND</td></tr>
+    <tr><td>R301/R401/R501</td><td>終端抵抗</td><td>120 Ω, <code>RC0603FR-07120RL</code></td><td>0603</td><td>SWと直列</td></tr>
+    <tr><td>SW301/SW401/SW501</td><td>終端switch</td><td><code>JS102011SAQN</code></td><td><code>DifferentialSwerve:JS102011SAQN</code></td><td>TERM ON/OFFをsilk表示</td></tr>
+    <tr><td>J301/302など</td><td>CAN connector</td><td><code>SM03B-GHS-TB</code> x6</td><td>JST GH 3pin horizontal</td><td>1=COMM_A/CANH, 2=COMM_B/CANL, 3=GND</td></tr>
+  </tbody></table></div>
+  <footer><span>Common block source: CAN_COMMON_BLOCK_PART_SELECTION.md</span><span>3 / 7</span></footer>
+</section>
+
+<section class="sheet" id="page-4">
+  <header><h1>Block 4 - E-stopハードループ・コンタクタ駆動</h1><div class="meta">24 V hardware safety path<br>Teensy is not in the interruption path</div></header>
+  <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="E-stopハードループとコンタクタ">
+    <rect class="connector" x="30" y="170" width="150" height="100"/><text class="part" x="105" y="205" text-anchor="middle">J601</text><text class="small" x="105" y="235" text-anchor="middle">24V_CTRL IN</text><text class="net" x="105" y="258" text-anchor="middle">24 V / GND</text>
+    <path class="safe" d="M180 195 H245"/><rect class="protect" x="245" y="155" width="135" height="80"/><text class="part" x="312" y="188" text-anchor="middle">F601</text><text class="small" x="312" y="215" text-anchor="middle">loop fuse TBD</text>
+    <path class="safe" d="M380 195 H455"/><rect class="connector" x="455" y="90" width="240" height="210"/><text class="part" x="575" y="125" text-anchor="middle">J602 ESTOP_CTRL</text><text class="small" x="575" y="155" text-anchor="middle">43650-0600 header</text><text class="small" x="575" y="182" text-anchor="middle">mate 43645-0600</text><text class="net" x="575" y="215" text-anchor="middle">1 LOOP_OUT / 2 LOOP_RETURN</text><text class="net" x="575" y="243" text-anchor="middle">3 LED_24V / 4 GND</text><text class="net" x="575" y="271" text-anchor="middle">5 AUX1 / 6 AUX2</text>
+    <path class="safe" d="M695 195 H755"/><rect class="safety" x="755" y="120" width="120" height="70"/><text class="part" x="815" y="150" text-anchor="middle">E-stop 1</text><text class="small" x="815" y="176" text-anchor="middle">NC contact</text><path class="safe" d="M875 155 H925"/><rect class="safety" x="925" y="120" width="120" height="70"/><text class="part" x="985" y="150" text-anchor="middle">E-stop 2</text><text class="small" x="985" y="176" text-anchor="middle">NC contact</text>
+    <path class="safe" d="M1045 155 H1110 V225"/><rect class="safety" x="1050" y="225" width="190" height="95"/><text class="part" x="1145" y="260" text-anchor="middle">E228 coil</text><text class="small" x="1145" y="290" text-anchor="middle">24 V / 75-80 mA</text>
+    <path class="safe" d="M1145 320 V370"/><rect class="protect" x="1050" y="370" width="190" height="90"/><text class="part" x="1145" y="404" text-anchor="middle">Q601 N-MOSFET</text><text class="small" x="1145" y="432" text-anchor="middle">IRLML0100 / 3.3 V verify</text><path class="wire" d="M1145 460 V490 H180 V245"/>
+    <rect class="protect" x="790" y="345" width="210" height="105"/><text class="part" x="895" y="380" text-anchor="middle">D602 + D603</text><text class="small" x="895" y="410" text-anchor="middle">diode + TVS clamp</text><text class="warnsvg" x="895" y="438" text-anchor="middle">TVS voltage TBD by test</text><path class="wire" d="M1000 397 H1080 M1000 430 H1110 V300"/>
+    <path class="signal" d="M930 470 V415 H1050"/><text class="net" x="700" y="478">MOTOR_PWR_EN - 100 Ω gate / 47 kΩ pull-down</text>
+    <rect class="protect" x="245" y="315" width="430" height="100"/><text class="part" x="460" y="350" text-anchor="middle">Separate LED / AUX fuse F602</text><text class="small" x="460" y="380" text-anchor="middle">LED short must not remove the NC safety loop supply</text><text class="warnsvg" x="460" y="407" text-anchor="middle">24 V reverse / surge part is still TBD</text>
+  </svg></div>
+  <p class="caption"><span class="warn">安全原則:</span> connector抜去、wire断線、どちらかのNC開放でcoil電流が必ず切れる。Teensyは監視とMOSFET許可だけを行い、NC直列経路を代替しない。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J602</td><td>E-stop panel</td><td><code>43650-0600</code> / mate <code>43645-0600</code></td><td>Molex Micro-Fit 3.0, single-row 6pin</td><td><code>43025-0600</code>はdual-rowで嵌合しない</td></tr>
+    <tr><td>Q601</td><td>coil low-side FET</td><td><code>IRLML0100TRPBF</code></td><td><code>Package_TO_SOT_SMD:SOT-23</code></td><td>3.3 V gate時の動作を実測。100 Ω / 47 kΩ</td></tr>
+    <tr><td>D602/D603</td><td>coil clamp</td><td>fast diode + TVS, exact parts TBD</td><td>TBD</td><td>VDSとcoil release timeをoscilloscope確認</td></tr>
+    <tr><td>F601/F602</td><td>24 V fuse</td><td>loop / LED-AUX separate, rating TBD</td><td>TBD</td><td>E228 coil 75-80 mAを基準に決定</td></tr>
+    <tr><td>J603</td><td>contactor coil</td><td>locking 2pin, keyed</td><td>TBD</td><td>1=LOOP_RETURN, 2=COIL_N</td></tr>
+  </tbody></table></div>
+  <footer><span>Hardware path source: POWER_DISTRIBUTION_AND_ESTOP.md</span><span>4 / 7</span></footer>
+</section>
+
+<section class="sheet" id="page-5">
+  <header><h1>Block 5 - E-stop絶縁監視・再アーム・24 Vセンス</h1><div class="meta">Diagnostic inputs / not safety-rated<br>Low = contact loop established</div></header>
+  <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="E-stop絶縁監視とモータ電圧センス">
+    <text class="part" x="45" y="42">Three identical isolated diagnostic channels</text>
+    <g transform="translate(30,70)"><rect class="connector" x="0" y="40" width="190" height="70"/><text class="net" x="95" y="82" text-anchor="middle">LOOP_RETURN / AUX1 / AUX2</text><path class="signal" d="M190 75 H250"/><rect class="protect" x="250" y="35" width="200" height="80"/><text class="part" x="350" y="67" text-anchor="middle">2.2 kΩ + 2.2 kΩ</text><text class="small" x="350" y="95" text-anchor="middle">about 5 mA at 24 V</text><path class="signal" d="M450 75 H520"/><rect class="box" x="520" y="20" width="210" height="110"/><text class="part" x="625" y="56" text-anchor="middle">U601 LTV-847S</text><text class="small" x="625" y="85" text-anchor="middle">CH1 / CH2 / CH3</text><text class="small" x="625" y="113" text-anchor="middle">CH4 spare</text><path class="signal" d="M730 75 H810"/><rect class="protect" x="810" y="35" width="150" height="80"/><text class="part" x="885" y="67" text-anchor="middle">10 kΩ pull-up</text><text class="small" x="885" y="95" text-anchor="middle">to 3.3 V</text><path class="signal" d="M960 75 H1080"/><text class="net" x="1090" y="82">*_OK_N to Teensy</text></g>
+    <text class="warnsvg" x="70" y="245">LTV-847S minimum CTR is specified at IF=5 mA: 6.8 kΩ x2案は使用しない</text>
+    <rect class="connector" x="35" y="315" width="190" height="90"/><text class="part" x="130" y="350" text-anchor="middle">J604 MOTOR BUS</text><text class="net" x="130" y="382" text-anchor="middle">24 V / GND</text>
+    <path class="signal" d="M225 345 H300"/><rect class="protect" x="300" y="305" width="185" height="80"/><text class="part" x="392" y="337" text-anchor="middle">100 k + 100 k</text><text class="small" x="392" y="366" text-anchor="middle">divider high side</text><path class="signal" d="M485 345 H570"/><rect class="protect" x="570" y="305" width="150" height="80"/><text class="part" x="645" y="337" text-anchor="middle">20 kΩ</text><text class="small" x="645" y="366" text-anchor="middle">to GND</text><path class="signal" d="M540 345 V430 H780"/><rect class="protect" x="780" y="390" width="210" height="80"/><text class="part" x="885" y="422" text-anchor="middle">1 kΩ + 10 nF</text><text class="small" x="885" y="451" text-anchor="middle">low-leakage clamp</text><path class="signal" d="M990 430 H1110"/><text class="net" x="1120" y="437">MOTOR_PWR_SENSE A0</text>
+    <rect class="connector" x="1070" y="300" width="250" height="85"/><text class="part" x="1195" y="333" text-anchor="middle">REARM switch</text><text class="small" x="1195" y="363" text-anchor="middle">physical / board or panel TBD</text>
+  </svg></div>
+  <p class="caption"><span class="warn">論理:</span> <code>ESTOP_LOOP_OK_N</code>などはLow=接点成立。wire断線やopto消灯ではpull-upによりHigh=unsafeになる。firmwareで名称と真理値を反転させない。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>U601</td><td>4ch optocoupler</td><td><code>LTV-847S</code></td><td><code>Package_SO:SOP-16_4.4x10.4mm_P1.27mm</code></td><td>CH1 loop, CH2 AUX1, CH3 AUX2, CH4 spare</td></tr>
+    <tr><td>R611-R616</td><td>opto input</td><td>2.2 kΩ x2 per channel</td><td>0603, voltage/power rating確認</td><td>24 V時約5 mA</td></tr>
+    <tr><td>R617-R619</td><td>output pull-up</td><td>10 kΩ</td><td>0603</td><td>3.3 V pull-up, Low=OK</td></tr>
+    <tr><td>R631-R633/C631</td><td>motor bus sense</td><td>100 k+100 k / 20 k, 1 k, 10 nF</td><td>0603</td><td>25.2 V時約2.29 V。40 V試験必須</td></tr>
+    <tr><td>SW201/J842</td><td>physical rearm</td><td>board tact or external switch</td><td>TBD / JST GH2</td><td>実装場所は機体layoutで一方に確定</td></tr>
+  </tbody></table></div>
+  <footer><span>Diagnostic channels never replace the NC hardware loop</span><span>5 / 7</span></footer>
+</section>
+
+<section class="sheet" id="page-6">
+  <header><h1>Block 6 - INA238バッテリー電圧・電流監視</h1><div class="meta">External 100 A / 75 mV Kelvin shunt<br>Main current does not enter this PCB</div></header>
+  <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="INA238と外付けKelvinシャント">
+    <path class="power" d="M40 125 H180"/><rect class="safety" x="180" y="80" width="300" height="90"/><text class="part" x="330" y="115" text-anchor="middle">External Kelvin shunt</text><text class="small" x="330" y="145" text-anchor="middle">100 A / 75 mV / 0.75 mΩ</text><path class="power" d="M480 125 H650"/><text class="net" x="45" y="105">BATTERY +</text><text class="net" x="530" y="105">LOAD / CONTACTOR</text>
+    <circle cx="235" cy="185" r="7" fill="#c43c35"/><circle cx="425" cy="185" r="7" fill="#c43c35"/>
+    <path class="signal" d="M235 185 V250 H330"/><rect class="protect" x="330" y="220" width="180" height="65"/><text class="part" x="420" y="247" text-anchor="middle">source fuse / fusible R</text><text class="small" x="420" y="272" text-anchor="middle">required at battery side</text><path class="signal" d="M425 185 V315 H510"/>
+    <rect class="connector" x="585" y="245" width="180" height="100"/><text class="part" x="675" y="278" text-anchor="middle">J701 GH2</text><text class="net" x="675" y="307" text-anchor="middle">SHUNT_BAT</text><text class="net" x="675" y="333" text-anchor="middle">SHUNT_LOAD</text><path class="signal" d="M510 252 H585 M510 315 H585"/>
+    <path class="signal" d="M765 270 H860 M765 320 H860"/><rect class="box" x="860" y="170" width="310" height="250"/><text class="part" x="1015" y="205" text-anchor="middle">U701 INA238AIDGSR</text><text class="small" x="1015" y="240" text-anchor="middle">10 IN+ = SHUNT_BAT</text><text class="small" x="1015" y="270" text-anchor="middle">9 IN- = SHUNT_LOAD</text><text class="small" x="1015" y="300" text-anchor="middle">8 VBUS = load side through 1 kΩ</text><text class="small" x="1015" y="330" text-anchor="middle">4 SDA / 5 SCL / 3 ALERT</text><text class="small" x="1015" y="360" text-anchor="middle">6 VS=3.3 V / 7 GND</text><text class="small" x="1015" y="390" text-anchor="middle">A0=A1=GND - address 0x40</text>
+    <path class="signal" d="M1170 245 H1320"/><text class="net" x="1185" y="230">I2C0 SDA/SCL</text><path class="signal" d="M1170 340 H1320"/><text class="net" x="1185" y="365">BAT_MON_ALERT_N</text>
+    <text class="warnsvg" x="45" y="430">83 A: 62.25 mV / 5.17 W。shunt定格・端子温度・取付放熱を機体側で確認</text><text class="warnsvg" x="45" y="468">board側10 Ωだけではsense wire shortを保護できない - source側保護が必須</text>
+  </svg></div>
+  <p class="caption"><span class="warn">配線:</span> 2本のsense wireはshuntのKelvin端子から対で引く。主電流、shunt本体、source fuseは中央PCB外。VBUSはload側を1 kΩ経由で測定する。</p>
+  <div><h2>簡易BOM</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>U701</td><td>power monitor</td><td><code>INA238AIDGSR</code></td><td><code>Package_SO:VSSOP-10_3x3mm_P0.5mm</code></td><td>3.3 V, I2C0, address 0x40</td></tr>
+    <tr><td>J701</td><td>Kelvin sense</td><td><code>SM02B-GHS-TB</code></td><td>JST GH2 horizontal</td><td>1=SHUNT_BAT, 2=SHUNT_LOAD</td></tr>
+    <tr><td>R701</td><td>VBUS series</td><td>1 kΩ</td><td>0603</td><td>IN- load side - VBUS</td></tr>
+    <tr><td>R702/C701</td><td>pull-up / decoupling</td><td>10 kΩ / 100 nF</td><td>0603</td><td>ALERT_N / VS</td></tr>
+    <tr><td>External</td><td>Kelvin shunt</td><td>100 A / 75 mV candidate</td><td>mechanical TBD</td><td>連続/peak currentと放熱から正式型番決定</td></tr>
+  </tbody></table></div>
+  <footer><span>Source-end fuse is part of the power distribution design</span><span>6 / 7</span></footer>
+</section>
+
+<section class="sheet" id="page-7">
+  <header><h1>Block 7 - 拡張I/O・テストアクセス・レビューゲート</h1><div class="meta">3.3 V logic only<br>External 3.3 V load total: max 100 mA</div></header>
+  <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="拡張コネクタとテストポイント">
+    <rect class="box" x="520" y="65" width="350" height="390"/><text class="part" x="695" y="100" text-anchor="middle">TEENSY EXPANSION SIGNALS</text>
+    <g><rect class="connector" x="40" y="55" width="300" height="80"/><text class="part" x="190" y="87" text-anchor="middle">J801 / J802 - I2C0 / I2C1</text><text class="net" x="190" y="117" text-anchor="middle">3V3 / GND / SDA / SCL</text><path class="signal" d="M340 95 H520"/></g>
+    <g><rect class="connector" x="40" y="165" width="300" height="80"/><text class="part" x="190" y="197" text-anchor="middle">J811 / J812 - UART7 / UART8</text><text class="net" x="190" y="227" text-anchor="middle">TX / RX / GND</text><path class="signal" d="M340 205 H520"/></g>
+    <g><rect class="connector" x="40" y="275" width="300" height="95"/><text class="part" x="190" y="307" text-anchor="middle">J821 - SPI</text><text class="net" x="190" y="337" text-anchor="middle">3V3 / GND / SCK / MOSI / MISO</text><text class="net" x="190" y="360" text-anchor="middle">CS0_N / CS1_N</text><path class="signal" d="M340 322 H520"/></g>
+    <g><rect class="connector" x="40" y="400" width="300" height="80"/><text class="part" x="190" y="432" text-anchor="middle">J842 - External rearm</text><text class="net" x="190" y="462" text-anchor="middle">REARM_SW_N / GND</text><path class="signal" d="M340 440 H520"/></g>
+    <g><rect class="connector" x="1050" y="55" width="300" height="105"/><text class="part" x="1200" y="87" text-anchor="middle">J831 - GPIO / ADC x8</text><text class="net" x="1200" y="117" text-anchor="middle">IO20/21/24/25/26/27/40/41</text><text class="small" x="1200" y="143" text-anchor="middle">each through 100 Ω</text><path class="signal" d="M870 108 H1050"/></g>
+    <g><rect class="connector" x="1050" y="195" width="300" height="80"/><text class="part" x="1200" y="227" text-anchor="middle">J841 - AUX driver enable</text><text class="net" x="1200" y="257" text-anchor="middle">AUX_OUTPUT_EN / 3V3 / GND</text><path class="signal" d="M870 235 H1050"/></g>
+    <g><rect class="connector" x="1050" y="310" width="300" height="80"/><text class="part" x="1200" y="342" text-anchor="middle">J851 - Expansion power</text><text class="net" x="1200" y="372" text-anchor="middle">+5V_EXP / 3V3 / GND</text><path class="power" d="M870 350 H1050"/></g>
+    <g><rect class="protect" x="1050" y="420" width="300" height="75"/><text class="part" x="1200" y="450" text-anchor="middle">J901 / individual test points</text><text class="small" x="1200" y="478" text-anchor="middle">5V / 3V3 / fault / spare GPIO</text><path class="signal" d="M870 458 H1050"/></g>
+    <text class="warnsvg" x="565" y="155">GPIOは5 V tolerantではない</text><text class="small" x="565" y="195">I2C pull-up 2.2 kΩはDNP /切離し可能</text><text class="small" x="565" y="230">SPI pin 13はon-board LED負荷あり</text><text class="small" x="565" y="265">24 V load driverは別CAN boardへ分離</text><text class="small" x="565" y="300">AUX_OUTPUT_ENは起動時Low</text><text class="warnsvg" x="565" y="365">PCB前に全TBDをclose</text><text class="warnsvg" x="565" y="400">正式symbol化後にERC 0</text>
+  </svg></div>
+  <p class="caption"><span class="warn">範囲:</span> Rev.A中央基板に24 V電磁弁や表示灯のpower MOSFETは載せない。外部driver boardとはExpansion CANと<code>AUX_OUTPUT_EN</code>で接続する。</p>
+  <div><h2>コネクタ・PCB開始前ゲート</h2><table><thead><tr><th class="ref">Ref / Gate</th><th class="kind">種別</th><th class="value">pin / 条件</th><th class="pkg">KiCad Footprint</th><th class="note">接続・備考</th></tr></thead><tbody>
+    <tr><td>J801/J802</td><td>I2C</td><td>1=3V3, 2=GND, 3=SDA, 4=SCL</td><td>JST GH4 horizontal</td><td>I2C0はINA238と共有</td></tr>
+    <tr><td>J811/J812</td><td>UART</td><td>TX / RX / GND</td><td>JST GH3 horizontal</td><td>connector pin順はsilkに明記</td></tr>
+    <tr><td>J821/J831</td><td>SPI / GPIO</td><td>SPI 7pin / GPIO 10pin</td><td>JST GH horizontal</td><td>GPIO x8に各100 Ω series</td></tr>
+    <tr><td>Gate 1</td><td>回路値</td><td>eFuse、24 V保護、coil TVS、source fuse</td><td>-</td><td>全TBDをdatasheet/実測で確定</td></tr>
+    <tr><td>Gate 2</td><td>KiCad</td><td>正式symbol / pin type / footprint</td><td>-</td><td>ERC 0、pin 1と極性を現物照合</td></tr>
+    <tr><td>Gate 3</td><td>機械</td><td>Teensy下keepout / USB / microSD / stacking</td><td>-</td><td>機体CADと照合後にplacement開始</td></tr>
+  </tbody></table></div>
+  <footer><span>Detailed source: CENTRAL_BOARD_REQUIREMENTS.md / TEENSY41_CENTRAL_PIN_ASSIGNMENT.md</span><span>7 / 7</span></footer>
+</section>
+
+</body>
+</html>

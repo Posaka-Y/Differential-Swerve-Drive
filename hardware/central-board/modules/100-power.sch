@@ -1,0 +1,455 @@
+EESchema Schematic File Version 4
+LIBS:power
+LIBS:device
+LIBS:Connector_Generic
+LIBS:Switch
+LIBS:Transistor_FET
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 7
+Title "100 Power Input and 5V Distribution"
+Date "2026-08-04"
+Rev "A - HUMAN REVIEW DRAFT"
+Comp "Differential Swerve"
+Comment1 "Responsibility-based hierarchical schematic"
+Comment2 "Global labels connect modules"
+$EndDescr
+Text Notes 600 700 0    80   ~ 12
+100 POWER INPUT / eFUSE / STAR DISTRIBUTION
+$Comp
+L Connector_Generic:Conn_01x02 J101
+U 1 1 1001
+P 900 1100
+F 0 "J101" H 800 1320 50  0000 C CNN
+F 1 "XT30PW-M 5V INPUT" H 800 1230 50  0000 C CNN
+F 2 "Connector_AMASS:AMASS_XT30PW-M_1x02_P5.00mm_Horizontal" H 900 1100 50  0001 C CNN
+	1    900 1100
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1100 1100 1400 1100
+Text Label 1400 1100 0    40   ~ 0
++5V_RAW
+Wire Wire Line
+	1100 1200 1400 1200
+Text Label 1400 1200 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:Fuse F101
+U 1 1 1002
+P 1700 1100
+F 0 "F101" H 1600 1320 50  0000 C CNN
+F 1 "5A FUSE / TBD TYPE" H 1600 1230 50  0000 C CNN
+F 2 "" H 1700 1100 50  0001 C CNN
+	1    1700 1100
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1600 1100 1350 1100
+Text Label 1350 1100 0    40   ~ 0
++5V_RAW
+Wire Wire Line
+	1800 1100 2050 1100
+Text Label 2050 1100 0    40   ~ 0
++5V_FUSED
+$Comp
+L Device:D_TVS D101
+U 1 1 1003
+P 1700 1400
+F 0 "D101" H 1600 1620 50  0000 C CNN
+F 1 "SMBJ5.0A / VERIFY" H 1600 1530 50  0000 C CNN
+F 2 "" H 1700 1400 50  0001 C CNN
+	1    1700 1400
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1600 1400 1350 1400
+Text Label 1350 1400 0    40   ~ 0
++5V_FUSED
+Wire Wire Line
+	1800 1400 2050 1400
+Text Label 2050 1400 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x10 U101
+U 1 1 1004
+P 2350 1000
+F 0 "U101" H 2250 1220 50  0000 C CNN
+F 1 "TPS259470LRPWR" H 2250 1130 50  0000 C CNN
+F 2 "Package_DFN_QFN:WQFN-10-1EP_2x2mm_P0.5mm_EP0.75x1.6mm" H 2350 1000 50  0001 C CNN
+	1    2350 1000
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	2550 1000 3100 1000
+Text Label 3100 1000 0    40   ~ 0
+EN_UVLO
+Wire Wire Line
+	2550 1100 3100 1100
+Text Label 3100 1100 0    40   ~ 0
+OVLO
+Wire Wire Line
+	2550 1200 3100 1200
+Text Label 3100 1200 0    40   ~ 0
+AUXOFF
+Wire Wire Line
+	2550 1300 3100 1300
+Text Label 3100 1300 0    40   ~ 0
+PWR_5V_FAULT_N
+Wire Wire Line
+	2550 1400 3100 1400
+Text Label 3100 1400 0    40   ~ 0
++5V_FUSED
+Wire Wire Line
+	2550 1500 3100 1500
+Text Label 3100 1500 0    40   ~ 0
++5V_SYS
+Wire Wire Line
+	2550 1600 3100 1600
+Text Label 3100 1600 0    40   ~ 0
+DVDT
+Wire Wire Line
+	2550 1700 3100 1700
+Text Label 3100 1700 0    40   ~ 0
+GND_CTRL
+Wire Wire Line
+	2550 1800 3100 1800
+Text Label 3100 1800 0    40   ~ 0
+ILM
+Wire Wire Line
+	2550 1900 3100 1900
+Text Label 3100 1900 0    40   ~ 0
+ITIMER
+Text Notes 2250 2050 0    45   ~ 12
+U101 pin order 1..10 shown top-to-bottom
+$Comp
+L Device:R R101
+U 1 1 1005
+P 3300 1050
+F 0 "R101" H 3200 1270 50  0000 C CNN
+F 1 "UVLO TOP - TBD TOLERANCE" H 3200 1180 50  0000 C CNN
+F 2 "" H 3300 1050 50  0001 C CNN
+	1    3300 1050
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 1050 2950 1050
+Text Label 2950 1050 0    40   ~ 0
++5V_FUSED
+Wire Wire Line
+	3400 1050 3650 1050
+Text Label 3650 1050 0    40   ~ 0
+EN_UVLO
+$Comp
+L Device:R R102
+U 1 1 1006
+P 3300 1250
+F 0 "R102" H 3200 1470 50  0000 C CNN
+F 1 "UVLO BOT - TBD" H 3200 1380 50  0000 C CNN
+F 2 "" H 3300 1250 50  0001 C CNN
+	1    3300 1250
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 1250 2950 1250
+Text Label 2950 1250 0    40   ~ 0
+EN_UVLO
+Wire Wire Line
+	3400 1250 3650 1250
+Text Label 3650 1250 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R103
+U 1 1 1007
+P 3300 1450
+F 0 "R103" H 3200 1670 50  0000 C CNN
+F 1 "OVLO TOP - TBD TOLERANCE" H 3200 1580 50  0000 C CNN
+F 2 "" H 3300 1450 50  0001 C CNN
+	1    3300 1450
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 1450 2950 1450
+Text Label 2950 1450 0    40   ~ 0
++5V_FUSED
+Wire Wire Line
+	3400 1450 3650 1450
+Text Label 3650 1450 0    40   ~ 0
+OVLO
+$Comp
+L Device:R R104
+U 1 1 1008
+P 3300 1650
+F 0 "R104" H 3200 1870 50  0000 C CNN
+F 1 "OVLO BOT - TBD" H 3200 1780 50  0000 C CNN
+F 2 "" H 3300 1650 50  0001 C CNN
+	1    3300 1650
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 1650 2950 1650
+Text Label 2950 1650 0    40   ~ 0
+OVLO
+Wire Wire Line
+	3400 1650 3650 1650
+Text Label 3650 1650 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R105
+U 1 1 1009
+P 3300 1850
+F 0 "R105" H 3200 2070 50  0000 C CNN
+F 1 "750R (ILIM INITIAL)" H 3200 1980 50  0000 C CNN
+F 2 "" H 3300 1850 50  0001 C CNN
+	1    3300 1850
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 1850 2950 1850
+Text Label 2950 1850 0    40   ~ 0
+ILM
+Wire Wire Line
+	3400 1850 3650 1850
+Text Label 3650 1850 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:C C101
+U 1 1 100A
+P 3300 2050
+F 0 "C101" H 3200 2270 50  0000 C CNN
+F 1 "DVDT - TBD" H 3200 2180 50  0000 C CNN
+F 2 "" H 3300 2050 50  0001 C CNN
+	1    3300 2050
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 2050 2950 2050
+Text Label 2950 2050 0    40   ~ 0
+DVDT
+Wire Wire Line
+	3400 2050 3650 2050
+Text Label 3650 2050 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:C C102
+U 1 1 100B
+P 3300 2250
+F 0 "C102" H 3200 2470 50  0000 C CNN
+F 1 "ITIMER - TBD" H 3200 2380 50  0000 C CNN
+F 2 "" H 3300 2250 50  0001 C CNN
+	1    3300 2250
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 2250 2950 2250
+Text Label 2950 2250 0    40   ~ 0
+ITIMER
+Wire Wire Line
+	3400 2250 3650 2250
+Text Label 3650 2250 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R106
+U 1 1 100C
+P 3300 2450
+F 0 "R106" H 3200 2670 50  0000 C CNN
+F 1 "10k" H 3200 2580 50  0000 C CNN
+F 2 "" H 3300 2450 50  0001 C CNN
+	1    3300 2450
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3200 2450 2950 2450
+Text Label 2950 2450 0    40   ~ 0
+PWR_5V_FAULT_N
+Wire Wire Line
+	3400 2450 3650 2450
+Text Label 3650 2450 0    40   ~ 0
++3V3_TEENSY
+Text Notes 650 2650 0    50   ~ 12
+CAUTION: OVLO must include rail + comparator + resistor tolerance; nominal 5.45V is too close to Teensy VIN max 5.5V.
+$Comp
+L Connector_Generic:Conn_01x02 J111
+U 1 1 100D
+P 850 3150
+F 0 "J111" H 750 3370 50  0000 C CNN
+F 1 "UNIT1 5V OUT GH2" H 750 3280 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal" H 850 3150 50  0001 C CNN
+	1    850 3150
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1050 3150 1350 3150
+Text Label 1350 3150 0    40   ~ 0
++5V_UNIT1
+Wire Wire Line
+	1050 3250 1350 3250
+Text Label 1350 3250 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:Polyfuse F111
+U 1 1 100E
+P 1750 3150
+F 0 "F111" H 1650 3370 50  0000 C CNN
+F 1 "1206L050/15YR" H 1650 3280 50  0000 C CNN
+F 2 "" H 1750 3150 50  0001 C CNN
+	1    1750 3150
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1650 3150 1400 3150
+Text Label 1400 3150 0    40   ~ 0
++5V_SYS
+Wire Wire Line
+	1850 3150 2100 3150
+Text Label 2100 3150 0    40   ~ 0
++5V_UNIT1
+$Comp
+L Connector_Generic:Conn_01x02 J112
+U 1 1 100F
+P 850 3500
+F 0 "J112" H 750 3720 50  0000 C CNN
+F 1 "UNIT2 5V OUT GH2" H 750 3630 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal" H 850 3500 50  0001 C CNN
+	1    850 3500
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1050 3500 1350 3500
+Text Label 1350 3500 0    40   ~ 0
++5V_UNIT2
+Wire Wire Line
+	1050 3600 1350 3600
+Text Label 1350 3600 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:Polyfuse F112
+U 1 1 1010
+P 1750 3500
+F 0 "F112" H 1650 3720 50  0000 C CNN
+F 1 "1206L050/15YR" H 1650 3630 50  0000 C CNN
+F 2 "" H 1750 3500 50  0001 C CNN
+	1    1750 3500
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1650 3500 1400 3500
+Text Label 1400 3500 0    40   ~ 0
++5V_SYS
+Wire Wire Line
+	1850 3500 2100 3500
+Text Label 2100 3500 0    40   ~ 0
++5V_UNIT2
+$Comp
+L Connector_Generic:Conn_01x02 J113
+U 1 1 1011
+P 850 3850
+F 0 "J113" H 750 4070 50  0000 C CNN
+F 1 "UNIT3 5V OUT GH2" H 750 3980 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal" H 850 3850 50  0001 C CNN
+	1    850 3850
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1050 3850 1350 3850
+Text Label 1350 3850 0    40   ~ 0
++5V_UNIT3
+Wire Wire Line
+	1050 3950 1350 3950
+Text Label 1350 3950 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:Polyfuse F113
+U 1 1 1012
+P 1750 3850
+F 0 "F113" H 1650 4070 50  0000 C CNN
+F 1 "1206L050/15YR" H 1650 3980 50  0000 C CNN
+F 2 "" H 1750 3850 50  0001 C CNN
+	1    1750 3850
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1650 3850 1400 3850
+Text Label 1400 3850 0    40   ~ 0
++5V_SYS
+Wire Wire Line
+	1850 3850 2100 3850
+Text Label 2100 3850 0    40   ~ 0
++5V_UNIT3
+$Comp
+L Connector_Generic:Conn_01x02 J114
+U 1 1 1013
+P 850 4200
+F 0 "J114" H 750 4420 50  0000 C CNN
+F 1 "ODOM 5V OUT GH2" H 750 4330 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal" H 850 4200 50  0001 C CNN
+	1    850 4200
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1050 4200 1350 4200
+Text Label 1350 4200 0    40   ~ 0
++5V_ODOM
+Wire Wire Line
+	1050 4300 1350 4300
+Text Label 1350 4300 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:Polyfuse F114
+U 1 1 1014
+P 1750 4200
+F 0 "F114" H 1650 4420 50  0000 C CNN
+F 1 "1206L050/15YR" H 1650 4330 50  0000 C CNN
+F 2 "" H 1750 4200 50  0001 C CNN
+	1    1750 4200
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1650 4200 1400 4200
+Text Label 1400 4200 0    40   ~ 0
++5V_SYS
+Wire Wire Line
+	1850 4200 2100 4200
+Text Label 2100 4200 0    40   ~ 0
++5V_ODOM
+$Comp
+L Device:Polyfuse F115
+U 1 1 1015
+P 3100 3150
+F 0 "F115" H 3000 3370 50  0000 C CNN
+F 1 "1206L075/16YR" H 3000 3280 50  0000 C CNN
+F 2 "" H 3100 3150 50  0001 C CNN
+	1    3100 3150
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3000 3150 2750 3150
+Text Label 2750 3150 0    40   ~ 0
++5V_SYS
+Wire Wire Line
+	3200 3150 3450 3150
+Text Label 3450 3150 0    40   ~ 0
++5V_TEENSY
+$Comp
+L Device:Polyfuse F116
+U 1 1 1016
+P 3100 3500
+F 0 "F116" H 3000 3720 50  0000 C CNN
+F 1 "1206L050/15YR" H 3000 3630 50  0000 C CNN
+F 2 "" H 3100 3500 50  0001 C CNN
+	1    3100 3500
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3000 3500 2750 3500
+Text Label 2750 3500 0    40   ~ 0
++5V_SYS
+Wire Wire Line
+	3200 3500 3450 3500
+Text Label 3450 3500 0    40   ~ 0
++5V_EXP
+Text Notes 650 4550 0    45   ~ 12
+Each node branch: add green LED + 1.5k after PPTC and a test point during PCB capture.
+$EndSCHEMATC
