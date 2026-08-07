@@ -47,7 +47,7 @@ Rev.Aは受動部品0603以上、LQFP/SOIC/TSSOP/SOT系ICを優先する。BGA/W
 | COM-03 | P0 | **解消(2026-07-19): `TCAN1051VDRQ1`採用、`TJA1051T/3`代替候補** | 全基板 | VCC=5V、VIO=3.3V、SOIC-8、バスフォルト±58V。詳細は`CAN_COMMON_BLOCK_PART_SELECTION.md` |
 | COM-04 | P0 | **解消(2026-07-19): `ESD2CAN24DBZRQ1`採用** | 全基板 | SOT-23、2ch双方向、±24V working。旧PESD1CAN-UはNot for Design Inのため不採用 |
 | COM-05 | P0 | **解消(2026-07-19): `TLV1117LV33DCYR`、入出力各100nF+10uF X7Rを採用** | ユニット、オドメトリ | SOT-223のVOUTタブへ放熱銅箔を設け、実負荷で温度確認。詳細は`POWER_5V_COMMON_BLOCK_PART_SELECTION.md` |
-| COM-06 | P0 | **MCUノード側解消(2026-07-19、F405流用2026-07-25): `LM66100DCKR`を採用。中央5A主入力は未解消** | 全基板 | LM66100は1.5AのためG474ユニット/F405オドメトリのノード入力だけに使用。中央主入力保護は5A条件で別途選定 |
+| COM-06 | P0 | **解消(2026-08-04): MCUノード=`LM66100DCKR`、中央5A主入力=`TPS259470LRPWR`** | 全基板 | 中央入力逆接は別の60V級series保護が必要。eFuse UVLO/OVLOはworst-case計算後に抵抗値を確定する |
 | COM-07 | P1 | **ユニット基板のみ解消(2026-07-19): 33kΩ/22kΩ分圧、10nF、`BAT54SLT1G`上下クランプをPA0へ接続** | ユニット | 5Vを0.4倍。長いADC sample timeと基板別校正を使う。F405オドメトリRev.AはPA0をTIM2_CH1へ使うため5V監視ADCを非実装。詳細は各基板要件 |
 | COM-08 | P1 | **MCUノード側解消(2026-07-19、F405流用2026-07-25): Lite-On C190シリーズ緑/黄/赤、各1kΩ** | 全基板 | PWR/RUN=`LTST-C190KGKT`、COMM=`LTST-C190KSKT`、ERR=`LTST-C190KRKT`。中央基板固有LEDは別途決定 |
 | COM-09 | P1 | **解消(2026-07-19): CAN=`SM03B-GHS-TB`、5V=`SM02B-GHS-TB`。ハウジングは各極数の`GHR`、端子`SSHL-002T-P0.2`** | 全基板 | 常設電源/CANは横挿し・AWG26を原則とし、デバッグGH 6pinだけ上挿し |
@@ -84,23 +84,31 @@ Rev.Aは受動部品0603以上、LQFP/SOIC/TSSOP/SOT系ICを優先する。BGA/W
 
 | ID | 優先度 | 未確定事項 | 決定・確認方法 |
 |---|---|---|---|
-| CTR-01 | P0 | Teensy 4.1の全ピン割当(CAN1/2/3、安全I/O、ADC、I2C、SPI、UART、LED) | PJRC公式ピン表と競合を照合しピンマップ表を作る |
-| CTR-02 | P0 | Teensy実装方法とソケット/ピンヘッダ正式型番 | 交換性、基板高さ、接触信頼性、NucBox上部のサービス空間から決定 |
-| CTR-03 | P0 | メインDCコンタクタの正式型番、24Vコイル電流、内蔵サージ素子、補助接点 | 24V DC遮断定格がメーカー資料にある製品を選定。KILIGEN E228は不採用 |
-| CTR-04 | P0 | コイルMOSFET、Gate回路、フライバック/TVS方式 | CTR-03確定後、コイル電流と必要解放時間から設計 |
-| CTR-05 | P0 | E-stop監視をフォトカプラ/絶縁デジタル入力/分圧クランプのどれにするか | 24V_CTRLのGND構成、断線診断、入力電流、応答時間から決定 |
-| CTR-06 | P0 | バッテリー電圧・電流監視IC、シャント定格、ハイサイド/絶縁方式 | 最大連続/ピーク電流、双方向測定、I2Cコモンモード条件で選定 |
-| CTR-07 | P0 | **MCUノード4枝(G474 x3、F405 x1)は`1206L050/15YR`に確定。Teensy/拡張枝は未解消** | 0.5A品は温度deratingが大きい。各枝の突入・定常電流と最高温度を実測し、Teensy枝は別定格を選ぶ |
-| CTR-08 | P0 | **5V主入力はXT30、G474各分岐は横挿し`SM02B-GHS-TB`に確定。XT30の基板側正式型番は未解消** | XT30 PCB実装品のメーカー、極性、定格、フットプリントを正式照合する |
-| CTR-09 | P1 | `MOTOR_PWR_SENSE`の分圧、入力保護、判定閾値 | 25.2V最大、過渡、ADC誤差、コンタクタ溶着診断条件から計算 |
+| CTR-01 | P0 | **解消(2026-08-04): `TEENSY41_CENTRAL_PIN_ASSIGNMENT.md`へCAN1/2/3、安全I/O、ADC、I2C、SPI、UART、LEDを固定** | PJRC公式pinout Rev.3/4と照合済み。CAN3=pin 30/31 |
+| CTR-02 | P0 | **解消(2026-08-04): PJRC推奨Sullins `PPPC241LFBN-RC`/`PPTC241LFBN-RC` x2、Teensy側header候補`68000-224HLF`、列間17.78mm** | Teensy直下を全面keepoutとし、micro USB、Program button、microSDのサービス空間をPCBで確認する |
+| CTR-03 | P0 | **解消(2026-07-26): KILIGEN E228を実績根拠付きで採用、24V/75〜80mA coil** | 再使用前に接点の摩耗・ピッティングを目視確認する |
+| CTR-04 | P0 | **回路方式解消(2026-08-04): `IRLML0100TRPBF`、Gate 100Ω、47kΩ pulldown、diode+TVS clamp** | 3.3V gate駆動、Q1 VDS、coil解放時間を実測してTVS定格を確定する。1N4007単独clampは初期案にしない |
+| CTR-05 | P0 | **回路方式解消(2026-08-04): `LTV-847S` 4ch、各入力2.2kΩ x2で直列loop・補助接点x2を絶縁監視** | 約5mA入力で全温度のLow levelと抵抗損失を実測する |
+| CTR-06 | P0 | **回路側解消(2026-08-04): `INA238AIDGSR`＋外付け100A/75mV Kelvin shunt。主電流はPCBへ流さない** | 外付けshunt正式型番だけ機械取付寸法確認後に確定する |
+| CTR-07 | P0 | **解消(2026-08-04): MCU4枝=`1206L050/15YR`、Teensy=`1206L075/16YR`、拡張=`1206L050/15YR`初期値** | 高温・突入・短絡試験で最終確認する |
+| CTR-08 | P0 | **部品解消(2026-08-04): 5V主入力=`XT30PW-M`、主保護=`TPS259470LRPWR`、枝=`SM02B-GHS-TB`** | XT30極性/footprintを二重照合し、UVLO/OVLOをrail/comparator/resistor worst-caseで確定する |
+| CTR-09 | P1 | **回路値解消(2026-08-04): 100kΩ+100kΩ/20kΩの1/11、各0.1%、1kΩ+10nF+3.3V clamp** | 40V印加試験と実測校正で判定閾値を確定する |
 | CTR-10 | P1 | E-stop内蔵LEDの点灯条件とボタンのNO補助接点有無 | 常時/押下時/モータ遮断時から運用を確定し現物接点を確認 |
 | CTR-11 | P1 | 24V安全表示灯の型番、電流、MOSFET出力数 | 赤黄緑+予備の負荷仕様を決める |
 | CTR-12 | P1 | テープLEDの方式、電圧、長さ、電力 | Rev.Aでは外付けドライバI/O予約を基本とし、方式確定後に別回路化 |
-| CTR-13 | P1 | 外部3.3V LDOの要否 | 拡張I/Oの最大3.3V負荷を積算し、Teensy内蔵レギュレータ余裕と比較 |
-| CTR-14 | P1 | Programピン外出し、復旧ボタン、USBサービス端子の構成 | NucBox常設USBと物理復旧経路を両立する |
-| CTR-15 | P1 | 再アームをGUIのみ/物理ボタン併用のどちらにするか | 誤再始動防止と大会要件から決定 |
-| CTR-16 | P2 | 汎用I2C/UART/SPI/GPIOヘッダの正確な本数・ピン順 | Rev.Aで必要な予約量を決める |
+| CTR-13 | P1 | **解消(2026-08-04): Rev.Aは外部3.3V LDOなし、拡張3.3V合計100mA上限** | 実測でTeensy温度と3.3V railを確認する |
+| CTR-14 | P1 | **解消(2026-08-04): Program外出しなし。Teensy本体buttonとmicro USBへ直接アクセス** | PCB配置でサービスkeepoutを確認する |
+| CTR-15 | P1 | **解消(2026-08-04): GUI要求に加えて物理`REARM_SW_N`押下を必須化** | ファーム安全状態遷移へ反映する |
+| CTR-16 | P0 | **再検討中(2026-08-05): 通信・汎用I/O数は未確定。** 旧案はI2C x2、UART x2、SPI x1(CS x2)、GPIO/ADC x8だったが、専用機能を優先しつつ過度にならない汎用性へ整理し直す | 下記CTR-21〜25を対話で確定後、pin assignmentとschematic referenceを同時更新する。現回路図へはまだ反映しない |
 | CTR-17 | P2 | 基板外形、取付穴、NucBox上部への積層高さと吸気/Wi-Fiアンテナ空間 | 機体CAD上でサービスデッキを設計 |
+| CTR-18 | P0 | 24V control inputのreverse/surge保護部品、fuse値、TVS定格 | 24V source transientとharness条件を定義して60V級series保護を選定する |
+| CTR-19 | P0 | 外付けshunt sense 2線のsource-end fuse/fusible resistor | battery側取付位置、定格、service方法を分電盤設計と同時に確定する |
+| CTR-20 | P1 | 物理rearm switchをboard-localにするかoperator panelへ置くか | 操作性と誤投入riskを機体layoutで比較し、片方だけ実装する |
+| CTR-21 | P0 | **CAN物理コネクタ数を再検討中。** 候補はCAN1/2/3各1個、合計GH3 x3。旧案の各バスIN/OUT x2（合計6個）は過剰の可能性 | 中央基板を各バス端点とし、デイジーチェーンは下流node側で行えるか、CANable等のservice接続方法も含めて確定する |
+| CTR-22 | P0 | **外部通信・GPIO構成を再検討中。** 候補はI2C x2、UART x1、USB-CDC x1、GPIO/ADC 8本。SPI外出し、UART x2維持、GPIO本数は未確定 | GPIOは先行基板の「電源/GND/IO x2」単位を参考に、GH4 x4（1=3V3、2=GND、3/4=IO、3.3V専用）を候補とする。IO LEDはADC負荷になるため不採用またはDNP、各IOは100ohm、ESD、pull-up/down/ADC-CのDNP footprintを検討する |
+| CTR-23 | P0 | **バッテリーA/Bへ付ける市販I2C電圧・電流sensor x2の型番、address、給電、測定位置が未確定。** 現在のINA238＋外付けshunt案を置換するか併用するかも未確定 | 現物型番とdatasheetを確認し、同一address時はI2C0/I2C1分離またはmuxを比較する。確定までINA238回路を削除しない |
+| CTR-24 | P0 | **コンタクタ後モータbusの監視と回生chopperは方式検討中。** 必須候補はload側bus電圧監視、analog comparatorによる自律chopper、外付けaluminum resistor、power MOSFET。load側bus電流sensorとchopper電流sensorは必須か未確定 | Chopperはmain fuse/contactorのC620側へ接続し、Teensy/I2C停止中もbus電圧で動作させる。Teensyは`MOTOR_PWR_SENSE`、`BRAKE_ACTIVE`、`BRAKE_FAULT_N`等の監視に限定する案を、停止energy、resistor pulse rating、fuse位置から評価する |
+| CTR-25 | P1 | 部室在庫`BM14270AMUV-LBE2`をbusbar非接触電流監視へ使う案、およびchopper抵抗電流に既製sensor moduleを使う案は未確定 | BM14270はI2C magnetic sensorのためbusbar形状・距離・飽和・周辺磁界を含む実装後校正が必要。chopper用moduleは型番、双方向range、bandwidth、出力方式を確認してから接続先を決める |
 
 ## PCB外の電源・将来拡張
 

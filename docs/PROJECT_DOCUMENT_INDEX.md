@@ -21,6 +21,9 @@
 | 7 | `electrical/POWER_DISTRIBUTION_AND_ESTOP.md` | 6S LiPo x2、分電、降圧、非常停止 |
 | 8 | `electrical/CARRIER_BOARD_REQUIREMENTS.md` | ユニット基板(STM32G474自作基板)の設計要件 |
 | 9 | `electrical/CENTRAL_BOARD_REQUIREMENTS.md` | 中央制御ボード(Teensy 4.1)の設計要件 |
+| 9.1 | `electrical/TEENSY41_CENTRAL_PIN_ASSIGNMENT.md` | 中央Teensyの全ピン割当、socket pad対応、起動時安全状態 |
+| 9.2 | `electrical/CENTRAL_BOARD_SCHEMATIC_REFERENCE.md` | 中央基板Rev.Aの責務別階層sheet、正式部品、接続、PCB制約、試験条件 |
+| 9.3 | `electrical/CENTRAL_BOARD_SCHEMATIC_WITH_BOM.html` / `../output/pdf/CENTRAL_BOARD_SCHEMATIC_WITH_BOM.pdf` | オドメトリ／駆動基板資料と同形式の、中央基板1機能1ページ回路図＋注意点＋簡易BOM |
 | 9.5 | `electrical/ODOMETRY_BOARD_REQUIREMENTS.md` | オドメトリ基板(AMT102 A/B相 x3、STM32F405RGT6)の設計要件。ピン割当は`electrical/STM32F405_ODOMETRY_PIN_ASSIGNMENT.md` |
 | 9.55 | `electrical/ODOMETRY_BOARD_SCHEMATIC_REFERENCE.md` | F405オドメトリ基板をA3横1枚へ転記するための配置、RefDes、接続表、ERCチェック |
 | 9.56 | `electrical/ODOMETRY_BOARD_SCHEMATIC_WITH_BOM.html` / `.pdf` | unit board資料と同形式のブロック別簡易回路図＋部品名・値・KiCad Footprint・接続先BOM |
@@ -35,6 +38,7 @@
 | 11.3 | `testing/ODOMETRY_IMU_EVALUATION_PLAN.md` | オドメトリ+IMUモジュール評価: 直線スライダー/回頭ピボット試験、センサフュージョン重み付け方針、更新周波数の考え方 |
 | 11.4 | `testing/UNIT_AUTO_TUNER.md` | 単一ユニットの粗→細実機パラメータ探索、応答倍率、CSV/SVG出力、空走→接地の再探索手順 |
 | 11.5 | `../firmware/docs/MATEK_CAN_G474_PORT.md` | CAN-G474へのファーム移植、ST-LINK書込み、ArduPilot参照範囲 |
+| 11.6 | `testing/RC_DRIVE_TEST_2026-08-07.md` | ラジコン操作による走行成立の記録、未評価項目、次回の安全・負荷試験順序 |
 | 12 | `software/MINIPC_GUI_AND_TEENSY.md` | mini PC GUI、Teensy、ユニットMCUの役割 |
 | 12.2 | `software/ESP32_DUALSENSE_CAN_GATEWAY.md` | DualSense→mini PC UDP→ESP32-C3 TWAI→Teensy CAN2の配線、プロトコル、起動・試験 |
 | 12.5 | `software/HOKUYO_LIDAR_SETUP.md` | mini PC上のHokuyo USB LiDARのROS 2/RViz設定と復旧手順 |

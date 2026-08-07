@@ -1,0 +1,573 @@
+EESchema Schematic File Version 4
+LIBS:power
+LIBS:device
+LIBS:Connector_Generic
+LIBS:Switch
+LIBS:Transistor_FET
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 7
+Title "300-500 CAN Communication"
+Date "2026-08-04"
+Rev "A - HUMAN REVIEW DRAFT"
+Comp "Differential Swerve"
+Comment1 "Responsibility-based hierarchical schematic"
+Comment2 "Global labels connect modules"
+$EndDescr
+Text Notes 600 800 0    65   ~ 12
+300 CAN1 - SENSOR CLASSIC 1Mbps
+$Comp
+L Connector_Generic:Conn_01x08 U301
+U 1 1 101D
+P 800 1100
+F 0 "U301" H 700 1320 50  0000 C CNN
+F 1 "TCAN1051VDRQ1" H 700 1230 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 800 1100 50  0001 C CNN
+	1    800 1100
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1000 1100 1500 1100
+Text Label 1500 1100 0    40   ~ 0
+CAN1_TX
+Wire Wire Line
+	1000 1200 1500 1200
+Text Label 1500 1200 0    40   ~ 0
+GND_CTRL
+Wire Wire Line
+	1000 1300 1500 1300
+Text Label 1500 1300 0    40   ~ 0
++5V_CAN1
+Wire Wire Line
+	1000 1400 1500 1400
+Text Label 1500 1400 0    40   ~ 0
+CAN1_RX
+Wire Wire Line
+	1000 1500 1500 1500
+Text Label 1500 1500 0    40   ~ 0
++3V3_TEENSY
+Wire Wire Line
+	1000 1600 1500 1600
+Text Label 1500 1600 0    40   ~ 0
+CAN1_L
+Wire Wire Line
+	1000 1700 1500 1700
+Text Label 1500 1700 0    40   ~ 0
+CAN1_H
+Wire Wire Line
+	1000 1800 1500 1800
+Text Label 1500 1800 0    40   ~ 0
+GND_CTRL
+Text Notes 600 2000 0    40   ~ 12
+U pin order: TXD,GND,VCC,RXD,VIO,CANL,CANH,S; S tied low.
+$Comp
+L Device:C C301
+U 1 1 101E
+P 1850 1150
+F 0 "C301" H 1750 1370 50  0000 C CNN
+F 1 "100n" H 1750 1280 50  0000 C CNN
+F 2 "" H 1850 1150 50  0001 C CNN
+	1    1850 1150
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1750 1150 1500 1150
+Text Label 1500 1150 0    40   ~ 0
++5V_CAN1
+Wire Wire Line
+	1950 1150 2200 1150
+Text Label 2200 1150 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:C C302
+U 1 1 101F
+P 1850 1350
+F 0 "C302" H 1750 1570 50  0000 C CNN
+F 1 "100n" H 1750 1480 50  0000 C CNN
+F 2 "" H 1850 1350 50  0001 C CNN
+	1    1850 1350
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1750 1350 1500 1350
+Text Label 1500 1350 0    40   ~ 0
++3V3_TEENSY
+Wire Wire Line
+	1950 1350 2200 1350
+Text Label 2200 1350 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 D301
+U 1 1 1020
+P 800 2350
+F 0 "D301" H 700 2570 50  0000 C CNN
+F 1 "ESD2CAN24DBZRQ1" H 700 2480 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 800 2350 50  0001 C CNN
+	1    800 2350
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1000 2350 1450 2350
+Text Label 1450 2350 0    40   ~ 0
+CAN1_H
+Wire Wire Line
+	1000 2450 1450 2450
+Text Label 1450 2450 0    40   ~ 0
+CAN1_L
+Wire Wire Line
+	1000 2550 1450 2550
+Text Label 1450 2550 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 J301
+U 1 1 1021
+P 800 2800
+F 0 "J301" H 700 3020 50  0000 C CNN
+F 1 "CAN1 BUS A GH3" H 700 2930 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" H 800 2800 50  0001 C CNN
+	1    800 2800
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	1000 2800 1450 2800
+Text Label 1450 2800 0    40   ~ 0
+CAN1_H
+Wire Wire Line
+	1000 2900 1450 2900
+Text Label 1450 2900 0    40   ~ 0
+CAN1_L
+Wire Wire Line
+	1000 3000 1450 3000
+Text Label 1450 3000 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 J302
+U 1 1 1022
+P 1800 2800
+F 0 "J302" H 1700 3020 50  0000 C CNN
+F 1 "CAN1 BUS B GH3" H 1700 2930 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" H 1800 2800 50  0001 C CNN
+	1    1800 2800
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	2000 2800 2450 2800
+Text Label 2450 2800 0    40   ~ 0
+CAN1_H
+Wire Wire Line
+	2000 2900 2450 2900
+Text Label 2450 2900 0    40   ~ 0
+CAN1_L
+Wire Wire Line
+	2000 3000 2450 3000
+Text Label 2450 3000 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R301
+U 1 1 1023
+P 1100 3300
+F 0 "R301" H 1000 3520 50  0000 C CNN
+F 1 "120R 1%" H 1000 3430 50  0000 C CNN
+F 2 "" H 1100 3300 50  0001 C CNN
+	1    1100 3300
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1000 3300 750 3300
+Text Label 750 3300 0    40   ~ 0
+CAN1_H
+Wire Wire Line
+	1200 3300 1450 3300
+Text Label 1450 3300 0    40   ~ 0
+CAN1_TERM
+$Comp
+L Switch:SW_SPST SW301
+U 1 1 1024
+P 1700 3300
+F 0 "SW301" H 1600 3520 50  0000 C CNN
+F 1 "TERM ON/OFF" H 1600 3430 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_SPST_CK_JS102011SAQN" H 1700 3300 50  0001 C CNN
+	1    1700 3300
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1600 3300 1450 3300
+Text Label 1450 3300 0    40   ~ 0
+CAN1_TERM
+Wire Wire Line
+	1800 3300 2050 3300
+Text Label 1820 3300 0    40   ~ 0
+CAN1_L
+Text Notes 3650 800 0    65   ~ 12
+400 CAN2 - EXPANSION / DEBUG / DNP DEFAULT
+$Comp
+L Connector_Generic:Conn_01x08 U401
+U 1 1 1025
+P 3850 1100
+F 0 "U401" H 3750 1320 50  0000 C CNN
+F 1 "TCAN1051VDRQ1" H 3750 1230 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 3850 1100 50  0001 C CNN
+	1    3850 1100
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	4050 1100 4550 1100
+Text Label 4550 1100 0    40   ~ 0
+CAN2_TX
+Wire Wire Line
+	4050 1200 4550 1200
+Text Label 4550 1200 0    40   ~ 0
+GND_CTRL
+Wire Wire Line
+	4050 1300 4550 1300
+Text Label 4550 1300 0    40   ~ 0
++5V_CAN2
+Wire Wire Line
+	4050 1400 4550 1400
+Text Label 4550 1400 0    40   ~ 0
+CAN2_RX
+Wire Wire Line
+	4050 1500 4550 1500
+Text Label 4550 1500 0    40   ~ 0
++3V3_TEENSY
+Wire Wire Line
+	4050 1600 4550 1600
+Text Label 4550 1600 0    40   ~ 0
+CAN2_L
+Wire Wire Line
+	4050 1700 4550 1700
+Text Label 4550 1700 0    40   ~ 0
+CAN2_H
+Wire Wire Line
+	4050 1800 4550 1800
+Text Label 4550 1800 0    40   ~ 0
+GND_CTRL
+Text Notes 3650 2000 0    40   ~ 12
+U pin order: TXD,GND,VCC,RXD,VIO,CANL,CANH,S; S tied low.
+$Comp
+L Device:C C401
+U 1 1 1026
+P 4900 1150
+F 0 "C401" H 4800 1370 50  0000 C CNN
+F 1 "100n" H 4800 1280 50  0000 C CNN
+F 2 "" H 4900 1150 50  0001 C CNN
+	1    4900 1150
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4800 1150 4550 1150
+Text Label 4550 1150 0    40   ~ 0
++5V_CAN2
+Wire Wire Line
+	5000 1150 5250 1150
+Text Label 5250 1150 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:C C402
+U 1 1 1027
+P 4900 1350
+F 0 "C402" H 4800 1570 50  0000 C CNN
+F 1 "100n" H 4800 1480 50  0000 C CNN
+F 2 "" H 4900 1350 50  0001 C CNN
+	1    4900 1350
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4800 1350 4550 1350
+Text Label 4550 1350 0    40   ~ 0
++3V3_TEENSY
+Wire Wire Line
+	5000 1350 5250 1350
+Text Label 5250 1350 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 D401
+U 1 1 1028
+P 3850 2350
+F 0 "D401" H 3750 2570 50  0000 C CNN
+F 1 "ESD2CAN24DBZRQ1" H 3750 2480 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 3850 2350 50  0001 C CNN
+	1    3850 2350
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	4050 2350 4500 2350
+Text Label 4500 2350 0    40   ~ 0
+CAN2_H
+Wire Wire Line
+	4050 2450 4500 2450
+Text Label 4500 2450 0    40   ~ 0
+CAN2_L
+Wire Wire Line
+	4050 2550 4500 2550
+Text Label 4500 2550 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 J401
+U 1 1 1029
+P 3850 2800
+F 0 "J401" H 3750 3020 50  0000 C CNN
+F 1 "CAN2 BUS A GH3" H 3750 2930 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" H 3850 2800 50  0001 C CNN
+	1    3850 2800
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	4050 2800 4500 2800
+Text Label 4500 2800 0    40   ~ 0
+CAN2_H
+Wire Wire Line
+	4050 2900 4500 2900
+Text Label 4500 2900 0    40   ~ 0
+CAN2_L
+Wire Wire Line
+	4050 3000 4500 3000
+Text Label 4500 3000 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 J402
+U 1 1 102A
+P 4850 2800
+F 0 "J402" H 4750 3020 50  0000 C CNN
+F 1 "CAN2 BUS B GH3" H 4750 2930 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" H 4850 2800 50  0001 C CNN
+	1    4850 2800
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	5050 2800 5500 2800
+Text Label 5500 2800 0    40   ~ 0
+CAN2_H
+Wire Wire Line
+	5050 2900 5500 2900
+Text Label 5500 2900 0    40   ~ 0
+CAN2_L
+Wire Wire Line
+	5050 3000 5500 3000
+Text Label 5500 3000 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R401
+U 1 1 102B
+P 4150 3300
+F 0 "R401" H 4050 3520 50  0000 C CNN
+F 1 "120R 1%" H 4050 3430 50  0000 C CNN
+F 2 "" H 4150 3300 50  0001 C CNN
+	1    4150 3300
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4050 3300 3800 3300
+Text Label 3800 3300 0    40   ~ 0
+CAN2_H
+Wire Wire Line
+	4250 3300 4500 3300
+Text Label 4500 3300 0    40   ~ 0
+CAN2_TERM
+$Comp
+L Switch:SW_SPST SW401
+U 1 1 102C
+P 4750 3300
+F 0 "SW401" H 4650 3520 50  0000 C CNN
+F 1 "TERM ON/OFF" H 4650 3430 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_SPST_CK_JS102011SAQN" H 4750 3300 50  0001 C CNN
+	1    4750 3300
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4650 3300 4500 3300
+Text Label 4500 3300 0    40   ~ 0
+CAN2_TERM
+Wire Wire Line
+	4850 3300 5100 3300
+Text Label 4870 3300 0    40   ~ 0
+CAN2_L
+Text Notes 6700 800 0    65   ~ 12
+500 CAN3 - DRIVE CAN-FD 1M/2M
+$Comp
+L Connector_Generic:Conn_01x08 U501
+U 1 1 102D
+P 6900 1100
+F 0 "U501" H 6800 1320 50  0000 C CNN
+F 1 "TCAN1051VDRQ1" H 6800 1230 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 6900 1100 50  0001 C CNN
+	1    6900 1100
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	7100 1100 7600 1100
+Text Label 7600 1100 0    40   ~ 0
+CAN3_TX
+Wire Wire Line
+	7100 1200 7600 1200
+Text Label 7600 1200 0    40   ~ 0
+GND_CTRL
+Wire Wire Line
+	7100 1300 7600 1300
+Text Label 7600 1300 0    40   ~ 0
++5V_CAN3
+Wire Wire Line
+	7100 1400 7600 1400
+Text Label 7600 1400 0    40   ~ 0
+CAN3_RX
+Wire Wire Line
+	7100 1500 7600 1500
+Text Label 7600 1500 0    40   ~ 0
++3V3_TEENSY
+Wire Wire Line
+	7100 1600 7600 1600
+Text Label 7600 1600 0    40   ~ 0
+CAN3_L
+Wire Wire Line
+	7100 1700 7600 1700
+Text Label 7600 1700 0    40   ~ 0
+CAN3_H
+Wire Wire Line
+	7100 1800 7600 1800
+Text Label 7600 1800 0    40   ~ 0
+GND_CTRL
+Text Notes 6700 2000 0    40   ~ 12
+U pin order: TXD,GND,VCC,RXD,VIO,CANL,CANH,S; S tied low.
+$Comp
+L Device:C C501
+U 1 1 102E
+P 7950 1150
+F 0 "C501" H 7850 1370 50  0000 C CNN
+F 1 "100n" H 7850 1280 50  0000 C CNN
+F 2 "" H 7950 1150 50  0001 C CNN
+	1    7950 1150
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	7850 1150 7600 1150
+Text Label 7600 1150 0    40   ~ 0
++5V_CAN3
+Wire Wire Line
+	8050 1150 8300 1150
+Text Label 8300 1150 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:C C502
+U 1 1 102F
+P 7950 1350
+F 0 "C502" H 7850 1570 50  0000 C CNN
+F 1 "100n" H 7850 1480 50  0000 C CNN
+F 2 "" H 7950 1350 50  0001 C CNN
+	1    7950 1350
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	7850 1350 7600 1350
+Text Label 7600 1350 0    40   ~ 0
++3V3_TEENSY
+Wire Wire Line
+	8050 1350 8300 1350
+Text Label 8300 1350 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 D501
+U 1 1 1030
+P 6900 2350
+F 0 "D501" H 6800 2570 50  0000 C CNN
+F 1 "ESD2CAN24DBZRQ1" H 6800 2480 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 6900 2350 50  0001 C CNN
+	1    6900 2350
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	7100 2350 7550 2350
+Text Label 7550 2350 0    40   ~ 0
+CAN3_H
+Wire Wire Line
+	7100 2450 7550 2450
+Text Label 7550 2450 0    40   ~ 0
+CAN3_L
+Wire Wire Line
+	7100 2550 7550 2550
+Text Label 7550 2550 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 J501
+U 1 1 1031
+P 6900 2800
+F 0 "J501" H 6800 3020 50  0000 C CNN
+F 1 "CAN3 BUS A GH3" H 6800 2930 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" H 6900 2800 50  0001 C CNN
+	1    6900 2800
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	7100 2800 7550 2800
+Text Label 7550 2800 0    40   ~ 0
+CAN3_H
+Wire Wire Line
+	7100 2900 7550 2900
+Text Label 7550 2900 0    40   ~ 0
+CAN3_L
+Wire Wire Line
+	7100 3000 7550 3000
+Text Label 7550 3000 0    40   ~ 0
+GND_CTRL
+$Comp
+L Connector_Generic:Conn_01x03 J502
+U 1 1 1032
+P 7900 2800
+F 0 "J502" H 7800 3020 50  0000 C CNN
+F 1 "CAN3 BUS B GH3" H 7800 2930 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" H 7900 2800 50  0001 C CNN
+	1    7900 2800
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	8100 2800 8550 2800
+Text Label 8550 2800 0    40   ~ 0
+CAN3_H
+Wire Wire Line
+	8100 2900 8550 2900
+Text Label 8550 2900 0    40   ~ 0
+CAN3_L
+Wire Wire Line
+	8100 3000 8550 3000
+Text Label 8550 3000 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R501
+U 1 1 1033
+P 7200 3300
+F 0 "R501" H 7100 3520 50  0000 C CNN
+F 1 "120R 1%" H 7100 3430 50  0000 C CNN
+F 2 "" H 7200 3300 50  0001 C CNN
+	1    7200 3300
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	7100 3300 6850 3300
+Text Label 6850 3300 0    40   ~ 0
+CAN3_H
+Wire Wire Line
+	7300 3300 7550 3300
+Text Label 7550 3300 0    40   ~ 0
+CAN3_TERM
+$Comp
+L Switch:SW_SPST SW501
+U 1 1 1034
+P 7800 3300
+F 0 "SW501" H 7700 3520 50  0000 C CNN
+F 1 "TERM ON/OFF" H 7700 3430 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_SPST_CK_JS102011SAQN" H 7800 3300 50  0001 C CNN
+	1    7800 3300
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	7700 3300 7550 3300
+Text Label 7550 3300 0    40   ~ 0
+CAN3_TERM
+Wire Wire Line
+	7900 3300 8150 3300
+Text Label 7920 3300 0    40   ~ 0
+CAN3_L
+Text Notes 600 3850 0    45   ~ 12
+All CAN connectors: pin1 COMM_A=CANH, pin2 COMM_B=CANL, pin3 GND. Silkscreen both abstract and physical names.
+$EndSCHEMATC

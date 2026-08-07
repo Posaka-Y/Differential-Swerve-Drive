@@ -691,6 +691,185 @@
 2. mode ID実測ログを基に速度PI・LPFを再同定し、time scale 2.0→1.5→...→1.0を段階的に縮小する。
 3. P1.2(back-calculation anti-windup)は実機ログでFF起因とPI起因の飽和を切り分けてから設計する。
 4. P0.1(連続unwrap角)とwheel=0 pre-steer状態遷移は、上記の局所帯域向上が一段落してから着手する。
+## 2026-08-07 (ラジコン操作による走行動作を確認)
+
+### やったこと
+
+- ユーザー実施のラジコン試験で、無線操作から機体の走行動作まで成立したことを確認した。
+- 操作入力から走行系までの統合経路が実機でつながったため、開発段階を単体・空走中心の確認から、接地状態の安全性・再現性・負荷評価へ進める。
+- 試験結果の扱いと次段階の確認項目を`docs/testing/RC_DRIVE_TEST_2026-08-07.md`へ記録した。
+
+### 現在の状態
+
+- ラジコン操作による走行成立は確認済み。ただし、速度、走行時間、試験路面、battery条件、実施maneuver、電圧・電流・温度の定量logは未記録であり、性能または安全の受入試験完了とは扱わない。
+- 高速走行・急制動へ進む前に、通信断、送信機停止、CAN timeout、E-stop、再起動時の不意再始動防止を確認する必要がある。
+
+### 次の作業
+
+1. 低速で前後・左右・旋回・斜行・並進旋回を正逆実施し、再現性とunit方向／steer反転を確認する。
+2. battery A/B電圧・電流、contactor後motor bus電圧、C620 rpm/current/temperature、指令値、停止時刻を同一時系列で記録する。
+3. 通常減速、送信機断、CAN断、E-stop、電源再投入を分けて試験し、安全状態遷移を確認する。
+4. 25%から段階的に速度を上げ、急制動時の回生energyからbrake resistorとchopper要件を決める。
+
+## 2026-08-06 (主電源遮断方式の再確認)
+
+### やったこと
+
+- C620主電源の遮断をMOSFET式solid-state switchへ置換する案を比較した。
+- 回生時にOFF状態で双方向遮断するにはback-to-back MOSFET、high-side gate driver、並列均流、熱・SOA・短絡保護が必要になるため、Rev.Aの主遮断は機械式コンタクタを継続すると再確認した。
+- `POWER_DISTRIBUTION_AND_ESTOP.md`に残っていたKILIGEN E228の採用／不採用の矛盾を、2026-07-26の実績根拠付き採用決定へ統一した。
+
+### 現在の状態
+
+- 主遮断はKILIGEN E228、コイル駆動はTeensy制御のlow-side MOSFETとする。
+- prechargeと回生brake chopperは独立MOSFET回路として検討を続け、主遮断機能は担わせない。
+- E228には正式なDC負荷遮断datasheetがないため、約83Aの過去実績を超えないこと、接点状態、実負荷時の温度確認が残る。
+
+### 次の作業
+
+1. E228主接点の摩耗・ピッティング・溶着兆候を目視確認する。
+2. 負荷試験logから最大・連続電流を確認し、E228の約83A実績範囲内か判定する。
+3. 独立precharge／brake chopper基板の回路要件と抵抗定格を確定する。
+
+## 2026-08-05 (中央Teensy基板 I/O・回生制動仕様の再検討を保存)
+
+### やったこと
+
+- 中央基板の通信port、汎用GPIO、battery監視、contactor後監視、回生brake chopperについて対話で整理した。
+- 旧I/O案を確定仕様として進めず、`SCHEMATIC_DESIGN_OPEN_ITEMS.md`のCTR-16を再オープンし、CTR-21〜25へ検討内容を保存した。
+- 現時点の候補として、CAN1/2/3各GH3 x1、I2C x2、UART x1、USB-CDC、2信号単位のGH4 GPIO port、load側bus電圧監視、独立analog comparator式chopperを記録した。
+- battery A/Bの市販I2C sensor x2、部室在庫`BM14270AMUV-LBE2`、chopper用既製current sensor moduleの案を記録した。
+
+### 現在の状態
+
+- 上記はすべて未確定の検討メモ。中央基板requirements、Teensy pin assignment、architecture decisions、KiCad回路図には反映していない。
+- 特にCAN connector数、I2C sensor型番/address、UART/SPI/GPIO port数、INA238を残すか、chopperをRev.Aへ含めるかが未確定。
+
+### 次の作業
+
+1. 対話を再開し、中央基板の外部接続機器一覧から通信port数を1項目ずつ確定する。
+2. battery sensorとchopper current sensor moduleの型番を確認する。
+3. 全項目の合意後にrequirements、pin assignment、architecture decisions、回路図を一括更新する。
+
+## 2026-08-05 (Teensy socket pinの階層ラベル／未使用pin整理)
+
+### やったこと
+
+- `hardware/central-board/central-board/modules/200-teensy.kicad_sch`で、使用する44 socket pinの信号名を階層ラベルとしてJ1/J2のpin端へ直接接続した。
+- 未使用のTeensy pin 33/37/38/39（socket pad 25/29/30/31）はtest pointへ出さず、回路図上でNo Connect（×）を付けた。
+- 再生成用の`tools/kicad/annotate-teensy-hierarchical-pins.ps1`を追加し、pin割当正本とarchitecture decisionsも同じ方針へ更新した。
+- KiCad 10 CLIでchild PDF出力、root netlist出力、ERC実行を行い、Teensy sheet内のpin未接続、label dangling、No Connect danglingが各0件であることを確認した。
+
+### 現在の状態
+
+- Teensy socket sheet単体では、使用pinと未使用pinを回路図上で直接判別できる。
+- root sheet symbolにはTeensy childの階層pinをまだ配置していないため、root ERCには41種類の`hier_label_mismatch`が残る。他moduleを含む正式な親子sheet接続/ERC収束は未完了。
+
+### 次の作業
+
+1. rootのTeensy sheet symbolへ階層pinを取り込み、CAN・電源・安全・拡張module側の同名netへ接続する。
+2. 他moduleも正式symbol／階層labelへ揃え、module単体からroot全体の順でERC 0へ収束させる。
+
+## 2026-08-04 (中央基板 参照回路図＋簡易BOM PDFへ作り直し)
+
+### やったこと
+
+- 前回のKiCad階層sheet PDFは配線表を分割しただけで、人間が回路を追うreview資料として不適切だったため正本扱いをやめた。
+- `UNIT_BOARD_SCHEMATIC_WITH_BOM`と`ODOMETRY_BOARD_SCHEMATIC_WITH_BOM`のA3横templateを再確認し、同じ「1機能=1ページ、大きな簡易回路図、重要caption、簡易BOM、page footer」構成で中央基板版を作成した。
+- `docs/electrical/CENTRAL_BOARD_SCHEMATIC_WITH_BOM.html`をsource、`output/pdf/CENTRAL_BOARD_SCHEMATIC_WITH_BOM.pdf`をreview PDFとして作成した。全7ページ:
+  1. 5 V input/eFuse/star distribution
+  2. Teensy socket/pin function/mechanical keepout
+  3. CAN interface x3
+  4. E-stop hardware loop/contactor driver
+  5. isolated E-stop monitor/rearm/24 V sense
+  6. INA238/external Kelvin shunt
+  7. expansion I/O/test access/review gates
+- HTML各pageを1600x1051 PNGへrenderし、全ページを目視確認した。右端clip、CAN bus assignment欠け、Teensy socket label重なり、safety page下端labelを修正後、PDFを再出力した。
+
+### 現在の状態
+
+- オドメトリ／駆動module基板の既存PDFと同じ読み方で、中央基板を機能単位にreviewできる。
+- KiCad階層sheetは転記/ERC用の下位資料。人間reviewの正本は新しい`SCHEMATIC_WITH_BOM` PDF。
+
+### 次の作業
+
+1. 新PDFをpage 1から順に人間reviewし、eFuse threshold、24 V protection、coil TVS、shunt source fuse、rearm位置を確定する。
+2. 確定内容をKiCad正式symbolへ転記し、module単体からERC 0へ収束させる。
+
+## 2026-08-04 (中央基板回路図を責務別moduleへ再構成)
+
+### やったこと
+
+- A3 1枚へ全回路を詰めた初版は人間reviewに不向きだったため廃止し、`central-board.sch`をroot index、以下6枚をchild sheetとする階層構成へ作り直した。
+  - 100 Power input/eFuse/star distribution
+  - 200 Teensy socket/pin map/safety GPIO default
+  - 300-500 CAN communication x3
+  - 600 E-stop/contactor/isolated monitor/motor bus sense
+  - 700 INA238/external Kelvin shunt interface
+  - 800-900 expansion/test access
+- `tools/kicad/generate-central-board-modules.ps1`を追加し、詳細回路generatorから責務別sheetを再現可能にした。
+- KiCad CLIでroot＋6 child sheetsの読込み、7ページPDF、netlist、各sheet SVG出力を確認し、全ページを画像renderして目視確認した。
+
+### 現在の状態
+
+- 担当者はroot sheetから自分の機能sheetだけを開いて、部品、pin、保護、TBD gateを独立してreviewできる。
+- sheet間はglobal labelで接続している。現段階は引き続きreview draftであり、正式symbol化とERC 0件化は次工程。
+
+### 次の作業
+
+1. 各担当moduleでdatasheet対照reviewを行い、TBDとpin mappingを閉じる。
+2. legacy child sheetsを現行KiCad形式へ変換し、正式symbol/pin type/footprintへ置換する。
+3. module単体→root全体の順でERC 0件へ収束させる。
+
+## 2026-08-04 (Teensy中央基板 人間レビュー用回路図作成)
+
+### やったこと
+
+- `hardware/central-board/central-board.sch`へA3横1枚のflat schematicを作成した。100=5V/eFuse、200=Teensy socket、300/400/500=CAN1/2/3、600=E-stop/contactor、700=INA238、800/900=expansion/testの機能blockに分け、pin番号・net名・TBD事項を図面上で追えるようにした。
+- `output/pdf/central-board-review.pdf`をKiCad CLIから出力し、SVG/PNG renderでA3全体のblock配置、文字欠け、title blockを目視確認した。生成元は`tools/kicad/generate-central-board-schematic.ps1`へ保存した。
+- Teensy 4.1はPJRC推奨24x1 socket x2を使い、Teensy直下面を部品/test point/露出copper禁止keepoutとする方針へ修正した。
+- review中に判明した設計修正をrequirements、schematic reference、architecture decisions、open itemsへ反映した。
+  - Micro-Fitはsingle-row `43650-0600` / `43645-0600`へ修正。旧`43025-0600`はdual-rowで嵌合しない。
+  - LTV-847S入力を6.8kΩ x2から2.2kΩ x2、約5mAへ修正。
+  - contactor clampを1N4007単独からdiode+TVSの実測選定へ変更。
+  - TPS259470 OVLO、24V input reverse/surge保護、shunt sense source fuseを未確定gateとして明示。
+- `hardware/central-board/README.md`へ回路図の開き方、review手順、`.kicad_sch`移行後にERC 0件をPCB開始条件とすることを記録した。
+
+### 現在の状態
+
+- 部品、pin番号、net、安全経路を人が照合できるRev.A review draftとPDFがある。KiCad 10で回路図/PDF/netlistを読み出せる。
+- 現回路図はpin-explicit generic symbolとlegacy `.sch` labelを含むため、ERC acceptance対象ではない。正式symbolへ置換し現行`.kicad_sch`へ保存した後のERC 0件がPCB着手条件。
+- PCBは未作成。Teensy socket方式は確定したが、stacking高さと機体内サービス空間はCAD照合が必要。
+
+### 次の作業
+
+1. KiCad GUIで`central-board.sch`を開いて現行`.kicad_sch`へ変換し、TPS259470/TCAN1051/INA238/LTV-847S/Teensyの正式symbolとpin typeへ置換する。
+2. eFuse threshold worst-case計算、24V reverse/surge部品、contactor TVS、shunt source fuse、rearm button配置を確定し、図中TBDを閉じる。
+3. No Connect/PWR_FLAGを整理してERC 0件へ収束させ、人間cross-check後にPCB placementへ進む。
+
+## 2026-08-04 (Teensy 4.1中央基板 Rev.A 要件・回路入力固定)
+
+### やったこと
+
+- 中央基板のP0未解決事項を整理し、PJRC公式pinoutに基づくCAN1/2/3、安全I/O、I2C、SPI、UART、ADC、GPIOの全ピン割当を`docs/electrical/TEENSY41_CENTRAL_PIN_ASSIGNMENT.md`へ固定した。
+- Teensy 4.1はSamtec `SSQ-124-03-G-S` x2のsocket実装、VUSB-VIN pad切断、CAN3=Drive FD、CAN1=Sensor、CAN2=Expansionとした。
+- 5V主入力を`XT30PW-M`+`TPS259470LRPWR`へ確定し、逆接・逆流・突入・過電流・過熱を保護する方針、`RILM=750Ω` typ 4.45A、Teensy枝`1206L075/16YR`を決めた。
+- E-stop監視を`LTV-847S`、contactor driverを`IRLML0100TRPBF`+1N4007、操作panelをMicro-Fit 3.0 6pin、物理再アームbutton必須へ固定した。
+- バッテリー監視を`INA238AIDGSR`+外付け100A/75mV Kelvin shuntとし、83A級主電流を中央PCBへ流さない構成へ決めた。
+- 回路block、接続値、connector pin、PCB配置配線制約、bring-up試験を`docs/electrical/CENTRAL_BOARD_SCHEMATIC_REFERENCE.md`へ記録し、architecture decisions・中央要件・open items・document indexを更新した。
+- `git diff --check`で文書差分にwhitespace errorがないことを確認した。
+
+### 現在の状態
+
+- 中央基板Rev.Aの電気要件とKiCad転記入力は固定済み。KiCad回路図・PCBはまだ未作成。
+- PCBは4層、暫定100mm x 80mm、四隅M3として開始できる。最終外形・取付穴・connector引出方向は機体CADとの照合が必要。
+- 外付けshuntは電気仕様100A/75mV、Kelvin端子まで固定し、正式型番は分電盤の機械寸法確認待ち。
+
+### 次の作業
+
+1. `hardware/central-board/`へKiCad projectとA3 flat schematicを作成し、power、Teensy、CAN x3、安全I/O、battery monitor、expansionの順にERCを収束させる。
+2. BOMとfootprintを正式発注型番へ紐付け、Teensy socket列間・XT30極性・Micro-Fit pin 1を現物/図面で二重照合する。
+3. 機体CADから基板許容外形、取付穴、USB/CAN/5V/24V harnessの引出方向を確定し、placement/routing、DRC、製造出力へ進む。
 
 ## 2026-07-31 (ステア応答高速化・wheel=0操舵 実装計画)
 
