@@ -14,6 +14,684 @@
 
 ---
 
+## 2026-08-01 (DualSense Bluetooth復旧・mini PC入力preview実装)
+
+### やったこと
+
+- Sony DualSense(`4C:B9:9B:8A:C3:07`、VID/PID `054c:0ce6`)をmini PCのRealtek Bluetoothへ
+  接続した。保存済みbondの不整合でBlueZがHID接続を`!bonded device`として拒否していたため、
+  古いdeviceを削除して新規pair/trust/connectし直した。
+- Bluetooth接続後にLinux入力`/dev/input/event19`、`/dev/input/js2`が生成され、triggerを含む
+  実イベントを確認した。DualSenseはmini PCへBluetooth/USB直結、ESP32-C3/MCP2515は入力中継に
+  使わない構成を確定し、アーキテクチャ決定へ追記した。
+- `tools/linux/dualsense_control.py`を追加。VID/PIDとgamepad capabilityによる自動検出、
+  Bluetooth/USB共通mapping、radial deadzone、応答curve、R2速度倍率、R1 deadman、切断時zero化を
+  モータ/CAN/serial非接続の独立層として実装した。
+- `tools/linux/dualsense_web_ui.py`を追加し、接続状態、stick/trigger/button、生成した車体
+  `vx/vy/omega`を表示するpreview GUIをport8766で起動した。offline self-checkとunit test 7件は全PASS。
+
+### 現在の状態
+
+- DualSenseは`Paired=yes / Trusted=yes / Connected=yes`、Bluetooth evdev入力も認識済み。
+- preview GUIは`http://localhost:8766`で起動中。R1解放時の指令は0で、CAN・USBシリアル・
+  モータ出力は未実装のため機体は動かない。
+- 既存の単ユニットCAN bench GUIと新previewは別プロセスであり、指令sourceの競合はない。
+
+### 次の作業
+
+1. mini PC-Teensy間のUSB-CDC command/status frameを固定し、sequence/CRCとTeensy受信timeoutを実装する。
+2. Teensyへarm/standby/stop状態機械、R1解放時の通常zero、通信断時disable、再接続後の再arm要求を実装する。
+3. Teensy CAN3の3輪CAN FD配信とcentral coordinator coreを接続後、主電源OFFでend-to-end試験し、
+   接地はハードE-stopを有効にした低速・低加速から開始する。
+
+## 2026-07-31 (GUIへ空走ベスト設定を明示適用)
+
+### やったこと
+
+- ユーザー指示で、3機構の空走試験に合格した共通高応答候補をGUI/RAMへ全項目明示適用した。
+  cap/max=300rpm、profile=1800/12000/3000deg系、jerk=0、unit hard guard=4000rpm/s、
+  current limit=4500raw、0/60rpm Kp/Ki=120/50、100/150rpm Kp/Ki=140/50、
+  高速decel FF=2.5、brake Kp倍率2、wheel accel/decel=1000/500rpm/s。
+- 操作感は高トルク・高応答で良好だが、現ウレタンロープ巻きトレッドは本番負荷で摩擦・固定界面が
+  先に負ける可能性が高いと確認した。機械的抜け止めを持つ鋳込みウレタンタイヤを次期候補とする。
+- 高グリップ化後はwheel回転数と独立オドメトリ車体速度の差から個輪slipを推定し、駆動トルクを
+  ramp制限するtraction controlが必要になる可能性を記録した。方式・採用は接地ログ取得後に確定する。
+
+### 現在の状態
+
+- 機構unit3/controller unitId1、GUI port8080起動中、unit disabled、AMT/C620正常。
+- GUI/RAMは空走ベスト候補。未計測の接地起動を永続化しないためFlash boot既定60rpmは変更なし。
+
+### 次の作業
+
+1. 接地ラジコン動作では低いwheel指令から開始し、横振れ・current scale・電源状態を確認する。
+2. 外部24V/current計測後に高負荷域の採用可否を確定する。
+3. ホイール寸法・輪荷重を基に鋳込みウレタンの硬度/厚さ/抜け止め形状を決め、接地ログ後に
+   traction controlの必要slip閾値とトルク復帰rampを設計する。
+
+## 2026-07-31 (機構unit3空走回帰)
+
+### やったこと
+
+- 機構unit3へ切り替え、AMT Flash zeroを再校正せず`zero=1503/seq1`のまま段階回帰した。
+  controller CAN IDはunitId=1のまま、機構側unit3として記録する。
+- 60rpm・wheel=0・正逆90degは2/2実用合格。初回±2deg到達0.350/0.358s、
+  overshoot最大3.60deg、terminal最大0.175deg、実peak61.9rpm。
+- 120rpm候補をwheel=0/265rpm・正逆90degで4移動し4/4実用合格。初回到達
+  0.302〜0.323s、overshoot最大4.22deg、terminal最大0.264deg、実peak93.6rpm。
+  wheel=265正方向だけstrict settleが1.240sだったが実用gateは合格した。
+- ramp制動付き300rpm設定/current limit4500rawの90deg fullは4/4実用合格。初回到達
+  0.210〜0.237s、overshoot最大15.65deg、terminal最大0.176deg、実peak140.4rpm。
+- 同設定の170deg fullも4/4実用合格。初回到達0.328〜0.371s、overshoot最大15.01deg、
+  terminal最大0.332deg、実peak160.6rpm。全段階で安全停止、AMT/C620脱落、温度上昇なし。
+- unit1/2/3の300rpm設定を同じ補間指標で再集計した。90degのfirst-entry平均は
+  0.221/0.230/0.219s、170degは0.348/0.338/0.348sで個体差は小さく、空走では個体trim不要、
+  共通table継続と判断した。170deg実peakは172.2/173.4/160.6rpmでunit3が約7%低いため、
+  接地時の監視項目として残す。
+
+### 現在の状態
+
+- 機構unit3/controller unitId1はdisabled、wheel=0、27/26degC、`fdbkOk=1`、AMT正常。
+  Flash校正は`zero=1503/seq1`、CRC正常のまま変更なし。
+- GUI cap60rpm、profile=360/3600/2250deg系、unit max60rpm、unit accel600rpm/s、
+  current limit4000rawへ安全復元済み。
+- 主要ログは60rpm `auto-tune/2026-07-31T12-22-54Z`、120rpm `12-23-13Z`、
+  300rpm設定90deg `12-23-32Z`、170deg `12-23-51Z`。
+
+### 次の作業
+
+1. 外部電流/24V計測器導入後に実300rpmの回生peakを測る。
+2. 接地試験用の応答・車体横振れgateを定義して低速から再検証する。
+3. unit3の接地実peakが他2台より低い場合だけ個体trimを再検討する。
+
+## 2026-07-31 (機構unit2空走回帰・高速到達指標の補間化)
+
+### やったこと
+
+- 機構ユニット切替ではAMTとステア軸の相対原点は変化しないため、再校正は行わず
+  `zero=1503/seq1`を維持した。取付向きやカップリングの回転を理由にFlash zeroを更新するという
+  先の判断は撤回した。現ベンチのcontroller CAN IDは引き続きunitId=1で、機構側をunit2へ
+  切り替えた状態として記録する。
+- unit2を60rpm・wheel=0・正逆90degで回帰し2/2実用合格。初回±2deg到達約0.354s、
+  overshoot最大3.34deg、terminal最大0.088deg、実peak60.8rpm。
+- 120rpm候補をwheel=0/265rpm・正逆90degで4移動し4/4実用合格。初回到達
+  0.324〜0.384s、overshoot最大2.81deg、terminal最大0.264deg。strict settleだけ1本が
+  0.991sで0.9sを超えた。
+- ramp制動付き300rpm設定/current limit 4500rawを90degで4移動し4/4実用合格。
+  初回到達0.202〜0.424s、overshoot最大14.85deg、terminal最大0.352deg、実peak142.4rpm。
+- 170deg反復で100Hz sample間に±2deg帯を飛び越え、overshoot後の再進入を初回到達と
+  誤認する評価不具合を確認した。方向付き誤差が帯境界を横切る時刻を隣接sample間で線形補間する
+  よう`unit_auto_tuner.py`を修正し、自己試験へ正負の帯飛び越しcaseを追加した。
+- 修正前8移動を再評価すると初回到達worstは0.666→0.371sとなり8/8合格。修正版の正式な
+  170deg 4移動も4/4実用合格で、初回到達0.336〜0.340s、overshoot最大13.43deg、
+  terminal最大0.195deg、実peak173.4rpmだった。
+
+### 現在の状態
+
+- 機構unit2/controller unitId1はdisabled、wheel=0、27/26degC、`fdbkOk=1`、AMT正常、
+  永続faultなし。Flash校正は`zero=1503/seq1`、CRC正常のまま変更なし。
+- GUIは安全側cap60rpm、profile=360/3600/2250deg系、jerk=0、unit max60rpm、
+  unit accel600rpm/s、current limit4000rawへ復元済み。
+- 主要ログは60rpm `auto-tune/2026-07-31T12-15-31Z`、120rpm `12-15-59Z`、
+  300rpm設定90deg `12-16-22Z`、補間修正版170deg `12-19-52Z`。
+
+### 次の作業
+
+1. unit3も同じ60→120→300rpm設定の順で回帰し、共通tableか個体trimかを判断する。
+2. 外部電流/24V計測器導入後に実300rpmの回生peakを測り、500rpm/s制動制約を再評価する。
+3. 接地では空走20deg overshoot gateを流用せず、車体横振れを含む基準を定義する。
+
+## 2026-07-31 (P4・300rpm応答優先コミッショニング)
+
+### やったこと
+
+- Web/中央coreへ加速度state、jerk制限、jerk過渡込み停止距離を実装した。100k/200k deg/s3を
+  host testし、中央coreにも同じ軌道生成器と試験を追加した。120rpm実機比較ではlegacy
+  jerk=0が±2deg初回到達平均0.303sで最速、200kは0.326sへ遅くなる代わりにworst overshootを
+  7.12→5.10degへ低減したため、応答優先値はjerk=0を維持した。
+- G474の`SET_CONFIG idx9`上限を2000→4000 axis rpm/sへ拡張し、中央profileより上のhard guardと
+  して二重rampを除去した。boot既定600は維持。build/flash/readback MD5一致を確認した。
+- 実用gateをユーザー方針に合わせてfirst-entry 0.5s、overshoot 20deg、terminal 1degへ変更し、
+  strict 4deg/0.9sは診断として維持。300rpm cap/profile(1800/12000/9000 deg系)をwheel=0/265rpmで
+  6移動確認し6/6実用合格。worst first-entry 0.253s、overshoot 19.863deg、terminal 0.528deg。
+- 外側angle Pを切った速度mode試験を修正し、CAN STATUS1実角を安全targetへ使い、fresh CAN seed、
+  ACTIVE ack、指令rampを追加した。260 axis rpmはrise90 0.158/0.153s、overshoot 0.79/0%で定常到達。
+- C620 24V復旧後、300 axis rpmの正負速度stepを実施した。rise90は正負0.174/0.174s、peakは
+  303/333 axis rpm、速度overshootは1.04/11.06%で、300rpm実速度への到達自体を確認した。
+  ただし4000rpm/sの対称rampで300→0へ急制動した際に電源保護停止をユーザーが確認したため、
+  この試行を安全な300rpm完了判定には使わない。
+- `unit_steer_mode_id.py`の加速/制動を分離した。制動既定500rpm/s、制動時間後にzero dwellを追加、
+  反転は0rpm経由、Disable前にも明示zero rampを完遂する。単方向stepも追加し、高速制動回数を
+  1回へ減らせるようにした。self-check、py_compile、diff checkはPASS。
+- 改修版で正方向300rpmを1回確認した。rise90 0.174s、peak 300.9rpm、overshoot 0.85%。
+  指令は0.595sで300→0、実測はその3ms後に5rpm未満となり、0.25s zero dwell後にDisableした。
+  試験中ACTIVE維持、終了後`fdbkOk=1`、AMT正常、永続faultなしで急制動停止の再発なし。
+- 現ベンチは24V計測不能と確認した。STATUS3は`0xffff`、G474 ADCは5V専用、C620 CANにも
+  入力電圧なし。ユーザー方針で計測器導入は後段とし、260rpm超・無計測時は制動500rpm/s以下を
+  強制、外部計測確認時だけそれ以上を許可する。FEEDBACK_OK脱落は即時失敗としてログへ残す。
+- 公式C620ガイドではrated 24Vのみで最大連続入力電圧は明示されないため、推測上限を置かず、
+  外部計測手順と電源OVP値の記録項目を`docs/testing/UNIT_AUTO_TUNER.md`へ追加した。
+- 改修版の負方向300rpmもrise90 0.174s、peak 300.9rpm、overshoot 0.87%、feedback drop 0で完走。
+  正負とも500rpm/s停止を確認した。
+- 回生をランプで抑える暫定profileとしてcap300rpm、加速12000deg/s2、制動3000deg/s2を評価した。
+  170deg・4000rawはwheel=265負方向だけfirst-entry 0.605sで4本中1本不合格。加速中に未飽和要求
+  5375raw/適用3934raw、9 sample中7 sample scaleを確認し、電流上限4500rawへ1段だけ進めた。
+- 4000/4500rawの170degインターリーブ各4移動は双方実用合格。4500はfirst-entry平均
+  0.356→0.344s、settle 0.941→0.888s、実peak 167→183rpm、overshoot 14.66→16.15deg。
+  応答優先で4500rawを空走候補とした。4500rawの90deg full 4移動も4/4合格し、first-entry
+  平均/最悪0.225/0.243s、実peak141rpm、overshoot最大15.205deg、terminal最大0.175deg。
+
+### 現在の状態
+
+- Flash bin 16064byte、MD5 `42e5be8774fc61f3d4ea87c5901cb290`、zero=1503/seq1保持。
+- unitはdisabled、wheel=0、Web UIはport 8080で起動中。`fdbkOk=1`、AMT正常、
+  永続faultなし。角度約315.9deg、zero=1503/seq1保持、GUI capは安全側60rpm、RAM current limitは
+  4000rawへ復元済み。
+- unit 1浮上・wheel=0では300rpmの速度能力と500rpm/s安全停止波形を各1回確認済み。
+  旧4000rpm/s急制動は禁止し、unit 2/3・接地・実電源条件での採用判定は別途行う。
+
+### 次の作業
+
+1. unit 1空走では4500raw/ramp制動候補を追加反復せず、次はunit 2/3または接地へ移る。
+2. 電流/電圧計測器導入後に24V peakと電源OVPを測り、500rpm/s暫定制約を再評価する。
+3. 接地では20deg空走gateを流用せず、車体横振れを含む基準で再設定する。
+
+## 2026-07-31 (P3a明示加速度を実機化・150rpm段はP4へ継続)
+
+### やったこと
+
+- Classic CANベンチ用`SET_TARGET_ACCEL_FF(0x160+id)`を追加し、Webの200Hz profile加速度を
+  G474へ明示送信した。freshな明示値を受信時刻差分より優先し、200ms途絶時は旧差分へ戻る。
+  診断bitとauto tuner CSVを追加し、運動中76/76を含む125/125 sampleで明示経路適用を確認した。
+- 明示加速度前提で120rpm profile decel=1800/2000/2250deg/s2を各4移動比較。全12移動が
+  実用合格し、2000は初回±2deg平均0.313s、overshoot最大5.625degで総合最良だった。
+- 制動Kp倍率を0/60/100/150rpm knotで連続補間できるよう拡張した。150rpm段で高速倍率
+  3.0/3.5/4.0を比較したが全候補不合格。最良3.5でもovershoot 10.723deg、4000raw飽和、
+  実peak 100.7rpmとなり、Kp強化では150rpm到達と制動を両立できなかった。
+
+### 現在の状態
+
+- Flashは明示加速度+速度別制動Kp版(MD5 `448c6ffa65d452268efcd94da6eb68cb`)。
+  boot既定は安全側60rpm/倍率1のまま、校正zero=1503/seq1/CRC正常。
+- RAM/Webは合格済み120rpm packageへ復元し、明示加速度前提のprofile decelだけ
+  2250→2000deg/s2へ更新。unit disabled、wheel=0、約306.0deg、28/26degC。
+- Web UIはport 8080で起動中。主要ログは`auto-tune/2026-07-31T11-04-58Z`、
+  `11-06-00Z`、`11-08-44Z`、`11-09-08Z`。
+
+### 次の作業
+
+1. P4として中央/Web軌道へ加速度stateとjerk制限を追加し、制動距離へjerk過渡を含める。
+2. ユニット内steer rpm rampを通常profile生成からhard guardへ変更し、中央との二重rampを除去する。
+3. 4000rawを維持して実peak150rpmを再評価し、overshoot 8deg以下成立後に200rpmへ進む。
+
+## 2026-07-31 (実用到達基準へ変更・120rpm級高応答候補を確立)
+
+### やったこと
+
+- 低速の微小振動を含む厳格settle時間をgain探索の合否から外し、全試行で安全停止なし、
+  ±2deg初回到達0.50s以下、overshoot 8deg以下、終端誤差1deg以下を実用基準に確定した。
+  旧overshoot 4deg/settle 0.9sは診断列として維持する。
+- 制動phaseだけscheduled steer Kpを増幅する`steer_brake_kp_multiplier`を実装。
+  `SET_CONFIG idx47`、範囲1〜4、既定1で従来互換。倍率2.0が絶対角間の再現性を含め最良だった。
+- 120rpm cap、Kp/Ki=140/50、加速/制動FF=0.5/2.5、brake Kp倍率2.0、
+  profile=720/5400/2250を12移動確認。±2deg到達平均/最悪0.301/0.313s、
+  実steer peak 119.9rpm、overshoot最大7.647deg、終端誤差最大0.176degで12/12実用合格。
+
+### 現在の状態
+
+- unit 1空走の高応答候補は上記120rpm package。安全停止なし、最大指令/実測電流
+  3348/2470raw、最高28degC。current scale最長30msがあるため電流上限は4000rawを維持する。
+- Flashにはbrake Kp機能を実装済み(MD5 `63b59d173a7bdef4bc152761b0bb75`)だが、
+  boot既定は安全側60rpm/倍率1.0のまま。現在RAM/Webは高応答候補を残し、unitはdisabled、wheel=0。
+- 確認ログは`firmware/logs/auto-tune/2026-07-31T10-53-38Z`。
+
+### 次の作業
+
+1. torque scaling 30msが加速不足か制動時の意図的飽和かをphase別に分解する。
+2. unit 2/3と接地状態で120rpm packageを確認し、共通table/個体trimを判断する。
+3. 接地でも実用基準を満たした後にboot既定を60→120rpmへ変更する。
+
+## 2026-07-31 (P2連続gain schedule実機評価・100rpm制動profile選定)
+
+### やったこと
+
+- 0/60/100/150rpmの連続gain tableを実制御へ接続し、legacy scalar設定は全band同値を維持、
+  `SET_CONFIG idx27..46`で各knotのKp/Ki/加速FF/制動FF/Kawを個別設定できるようにした。
+- 速度mode同定を100/150rpmへ拡張。角度目標を速度指令から積分追従させ、STATUS3 ACTIVE脱落を
+  即時検出するよう修正した。Web UIとの指令競合も起動時に拒否する。
+- 150rpm速度stepでKp/Kiを比較し、140/50を高速band候補に選定。160/50は負方向peakが
+  32.3%へ悪化し、低ゲイン70/20は帯域低下に対して改善が小さかった。
+- 100rpm閉ループでは速度PI/FF/外周Pよりprofile減速開始が支配的と確認。decelを
+  2250から1450deg/s2へ前倒しし、確認12移動でovershoot最大3.252deg、平均settle 0.831s、
+  最悪0.998s。全12移動がovershoot gate、安全/飽和なし、settle gateは9/12だった。
+- DIAGが補間後gainでなく旧scalar値を送っていた不具合を修正し、実schedule最大約121rpm、
+  Kp最大140、制動FF最大2.5をCSVで確認した。
+
+### 現在の状態
+
+- 高速候補は`100/150rpm Kp/Ki=140/50、accel/decel FF=0.5/2.5、profile decel=1450`。
+  overshootは合格したがworst settleが0.9s gateを約0.1s超えるため、Flash既定には未採用。
+- 実機runtimeはKp/Ki=120/50、max60rpm、unit accel600rpm/s、FF=0.5/0.5、Kaw=0、
+  Web profile=360/3600/2250、cap60rpm、time scale1へ明示復元済み。
+- unit 1はdisabled、wheel=0、角度約232.12deg、温度28/26degC、zero=1503/seq1/CRC正常。
+  Web UIはport 8080で起動中。現Flash MD5は`2297433648339d3359bc97be64b96a67`。
+
+### 次の作業
+
+1. 1450deg/s2候補のsettle外れ値を絶対角・方向別に分解し、単体浮上への過適合を避けて
+   unit 2/3または接地条件で同じ表を評価する。
+2. 3台共通でovershoot<=4degかつworst settle<=0.9sを満たすまで高速表を既定化しない。
+3. 収束外れ値がprofile/gainで再現制御できなければ、P3の明示target accelerationとmodel FFへ進む。
+
+## 2026-07-31 (応答指標分離・Kawインターリーブ比較で既定0を維持)
+
+### やったこと
+
+- auto tunerへ初回±2deg/settle band進入、初回目標通過、±2deg進入後の再収束時間を追加し、
+  初動応答とovershoot後の振り返しを分離した。
+- `--compare-values`を追加。各候補へ同じ絶対角対、正逆、wheel=0/265rpmを均等配分し、
+  毎試行後に通常STOP/DisableしてPI/observer状態をリセットするインターリーブ比較とした。
+- Kaw=0/1/2を1反復12移動でscreen。Kaw=1は平均settle 0.684s、worst 0.797sと良好だったが、
+  初回±2deg進入は0.326sでKaw=0の0.288sより遅く、改善は再収束時間の短縮だった。
+  最大overshoot 5.977degで4deg gateは不合格。
+- 独立seedの2反復24移動で確認したところ、平均settleはKaw=0/1/2で
+  0.689/0.757/0.924s、初回±2deg進入は0.292/0.318/0.320s、最大overshootは
+  5.273/13.447/12.217deg。Kaw=1の優位は再現せず、全候補がgate不合格だった。
+
+### 現在の状態
+
+- P1 back-calculationはコード・telemetryを残すが、単独で再現する応答改善は得られずKaw=0を維持。
+- Kp/Ki=120/50、max=60rpm、unit accel=600rpm/s、FF=0.5/0.5、Kaw=0/0、
+  profile=360/3600/2250、time scale=1へ復元済み。
+- unit 1はdisabled、wheel=0、角度約179.74deg、温度28/27degC、AMT/C620正常。
+- ログは`firmware/logs/auto-tune/2026-07-31T09-58-59Z`と`2026-07-31T10-00-21Z`。
+
+### 次の作業
+
+1. P2の0/60/100/150rpm連続gain tableを全knot同値から実装し、境界連続性をhost testする。
+2. 低速knotはKaw=0を維持し、高速knotのKawは速度schedule・制動FFと組み合わせて評価する。
+3. 総合scoreだけで採否を決めず、overshoot/worst settle gate通過後に初回進入時間で比較する。
+
+## 2026-07-31 (P1 back-calculation反復評価・Kaw採用見送り)
+
+### やったこと
+
+- P1 back-calculationの追試として、Kaw=`3 -> 0 -> 4 -> 1 -> 2`の順で、wheel=0/265rpm、
+  正逆90deg、複数絶対角を評価した。Kaw=0/1/2/4は各8移動、Kaw=3は設定上のrounds既定値により
+  24移動となり、合計56/56で収束、安全停止・温度異常は0件だった。
+- Kaw=0/1/2/3/4の平均settleはそれぞれ0.793/0.854/0.847/0.857/0.888s、最悪settleは
+  0.938/1.573/1.925/1.432/1.179s、最大overshootは10.02/10.72/9.84/12.57/8.00deg。
+  予備2移動で良好だったKaw=2は再現せず、Kaw=0のworst settleを上回る候補もなかったため、
+  Flash既定化と60rpm採用回帰は見送った。
+- `samples.csv`で各試験の`scheduled_kaw`が指令値と一致し、Kaw>0ではback-calculation補正が
+  実際に発生していることを確認した。設定未反映ではなく、絶対角・方向・wheel回転による
+  ばらつきがKaw単独の効果より大きい結果と判断した。
+- 試験後、Kp/Ki=120/50、max=60rpm、unit accel=600rpm/s、FF=0.5/0.5、Kaw=0/0、
+  current limit=4000、profile=360/3600/2250、time scale=1へ明示復元した。
+
+### 現在の状態
+
+- P1コード・telemetry・host testは維持するが、Kaw既定値は0のまま。今回の結果では採用候補なし。
+- unit 1はdisabled、wheel=0、角度約171.30deg、温度30/29degC、AMT/C620正常。
+  zero=1503/seq1/CRC正常。Web UIはport 8080で起動中。
+- 追試ログは`firmware/logs/auto-tune/2026-07-31T09-45-01Z`、`09-45-54Z`、
+  `09-46-24Z`、`09-46-51Z`、`09-47-20Z`。
+
+### 次の作業
+
+1. Kaw候補を候補単位の連続バッチではなく、同じ開始角・方向の対ごとにインターリーブして
+   再評価できる試験手順へ変更し、時間順・機構摩擦の偏りを減らす。
+2. wheel=0/265rpm、方向、到着絶対角ごとに飽和残差・補正量・外れ値を分解し、Kaw単独でなく
+   制動FF/速度scheduleとの組合せで評価すべきか判断する。
+3. 再現する候補が得られるまでKaw=0を維持し、60rpm回帰・Flash既定化は行わない。
+
+## 2026-07-31 (高速ステアP0 telemetry完了・P1 back-calculation予備A/B)
+
+### やったこと
+
+- 将来のgain schedule用に`max(|steer command|, |observer rpm|)`の10ms LPFを並走計算し、
+  scheduled gain、共通scale前後電流、残差、連続飽和時間、制動phaseを制御出力へ追加した。
+  現行Classic CANベンチでは`0x1B0+id`の4page診断としてWeb UI/auto tunerへ接続した。
+- 60rpm、wheel=0/265、正逆4移動で4/4収束。平均0.742s、最悪0.938s、overshoot最大4.043degで
+  従来12移動の平均0.802s/最悪1.391s/最大4.571degに非劣化。未飽和時の残差0も確認した。
+- 共通current scale後の残差を次周期の積分へ戻すsteer/drive別back-calculationを実装。
+  `SET_CONFIG idx25/26`で0〜20/s変更可能、既定0は従来互換。host test/ARM build/Flash済み。
+- 150rpm級条件でsteer Kaw=0/2/4を正逆各1回予備比較。Kaw=0の最大overshoot 11.426degに対し、
+  Kaw=2は3.340deg、Kaw=4は3.867deg。Kaw=2は2/2 deadline内だったが試行不足のため未採用。
+- 詳細引継ぎを`docs/control/HIGH_SPEED_STEER_HANDOFF_2026-07-31.md`へ作成した。
+
+### 現在の状態
+
+- P0完了、P1はコード完成・予備A/Bまで。Kaw採用値の反復検証が未完了。
+- Flash bin MD5 `5b8ec2aedcf418b7887c6f4da76801f3`。unit 1 zero=1503/seq1保持。
+- runtimeはKp/Ki=120/50、max60rpm、accel600rpm/s、FF=0.5/0.5、Kaw=0/0へ復元。
+  disabled、wheel=0、温度27/26degC、AMT/C620正常。Web UIはport 8080で起動中。
+
+### 次の作業
+
+1. Kaw=0/1/2/3/4をwheel=0/265rpm、正逆・絶対角を分散して各最低6移動再評価する。
+2. Kaw=2前後が再現すれば60rpmを12移動回帰し、Flash既定への採否を決める。
+3. P1確定後、全knot同値から0/60/100/150rpm連続gain tableを実装する。
+
+## 2026-07-31 (100rpm超の実機評価・連続ゲインスケジューリング計画を確定)
+
+### やったこと
+
+- unit 1をwheel浮上・正逆90degで60〜156rpmまで段階評価した。60rpm既定は12移動平均
+  0.802s/overshoot最大4.57deg、100rpmは平均0.789s/最大6.68deg。100rpmで
+  `Kp=160/Ki=50/decel FF=1.5`は4移動平均0.696s/最大3.78degまで改善した。
+- profile peak 134〜137rpmでは実速度145〜156rpmへ到達した一方、overshootは10.20〜14.77deg。
+  4000raw未満でも最大14.77degが発生し、FFを強めて4000rawへ飽和させると反動が悪化したため、
+  高rpm到達能力や電流上限より減速位相・積分残りが現在の律速と判断した。
+- `docs/control/HIGH_SPEED_STEER_GAIN_SCHEDULING_PLAN.md`を新設。observer/reference速度の
+  最大値を10ms LPFし、0/60/100/150rpm knot間でKp/Ki/加速・制動FF/Kawを連続補間する。
+  telemetry、back-calculation、速度mode同定、明示加速度FF、jerk制限軌道の順に実装し、
+  電流は加速中の不足が計測された場合だけ4000→4500→5000→5500→6000rawと段階評価する。
+- 高速試験に必要なWeb UI/auto tunerのrpm・加減速レンジをhard包絡内へ拡張し、Enable後は
+  STATUS3 ACTIVEを確認してから動作を始めるようにした。試験後は既定60rpm、Kp/Ki=120/50、
+  accel limit=600rpm/s、FF=0.5/0.5へ戻した。
+
+### 現在の状態
+
+- unit 1のFlash内容はAMT原点保存済み採用版のまま。runtime設定は60rpm採用値へ復元済みで、
+  motor disabled、wheel=0、温度28/27degC、AMT/C620正常。
+- 100rpmは固定PIでも改善余地があるが、120〜150rpm域は固定PI/固定FFを電流だけ増やしても
+  安定な制動と短い収束を両立できない。高速化の正本は上記実装計画とする。
+
+### 次の作業
+
+1. schedule rpm/gain、未飽和・適用電流、飽和残差/時間、制動phaseのtelemetryを追加する。
+2. 共通current scale後の実適用値を使うback-calculation anti-windupを4000raw固定で実装する。
+3. 速度mode単体同定後に0/60/100/150rpm連続scheduleを導入し、60rpm非劣化から段階検証する。
+4. unit 2/3でも同じ試験を行い、共通tableは3台の最悪値、個体trimは再現する差だけに限定する。
+
+## 2026-07-31 (AMTソフトウェア原点をFlash保存・実機適用)
+
+### やったこと
+
+- G474REの最終2KiB Flashページ(`0x0807F800`)をリンカでファーム領域から分離し、
+  AMT生カウントのCRC32付き24byteレコードを追記保存する実装を追加した。通常保存は消去せず、
+  magic/version/CRC/commitを検査して最新sequenceを選ぶため、書込み途中でも直前値を保持する。
+- `UNIT_CTRL`の`CALIB_SAVE_ZERO/CLEAR/PING`と`CALIB_RESULT(0x1C0+id)`を実装。
+  保存/消去はdisabled、AMT/C620 fresh、両モーター出力軸1rpm以下でだけ許可する。
+- 単ユニットWeb UIへ原点保存・状態読出し・確認付きクリアと、保存count/raw count/CRC/sequence表示を追加。
+  保存成功時は次回Enable前のGUI目標も0deg/0rpmへ再シードする。
+- ユーザーが機械原点へ合わせた実機unit 1で、生count `1503`をsequence `1`として保存。
+  表示が`132.100deg`から`0.000deg`へ変わり、CRC errorなし。MCU reset後もboot時
+  `valid=1 zero=1503 seq=1`、CAN/VCP角`0.000deg`を確認した。
+
+### 現在の状態
+
+- unit 1はAMT原点校正済み。Web UIは`http://localhost:8080`で起動中、モータはdisabled、
+  wheel=0、AMT/C620正常。保存ページはsequence 1で空きあり。
+- unit 2/3は同じ機械基準姿勢で個別に保存する必要がある。
+- 正逆転最短化を使うため個々のステア実移動は最悪90deg。全輪共通原点からの純旋回は
+  この120deg配置では`+60/0/-60deg`で表現できる。
+
+### 次の作業
+
+1. unit 2/3を接続し、各ユニット固有のAMT raw countを同じ手順で保存・reset保持確認する。
+2. 現在の60rpmコミッショニング上限を、wheel=0で100→150→200→300 axis rpmと段階評価する。
+   差動のhard包絡(純操舵約341rpm)は残し、wheel速度に応じて動的に下げる。
+3. 3輪接地後、中央のflip最短化、共通desaturation、`PRESTEER→DEPART`を確認する。
+
+## 2026-07-31 (単体の過適合を止め、Teensy 3輪協調制御コアへ移行)
+
+### やったこと
+
+- 150deg到着の1.4166s外れ値を追加追試する準備まで進めたが、3ユニットの個体差と接地摩擦が
+  支配的という実機条件を踏まえ、単体浮上・特定角度への追加チューニングを中止した。
+  Web UIはEnable前に終了し、ユニットは一度も駆動せずdisableのまま維持した。
+- `central_firmware/`を新設し、Teensy固有I/Oから分離したC++11の3輪協調制御コアを実装した。
+  車体twist/微分から3輪のsteer連続角、wheel rpm、steer rate FF、wheel accel FFを同時算出する。
+- flipは中央だけが判断し、10degヒステリシス付き・実wheel 30rpm以下に限定。停止特異点では
+  直前steer角を保持する。3輪の最悪motor-mode要求に合わせ、planned 422.1rpm包絡へ全輪を
+  同一scaleで収めるため車体指令方向を維持する。
+- 中央プロファイル完了に加え、新指令後に各STATUS3の`MOTION_SETTLED=0`を一度確認してから
+  全3輪Highになった場合だけ完了する集約器を実装した。古いHighや1輪の通信staleでは完了しない。
+- 直進、純旋回、停止角保持、低速flip、高速flip禁止、共通デサチュレーション、全輪settledの
+  ホスト試験を追加し全件PASS。ユーザー確認により3ユニットは半径0.250mの円上へ120deg等配と
+  確定。センサーモジュール搭載辺のunit 1/3を`+Y`側、unit 2を`-Y`側とし、座標を
+  `(-216.5,+125)/(0,-250)/(+216.5,+125)mm`へ固定する設定関数を追加した。車輪半径は
+  公称径65mmから0.0325mへ確定し既定設定へ反映。接地後は実効半径で上書き可能とし、半径が
+  0以下なら全出力0で`false`を返す。
+
+### 現在の状態
+
+- 単ユニットfirmwareは前回採用版のまま。追加実機動作・Flash変更なし、disabled。
+- 中央コアはホスト上で成立。Teensy 4.1のCAN/USB/安全I/Oにはまだ接続していない。
+- 90deg収束は現プロファイル理論約0.38sに100ms settled dwellが加わるため、判定上の理想下限は
+  約0.48s。実測中央値約0.71〜0.75sとの差を単体ごとに詰めるより、中央`PRESTEER`で出発待ちを
+  隠し、3輪接地の最遅ユニットへ同期する方針とした。
+
+### 次の作業
+
+1. Teensy 4.1へCAN3 FlexCAN_T4アダプタと100Hz twist profilerを実装する。
+2. 3ユニットを接地して共通scale、全輪settled、`PRESTEER→DEPART`を実機検証する。
+3. 既知距離の直進から接地変形を含む実効車輪半径をユニット別に校正する。
+
+## 2026-07-31 (observer速度でfriction FFを整形し収束時間を約21%短縮)
+
+### やったこと
+
+- observer推定速度の制御利用をA/Bした。終端速度ダンピングはwheel=265rpmで基準平均
+  0.752sに対し10ms候補0.854sへ悪化したため、実装から除去した。
+- wheel=0のbreakaway用friction FF=200rawを、observer軸速度0rpmで全量、10rpmで0まで
+  線形に減衰する方式を実装した。静止時の突破力は維持し、移動中の余分な電流だけを抜く。
+- 触れていない90deg・絶対角4点の12対12 A/Bで、従来一定FFは平均0.9555s/中央値0.7800s/
+  最悪2.0402s、速度減衰FFは平均0.7570s/中央値0.7190s/最悪0.9747s。平均20.8%短縮、
+  最悪52.2%短縮。`SET_CONFIG idx24`で減衰完了軸rpmを0〜100rpm変更可能にした。
+- 既定10rpmへ変更してFlash後、wheel=0を12移動、wheel=265rpmを8移動し20/20収束。
+  wheel=0平均0.7636s/最悪1.4166s、wheel=265平均0.7735s/最悪0.9726sだった。
+
+### 現在の状態
+
+- 採用firmwareをFlash済み(bin MD5 `5a48f40f44db9f6f19a6faee545043a3`)。
+- observerはfriction FFの速度スケジュールにだけ使用。角度P、settled、安全判定は従来のまま。
+- 通常STOP/disable後idle、最終角59.854deg、wheel=0、AMT/C620正常。
+- A/Bログは`firmware/logs/webui-2026-07-31T08-18-51Z.log`、採用版回帰は
+  `firmware/logs/webui-2026-07-31T08-21-54Z.log`。
+
+### 次の作業
+
+1. 残った1.4166sの絶対角150deg到着外れ値を、角度依存機構抵抗とobserver速度/PI積分で解析する。
+2. wheel=1〜29rpmのfade遷移域と接地・3輪条件を回帰し、10rpm閾値を必要なら再調整する。
+3. observer角を角度P、安全、settledへ接続するのはfault試験とinnovation閾値確定後に行う。
+
+## 2026-07-31 (P1.5 相補observerを診断専用で実装・実機確認)
+
+### やったこと
+
+- G474の1kHz局所ループへ、2ms LPF後のmotor steer-mode速度を高周波予測、AMT22絶対角を
+  低周波補正に使う相補observerを追加した。補正時定数は既定50ms、初回/reset後はAMTで
+  再シードし、innovationはshortest angle errorで0/360deg境界を連続に扱う。
+- 推定角`obsA`、推定軸rpm`obsR`、AMT innovation`obsE`をVCP/Web UIへ追加し、自動チューナの
+  `samples.csv`にも保存するようにした。`SET_CONFIG idx23`で0〜1sをruntime変更できる。
+- observerは現段階では診断専用とし、既存の角度P、`MOTION_SETTLED`、安全停止判定へは
+  接続していない。専用ホスト試験で初回seed、wrap、ドリフト補正、tau=0、resetを固定した。
+- build/flash/verify後、wheel=0と実wheel=265rpm保持で330↔30degのwrap通過を含む実機回帰。
+  全移動が収束し、生VCP 292点でinnovation最大2.172deg/p95 0.954deg、静止時observer-AMT差
+  p95 0.086deg。±360degスパイクなし。idx23を20msへ変更後50msへ復元する応答も確認した。
+
+### 現在の状態
+
+- observer入りfirmwareをFlash済み(bin MD5 `36452ab63553e842c338604a8c802cdb`)。
+  runtime補正時定数は既定50msへ復元済み。
+- 実機は通常STOP/disable後idle。最終角30.146deg、wheel=0、AMT/C620正常。
+- observerは既存制御へ影響しない診断段階。実機ログは
+  `firmware/logs/webui-2026-07-31T08-05-04Z.log`。
+
+### 次の作業
+
+1. 接地・3輪条件でinnovationの正常p95/p99と角速度推定誤差を計測し、滑り/バックラッシュの
+   診断閾値と連続時間条件を決める。
+2. 閾値を決めるまではobserverを制御・settled・安全判定へ接続しない。
+3. P1.2 back-calculation anti-windup、P0.1連続unwrap角、CAN FD軌道は従来計画どおり別工程。
+
+## 2026-07-31 (引継ぎ継続: 角度依存stall回帰完了・60rpm段階採用)
+
+### やったこと
+
+- 既存の角度依存friction補償を、10deg刻み境界42試行とwheel=75/265rpm各24試行で回帰し、
+  合計90/90収束。15rpmはステア自体0.049degへ収束したが既知のdrive stick-slipで総合判定外。
+- ロードマップ手順2の加速/制動FF 0/0.5/1.0を比較。絶対角4点を含む再試験で候補値に
+  外れ値が残ったため、既定0.5/0.5を維持した。
+- 手順4を継続し、ユニット側上限も含めた60rpm試験を26/26合格としてcommissioning既定へ
+  昇格。80rpmは14/14収束したが60rpmより遅くなったため不採用、100rpmは未試験。
+- firmware既定`steer_max_rpm=60`、Web既定cap=60rpm/rate=360deg/sへ更新しflash/verify。
+  runtime `SET_CONFIG`上限はhard包絡相当341.1rpmへ拡張した。
+- 自動試験ツールの旧friction FF=0・旧time scale=2復元バグを修正し、採用済み構成を
+  試験後に壊さないようにした。詳細数値とログ場所は`firmware/PROGRESS.md`参照。
+
+### 現在の状態
+
+- 実機は60rpm既定の新firmwareで回帰14/14後、通常STOPしてidle。温度28/27degC。
+- angle補償境界とwheelカップリングは解消確認済み。60rpm段階まで採用、80rpmは保留。
+- 未コミット変更と本セッションの自動試験ログが残っている。
+
+### 次の作業
+
+1. 80rpmで増えた収束外れ値を内周追従・加速/制動FF・絶対角別に切り分ける。
+2. 接地/3輪が利用可能になればロードマップ手順5へ進む。
+3. P1.2 anti-windupはcurrent scalingを安全に再現する専用試験後に実装する。
+4. P0.1連続unwrap角、CAN FD時刻付き軌道、Teensy中央実装は保留。
+
+## 2026-07-31 (セッション総括: 実機収束をtime_scale理論値まで短縮・角度依存stall解消)
+
+### やったこと
+
+本セッションは前半でP0.3(mode包絡射影)・P1.4(連続デッドバンド)をコードレビューで
+実装し、後半は実機(can0接続・ホイール浮上)へ長時間介入して収束性能を追い込んだ。
+詳細な試行ログ・数値は`firmware/PROGRESS.md`の各セクション参照。
+
+- P0.3/P1.4を実装・flash。wheel=0/265/600/1000/1200rpmの回帰で健全性確認。
+- Kp=60/Ki=100を開ループstep応答の良さから一度flashしたが、closed-loop MOTION_SETTLED
+  A/Bで明確な悪化(1.1-1.2s→1.8-3.7s)と判明し即座に120/50へ復元。**教訓: inner loop
+  ゲインは開ループ応答だけで採否を決めず、必ずclosed-loop指標で検証する。**
+  同日中に別件で`unit_bench.py`の即時disableがDCバス電圧スパイクを起こす事故が発生し
+  (ユーザー指摘で発覚)、減速→disableの安全策を追加した。
+- telemetry診断で間欠非収束の原因(commanded currentがbreakaway電流の半分程度しかなく
+  純積分の立ち上がりを待っていた)を特定。wheel依存テーパ付きfriction FF=200を実装・flash
+  し、wheel=0のstallを解消(wheel≠0は無影響)。
+- ロードマップ「time scale段階縮小」を実機で完遂: 2.0→1.5→1.25→1.1→**1.0(理論値
+  そのもの)** を複数絶対角・複数wheel rpmで34/34+追加trialすべて成功させ、既定値を
+  1.0へ格上げした。
+- mode ID(速度ループ単体同定)をwheel=0のみからwheel=265/600/1000/1200rpmへ展開
+  (`unit_steer_mode_id.py --wheel-rpm`を新規実装)。wheel≠0では現行ゲインで良好・
+  対称であることを確認し、非対称・非収束はwheel=0近傍に集中していると裏付けた。
+- commissioning cap(40→60rpm)の動的化に実は入力側の固定クランプが残っていて
+  無効化されていたバグを発見・修正。修正後cap=60は動作確認(15/16)したが、既定は
+  40のまま据え置いた。
+- **8方向×3往復(48試行)で間欠stallの角度依存性を定量化し、90-225deg帯への明確な
+  偏りを実測で特定。** ユーザーが物理点検し、3Dプリント部品の積層継ぎ目の出っ張りが
+  原因と判断(機構修正はせず制御で吸収する方針)。角度80-235deg(5degランプイン/アウト)
+  でfriction FFを最大2倍にブーストする位置トリガー式補償を実装・flashし、**同じ
+  8方向×3往復で48/48に完全解消**(修正前45/48)。
+
+### 現在の状態
+
+- Flash済みfirmware: Kp=120/Ki=50/tau=2ms、wheel依存テーパ付きfriction FF=200、
+  角度依存(80-235deg)ブースト最大2倍、P0.3(mode包絡射影)、P1.4(連続デッドバンド)。
+- `unit_web_ui.py`既定`trajectory_time_scale=1.0`(旧2.0)、`steer_commissioning_cap_rpm`
+  は40のまま(動的化バグは修正済み)。
+- `unit_bench.py`・`unit_steer_mode_id.py`とも、wheel≠0時の安全な減速→disableに対応。
+- ハードウェアはidle・健全。本セッションの実機トライアル総数は概算250件超。
+- 未コミット。変更ファイル: `firmware/src/control/unit_controller.c`、`firmware/src/main.c`、
+  `tools/linux/unit_web_ui.py`、`tools/linux/unit_bench.py`、`tools/linux/unit_steer_mode_id.py`、
+  `PROGRESS.md`、`firmware/PROGRESS.md`。
+
+### 次の作業
+
+1. より細かい角度刻み(10-15deg)でバンド境界(80/235deg)の精度を追い込む
+   (このセッションでは着手直前で中断)。
+2. wheel≠0での角度依存帯とのカップリング確認。
+3. 他3基が同じ3Dプリント部品を使う場合、同様の角度依存点検・補償の要否を確認する。
+4. ロードマップ手順2(加速・制動FF同定)、手順4(commissioning cap 60→80→100段階拡張、
+   角度依存stallの目処が立ってから)、P1.2(back-calculation anti-windup)、
+   P0.1(連続unwrap角)・pre-steer状態遷移は保留のまま。
+5. Teensy中央実装は未着手(ドキュメントのみ)。
+
+## 2026-07-31 (実機介入: mode包絡射影flash・stall原因特定・テーパ付きfriction FF採用)
+
+### やったこと
+
+- 前セクションのP0.3/P1.4実装後、実機(can0接続・ホイール浮上済み)へ直接介入し、
+  `unit_steer_mode_id.py`で外周を切ったwheel=0 steer速度step/PRBSを70+試行実施した。
+  Kp=60/Ki=100が開ループでは0% overshootの良好な候補と判明。
+- Kp=60/Ki=100をmain.c既定へ反映しflashしたが、`unit_web_ui.py`のMOTION_SETTLED
+  (製品契約のclosed-loop指標)でA/B検証したところ**明確に悪化**(1.1-1.2s→1.8-3.7s、
+  1回未収束)と判明し、即座にKp=120/Ki=50へ復元・再flash・再検証した。
+  教訓: inner loopゲインは開ループstep応答だけで採否を決めず、必ずclosed-loop
+  MOTION_SETTLEDで検証してから採用する。
+- 5-6回に1回起きる間欠非収束(0.5deg強で数秒粘る)をtelemetryで直接診断。
+  commanded current(~450raw)が既知のbreakaway電流(850-950raw)を大きく下回ったまま
+  `steer_min_rpm=0`で床が無く、純積分だけでbreakawayへ到達するのを待つ構造が原因と特定した。
+- 定数Coulomb FF(既存の`steer_friction_ff_current`)を再検証。wheel=0のstallは解消するが
+  wheel=265rpmの収束を1.1-1.4s→2.4-4.0sへ悪化させるトレードオフを確認(過去の不採用判断と
+  整合)。`unit_controller.c`へ`target_wheel_rpm`30rpmで0まで線形テーパするロジックを追加し、
+  wheel=0近傍だけに効かせる設計へ変更。wheel=0で14/14 stall解消、wheel=265/600rpmは無影響
+  (1.18-1.59s)を確認してflash採用した。
+- 実機介入中に重大インシデントが1件発生: `unit_bench.py run`がduration経過後
+  `UNIT_CTRL disable`を無条件即送信する実装で、wheel=600-1200rpmのフル回転中に繰り返し
+  切断したところ、ユーザーから「制動が急すぎて電圧上昇で電源落ちる」と警告を受けた。
+  `unit_bench.py run`へ減速→disableの安全策(`--wheel-decel-rpm-per-s`等)を追加し再発防止。
+  ハードウェア損傷は確認されていない(idle・feedback OK・温度正常に復帰)。詳細は
+  `firmware/PROGRESS.md`。
+
+### 現在の状態
+
+- Flash済み既定値: Kp=120/Ki=50/tau=2ms(従来値のまま)、`steer_friction_ff_current=200`
+  (新規、wheel 30rpm以上でテーパアウト)、P0.3(mode包絡射影)・P1.4(連続デッドバンド)込み。
+- wheel=0/265/600(/一部1000/1200)で実機A/B・回帰とも良好。ユニットはidle・健全。
+- `unit_bench.py`にwheel≠0時の安全な停止手順を追加済み。
+
+### 次の作業
+
+1. wheel=1000/1200rpmでのfriction FFテーパ後の回帰を実機確認する。
+2. 絶対角を変えた反復試験で、残る間欠変動(0.5deg弱で数百ms)の統計を取る。
+3. `docs/control/CENTRAL_COORDINATED_CONTROL.md`のロードマップ手順3(time scale 2.0→1.5→…→1.0)
+   へ進む。
+4. P0.1(連続unwrap角)・pre-steer状態遷移・P1.2(back-calculation anti-windup)は
+   引き続き保留(理由は`firmware/PROGRESS.md`参照)。
+
+## 2026-07-31 (P0/P1実装: mode包絡射影・動的commissioning guard・連続デッドバンド)
+
+### やったこと
+
+- ユーザーがwheel=0外周切りのsteer mode速度step/PRBS同定(`unit_steer_mode_id.py`)を
+  実機で実施中の並行作業として、実装計画のP0/P1項目をコード側から自走で進めた
+  (詳細は`firmware/PROGRESS.md`)。いずれもfirmwareは書き込みまで、Web UIは再起動まで
+  現在進行中の実機テストへは影響しない変更。
+- **P0.3 mode要求の包絡射影**: `unit_controller.c`の「steerを先にclampしdriveが残りを
+  受け取る」非対称スキームを、`|steer_mode|+|drive_mode|<=motor_max_rpm`への共通scale射影
+  へ置き換えた。両モード要求の比(=指令方向)を保ったまま469rpm diamondを守る。
+  通常のwheel=0/265rpm試験のような非飽和域では無変化(469rpm予算に対して十分小さいため)。
+- **固定40rpm上限→動的commissioning guard**: `tools/linux/unit_web_ui.py`の
+  `steer_rate_available_dps()`にNoneで無効化できる`commissioning_cap_rpm`引数を追加し、
+  `AppState.steer_commissioning_cap_rpm`(既定40rpmのまま、`/api/set`で変更・null化可能)
+  経由でGUI/API双方から段階拡張できるようにした。既定挙動・self-check・240dps上限は変更なし。
+- **P1.4 連続デッドバンド整形**: `unit_controller.c`のangle P項を、deadband境界で0へ不連続に
+  落ちる旧実装から、境界でangle_kp*errorと連続に一致する二次テーパへ変更した。現在実施中の
+  外周切りmode ID試験はこのコードパスを通らないため無影響。
+- firmware Linux CMakeビルド(`firmware/scripts/build.sh`)、`unit_web_ui.py --check`、
+  JS構文チェック、`git diff --check`はすべて合格。
+- P1.2(back-calculation anti-windup)とP0.1(連続unwrap角)+pre-steer状態遷移は
+  実機チューニング/大きな設計判断が必要なため今回は見送り、理由付きで次回へ持ち越した。
+
+### 現在の状態
+
+- `firmware/src/control/unit_controller.c`と`tools/linux/unit_web_ui.py`にコード変更あり
+  (未コミット)。実機への反映(build.ps1/flash.ps1、Web UI再起動)はユーザー側の判断で実施。
+- wheel=0速度step/PRBS同定は実機で進行中。実測ログはまだこのセッションでは確認していない。
+
+### 次の作業
+
+1. P0.3/P1.4を含む新ファームをbuild/flashし、wheel=0/265rpm正逆90degの回帰(現行12/12基準)が
+   崩れていないことを確認してから、mode ID結果の反映(Kp/Ki/LPF更新)へ進む。
+2. mode ID実測ログを基に速度PI・LPFを再同定し、time scale 2.0→1.5→...→1.0を段階的に縮小する。
+3. P1.2(back-calculation anti-windup)は実機ログでFF起因とPI起因の飽和を切り分けてから設計する。
+4. P0.1(連続unwrap角)とwheel=0 pre-steer状態遷移は、上記の局所帯域向上が一段落してから着手する。
+
 ## 2026-07-31 (ステア応答高速化・wheel=0操舵 実装計画)
 
 ### やったこと
@@ -1143,6 +1821,25 @@
 1. AMT102の最新データシートで電源範囲、出力形式、ピン/線色、DIP分解能設定を最終確認して部品表・コネクタ表へ反映する。
 2. A/B 6ch分の5V→3.3V入力方式(レベル変換/保護/シュミット化)を決める。
 3. NUCLEOでTIM2/TIM3/TIM4 Encoder Modeの最小ファームを作り、1輪手回しでカウント方向と1回転countを確認する。
+## 2026-07-12 (Hokuyo USB LiDAR接続・RViz表示)
+
+### やったこと
+
+- mini PCへUSB接続したHokuyo URGシリーズをROS 2 Humbleの`urg_node2_nl`で確認し、
+  hardware ID `00905840`、`/scan`のLaserScan実データ取得まで確認。
+- USB再接続時に`/dev/ttyACM0`から`/dev/ttyACM1`へ番号が変わることを確認。CANable等との
+  競合を避けるため、Hokuyo固有の`/dev/serial/by-id/...`永続パスを使う設定へ変更。
+- USB用launchとRViz設定を追加。RVizは`laser`固定フレーム、`/scan`、`Best Effort` QoSで表示する。
+- 詳細手順を`docs/software/HOKUYO_LIDAR_SETUP.md`へ記録。
+
+### 現在の状態
+
+- HokuyoはUSB再接続後も永続パス経由で認識され、距離走査をRViz表示できる。
+
+### 次の作業
+
+1. 機体座標系へ取り付ける際は、`base_link`から`laser`への静的TFを追加する。
+2. 障害物回避や自己位置推定へ使う場合は、2 mの表示範囲とLiDAR取付高さを実機要件に合わせて見直す。
 
 ## 2026-07-08 (Linux mini PC評価環境確立、低速stick-slip対策完了)
 
@@ -1674,3 +2371,68 @@
     - 各ユニットブロックの`instances`パスを3シート分（U3/U7/U9）に統一し、旧チャンネルA用の重複リファレンス（U5/U6/U8）を削除。GND新規シンボルの参照は`#PWR044`〜`046`。
   - `kicad-cli sch erc`で0 violations確認済み（`fresh_erc*.rpt`はスクラッチ確認用で削除済み、リポジトリには残していない）。
 - 次の作業: PCBレイアウト（`Oddom board.kicad_pcb`）側へ配置配線を進める。まだ`hardware/odometry-board/Oddom board/`一式は未コミット（`git status`で確認要）。
+
+## 2026-08-02 ESP32 Bluetooth→UART ベンチ受信機
+
+- ESP32-C3 Super MiniのWi-Fi経路は切り上げ、通常ESP32（30ピン、CH340）へ
+  DualSenseをBluetooth直結するベンチ構成へ変更。
+- MCP2551中央CANベンチ配線は5V RXDレベルと物理層切り分けの手間から撤去し、
+  ESP32↔NUCLEO間を3.3V UART 115200bps、固定長14byte+CRC8へ変更。
+- 配線はESP GPIO17/TX→NUCLEO D0=PC5/RX、NUCLEO CN10-21=PA9/TX→
+  ESP GPIO22/RX、GND共通。NUCLEOのUSBデバッグPA2/PA3は維持。
+- `brltty-udev`停止とCH341ドライバ再ロード後、CH340を`/dev/ttyUSB0`で認識。
+  ESP32-D0WD-V3へ安全ロック版を書き込み・verify・再起動まで成功。
+- NUCLEO USART1のFIFO/overrun復帰を追加。ESP→NUCLEOは約690byte/s、
+  NUCLEO→ESPはSTATUS 50frame/sで連続通信し、`tgt=1`、`fdbk=1`を確認。
+- DualSenseをBluepad32で認識（VID 054c/PID 0ce6）。AMT現在位置（raw約3258）を
+  0°としてFlash保存し、再起動後もゼロ点が維持されることを確認。
+- 車輪浮上状態でOPTIONS arm + R1デッドマンを実動確認。約15rpm指令で車輪速度が
+  14.6rpm付近へ追従し、操舵も目標付近へ追従する良好な挙動を確認。
+- 安全停止中もR1を保持すると20msごとに再enableしていたため、NUCLEO側に
+  「異常停止後はenable=0受信まで再arm禁止」のラッチを追加。ESP側の操舵指令も
+  現在角との差を最大±90°へ制限した。
+- 操作系をラジコン型へ変更。左スティックX=操舵（中央0°、端±90°。実機確認後に
+  左右符号を反転）、右スティックY=正逆スロットル。速度上限は起動時500rpm、十字キー
+  上下で250rpmずつ変更（250〜1300rpm、変更時に短く振動）。OPTIONS armとR1デッドマンは維持。
+- ESP/NUCLEOともビルド・書き込み成功。現在は車輪浮上試験用として
+  `DSD_MOTOR_ENABLE_ALLOWED=1`。
+- 次: 新しい分離操作で左右・前後の符号と操作感を確認し、必要なら軸反転・最大速度・
+  操舵範囲を調整する。
+
+## 2026-08-04 AMT原点再校正
+
+- ユーザー指定の機械位置を新しい0°として、AMT raw=331をSTM32 Flashへ保存。
+- 校正ワンショット版で`save=1`、`zero=331`、sequence=3、CRC errorなしを確認。
+- ワンショット設定を無効へ戻した通常版を再ビルド・書き込みし、再起動後も
+  `zero=331`が保持され、現在角が359.824°（0°に対して-0.176°）付近であることを確認。
+- ST-Link仮想ドライブはHEXが容量を超えたため、同内容のBIN（約11KB）で書き込んだ。
+
+## 2026-08-07 ラジコン同期ログ・PCなし記録
+
+- ESP32へ20Hz同期テレメトリを追加。ESP指令とNUCLEO返信を同じ行へ記録する。
+  steer/wheelのtarget/actual/error、enable/unit_active、速度上限、UART bad/gap/txFailを含む。
+- `capture_radio_telemetry.py`、`analyze_radio_telemetry.py`を追加し、CSV保存、定常/過渡の
+  分離集計、R1停止時間、通信品質、target/actualグラフ、Markdownレポート生成を自動化。
+- 車輪浮上状態の90秒ラジコンログ（20Hz、1801sample）を取得。
+  - UART bad/gap/txFail=すべて0、enable指令1388sample中active成立1387sample。
+  - 定常ステア絶対誤差p95=0.439°、max=1.170°。
+  - 定常wheel絶対誤差p95=13.059rpm、相対p95=1.086%。
+  - 急な左右切返しではsteer errorが最大90°（ESP側command clamp）へ達するが、保持後の
+    定常追従は良好。直接角度指令のrate/profile整形が次の改善候補。
+  - R1解除後の30rpm以下到達はmedian 75ms、最大750ms。最大値は解除直前約235rpmで、
+    immediate disable後の惰性停止。通常停止の閉ループ減速と緊急disableの分離が候補。
+- ユーザー指摘どおりUSB接続・浮上試験だけでは実走評価にならないため、ESP内蔵LittleFSへ
+  PCなしで20Hz CSV保存する機能を追加。十字左で開始/停止、走行後USB接続時にPCから
+  `D`コマンドを送って自動dumpする。
+  録画中はUSB TEL出力を止め、Flashへ保存する。新規録画時は`/radio.csv`を上書き。
+- `download_offline_log.py`を追加。USB再接続後の`D`送信、dump受信、自動解析に対応。
+- LittleFS mount成功（`LittleFS=1`）、ESP↔NUCLEO UART返信正常、ビルド・ESP書き込み成功。
+- PC USBを外した状態で録画し、再接続後に自動回収・解析するend-to-end試験が成立。
+  96.09秒/1920sampleを回収し、UART bad/gap/txFail=0、定常steer誤差p95=0.264°・
+  max=0.527°、定常wheel相対誤差p95=2.928%、R1停止median=25ms・max=350ms。
+  この記録も車輪浮上の無負荷基準であり、接地性能の判定には使わない。
+- 最新の内蔵ログ79.08秒/1581sampleも回収。UART bad/gap/txFail=0、定常steer誤差
+  p95=0.364°・max=0.777°、定常wheel絶対誤差p95=24.129rpm（相対p95=5.539%）、
+  R1停止median=75ms・max=1.300s。単輪の定常操舵と通信は3輪試験へ進める水準と判断した。
+- 次: 3輪浮上状態で回転方向・ステア原点・指令mappingを確認し、成立後は250〜500rpm上限から
+  接地試験へ進む。3輪同時動作時の電源・通信・停止ログを採り、profileと通常停止を調整する。

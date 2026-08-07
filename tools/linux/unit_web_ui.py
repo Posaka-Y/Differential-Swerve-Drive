@@ -24,7 +24,13 @@ CAN message spec (unitId=1):
     SET_TARGET_FF  ID 0x111  DLC 8  int32 LE steer_rate_mdeg_per_s, int32 LE 0
                    Sent immediately before SET_TARGET every cycle, including
                    the final zero needed to clear rate/acceleration FF.
+    SET_TARGET_ACCEL_FF ID 0x161 DLC 8 int32 LE steer_accel_mdeg_per_s2,
+                   int32 LE reserved=0. This is the Classic-CAN bench path for
+                   TRAJECTORY_FD thetaDDot and is sent every cycle.
     UNIT_CTRL      ID 0x121  DLC 2  enable = 01 01, disable = 01 00
+                   save AMT zero = 03 00, clear = 04 00, read = 05 00
+    UNIT_STATUS_DIAG ID 0x1B1 DLC 8  four-page high-speed-control telemetry
+    CALIB_RESULT   ID 0x1C1  DLC 8  uint16 LE zero/raw/sequence/flags
 
 VCP telemetry (default /dev/ttyACM0, 115200 8N1), one line per period, e.g.:
 
@@ -79,10 +85,13 @@ from pathlib import Path
 
 SET_TARGET_ID = 0x101
 SET_TARGET_FF_ID = 0x111
+SET_TARGET_ACCEL_FF_ID = 0x161
 UNIT_CTRL_ID = 0x121
 STATUS1_ID = 0x181
 STATUS2_ID = 0x191
 STATUS3_ID = 0x1A1
+UNIT_STATUS_DIAG_ID = 0x1B1
+CALIB_RESULT_ID = 0x1C1
 
 STATUS_FLAG_ACTIVE = 1 << 0
 STATUS_FLAG_TARGET_FRESH = 1 << 1
@@ -92,6 +101,17 @@ STATUS_FLAG_STEER_IN_BAND = 1 << 4
 STATUS_FLAG_WHEEL_IN_BAND = 1 << 5
 STATUS_FLAG_MOTION_SETTLED = 1 << 6
 STATUS_FLAG_LIMITING_ACTIVE = 1 << 7
+STATUS_FLAG_CALIBRATED = 1 << 8
+STATUS_FLAG_CONFIG_CRC_ERROR = 1 << 9
+STATUS_FLAG_CALIB_PAGE_FULL = 1 << 10
+STATUS_FLAG_TORQUE_SCALING_ACTIVE = 1 << 11
+STATUS_FLAG_STEER_BRAKING_ACTIVE = 1 << 12
+
+CALIB_RESULT_CALIBRATED = 1 << 0
+CALIB_RESULT_CRC_ERROR = 1 << 1
+CALIB_RESULT_PAGE_FULL = 1 << 2
+CALIB_RESULT_LAST_OP_FAILED = 1 << 3
+CALIB_RESULT_RAW_FRESH = 1 << 4
 
 ENABLE_PAYLOAD = bytes([0x01, 0x01])
 DISABLE_PAYLOAD = bytes([0x01, 0x00])
@@ -110,11 +130,20 @@ STOP_SETTLE_MARGIN_S = 0.5
 
 STEER_DEG_MIN, STEER_DEG_MAX = 0.0, 360.0
 WHEEL_RPM_MIN, WHEEL_RPM_MAX = -1360.0, 1360.0
-STEER_RATE_DPS_MIN, STEER_RATE_DPS_MAX = 0.0, 240.0
-STEER_ACCEL_DPS2_MIN, STEER_ACCEL_DPS2_MAX = 30.0, 3600.0
+STEER_RATE_DPS_MIN = 0.0
+STEER_RATE_DPS_MAX = 2046.0
+STEER_ACCEL_DPS2_MIN, STEER_ACCEL_DPS2_MAX = 30.0, 12000.0
 STEER_ACCEL_DPS2_DEFAULT = 3600.0
-STEER_DECEL_DPS2_MIN, STEER_DECEL_DPS2_MAX = 30.0, 3600.0
+STEER_DECEL_DPS2_MIN, STEER_DECEL_DPS2_MAX = 30.0, 12000.0
 STEER_DECEL_DPS2_DEFAULT = 2250.0
+STEER_JERK_DPS3_MIN, STEER_JERK_DPS3_MAX = 0.0, 500000.0
+# Values below this take too long to reverse the commissioning acceleration
+# and produce a large target-profile excursion on a 90deg move. Zero remains
+# the explicit legacy-mode selector; any non-zero request is clamped here.
+STEER_JERK_DPS3_ACTIVE_MIN = 100000.0
+# Zero preserves the accepted acceleration-limited profile. P4 tests opt in
+# explicitly, then the accepted value can become the production default.
+STEER_JERK_DPS3_DEFAULT = 0.0
 WHEEL_ACCEL_RPM_PER_S_MIN, WHEEL_ACCEL_RPM_PER_S_MAX = 100.0, 4000.0
 WHEEL_DECEL_RPM_PER_S_MIN, WHEEL_DECEL_RPM_PER_S_MAX = 100.0, 4000.0
 WHEEL_ACCEL_RPM_PER_S_DEFAULT = 1000.0
@@ -124,8 +153,19 @@ WHEEL_GEAR_RATIO = 32.0 / 11.0
 STEER_GEAR_RATIO = 8.0 / 11.0
 MOTOR_MAX_RPM = 469.0
 MOTOR_PLANNED_RPM = MOTOR_MAX_RPM * 0.90
-STEER_AXIS_MAX_RPM = 40.0
-TRAJECTORY_TIME_SCALE_DEFAULT = 2.0
+# Default value of the runtime-adjustable commissioning guard (AppState.
+# steer_commissioning_cap_rpm), not a permanent limit
+# (docs/control/CENTRAL_COORDINATED_CONTROL.md "固定40rpm上限の廃止と動的包絡"):
+# the physics-derived planned/hard envelope from steer_rate_available_dps()
+# is the production bound. This flat axis-rpm ceiling stays layered on top
+# during bring-up and is raised in stages (40->60->80->100rpm) via
+# POST /api/set {"steer_commissioning_cap_rpm": ...}; passing null disables
+# it so the dynamic envelope alone governs.
+STEER_AXIS_MAX_RPM = 60.0
+# Absolute physical ceiling for the cap field itself: the steer-axis rpm the
+# 469rpm hard motor-mode envelope allows at wheel=0 (469 * 8/11).
+STEER_COMMISSIONING_CAP_RPM_CEILING = MOTOR_MAX_RPM * STEER_GEAR_RATIO
+TRAJECTORY_TIME_SCALE_DEFAULT = 1.0
 TRAJECTORY_TIME_SCALE_MIN, TRAJECTORY_TIME_SCALE_MAX = 1.0, 4.0
 # Initial measured p99-like profile-end -> STATUS3 settled residual on the
 # lifted-wheel 12-trial acceptance batch was about 0.31s (including the
@@ -171,8 +211,17 @@ def send_set_target_ff(sock, steer_rate_mdeg_per_s, wheel_accel_rpm_milli_per_s=
     sock.send(build_can_frame(SET_TARGET_FF_ID, data))
 
 
+def send_set_target_accel_ff(sock, steer_accel_mdeg_per_s2):
+    data = struct.pack("<ii", steer_accel_mdeg_per_s2, 0)
+    sock.send(build_can_frame(SET_TARGET_ACCEL_FF_ID, data))
+
+
 def send_unit_ctrl(sock, enable):
     sock.send(build_can_frame(UNIT_CTRL_ID, ENABLE_PAYLOAD if enable else DISABLE_PAYLOAD))
+
+
+def send_unit_ctrl_subcommand(sock, command):
+    sock.send(build_can_frame(UNIT_CTRL_ID, bytes([command, 0x00])))
 
 
 def emergency_disable(can_iface):
@@ -287,9 +336,19 @@ def summarize_telemetry(fields):
     ffs = scalar("ffS")
     ffa = scalar("ffA")
     accel_ff_current = scalar("aFF")
+    observer_angle = scalar("obsA")
+    observer_rpm = scalar("obsR")
+    observer_innovation = scalar("obsE")
     steer_integral = scalar("sInt")
     drive_integral = scalar("dInt")
     status_flags = scalar("statusFlags")
+    torque_scaling_active = (
+        int(bool(int(status_flags) & STATUS_FLAG_TORQUE_SCALING_ACTIVE))
+        if status_flags is not None else scalar("scale"))
+    steer_braking_active = (
+        int(bool(int(status_flags) & STATUS_FLAG_STEER_BRAKING_ACTIVE))
+        if status_flags is not None else scalar("brake"))
+    steer_accel_explicit_active = scalar("ffExplicit")
 
     wheel_rpm_actual_milli = scalar("wheelActual")
     wheel_rpm_actual = (
@@ -338,6 +397,49 @@ def summarize_telemetry(fields):
             ffa / 1000.0 if ffa is not None else None),
         "steer_accel_ff_current": (
             accel_ff_current / 1000.0 if accel_ff_current is not None else None),
+        "steer_observer_angle_deg": (
+            observer_angle / 1000.0 if observer_angle is not None else None),
+        "steer_observer_rpm": (
+            observer_rpm / 1000.0 if observer_rpm is not None else None),
+        "steer_observer_innovation_deg": (
+            observer_innovation / 1000.0
+            if observer_innovation is not None else None),
+        "steer_schedule_rpm": (
+            scalar("schedR") / 1000.0
+            if scalar("schedR") is not None else None),
+        "scheduled_steer_kp": (
+            scalar("schedKp") / 1000.0
+            if scalar("schedKp") is not None else None),
+        "scheduled_steer_ki": (
+            scalar("schedKi") / 1000.0
+            if scalar("schedKi") is not None else None),
+        "scheduled_accel_ff_gain": (
+            scalar("schedKa") / 1000.0
+            if scalar("schedKa") is not None else None),
+        "scheduled_decel_ff_gain": (
+            scalar("schedKd") / 1000.0
+            if scalar("schedKd") is not None else None),
+        "scheduled_steer_backcalc_gain": (
+            scalar("schedKaw") / 1000.0
+            if scalar("schedKaw") is not None else None),
+        "steer_current_unsaturated": (
+            scalar("sUnsat") / 1000.0
+            if scalar("sUnsat") is not None else None),
+        "steer_current_applied": (
+            scalar("sApplied") / 1000.0
+            if scalar("sApplied") is not None else None),
+        "steer_saturation_residual": (
+            scalar("sResidual") / 1000.0
+            if scalar("sResidual") is not None else None),
+        "steer_saturation_duration_ms": scalar("sSatMs"),
+        "steer_backcalc_correction": (
+            scalar("sKawDelta") / 1000.0
+            if scalar("sKawDelta") is not None else None),
+        "drive_backcalc_correction": (
+            scalar("dKawDelta") / 1000.0
+            if scalar("dKawDelta") is not None else None),
+        "steer_braking_active": steer_braking_active,
+        "steer_accel_explicit_active": steer_accel_explicit_active,
         "i1": i1,
         "i2": i2,
         "q1": q1,
@@ -352,7 +454,7 @@ def summarize_telemetry(fields):
         "drive_onset_active": scalar("onset"),
         "drive_onset_count": scalar("onsetN"),
         "drive_integral_floor_active": scalar("floor"),
-        "torque_scaling_active": scalar("scale"),
+        "torque_scaling_active": torque_scaling_active,
         # Present only on "idle" lines: firmware-side start-condition health
         # (fdbkOk=0 means no C620 feedback -> enable will silently not start,
         # typically the 24V motor power is off).
@@ -374,6 +476,52 @@ def summarize_telemetry(fields):
     }
 
 
+def decode_unit_status_diag(data):
+    """Decode the temporary 3-page Classic-CAN form of UNIT_STATUS_FD."""
+    if len(data) != 8:
+        raise ValueError("UNIT_STATUS_DIAG requires 8 bytes")
+    page, diag_flags = struct.unpack_from("<BB", data)
+    fields = {
+        "scale": int(bool(diag_flags & 0x01)),
+        "brake": int(bool(diag_flags & 0x02)),
+        "ffExplicit": int(bool(diag_flags & 0x04)),
+    }
+    if page == 0:
+        schedule_centi_rpm, kp_deci, ki_deci = struct.unpack_from(
+            "<HHH", data, 2)
+        fields.update({
+            "schedR": schedule_centi_rpm * 10,
+            "schedKp": kp_deci * 100,
+            "schedKi": ki_deci * 100,
+        })
+    elif page == 1:
+        accel_ff_milli, decel_ff_milli, saturation_ms = struct.unpack_from(
+            "<HHH", data, 2)
+        fields.update({
+            "schedKa": accel_ff_milli,
+            "schedKd": decel_ff_milli,
+            "sSatMs": saturation_ms,
+        })
+    elif page == 2:
+        unsaturated, applied, residual = struct.unpack_from("<hhh", data, 2)
+        fields.update({
+            "sUnsat": unsaturated * 1000,
+            "sApplied": applied * 1000,
+            "sResidual": residual * 1000,
+        })
+    elif page == 3:
+        kaw_milli, steer_delta_milli, drive_delta_milli = struct.unpack_from(
+            "<Hhh", data, 2)
+        fields.update({
+            "schedKaw": kaw_milli,
+            "sKawDelta": steer_delta_milli,
+            "dKawDelta": drive_delta_milli,
+        })
+    else:
+        raise ValueError(f"unknown UNIT_STATUS_DIAG page {page}")
+    return page, diag_flags, fields
+
+
 # --------------------------------------------------------------------------
 # Shared server state
 # --------------------------------------------------------------------------
@@ -390,8 +538,13 @@ class AppState:
         self.steer_deg = 0.0
         self.wheel_rpm = 0.0
         self.steer_rate_dps = 0.0
+        # Runtime-adjustable commissioning guard layered on the physics
+        # envelope in steer_rate_available_dps(); None disables it (dynamic
+        # envelope only). See STEER_AXIS_MAX_RPM comment above.
+        self.steer_commissioning_cap_rpm = STEER_AXIS_MAX_RPM
         self.steer_accel_dps2 = STEER_ACCEL_DPS2_DEFAULT
         self.steer_decel_dps2 = STEER_DECEL_DPS2_DEFAULT
+        self.steer_jerk_dps3 = STEER_JERK_DPS3_DEFAULT
         self.wheel_accel_rpm_per_s = WHEEL_ACCEL_RPM_PER_S_DEFAULT
         self.wheel_decel_rpm_per_s = WHEEL_DECEL_RPM_PER_S_DEFAULT
         self.trajectory_time_scale = TRAJECTORY_TIME_SCALE_DEFAULT
@@ -405,6 +558,7 @@ class AppState:
         # this state lets target velocity ramp down before arrival instead of
         # dropping SET_TARGET_FF abruptly from full speed to zero.
         self.profile_steer_rate_dps = 0.0
+        self.profile_steer_accel_dps2 = 0.0
         self.effective_wheel_rpm = 0.0
 
         self.enabled = False
@@ -418,6 +572,12 @@ class AppState:
         self.telemetry_time = None  # time.monotonic() of last telemetry line
         self.telemetry_sequence = 0 # increments once per fresh VCP/CAN sample
         self.motion_timing = None
+
+        # Last CALIB_RESULT received from the unit. The generation counter
+        # lets synchronous HTTP actions distinguish a new response from an
+        # old cached one without coupling the CAN RX thread to the server.
+        self.calibration = None
+        self.calibration_generation = 0
 
         self.last_stop_reason = None
 
@@ -434,18 +594,23 @@ def mod_360000(mdeg):
     return mdeg % 360000.0
 
 
-def steer_rate_available_dps(wheel_rpm, motor_budget_rpm=MOTOR_PLANNED_RPM):
+def steer_rate_available_dps(wheel_rpm, motor_budget_rpm=MOTOR_PLANNED_RPM,
+                             commissioning_cap_rpm=STEER_AXIS_MAX_RPM):
     """Steer-axis rate that preserves the requested wheel rpm.
 
     This is the single-module form of the differential-mode envelope:
     |wheel|/(32/11) + |steer_rpm|/(8/11) <= 469.
+
+    commissioning_cap_rpm is a flat axis-rpm ceiling layered on top of that
+    physics envelope (see STEER_AXIS_MAX_RPM comment); pass None to use the
+    envelope alone.
     """
     drive_mode_rpm = abs(wheel_rpm) / WHEEL_GEAR_RATIO
     steer_mode_available_rpm = max(0.0, motor_budget_rpm - drive_mode_rpm)
-    steer_axis_available_rpm = min(
-        STEER_AXIS_MAX_RPM,
-        steer_mode_available_rpm * STEER_GEAR_RATIO,
-    )
+    steer_axis_available_rpm = steer_mode_available_rpm * STEER_GEAR_RATIO
+    if commissioning_cap_rpm is not None:
+        steer_axis_available_rpm = min(
+            steer_axis_available_rpm, commissioning_cap_rpm)
     return steer_axis_available_rpm * 6.0
 
 
@@ -490,14 +655,15 @@ def wheel_profile_min_time_s(start_rpm, destination_rpm,
 
 def motion_timing(distance_deg, start_wheel_rpm, wheel_rpm,
                   requested_rate_dps, accel_dps2, decel_dps2,
-                  wheel_accel_rpm_per_s, wheel_decel_rpm_per_s, time_scale):
+                  wheel_accel_rpm_per_s, wheel_decel_rpm_per_s, time_scale,
+                  commissioning_cap_rpm=STEER_AXIS_MAX_RPM):
     """Return hard/planned reference times for a steady wheel target."""
     hard_rate = min(
         abs(requested_rate_dps),
-        steer_rate_available_dps(wheel_rpm, MOTOR_MAX_RPM))
+        steer_rate_available_dps(wheel_rpm, MOTOR_MAX_RPM, commissioning_cap_rpm))
     planned_rate = min(
         abs(requested_rate_dps),
-        steer_rate_available_dps(wheel_rpm, MOTOR_PLANNED_RPM))
+        steer_rate_available_dps(wheel_rpm, MOTOR_PLANNED_RPM, commissioning_cap_rpm))
     hard_steer_min = steer_profile_min_time_s(
         distance_deg, hard_rate, accel_dps2, decel_dps2)
     planned_steer_min = steer_profile_min_time_s(
@@ -604,6 +770,143 @@ def profile_steer_step(effective_mdeg, destination_mdeg, velocity_dps,
     return mod_360000(effective_mdeg + step_mdeg), velocity_dps
 
 
+def jerk_limited_stop_distance_deg(speed_dps, accel_dps2,
+                                   max_decel_dps2, max_jerk_dps3):
+    """Distance needed to stop while acceleration slews toward -decel.
+
+    Values are expressed along the current direction of travel. The first
+    phase uses a(t)=a0-J*t. If velocity reaches zero during that phase, solve
+    the quadratic exactly; otherwise append the constant-deceleration phase.
+    This is the look-ahead missing from a plain sqrt(2*a*distance) bound.
+    """
+    speed_dps = max(0.0, speed_dps)
+    max_decel_dps2 = max(0.0, max_decel_dps2)
+    max_jerk_dps3 = max(0.0, max_jerk_dps3)
+    if speed_dps <= 0.0:
+        return 0.0
+    if max_decel_dps2 <= 0.0 or max_jerk_dps3 <= 0.0:
+        return math.inf
+    accel_dps2 = max(-max_decel_dps2, accel_dps2)
+    ramp_time_s = max(0.0, (accel_dps2 + max_decel_dps2) / max_jerk_dps3)
+    stop_during_ramp_s = (
+        accel_dps2 + math.sqrt(
+            accel_dps2 * accel_dps2
+            + 2.0 * max_jerk_dps3 * speed_dps)
+    ) / max_jerk_dps3
+    if stop_during_ramp_s <= ramp_time_s:
+        t = stop_during_ramp_s
+        return max(0.0,
+                   speed_dps * t
+                   + 0.5 * accel_dps2 * t * t
+                   - max_jerk_dps3 * t * t * t / 6.0)
+    t = ramp_time_s
+    ramp_distance_deg = (
+        speed_dps * t
+        + 0.5 * accel_dps2 * t * t
+        - max_jerk_dps3 * t * t * t / 6.0)
+    speed_after_ramp_dps = max(
+        0.0,
+        speed_dps + accel_dps2 * t
+        - 0.5 * max_jerk_dps3 * t * t)
+    return max(0.0, ramp_distance_deg) + (
+        speed_after_ramp_dps * speed_after_ramp_dps
+        / (2.0 * max_decel_dps2))
+
+
+def profile_steer_step_jerk(effective_mdeg, destination_mdeg,
+                            velocity_dps, acceleration_dps2,
+                            max_rate_dps, max_accel_dps2,
+                            max_decel_dps2, max_jerk_dps3, dt_s):
+    """Advance one jerk-limited steer-target profile step.
+
+    Braking begins when the remaining angle reaches the exact stop distance
+    for the current velocity and acceleration. Acceleration itself can change
+    by at most J*dt, so the explicit thetaDDot sent to G474 has no torque step.
+    """
+    destination_mdeg = mod_360000(destination_mdeg)
+    effective_mdeg = mod_360000(effective_mdeg)
+    if (max_rate_dps <= 0.0 or max_accel_dps2 <= 0.0
+            or max_decel_dps2 <= 0.0 or max_jerk_dps3 <= 0.0
+            or dt_s <= 0.0):
+        return destination_mdeg, 0.0, 0.0
+
+    diff_mdeg = shortest_diff_mdeg(destination_mdeg, effective_mdeg)
+    if abs(diff_mdeg) < 0.001 and abs(velocity_dps) < 0.01:
+        # Once position and velocity have landed, hold them while thetaDDot
+        # returns to zero at the configured jerk. This avoids a final
+        # acceleration-FF step without integrating away from the destination.
+        return (
+            destination_mdeg,
+            0.0,
+            move_toward(
+                acceleration_dps2, 0.0, max_jerk_dps3 * dt_s),
+        )
+
+    direction = 1.0 if diff_mdeg >= 0.0 else -1.0
+    remaining_deg = abs(diff_mdeg) / 1000.0
+    speed_toward_dps = velocity_dps * direction
+    accel_toward_dps2 = acceleration_dps2 * direction
+
+    if speed_toward_dps < 0.0:
+        desired_accel_dps2 = max_accel_dps2
+    else:
+        stop_distance_deg = jerk_limited_stop_distance_deg(
+            speed_toward_dps, accel_toward_dps2,
+            max_decel_dps2, max_jerk_dps3)
+        # One discrete-time look-ahead prevents crossing the analytic switch
+        # surface between 200Hz updates.
+        lookahead_deg = max(0.0,
+                            speed_toward_dps * dt_s
+                            + 0.5 * max(accel_toward_dps2, 0.0)
+                            * dt_s * dt_s)
+        if remaining_deg <= stop_distance_deg + lookahead_deg:
+            desired_accel_dps2 = -max_decel_dps2
+        else:
+            # Start removing positive acceleration early enough to meet the
+            # speed cap without a velocity clamp/acceleration discontinuity.
+            rate_headroom_dps = max_rate_dps - speed_toward_dps
+            accel_fade_delta_dps = (
+                max(accel_toward_dps2, 0.0) ** 2
+                / (2.0 * max_jerk_dps3))
+            desired_accel_dps2 = (
+                0.0 if rate_headroom_dps <= accel_fade_delta_dps
+                else max_accel_dps2)
+
+    # Slew acceleration in the fixed/global angular coordinate. Applying an
+    # asymmetric accel/decel clamp after converting to the new target
+    # direction would create an acceleration step whenever the target is
+    # crossed and `direction` flips.
+    next_acceleration_dps2 = move_toward(
+        acceleration_dps2,
+        direction * desired_accel_dps2,
+        max_jerk_dps3 * dt_s,
+    )
+    next_velocity_dps = clamp(
+        velocity_dps
+        + 0.5 * (acceleration_dps2 + next_acceleration_dps2) * dt_s,
+        -max_rate_dps,
+        max_rate_dps,
+    )
+    next_speed_toward_dps = next_velocity_dps * direction
+
+    # After a small analytic/discrete-time overshoot, land the position when
+    # the profile velocity has actually reversed. Keep the current
+    # acceleration: the exact-destination branch above then slews it to zero.
+    # The 2deg ceiling prevents hiding a poor low-jerk trajectory with a large
+    # target jump (non-zero jerk is clamped to the validated active minimum).
+    if (speed_toward_dps < 0.0 <= next_speed_toward_dps
+            and remaining_deg <= 2.0):
+        return destination_mdeg, 0.0, next_acceleration_dps2
+
+    step_deg = 0.5 * (velocity_dps + next_velocity_dps) * dt_s
+
+    return (
+        mod_360000(effective_mdeg + step_deg * 1000.0),
+        next_velocity_dps,
+        next_acceleration_dps2,
+    )
+
+
 # The physical steer axis cannot always follow the commanded rate (the two
 # motors share the motor_max_rpm budget with the wheel, and the firmware's
 # steer_max_rpm clamp caps the axis rate). If the target keeps advancing
@@ -649,22 +952,46 @@ def can_tx_loop(stop_event, state, can_sock, can_lock):
             # of dropping from max rate to zero at the destination.
             rate_dps = min(
                 abs(state.steer_rate_dps),
-                steer_rate_available_dps(state.effective_wheel_rpm),
+                steer_rate_available_dps(
+                    state.effective_wheel_rpm,
+                    commissioning_cap_rpm=state.steer_commissioning_cap_rpm),
             )
             time_scale = state.trajectory_time_scale
             rate_dps /= time_scale
             ff_mdeg_s = 0
+            accel_ff_mdeg_s2 = 0
             if rate_dps > 0.0:
                 dest_mdeg = mod_360000(state.steer_deg * 1000.0)
-                advanced, profile_rate_dps = profile_steer_step(
-                    state.effective_steer_mdeg,
-                    dest_mdeg,
-                    state.profile_steer_rate_dps,
-                    rate_dps,
-                    state.steer_accel_dps2 / (time_scale * time_scale),
-                    state.steer_decel_dps2 / (time_scale * time_scale),
-                    dt,
-                )
+                previous_profile_rate_dps = state.profile_steer_rate_dps
+                if state.steer_jerk_dps3 > 0.0:
+                    advanced, profile_rate_dps, profile_accel_dps2 = (
+                        profile_steer_step_jerk(
+                            state.effective_steer_mdeg,
+                            dest_mdeg,
+                            state.profile_steer_rate_dps,
+                            state.profile_steer_accel_dps2,
+                            rate_dps,
+                            state.steer_accel_dps2
+                            / (time_scale * time_scale),
+                            state.steer_decel_dps2
+                            / (time_scale * time_scale),
+                            state.steer_jerk_dps3
+                            / (time_scale * time_scale * time_scale),
+                            dt,
+                        ))
+                else:
+                    advanced, profile_rate_dps = profile_steer_step(
+                        state.effective_steer_mdeg,
+                        dest_mdeg,
+                        state.profile_steer_rate_dps,
+                        rate_dps,
+                        state.steer_accel_dps2 / (time_scale * time_scale),
+                        state.steer_decel_dps2 / (time_scale * time_scale),
+                        dt,
+                    )
+                    profile_accel_dps2 = (
+                        (profile_rate_dps - previous_profile_rate_dps) / dt
+                        if dt > 0.0 else 0.0)
                 telem = state.telemetry
                 telem_fresh = (
                     telem is not None
@@ -681,9 +1008,12 @@ def can_tx_loop(stop_event, state, can_sock, can_lock):
                             float(telem["angle"]) - TARGET_LEASH_MDEG)
                 state.effective_steer_mdeg = advanced
                 state.profile_steer_rate_dps = profile_rate_dps
+                state.profile_steer_accel_dps2 = profile_accel_dps2
                 ff_mdeg_s = int(round(profile_rate_dps * 1000.0))
+                accel_ff_mdeg_s2 = int(round(profile_accel_dps2 * 1000.0))
             else:
                 state.profile_steer_rate_dps = 0.0
+                state.profile_steer_accel_dps2 = 0.0
             steer_mdeg = int(round(state.effective_steer_mdeg))
             wheel_rpm_milli = int(round(state.effective_wheel_rpm * 1000.0))
             wheel_accel_milli_per_s = int(round(
@@ -697,6 +1027,7 @@ def can_tx_loop(stop_event, state, can_sock, can_lock):
                 # prevents a clean acceleration-FF derivative at arrival.
                 send_set_target_ff(
                     can_sock, ff_mdeg_s, wheel_accel_milli_per_s)
+                send_set_target_accel_ff(can_sock, accel_ff_mdeg_s2)
                 send_set_target(can_sock, steer_mdeg, wheel_rpm_milli)
         except OSError:
             pass  # best-effort; next cycle will retry
@@ -796,12 +1127,42 @@ def can_status_rx_loop(stop_event, state, logger, can_iface):
                 logger.write("CANRX", f"ERROR: receive failed: {exc}")
                 break
             can_id, data = parse_can_frame(frame)
-            if len(data) != 8 or can_id not in (STATUS1_ID, STATUS2_ID, STATUS3_ID):
+            if len(data) != 8 or can_id not in (
+                    STATUS1_ID, STATUS2_ID, STATUS3_ID, UNIT_STATUS_DIAG_ID,
+                    CALIB_RESULT_ID):
                 continue
             now = time.monotonic()
             with state.lock:
+                if can_id == CALIB_RESULT_ID:
+                    zero_counts, raw_counts, sequence, flags = struct.unpack(
+                        "<HHHH", data)
+                    state.calibration = {
+                        "calibrated": bool(flags & CALIB_RESULT_CALIBRATED),
+                        "zero_counts": None if zero_counts == 0xFFFF else zero_counts,
+                        "raw_counts": None if raw_counts == 0xFFFF else raw_counts,
+                        "sequence": sequence,
+                        "crc_error": bool(flags & CALIB_RESULT_CRC_ERROR),
+                        "page_full": bool(flags & CALIB_RESULT_PAGE_FULL),
+                        "last_op_failed": bool(flags & CALIB_RESULT_LAST_OP_FAILED),
+                        "raw_fresh": bool(flags & CALIB_RESULT_RAW_FRESH),
+                        "received_monotonic": now,
+                    }
+                    state.calibration_generation += 1
+                    logger.write(
+                        "CANRX",
+                        f"CALIB zero={zero_counts} raw={raw_counts} seq={sequence} "
+                        f"flags=0x{flags:04x}")
+                    continue
                 merged = dict(state.telemetry or {})
-                if can_id == STATUS1_ID:
+                if can_id == UNIT_STATUS_DIAG_ID:
+                    try:
+                        page, diag_flags, diag_fields = decode_unit_status_diag(data)
+                    except ValueError:
+                        continue
+                    merged.update(diag_fields)
+                    raw_line = (
+                        f"UNIT_STATUS_DIAG page={page} flags=0x{diag_flags:02x}")
+                elif can_id == STATUS1_ID:
                     angle_mdeg, wheel_rpm_milli = struct.unpack("<ii", data)
                     merged["angle"] = angle_mdeg
                     merged["wheelActual"] = wheel_rpm_milli
@@ -906,12 +1267,31 @@ def handle_set(state, body):
         # request, the destination's snap-vs-slew decision must see the new
         # rate, or a rate sent together with the angle is silently bypassed.
         if "steer_rate_dps" in body:
+            # Ceiling follows the commissioning cap (None = disabled -> the
+            # absolute hard-envelope ceiling), not a fixed rate ceiling
+            # constant: otherwise raising steer_commissioning_cap_rpm has no
+            # effect because a request above the previous stage gets silently clamped
+            # back down here before it ever reaches steer_rate_available_dps.
+            cap_rpm = state.steer_commissioning_cap_rpm
+            ceiling_dps = (cap_rpm if cap_rpm is not None
+                           else STEER_COMMISSIONING_CAP_RPM_CEILING) * 6.0
             try:
-                v = clamp(float(body["steer_rate_dps"]), STEER_RATE_DPS_MIN, STEER_RATE_DPS_MAX)
+                v = clamp(float(body["steer_rate_dps"]), STEER_RATE_DPS_MIN, ceiling_dps)
             except (TypeError, ValueError):
                 return {"ok": False, "error": "invalid steer_rate_dps"}
             state.steer_rate_dps = v
             updated["steer_rate_dps"] = v
+        if "steer_commissioning_cap_rpm" in body:
+            raw = body["steer_commissioning_cap_rpm"]
+            if raw is None:
+                state.steer_commissioning_cap_rpm = None
+            else:
+                try:
+                    v = clamp(float(raw), 0.0, STEER_COMMISSIONING_CAP_RPM_CEILING)
+                except (TypeError, ValueError):
+                    return {"ok": False, "error": "invalid steer_commissioning_cap_rpm"}
+                state.steer_commissioning_cap_rpm = v
+            updated["steer_commissioning_cap_rpm"] = state.steer_commissioning_cap_rpm
         if "steer_accel_dps2" in body:
             try:
                 v = clamp(float(body["steer_accel_dps2"]),
@@ -928,6 +1308,20 @@ def handle_set(state, body):
                 return {"ok": False, "error": "invalid steer_decel_dps2"}
             state.steer_decel_dps2 = v
             updated["steer_decel_dps2"] = v
+        if "steer_jerk_dps3" in body:
+            try:
+                requested = float(body["steer_jerk_dps3"])
+            except (TypeError, ValueError):
+                return {"ok": False, "error": "invalid steer_jerk_dps3"}
+            v = (0.0 if requested <= 0.0 else clamp(
+                requested,
+                STEER_JERK_DPS3_ACTIVE_MIN,
+                STEER_JERK_DPS3_MAX,
+            ))
+            state.steer_jerk_dps3 = v
+            if v == 0.0:
+                state.profile_steer_accel_dps2 = 0.0
+            updated["steer_jerk_dps3"] = v
         if "wheel_accel_rpm_per_s" in body:
             try:
                 v = clamp(float(body["wheel_accel_rpm_per_s"]),
@@ -966,6 +1360,7 @@ def handle_set(state, body):
             if state.steer_rate_dps == 0.0:
                 state.effective_steer_mdeg = mod_360000(v * 1000.0)
                 state.profile_steer_rate_dps = 0.0
+                state.profile_steer_accel_dps2 = 0.0
             updated["steer_deg"] = v
         if "wheel_rpm" in body:
             try:
@@ -999,6 +1394,7 @@ def handle_set(state, body):
                 state.wheel_accel_rpm_per_s,
                 state.wheel_decel_rpm_per_s,
                 state.trajectory_time_scale,
+                state.steer_commissioning_cap_rpm,
             )
             state.motion_timing["started_monotonic"] = time.monotonic()
         elif not state.enabled:
@@ -1019,6 +1415,7 @@ def handle_enable(state, can_sock, can_lock, logger):
         # divergence guard).
         state.effective_steer_mdeg = mod_360000(float(angle_mdeg))
         state.profile_steer_rate_dps = 0.0
+        state.profile_steer_accel_dps2 = 0.0
         state.effective_wheel_rpm = 0.0
         state.wheel_rpm = 0.0
         state.steer_deg = state.effective_steer_mdeg / 1000.0
@@ -1041,12 +1438,34 @@ def handle_enable(state, can_sock, can_lock, logger):
         time.sleep(0.05)
         with can_lock:
             send_unit_ctrl(can_sock, True)
+        time.sleep(0.01)
+        with can_lock:
+            send_unit_ctrl(can_sock, True)
     except OSError as exc:
         with state.lock:
             state.enabled = False
         return {"ok": False, "error": f"CAN send failed: {exc}"}, 500
-    logger.write("WEBUI", f"enable sent (seeded steer target={state.steer_deg:.3f}deg)")
-    return {"ok": True, "steer_deg": state.steer_deg}, 200
+    deadline = time.monotonic() + 0.5
+    while time.monotonic() < deadline:
+        with state.lock:
+            flags = (state.telemetry or {}).get("statusFlags")
+        if isinstance(flags, (int, float)) and int(flags) & STATUS_FLAG_ACTIVE:
+            logger.write(
+                "WEBUI", f"enable confirmed (seeded steer target={state.steer_deg:.3f}deg)")
+            return {"ok": True, "steer_deg": state.steer_deg}, 200
+        time.sleep(0.01)
+
+    try:
+        with can_lock:
+            send_unit_ctrl(can_sock, False)
+            send_unit_ctrl(can_sock, False)
+    except OSError:
+        pass
+    with state.lock:
+        state.enabled = False
+        state.last_stop_reason = "enable not acknowledged by STATUS3"
+    logger.write("WEBUI", "ERROR: enable not acknowledged by STATUS3")
+    return {"ok": False, "error": "unit did not acknowledge enable"}, 504
 
 
 def handle_stop(state, can_sock, can_lock, logger):
@@ -1067,12 +1486,56 @@ def handle_disable(state, can_sock, can_lock, logger):
         state.wheel_rpm = 0.0
         state.steer_rate_dps = 0.0
         state.profile_steer_rate_dps = 0.0
+        state.profile_steer_accel_dps2 = 0.0
         state.effective_wheel_rpm = 0.0
         state.enabled = False
         state.last_stop_reason = "manual DISABLE (emergency, no coast)"
         state.motion_timing = None
     logger.write("WEBUI", "emergency disable sent")
     return {"ok": True}
+
+
+def handle_calibration(state, can_sock, can_lock, logger, command):
+    with state.lock:
+        if state.enabled:
+            return {"ok": False, "error": "Disable the unit before calibration"}, 409
+        previous_generation = state.calibration_generation
+    try:
+        with can_lock:
+            send_unit_ctrl_subcommand(can_sock, command)
+    except OSError as exc:
+        return {"ok": False, "error": f"CAN send failed: {exc}"}, 500
+
+    deadline = time.monotonic() + 0.75
+    response = None
+    while time.monotonic() < deadline:
+        with state.lock:
+            if state.calibration_generation != previous_generation:
+                response = dict(state.calibration)
+                break
+        time.sleep(0.01)
+    if response is None:
+        return {"ok": False, "error": "CALIB_RESULT timeout"}, 504
+    if response["last_op_failed"]:
+        return {
+            "ok": False,
+            "error": "unit rejected calibration: keep disabled, AMT/C620 valid, motors stopped",
+            "calibration": response,
+        }, 409
+
+    if command == 0x03:
+        with state.lock:
+            # The just-saved software offset makes this physical pose 0deg.
+            # Seed every inactive target state to match it before any later
+            # Enable, avoiding a stale pre-calibration angle step.
+            state.steer_deg = 0.0
+            state.effective_steer_mdeg = 0.0
+            state.profile_steer_rate_dps = 0.0
+            state.profile_steer_accel_dps2 = 0.0
+            state.wheel_rpm = 0.0
+            state.effective_wheel_rpm = 0.0
+    logger.write("WEBUI", f"calibration command=0x{command:02x} ok response={response}")
+    return {"ok": True, "calibration": response}, 200
 
 
 def build_status_json(state):
@@ -1085,12 +1548,16 @@ def build_status_json(state):
             "steer_rate_dps": state.steer_rate_dps,
             "steer_accel_dps2": state.steer_accel_dps2,
             "steer_decel_dps2": state.steer_decel_dps2,
+            "steer_jerk_dps3": state.steer_jerk_dps3,
             "wheel_accel_rpm_per_s": state.wheel_accel_rpm_per_s,
             "wheel_decel_rpm_per_s": state.wheel_decel_rpm_per_s,
             "trajectory_time_scale": state.trajectory_time_scale,
+            "steer_commissioning_cap_rpm": state.steer_commissioning_cap_rpm,
         }
+        commissioning_cap_rpm = state.steer_commissioning_cap_rpm
         effective_steer_deg = state.effective_steer_mdeg / 1000.0
         profile_steer_rate_dps = state.profile_steer_rate_dps
+        profile_steer_accel_dps2 = state.profile_steer_accel_dps2
         effective_wheel_rpm = state.effective_wheel_rpm
         enabled = state.enabled
         last_stop_reason = state.last_stop_reason
@@ -1099,6 +1566,8 @@ def build_status_json(state):
         telem_time = state.telemetry_time
         telem_sequence = state.telemetry_sequence
         timing = dict(state.motion_timing) if state.motion_timing is not None else None
+        calibration = (
+            dict(state.calibration) if state.calibration is not None else None)
 
     telemetry_json = None
     if telem is not None:
@@ -1136,16 +1605,21 @@ def build_status_json(state):
         "config": cfg,
         "effective_steer_deg": round(effective_steer_deg, 3),
         "profile_steer_rate_dps": round(profile_steer_rate_dps, 3),
+        "profile_steer_accel_dps2": round(profile_steer_accel_dps2, 3),
         "effective_wheel_rpm": round(effective_wheel_rpm, 3),
         "enabled": enabled,
         "last_stop_reason": last_stop_reason,
         "telemetry": telemetry_json,
         "timing": timing,
+        "calibration": calibration,
         "envelope": {
             "steer_rate_avail_dps": round(
-                steer_rate_available_dps(effective_wheel_rpm), 1),
+                steer_rate_available_dps(
+                    effective_wheel_rpm,
+                    commissioning_cap_rpm=commissioning_cap_rpm), 1),
             "steer_rate_hard_dps": round(
-                steer_rate_available_dps(effective_wheel_rpm, MOTOR_MAX_RPM), 1),
+                steer_rate_available_dps(
+                    effective_wheel_rpm, MOTOR_MAX_RPM, commissioning_cap_rpm), 1),
             "wheel_avail_rpm": round(wheel_avail_rpm, 1),
             "motor_budget_planned_rpm": round(MOTOR_PLANNED_RPM, 1),
             "motor_budget_hard_rpm": MOTOR_MAX_RPM,
@@ -1283,25 +1757,32 @@ INDEX_HTML = """<!doctype html>
   </div>
   <div class="field">
     <label for="steer_rate_dps_range">&omega;s maximum approach speed to &theta;s (deg/s, 0 = instant step)</label>
-    <input type="range" id="steer_rate_dps_range" min="0" max="240" step="5" value="0"
+    <input type="range" id="steer_rate_dps_range" min="0" max="2046" step="5" value="0"
            oninput="onFieldInput('steer_rate_dps', this.value)">
-    <input type="number" id="steer_rate_dps_num" min="0" max="240" step="5" value="0"
+    <input type="number" id="steer_rate_dps_num" min="0" max="2046" step="5" value="0"
            onchange="onFieldInput('steer_rate_dps', this.value)">
     <button class="zero" onclick="zeroField('steer_rate_dps')">steer_rate=0</button>
   </div>
   <div class="field">
     <label for="steer_accel_dps2_range">Steer profile acceleration (deg/s&sup2;)</label>
-    <input type="range" id="steer_accel_dps2_range" min="30" max="3600" step="30" value="3600"
+    <input type="range" id="steer_accel_dps2_range" min="30" max="12000" step="30" value="3600"
            oninput="onFieldInput('steer_accel_dps2', this.value)">
-    <input type="number" id="steer_accel_dps2_num" min="30" max="3600" step="30" value="3600"
+    <input type="number" id="steer_accel_dps2_num" min="30" max="12000" step="30" value="3600"
            onchange="onFieldInput('steer_accel_dps2', this.value)">
   </div>
   <div class="field">
     <label for="steer_decel_dps2_range">Steer profile braking deceleration (deg/s&sup2;)</label>
-    <input type="range" id="steer_decel_dps2_range" min="30" max="3600" step="30" value="2250"
+    <input type="range" id="steer_decel_dps2_range" min="30" max="12000" step="30" value="2250"
            oninput="onFieldInput('steer_decel_dps2', this.value)">
-    <input type="number" id="steer_decel_dps2_num" min="30" max="3600" step="30" value="2250"
+    <input type="number" id="steer_decel_dps2_num" min="30" max="12000" step="30" value="2250"
            onchange="onFieldInput('steer_decel_dps2', this.value)">
+  </div>
+  <div class="field">
+    <label for="steer_jerk_dps3_range">Steer profile jerk (deg/s&sup3;, 0 = legacy; active 100k..500k)</label>
+    <input type="range" id="steer_jerk_dps3_range" min="0" max="500000" step="50000" value="0"
+           oninput="onFieldInput('steer_jerk_dps3', this.value)">
+    <input type="number" id="steer_jerk_dps3_num" min="0" max="500000" step="50000" value="0"
+           onchange="onFieldInput('steer_jerk_dps3', this.value)">
   </div>
   <div class="field">
     <label for="trajectory_time_scale_range">Trajectory time scale (1=minimum, 2=adopted margin)</label>
@@ -1309,6 +1790,13 @@ INDEX_HTML = """<!doctype html>
            oninput="onFieldInput('trajectory_time_scale', this.value)">
     <input type="number" id="trajectory_time_scale_num" min="1" max="4" step="0.1" value="2"
            onchange="onFieldInput('trajectory_time_scale', this.value)">
+  </div>
+  <div class="field">
+    <label for="steer_cap_num">Steer commissioning cap (axis rpm, layered on the planned/hard envelope)</label>
+    <input type="number" id="steer_cap_num" min="0" max="341" step="1" value="40"
+           onchange="onCapInput(this.value)">
+    <label class="checkbox"><input type="checkbox" id="steer_cap_enabled" checked
+           onchange="onCapToggle(this.checked)"> cap enabled</label>
   </div>
 
   <div class="actions">
@@ -1319,15 +1807,40 @@ INDEX_HTML = """<!doctype html>
 </div>
 
 <div class="panel">
+  <h2>AMT software origin</h2>
+  <div class="safety">
+    必ずDisable・完全停止中に操作する。現在の機械姿勢を0&deg;としてSTM32 Flashへ保存する。
+  </div>
+  <div class="actions">
+    <button class="btn enable" onclick="saveCalibrationZero()">現在位置を0&deg;として保存</button>
+    <button onclick="callAction('/api/calibration/read')">状態読出し</button>
+    <button class="btn disable" onclick="clearCalibration()">保存原点をクリア</button>
+  </div>
+  <table class="status">
+    <tr><td class="k">Calibration</td><td><span id="st_calibrated" class="badge off">--</span></td></tr>
+    <tr><td class="k">Saved AMT count / current raw count</td><td id="st_cal_counts">--</td></tr>
+    <tr><td class="k">Record sequence / Flash health</td><td id="st_cal_health">--</td></tr>
+  </table>
+</div>
+
+<div class="panel">
   <table class="status">
     <tr><td class="k">Enabled</td><td><span id="st_enabled" class="badge off">--</span></td></tr>
     <tr><td class="k">Effective target (server-side, ramped)</td><td id="st_effective_target">--</td></tr>
     <tr><td class="k">Profile steer rate (actual FF)</td><td id="st_profile_rate">--</td></tr>
+    <tr><td class="k">Profile steer acceleration</td><td id="st_profile_accel">--</td></tr>
     <tr><td class="k">Profile wheel target (ramped)</td><td id="st_effective_wheel">--</td></tr>
     <tr><td class="k">Angle (firmware, actual)</td><td id="st_angle">--</td></tr>
     <tr><td class="k">Angle error</td><td id="st_err">--</td></tr>
     <tr><td class="k">Wheel actual (rpm)</td><td id="st_wheel">--</td></tr>
     <tr><td class="k">Steer actual (axis rpm)</td><td id="st_steer_rpm">--</td></tr>
+    <tr><td class="k">Observer angle / rate</td><td id="st_observer">--</td></tr>
+    <tr><td class="k">Observer AMT innovation</td><td id="st_observer_error">--</td></tr>
+    <tr><td class="k">Schedule rpm / Kp / Ki</td><td id="st_schedule">--</td></tr>
+    <tr><td class="k">Accel / brake FF gain</td><td id="st_schedule_ff">--</td></tr>
+    <tr><td class="k">Steer current unsat / applied / residual</td><td id="st_steer_current_path">--</td></tr>
+    <tr><td class="k">Steer saturation ms / braking</td><td id="st_steer_saturation">--</td></tr>
+    <tr><td class="k">Steer Kaw / steer-drive I correction</td><td id="st_backcalc">--</td></tr>
     <tr><td class="k">CAN convergence</td><td><span id="st_settled" class="badge off">--</span></td></tr>
     <tr><td class="k">Hard / planned Tmin</td><td id="st_timing_min">--</td></tr>
     <tr><td class="k">2x command / performance deadline</td><td id="st_timing_budget">--</td></tr>
@@ -1385,6 +1898,20 @@ function zeroField(name) {
   onFieldInput(name, 0);
 }
 
+function onCapInput(value) {
+  document.getElementById("steer_cap_enabled").checked = true;
+  postSet({steer_commissioning_cap_rpm: parseFloat(value)});
+}
+
+function onCapToggle(enabled) {
+  const numField = document.getElementById("steer_cap_num");
+  if (enabled) {
+    postSet({steer_commissioning_cap_rpm: parseFloat(numField.value)});
+  } else {
+    postSet({steer_commissioning_cap_rpm: null});
+  }
+}
+
 function clampVectorDraft() {
   const magnitude = Math.hypot(vectorX, vectorY);
   if (magnitude > 1) {
@@ -1431,7 +1958,7 @@ function syncVectorFromCommand(config) {
 
 function applyVectorCommand() {
   const command = vectorCommandValues();
-  const payload = {wheel_rpm: command.rpm, steer_rate_dps: 240};
+  const payload = {wheel_rpm: command.rpm, steer_rate_dps: 360};
   if (command.rpm > 0) payload.steer_deg = command.angle;
   document.getElementById("wheel_rpm_num").value = command.rpm;
   document.getElementById("wheel_rpm_range").value = command.rpm;
@@ -1439,8 +1966,8 @@ function applyVectorCommand() {
     document.getElementById("steer_deg_num").value = command.angle.toFixed(1);
     document.getElementById("steer_deg_range").value = command.angle.toFixed(1);
   }
-  document.getElementById("steer_rate_dps_num").value = 240;
-  document.getElementById("steer_rate_dps_range").value = 240;
+  document.getElementById("steer_rate_dps_num").value = 360;
+  document.getElementById("steer_rate_dps_range").value = 360;
   const revision = ++vectorRevision;
   vectorDirty = true;
   postSet(payload).then(function () {
@@ -1529,6 +2056,16 @@ function callAction(url) {
     .catch(function (err) { alert("Request failed: " + err); });
 }
 
+function saveCalibrationZero() {
+  if (!confirm("現在の機械姿勢をステア0°としてFlashへ保存します。完全停止していますか？")) return;
+  callAction('/api/calibration/save-zero');
+}
+
+function clearCalibration() {
+  if (!confirm("保存済み原点を消去します。未校正状態になります。続行しますか？")) return;
+  callAction('/api/calibration/clear');
+}
+
 function fmt(v, digits) {
   if (v === null || v === undefined) return "--";
   return Number(v).toFixed(digits === undefined ? 1 : digits);
@@ -1544,12 +2081,44 @@ function refreshStatus() {
     document.getElementById("st_profile_rate").textContent =
       fmt(data.profile_steer_rate_dps / 6, 2) + " axis rpm (" +
       fmt(data.profile_steer_rate_dps, 1) + " deg/s)";
+    document.getElementById("st_profile_accel").textContent =
+      fmt(data.profile_steer_accel_dps2 / 6, 1) + " axis rpm/s (" +
+      fmt(data.profile_steer_accel_dps2, 0) + " deg/s²)";
     document.getElementById("st_effective_wheel").textContent = fmt(data.effective_wheel_rpm, 1) + " rpm";
     document.getElementById("st_stop_reason").textContent = data.last_stop_reason || "--";
     if (data.envelope && data.envelope.wheel_axis_max_planned_rpm) {
       vectorWheelMaxRpm = data.envelope.wheel_axis_max_planned_rpm;
     }
     syncVectorFromCommand(data.config);
+
+    const cal = data.calibration;
+    const calBadge = document.getElementById("st_calibrated");
+    if (cal) {
+      calBadge.textContent = cal.calibrated ? "CALIBRATED" : "not calibrated";
+      calBadge.className = cal.calibrated ? "badge on" : "badge off";
+      document.getElementById("st_cal_counts").textContent =
+        (cal.zero_counts === null ? "--" : cal.zero_counts) + " / " +
+        (cal.raw_counts === null ? "--" : cal.raw_counts);
+      document.getElementById("st_cal_health").textContent =
+        cal.sequence + " / CRC=" + (cal.crc_error ? "ERROR" : "OK") +
+        ", page=" + (cal.page_full ? "FULL" : "OK") +
+        ", raw=" + (cal.raw_fresh ? "fresh" : "stale");
+    } else {
+      calBadge.textContent = "read pending";
+      calBadge.className = "badge off";
+      document.getElementById("st_cal_counts").textContent = "--";
+      document.getElementById("st_cal_health").textContent = "--";
+    }
+
+    if (data.config && document.activeElement.id !== "steer_cap_num") {
+      const capEnabled = data.config.steer_commissioning_cap_rpm !== null
+        && data.config.steer_commissioning_cap_rpm !== undefined;
+      document.getElementById("steer_cap_enabled").checked = capEnabled;
+      if (capEnabled) {
+        document.getElementById("steer_cap_num").value =
+          data.config.steer_commissioning_cap_rpm;
+      }
+    }
 
     if (data.envelope) {
       const wsAvail = data.envelope.steer_rate_avail_dps;
@@ -1561,8 +2130,9 @@ function refreshStatus() {
         " axis rpm (" + fmt(wsAvail, 0) + " / " + fmt(wsHard, 0) + " deg/s)";
       wwEl.textContent = fmt(wwAvail, 0) + " rpm";
       // Highlight when the current request exceeds the feasible envelope
-      // (the two motors share the 469rpm budget; firmware cuts wheel first,
-      // and the server-side target leash prevents the divergence STOP).
+      // (the two motors share the 469rpm budget; unit_controller.c projects
+      // both modes onto it with one common scale factor, and the server-side
+      // target leash prevents the divergence STOP).
       wsEl.style.color = Math.abs(data.config.steer_rate_dps) > wsAvail ? "#ff6b6b" : "";
       wwEl.style.color = Math.abs(data.config.wheel_rpm) > wwAvail ? "#ff6b6b" : "";
     }
@@ -1588,6 +2158,28 @@ function refreshStatus() {
         fmt(t.destination_error_deg !== undefined ? t.destination_error_deg : t.err_deg, 2) + " deg";
       document.getElementById("st_wheel").textContent = fmt(t.wheel_rpm_actual, 1) + " rpm";
       document.getElementById("st_steer_rpm").textContent = fmt(t.steer_rpm_actual, 2) + " rpm";
+      document.getElementById("st_observer").textContent =
+        fmt(t.steer_observer_angle_deg, 2) + " deg / " +
+        fmt(t.steer_observer_rpm, 2) + " rpm";
+      document.getElementById("st_observer_error").textContent =
+        fmt(t.steer_observer_innovation_deg, 3) + " deg";
+      document.getElementById("st_schedule").textContent =
+        fmt(t.steer_schedule_rpm, 2) + " rpm / " +
+        fmt(t.scheduled_steer_kp, 1) + " / " + fmt(t.scheduled_steer_ki, 1);
+      document.getElementById("st_schedule_ff").textContent =
+        fmt(t.scheduled_accel_ff_gain, 3) + " / " +
+        fmt(t.scheduled_decel_ff_gain, 3);
+      document.getElementById("st_steer_current_path").textContent =
+        fmt(t.steer_current_unsaturated, 0) + " / " +
+        fmt(t.steer_current_applied, 0) + " / " +
+        fmt(t.steer_saturation_residual, 0);
+      document.getElementById("st_steer_saturation").textContent =
+        fmt(t.steer_saturation_duration_ms, 0) + " ms / " +
+        (t.steer_braking_active ? "braking" : "accel/hold");
+      document.getElementById("st_backcalc").textContent =
+        fmt(t.scheduled_steer_backcalc_gain, 3) + " / " +
+        fmt(t.steer_backcalc_correction, 3) + " / " +
+        fmt(t.drive_backcalc_correction, 3);
       const settled = document.getElementById("st_settled");
       settled.textContent = t.motion_settled ? "SETTLED" : "tracking";
       settled.className = t.motion_settled ? "badge on" : "badge off";
@@ -1614,7 +2206,10 @@ function refreshStatus() {
         fdbkEl.style.color = "";
       }
     } else {
-      ["st_angle", "st_err", "st_wheel", "st_steer_rpm", "st_ffs", "st_i1i2", "st_q1q2",
+      ["st_angle", "st_err", "st_wheel", "st_steer_rpm", "st_observer", "st_observer_error",
+       "st_schedule", "st_schedule_ff", "st_steer_current_path", "st_steer_saturation",
+       "st_backcalc",
+       "st_ffs", "st_i1i2", "st_q1q2",
        "st_integrals", "st_drive_flags", "st_t1t2", "st_age"].forEach(function (id) {
         document.getElementById(id).textContent = "--";
       });
@@ -1645,7 +2240,11 @@ def render_index_html():
 # --------------------------------------------------------------------------
 
 GET_ROUTES = {"/", "/api/status"}
-POST_ROUTES = {"/api/set", "/api/enable", "/api/stop", "/api/disable"}
+POST_ROUTES = {
+    "/api/set", "/api/enable", "/api/stop", "/api/disable",
+    "/api/calibration/save-zero", "/api/calibration/clear",
+    "/api/calibration/read",
+}
 
 
 class UnitWebUiServer(ThreadingHTTPServer):
@@ -1725,6 +2324,18 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/api/disable":
             result = handle_disable(state, can_sock, can_lock, logger)
             self._send_json(result, status=200 if result.get("ok") else 500)
+        elif self.path == "/api/calibration/save-zero":
+            result, status = handle_calibration(
+                state, can_sock, can_lock, logger, 0x03)
+            self._send_json(result, status=status)
+        elif self.path == "/api/calibration/clear":
+            result, status = handle_calibration(
+                state, can_sock, can_lock, logger, 0x04)
+            self._send_json(result, status=status)
+        elif self.path == "/api/calibration/read":
+            result, status = handle_calibration(
+                state, can_sock, can_lock, logger, 0x05)
+            self._send_json(result, status=status)
         else:
             self._send_json({"error": "not found"}, status=404)
 
@@ -1759,6 +2370,11 @@ def run_server(args):
     vcp_thread.start()
     can_rx_thread.start()
     deadman_thread.start()
+
+    # Populate the AMT origin panel without requiring an initial button press.
+    time.sleep(0.05)
+    with can_lock:
+        send_unit_ctrl_subcommand(can_sock, 0x05)
 
     server = UnitWebUiServer(("", args.port), Handler, state, can_sock, can_lock, logger)
     logger.write(
@@ -1800,22 +2416,29 @@ def run_self_check():
         errors.append("render_index_html() produced unexpectedly short output")
     required_snippets = [
         "/api/status", "/api/set", "/api/enable", "/api/stop", "/api/disable",
+        "/api/calibration/save-zero", "/api/calibration/clear",
+        "/api/calibration/read", "st_calibrated", "saveCalibrationZero",
         "steer_deg", "wheel_rpm", "steer_rate_dps", "steer_accel_dps2",
-        "steer_decel_dps2",
+        "steer_decel_dps2", "steer_jerk_dps3",
         "trajectory_time_scale",
         "wheel_accel_rpm_per_s", "wheel_decel_rpm_per_s",
         "vector_pad", "vector_tip", "applyVectorCommand", "scheduleVectorCommand",
         "pointermove", "ArrowLeft",
         "wheel_axis_max_planned_rpm",
-        "min=\"0\" max=\"360\"", "min=\"-1360\" max=\"1360\"", "min=\"0\" max=\"240\"",
-        "min=\"30\" max=\"3600\"",
+        "steer_commissioning_cap_rpm", "steer_cap_enabled",
+        "min=\"0\" max=\"360\"", "min=\"-1360\" max=\"1360\"", "min=\"0\" max=\"2046\"",
+        "min=\"30\" max=\"12000\"",
     ]
     for snippet in required_snippets:
         if snippet not in html:
             errors.append(f"HTML missing expected reference: {snippet!r}")
 
     expected_get = {"/", "/api/status"}
-    expected_post = {"/api/set", "/api/enable", "/api/stop", "/api/disable"}
+    expected_post = {
+        "/api/set", "/api/enable", "/api/stop", "/api/disable",
+        "/api/calibration/save-zero", "/api/calibration/clear",
+        "/api/calibration/read",
+    }
     if GET_ROUTES != expected_get:
         errors.append(f"GET_ROUTES mismatch: {GET_ROUTES}")
     if POST_ROUTES != expected_post:
@@ -1827,7 +2450,10 @@ def run_self_check():
         "m1=3762/171875 i1=74 q1=70 t1=29 m2=-3748/-171875 i2=-158 q2=-150 t2=28 "
         "steerMode=5/12 iSteer=3 sInt=12500 driveMode=171875/197789 "
         "iDrive=2 dInt=200000 mov=1 onset=0 onsetN=3 floor=1 "
-        "ffS=5000 scale=0 wheel=500000"
+        "ffS=5000 scale=0 wheel=500000 obsA=315300 obsR=4900 obsE=52 "
+        "schedR=123400 schedKp=160000 schedKi=50000 schedKa=500 schedKd=1500 "
+        "schedKaw=2000 sUnsat=4200000 sApplied=4000000 sResidual=-200000 "
+        "sSatMs=37 sKawDelta=-75 dKawDelta=0 brake=1 ffExplicit=1"
     )
     parsed = parse_telemetry_line(sample)
     if parsed is None or parsed[0] != "telemetry":
@@ -1853,6 +2479,23 @@ def run_self_check():
             "drive_onset_count": 3,
             "drive_integral_floor_active": 1,
             "torque_scaling_active": 0,
+            "steer_observer_angle_deg": 315.3,
+            "steer_observer_rpm": 4.9,
+            "steer_observer_innovation_deg": 0.052,
+            "steer_schedule_rpm": 123.4,
+            "scheduled_steer_kp": 160.0,
+            "scheduled_steer_ki": 50.0,
+            "scheduled_accel_ff_gain": 0.5,
+            "scheduled_decel_ff_gain": 1.5,
+            "scheduled_steer_backcalc_gain": 2.0,
+            "steer_current_unsaturated": 4200.0,
+            "steer_current_applied": 4000.0,
+            "steer_saturation_residual": -200.0,
+            "steer_saturation_duration_ms": 37,
+            "steer_backcalc_correction": -0.075,
+            "drive_backcalc_correction": 0.0,
+            "steer_braking_active": 1,
+            "steer_accel_explicit_active": 1,
         }
         for key, expected in checks.items():
             got = summary.get(key)
@@ -1862,6 +2505,51 @@ def run_self_check():
         got_wheel = summary.get("wheel_rpm_actual")
         if got_wheel is None or abs(got_wheel - expected_wheel) > 1e-6:
             errors.append(f"summarize_telemetry()[wheel_rpm_actual] = {got_wheel!r}, expected {expected_wheel!r}")
+
+    diag_fields = {}
+    for payload in (
+            struct.pack("<BBHHH", 0, 0x07, 12340, 1600, 500),
+            struct.pack("<BBHHH", 1, 0x07, 500, 1500, 37),
+            struct.pack("<BBhhh", 2, 0x07, 4200, 4000, -200),
+            struct.pack("<BBHhh", 3, 0x07, 2000, -75, 0)):
+        try:
+            _, _, decoded = decode_unit_status_diag(payload)
+            diag_fields.update(decoded)
+        except ValueError as exc:
+            errors.append(f"decode_unit_status_diag() failed: {exc}")
+    diag_summary = summarize_telemetry(diag_fields)
+    diag_checks = {
+        "steer_schedule_rpm": 123.4,
+        "scheduled_steer_kp": 160.0,
+        "scheduled_steer_ki": 50.0,
+        "scheduled_accel_ff_gain": 0.5,
+        "scheduled_decel_ff_gain": 1.5,
+        "scheduled_steer_backcalc_gain": 2.0,
+        "steer_current_unsaturated": 4200.0,
+        "steer_current_applied": 4000.0,
+        "steer_saturation_residual": -200.0,
+        "steer_saturation_duration_ms": 37,
+        "steer_backcalc_correction": -0.075,
+        "drive_backcalc_correction": 0.0,
+        "torque_scaling_active": 1,
+        "steer_braking_active": 1,
+        "steer_accel_explicit_active": 1,
+    }
+    for key, expected in diag_checks.items():
+        got = diag_summary.get(key)
+        if got is None or abs(got - expected) > 1e-6:
+            errors.append(
+                f"UNIT_STATUS_DIAG {key} = {got!r}, expected {expected!r}")
+
+    explicit_accel_payload = struct.pack("<ii", -12_000_000, 0)
+    explicit_accel_frame = build_can_frame(
+        SET_TARGET_ACCEL_FF_ID, explicit_accel_payload)
+    explicit_id, explicit_data = parse_can_frame(explicit_accel_frame)
+    if explicit_id != SET_TARGET_ACCEL_FF_ID:
+        errors.append(
+            f"SET_TARGET_ACCEL_FF id mismatch: {explicit_id:#x}")
+    elif struct.unpack("<ii", explicit_data) != (-12_000_000, 0):
+        errors.append("SET_TARGET_ACCEL_FF payload round-trip failed")
 
     stop_parsed = parse_telemetry_line("STOP: overcurrent")
     if stop_parsed != ("stop", "overcurrent"):
@@ -1875,6 +2563,7 @@ def run_self_check():
         "steer_rate_dps": 9999,
         "steer_accel_dps2": 99999,
         "steer_decel_dps2": 99999,
+        "steer_jerk_dps3": 999999,
         "wheel_accel_rpm_per_s": 99999,
         "wheel_decel_rpm_per_s": -1,
         "trajectory_time_scale": 99,
@@ -1886,12 +2575,14 @@ def run_self_check():
             errors.append(f"steer_deg clamp failed: {state.steer_deg}")
         if state.wheel_rpm != WHEEL_RPM_MIN:
             errors.append(f"wheel_rpm clamp failed: {state.wheel_rpm}")
-        if state.steer_rate_dps != STEER_RATE_DPS_MAX:
+        if state.steer_rate_dps != STEER_AXIS_MAX_RPM * 6.0:
             errors.append(f"steer_rate_dps clamp failed: {state.steer_rate_dps}")
         if state.steer_accel_dps2 != STEER_ACCEL_DPS2_MAX:
             errors.append(f"steer_accel_dps2 clamp failed: {state.steer_accel_dps2}")
         if state.steer_decel_dps2 != STEER_DECEL_DPS2_MAX:
             errors.append(f"steer_decel_dps2 clamp failed: {state.steer_decel_dps2}")
+        if state.steer_jerk_dps3 != STEER_JERK_DPS3_MAX:
+            errors.append(f"steer_jerk_dps3 clamp failed: {state.steer_jerk_dps3}")
         if state.wheel_accel_rpm_per_s != WHEEL_ACCEL_RPM_PER_S_MAX:
             errors.append(
                 f"wheel_accel_rpm_per_s clamp failed: {state.wheel_accel_rpm_per_s}")
@@ -1963,10 +2654,67 @@ def run_self_check():
     if not any(0.0 < v < velocities[peak_index] for v in velocities[peak_index + 1:]):
         errors.append("profile_steer_step() did not ramp FF down before arrival")
 
+    # Jerk-limited P4 profile: account for the acceleration ramp in stopping
+    # distance, obey thetaDot/thetaDDot/thetaJerk limits, and terminate without
+    # the persistent target-profile oscillation that the first prototype had.
+    simple_stop_distance = 720.0 * 720.0 / (2.0 * 2000.0)
+    jerk_stop_distance = jerk_limited_stop_distance_deg(
+        720.0, 5400.0, 2000.0, 100000.0)
+    if jerk_stop_distance <= simple_stop_distance:
+        errors.append(
+            "jerk stop distance did not include positive-acceleration ramp")
+
+    for test_jerk_dps3 in (100000.0, 200000.0):
+        position_mdeg = 0.0
+        velocity_dps = 0.0
+        acceleration_dps2 = 0.0
+        settled = False
+        for _ in range(math.ceil(2.0 * TARGET_HZ)):
+            previous_acceleration = acceleration_dps2
+            position_mdeg, velocity_dps, acceleration_dps2 = (
+                profile_steer_step_jerk(
+                    position_mdeg, 90000.0,
+                    velocity_dps, acceleration_dps2,
+                    720.0, 5400.0, 2000.0,
+                    test_jerk_dps3, dt_s,
+                ))
+            if abs(velocity_dps) > 720.0 + 1e-6:
+                errors.append(
+                    f"jerk profile exceeded rate at J={test_jerk_dps3}")
+                break
+            if abs(acceleration_dps2 - previous_acceleration) > (
+                    test_jerk_dps3 * dt_s + 1e-6):
+                errors.append(
+                    f"jerk profile exceeded jerk at J={test_jerk_dps3}")
+                break
+            if abs(acceleration_dps2) > 5400.0 + 1e-6:
+                errors.append(
+                    f"jerk profile exceeded acceleration at J={test_jerk_dps3}")
+                break
+            if (abs(shortest_diff_mdeg(90000.0, position_mdeg)) < 0.001
+                    and abs(velocity_dps) < 0.001
+                    and abs(acceleration_dps2) < 0.001):
+                settled = True
+                break
+        if not settled:
+            errors.append(
+                f"jerk profile did not settle at J={test_jerk_dps3}: "
+                f"position={position_mdeg}, velocity={velocity_dps}, "
+                f"acceleration={acceleration_dps2}")
+
+    jerk_state = AppState()
+    r = handle_set(jerk_state, {"steer_jerk_dps3": 1.0})
+    if (not r.get("ok")
+            or jerk_state.steer_jerk_dps3 != STEER_JERK_DPS3_ACTIVE_MIN):
+        errors.append(f"active jerk minimum clamp failed: {r}")
+    r = handle_set(jerk_state, {"steer_jerk_dps3": 0.0})
+    if not r.get("ok") or jerk_state.steer_jerk_dps3 != 0.0:
+        errors.append(f"legacy jerk selector failed: {r}")
+
     # The target generator must use the same wheel/steer rpm envelope as the
     # firmware, rather than merely warning about an impossible combination.
-    if abs(steer_rate_available_dps(0.0) - 240.0) > 1e-6:
-        errors.append("steer envelope at wheel=0 should hit the 240deg/s software cap")
+    if abs(steer_rate_available_dps(0.0) - 360.0) > 1e-6:
+        errors.append("steer envelope at wheel=0 should hit the 360deg/s commissioning cap")
     high_wheel_rate = steer_rate_available_dps(1300.0, MOTOR_MAX_RPM)
     expected_high_wheel_rate = (
         (MOTOR_MAX_RPM - 1300.0 / WHEEL_GEAR_RATIO)
@@ -1989,15 +2737,41 @@ def run_self_check():
         errors.append(
             f"planned steer envelope must decrease with wheel rpm: {planned_rates}")
 
+    # Commissioning cap: default is the accepted 60rpm/360dps stage
+    # (checked above), None disables it (physics envelope alone governs), and
+    # a custom value is honored when smaller than the physics envelope.
+    uncapped = steer_rate_available_dps(0.0, commissioning_cap_rpm=None)
+    if uncapped <= 360.0 + 1e-6:
+        errors.append(
+            f"steer envelope with commissioning_cap_rpm=None should exceed "
+            f"360deg/s at wheel=0: got {uncapped}")
+    custom_capped = steer_rate_available_dps(0.0, commissioning_cap_rpm=10.0)
+    if abs(custom_capped - 60.0) > 1e-6:
+        errors.append(
+            f"steer envelope with commissioning_cap_rpm=10 should be 60deg/s: "
+            f"got {custom_capped}")
+
+    cap_state = AppState()
+    r = handle_set(cap_state, {"steer_commissioning_cap_rpm": None})
+    if not r.get("ok") or cap_state.steer_commissioning_cap_rpm is not None:
+        errors.append(f"handle_set() did not disable the commissioning cap: {r}")
+    r = handle_set(cap_state, {"steer_commissioning_cap_rpm": 60})
+    if not r.get("ok") or cap_state.steer_commissioning_cap_rpm != 60.0:
+        errors.append(f"handle_set() did not set the commissioning cap: {r}")
+    r = handle_set(cap_state, {"steer_commissioning_cap_rpm": 99999})
+    if not r.get("ok") or cap_state.steer_commissioning_cap_rpm != STEER_COMMISSIONING_CAP_RPM_CEILING:
+        errors.append(f"handle_set() did not clamp the commissioning cap: {r}")
+
+    test_rate_dps = STEER_AXIS_MAX_RPM * 6.0
     expected_90deg_min_s = (
-        STEER_RATE_DPS_MAX / STEER_ACCEL_DPS2_DEFAULT
+        test_rate_dps / STEER_ACCEL_DPS2_DEFAULT
         + (90.0
-           - STEER_RATE_DPS_MAX ** 2 / (2.0 * STEER_ACCEL_DPS2_DEFAULT)
-           - STEER_RATE_DPS_MAX ** 2 / (2.0 * STEER_DECEL_DPS2_DEFAULT))
-        / STEER_RATE_DPS_MAX
-        + STEER_RATE_DPS_MAX / STEER_DECEL_DPS2_DEFAULT)
+           - test_rate_dps ** 2 / (2.0 * STEER_ACCEL_DPS2_DEFAULT)
+           - test_rate_dps ** 2 / (2.0 * STEER_DECEL_DPS2_DEFAULT))
+        / test_rate_dps
+        + test_rate_dps / STEER_DECEL_DPS2_DEFAULT)
     got_90deg_min_s = steer_profile_min_time_s(
-        90.0, STEER_RATE_DPS_MAX,
+        90.0, test_rate_dps,
         STEER_ACCEL_DPS2_DEFAULT, STEER_DECEL_DPS2_DEFAULT)
     if abs(got_90deg_min_s - expected_90deg_min_s) > 1e-9:
         errors.append(

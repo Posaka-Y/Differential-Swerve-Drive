@@ -88,6 +88,7 @@ from pathlib import Path
 
 SET_TARGET_ID = 0x101
 SET_TARGET_FF_ID = 0x111
+SET_TARGET_ACCEL_FF_ID = 0x161
 UNIT_CTRL_ID = 0x121
 SET_CONFIG_ID = 0x141
 
@@ -101,7 +102,11 @@ PARAM_INDEX_HELP = (
     "15=drive_integral_floor_current 16=drive_motion_threshold_rpm "
     "17=drive_onset_integral_clamp 18=steer_accel_ff_gain 19=moving_angle_kp "
     "20=steer_decel_ff_gain 21=steer_friction_ff_current "
-    "22=status_period_ms(0=normal 20/50ms, bench identification override)"
+    "22=status_period_ms(0=normal 20/50ms, bench identification override) "
+    "23=steer_observer_tau_s 24=steer_friction_ff_fade_axis_rpm "
+    "25=steer_backcalc_gain 26=drive_backcalc_gain "
+    "27..46=steer gain knots 0/60/100/150rpm x kp/ki/accelFF/decelFF/Kaw "
+    "47=steer_brake_kp_multiplier 48..51=brake_kp_multiplier knots 0/60/100/150rpm"
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -149,6 +154,12 @@ def send_set_target(sock, steer_mdeg, wheel_rpm_milli):
 def send_set_target_ff(sock, steer_rate_mdeg_per_s, wheel_accel_rpm_milli_per_s=0):
     data = struct.pack("<ii", steer_rate_mdeg_per_s, wheel_accel_rpm_milli_per_s)
     sock.send(build_can_frame(SET_TARGET_FF_ID, data))
+
+
+def send_set_target_accel_ff(sock, steer_accel_mdeg_per_s2):
+    """Send the Classic-CAN bench companion to TRAJECTORY_FD thetaDDot."""
+    data = struct.pack("<ii", steer_accel_mdeg_per_s2, 0)
+    sock.send(build_can_frame(SET_TARGET_ACCEL_FF_ID, data))
 
 
 def send_unit_ctrl(sock, enable):
@@ -386,6 +397,24 @@ def cmd_run(args):
             sleep_for = next_tick - time.monotonic()
             if sleep_for > 0:
                 time.sleep(sleep_for)
+        # Safety: UNIT_CTRL disable cuts current immediately (no controlled
+        # deceleration), so disabling straight out of a nonzero wheel target
+        # repeatedly regenerates a DC-bus voltage spike (see
+        # docs/ARCHITECTURE_DECISIONS.md "駆動目標の加減速・停止" -- confirmed
+        # the hard way on 2026-07-31: back-to-back high-rpm run() calls
+        # tripped the bus protection). Ramp the wheel target to 0 first and
+        # give the firmware's own wheel_accel_rpm_per_s ramp time to actually
+        # get there before cutting power, mirroring unit_web_ui.py's
+        # perform_stop_sequence. args.wheel_rpm is what was continuously
+        # commanded, so it's a safe upper bound on the actual rpm to decel
+        # from even though this tool doesn't track live telemetry inline.
+        if wheel_rpm_milli != 0:
+            logger.write("BENCH", "ramping wheel to 0 before disable")
+            decel_s = abs(args.wheel_rpm) / max(1.0, args.wheel_decel_rpm_per_s)
+            ramp_end = time.monotonic() + decel_s + args.wheel_decel_margin_s
+            while time.monotonic() < ramp_end:
+                send_set_target(tx_sock, int(round(steer_target_mdeg)), 0)
+                time.sleep(interval)
     except KeyboardInterrupt:
         logger.write("BENCH", "interrupted by Ctrl-C")
     finally:
@@ -408,8 +437,8 @@ def cmd_set_param(args):
     sock = open_can_socket(args.can_iface)
     try:
         for i, (index, value) in enumerate(zip(args.index, args.value)):
-            if not (1 <= index <= 22):
-                raise ValueError(f"param index out of range (1-22): {index}")
+            if not (1 <= index <= 51):
+                raise ValueError(f"param index out of range (1-51): {index}")
             send_set_config(sock, index, value)
             print(f"set-param: index={index} value={value} (milli={int(round(value * 1000))})")
             if i != len(args.index) - 1:
@@ -531,6 +560,19 @@ def build_parser():
         "--log", type=str, default=None,
         help="log file path (default: firmware/logs/bench-<UTC ISO>.log)",
     )
+    p_run.add_argument(
+        "--wheel-decel-rpm-per-s", type=float, default=500.0,
+        help=(
+            "rpm/s used to size the wheel-to-0 ramp-down before UNIT_CTRL "
+            "disable when --wheel-rpm != 0 (default: 500, matches "
+            "unit_web_ui.py's default decel). Not sent as a firmware config "
+            "change -- only used locally to time this tool's own ramp-down."
+        ),
+    )
+    p_run.add_argument(
+        "--wheel-decel-margin-s", type=float, default=0.5,
+        help="extra settle time added after the computed ramp-down duration (default: 0.5s)",
+    )
     p_run.set_defaults(func=cmd_run)
 
     p_set = sub.add_parser(
@@ -539,7 +581,7 @@ def build_parser():
     )
     p_set.add_argument(
         "--index", type=int, action="append", required=True,
-        help="param index (1-22, repeatable, paired in order with --value). " + PARAM_INDEX_HELP,
+        help="param index (1-51, repeatable, paired in order with --value). " + PARAM_INDEX_HELP,
     )
     p_set.add_argument(
         "--value", type=float, action="append", required=True,

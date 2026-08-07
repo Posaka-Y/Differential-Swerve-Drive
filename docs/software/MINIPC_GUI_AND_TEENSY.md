@@ -5,10 +5,13 @@
 | 要素 | 役割 |
 |---|---|
 | mini PC | GUI、ログ、設定編集、キャリブレーション操作、デバッグ表示 |
+| ESP32-C3 | mini PCのDualSense twistをWi-Fi/UDPで受け、Teensy CAN2へ中継 |
 | Teensy | リアルタイム制御、安全I/O、E-stop監視、各ユニットへの指令 |
 | ユニットMCU | AMT22読み取り、C620制御、ステア/速度ループ |
 
-mini PCはGUIホスト。Teensyは制御と安全判定。ユニットMCUは現地ループ。
+mini PCはGUIホスト。Teensyは制御と安全判定。ユニットMCUは現地ループ。手動操作だけは
+`mini PC -> Wi-Fi/UDP -> ESP32-C3 -> Classic CAN2 -> Teensy`を使う。ESP32は3輪の目標値を
+直接生成せず、車体twist要求の中継に限定する。詳細は`ESP32_DUALSENSE_CAN_GATEWAY.md`。
 
 ## GUI画面
 
@@ -64,6 +67,16 @@ GUIから行うこと:
 - STM32G4はEEPROMを持たないため、Flash最終ページ等を使ったエミュレーション(CRC付きレコード追記式)で実装する。書換回数はページ消去単位で1万回オーダーあり、定期調整用途には十分。
 - 再ゼロ点調整はGUIのCalibration画面から `CALIB_SAVE_ZERO`(UNIT_CTRLサブコマンド)で実行できるようにし、機体分解を不要にする。
 
+実装済み操作(2026-07-31、単ユニットWeb UI):
+
+- 「現在位置を0°として保存」は確認ダイアログ後に`CALIB_SAVE_ZERO`を送り、ユニット側の
+  disabled・AMT/C620 fresh・両モーター1rpm以下の安全条件を通った場合だけFlashへ追記する。
+- 保存後はGUIのinactive targetも0°/0rpmへ再シードし、保存前角度への不意な復帰指令を防ぐ。
+- `PING`による状態読出しで、保存count、現在raw count、sequence、CRC、ページ残量状態を表示する。
+- 「保存原点をクリア」は別の確認ダイアログを要求し、明示操作時だけFlashページを消去する。
+- GUI APIは`POST /api/calibration/save-zero`、`/api/calibration/read`、
+  `/api/calibration/clear`。いずれもEnable中は拒否する。
+
 デバッグしやすくするため、mini PC GUIには各ユニットから読み戻したゼロ点を表示し、設定ファイルにもコピーを残す。
 
 ## デバッグ表示
@@ -91,7 +104,7 @@ GUIから行うこと:
 - mini PC通信断時はTeensyが安全停止へ移行する。
 - Debug画面から直接モーターを動かす場合は、低速・短時間・確認操作付きにする。
 
-## 通信案
+## mini PC通信
 
 mini PCとTeensy間は、初期はUSBシリアルが簡単。
 
@@ -103,4 +116,38 @@ mini PCとTeensy間は、初期はUSBシリアルが簡単。
 | Ethernet/UDP | 拡張性あり。mini PCらしい構成 |
 | CAN直結 | 構成は単純だがGUIデータには窮屈 |
 
-第一段階はUSBシリアル、必要ならEthernetへ拡張する。
+GUI・設定・ログはUSBシリアルを維持する。DualSense手動指令は2026-08-01にESP32-C3経由の
+Wi-Fi/UDP + CAN2へ変更した。両経路をTeensy側で別ソースとして扱い、手動指令のwatchdog途絶を
+GUI USBの切断判定と混同しない。
+
+## DualSense手動操作(2026-08-01)
+
+Sony DualSenseはESP32等を経由せず、mini PCへBluetoothまたはUSBで直接接続する。
+LinuxではSony VID/PID `054c:0ce6`のメインgamepad evdevを自動検出し、接続方式が変わっても
+同じ入力マッピングを使う。Bluetooth個体のevdev `uniq`は`4c:b9:9b:8a:c3:07`。
+
+初期マッピング:
+
+| 操作 | 車体要求 |
+|---|---|
+| 左stick 上下 | `vx`。上が車体`+X`前進 |
+| 左stick 左右 | `vy`。左が車体`+Y`左移動 |
+| 右stick 左右 | `omega`。左が反時計回り正 |
+| R1 | デッドマン。押している間だけ非zero twist要求を生成 |
+| R2 | 速度倍率。初期25%から最大100% |
+| Options | 将来のarm要求用。入力previewではMotor Enableしない |
+| PS | 状態入力として取得。E-stopには使用しない |
+
+mini PC入力層とモータ非接続preview GUI:
+
+```bash
+sudo apt install python3-evdev
+python3 tools/linux/dualsense_control.py --check
+python3 tools/linux/test_dualsense_control.py -v
+python3 tools/linux/dualsense_web_ui.py --host 0.0.0.0 --port 8766
+```
+
+ブラウザで`http://localhost:8766`を開く。GUIは接続方式、stick/trigger、R1 gate、生成した
+`vx/vy/omega`を50ms間隔で表示するが、CAN・USBシリアル・モータ出力は持たない。
+R1解放またはevdev切断で3軸要求は同じsnapshotから0になる。今後USB-CDC出力を追加しても、
+Teensy側に独立した受信timeout、再接続後の再arm要求、E-stop優先を実装する。

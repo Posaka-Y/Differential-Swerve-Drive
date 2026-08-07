@@ -32,6 +32,18 @@ from unit_bench import emergency_disable, open_can_socket, send_set_config
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_RESULT_DIR = REPO_ROOT / "firmware" / "logs" / "auto-tune"
 TUNER_STATUS_PERIOD_MS = 5.0
+# Operational steering acceptance: reaching the useful angular neighborhood
+# matters more than waiting for the unloaded mechanism to remain below 1rpm.
+# The old strict settle gate is retained in reports as a diagnostic.
+ACCEPT_FIRST_ENTRY_2DEG_S = 0.50
+# Response-first commissioning gate requested for the 150->300rpm push.
+# A 20deg transient on a 90deg unloaded bench move is accepted provided the
+# useful 2deg neighborhood is reached quickly and terminal error remains low.
+# The old 4deg/no-oscillation view remains visible as the strict diagnostic.
+ACCEPT_OVERSHOOT_DEG = 20.0
+ACCEPT_TERMINAL_ERROR_DEG = 1.0
+STRICT_ACCEPT_OVERSHOOT_DEG = 4.0
+STRICT_ACCEPT_WORST_SETTLE_S = 0.9
 
 
 @dataclass(frozen=True)
@@ -46,7 +58,7 @@ class Parameter:
 
 
 PARAMETERS = {
-    "steer_kp": Parameter("steer_kp", 10.0, 160.0, 120.0, 40.0, config_index=3),
+    "steer_kp": Parameter("steer_kp", 10.0, 300.0, 120.0, 40.0, config_index=3),
     "steer_ki": Parameter("steer_ki", 0.0, 100.0, 50.0, 20.0, config_index=4),
     "angle_kp": Parameter("angle_kp", 0.5, 10.0, 4.0, 1.0, config_index=5),
     "moving_angle_kp": Parameter(
@@ -54,29 +66,80 @@ PARAMETERS = {
     "steer_min_rpm": Parameter(
         "steer_min_rpm", 0.0, 5.0, 0.0, 1.0, config_index=8),
     "steer_max_rpm": Parameter(
-        "steer_max_rpm", 40.0, 60.0, 40.0, 10.0, config_index=7),
+        "steer_max_rpm", 40.0, 341.1, 120.0, 20.0, config_index=7),
+    "steer_accel_limit_rpm_per_s": Parameter(
+        "steer_accel_limit_rpm_per_s", 100.0, 4000.0, 2000.0, 500.0,
+        config_index=9),
     "angle_deadband_deg": Parameter(
         "angle_deadband_deg", 0.1, 1.0, 0.3, 0.3, config_index=6),
     "mode_filter_tau_s": Parameter(
         "mode_filter_tau_s", 0.0, 0.05, 0.002, 0.005, config_index=13),
+    "steer_observer_tau_s": Parameter(
+        "steer_observer_tau_s", 0.005, 0.5, 0.050, 0.025,
+        config_index=23),
+    "steer_friction_ff_fade_axis_rpm": Parameter(
+        "steer_friction_ff_fade_axis_rpm", 0.0, 100.0, 10.0, 5.0,
+        config_index=24),
+    "steer_backcalc_gain": Parameter(
+        "steer_backcalc_gain", 0.0, 20.0, 0.0, 2.0, config_index=25),
+    "drive_backcalc_gain": Parameter(
+        "drive_backcalc_gain", 0.0, 20.0, 0.0, 2.0, config_index=26),
+    "steer_brake_kp_multiplier": Parameter(
+        "steer_brake_kp_multiplier", 1.0, 4.0, 2.0, 0.5,
+        config_index=47),
     "current_limit": Parameter(
         "current_limit", 2000.0, 6000.0, 4000.0, 1000.0, config_index=12),
     "steer_rate_dps": Parameter(
-        "steer_rate_dps", 60.0, 240.0, 240.0, 60.0,
+        "steer_rate_dps", 60.0, 2046.0, 720.0, 120.0,
         web_field="steer_rate_dps"),
+    "steer_commissioning_cap_rpm": Parameter(
+        "steer_commissioning_cap_rpm", 5.0, 341.0, 120.0, 20.0,
+        web_field="steer_commissioning_cap_rpm"),
     "steer_accel_dps2": Parameter(
-        "steer_accel_dps2", 180.0, 3600.0, 3600.0, 720.0,
+        "steer_accel_dps2", 180.0, 12000.0, 5400.0, 720.0,
         web_field="steer_accel_dps2"),
     "steer_decel_dps2": Parameter(
-        "steer_decel_dps2", 180.0, 3600.0, 2250.0, 450.0,
+        "steer_decel_dps2", 180.0, 12000.0, 2000.0, 450.0,
         web_field="steer_decel_dps2"),
+    "steer_jerk_dps3": Parameter(
+        "steer_jerk_dps3", 0.0, 500000.0, 0.0, 100000.0,
+        web_field="steer_jerk_dps3"),
     "steer_accel_ff_gain": Parameter(
         "steer_accel_ff_gain", 0.0, 10.0, 0.5, 0.5, config_index=18),
     "steer_decel_ff_gain": Parameter(
         "steer_decel_ff_gain", 0.0, 10.0, 0.5, 0.5, config_index=20),
     "steer_friction_ff_current": Parameter(
-        "steer_friction_ff_current", 0.0, 1000.0, 0.0, 200.0,
+        "steer_friction_ff_current", 0.0, 1000.0, 200.0, 200.0,
         config_index=21),
+    # Per-band schedule parameters. Legacy scalar indices above are applied
+    # first and establish the uniform baseline; these later entries then
+    # override only the selected 100/150rpm knots (SET_CONFIG 37..46).
+    "steer_kp_100": Parameter(
+        "steer_kp_100", 10.0, 300.0, 140.0, 20.0, config_index=37),
+    "steer_ki_100": Parameter(
+        "steer_ki_100", 0.0, 100.0, 50.0, 20.0, config_index=38),
+    "steer_accel_ff_gain_100": Parameter(
+        "steer_accel_ff_gain_100", 0.0, 10.0, 0.5, 0.5, config_index=39),
+    "steer_decel_ff_gain_100": Parameter(
+        "steer_decel_ff_gain_100", 0.0, 10.0, 2.5, 0.5, config_index=40),
+    "steer_backcalc_gain_100": Parameter(
+        "steer_backcalc_gain_100", 0.0, 20.0, 0.0, 2.0, config_index=41),
+    "steer_brake_kp_multiplier_100": Parameter(
+        "steer_brake_kp_multiplier_100", 1.0, 4.0, 2.0, 0.5,
+        config_index=50),
+    "steer_kp_150": Parameter(
+        "steer_kp_150", 10.0, 300.0, 140.0, 20.0, config_index=42),
+    "steer_ki_150": Parameter(
+        "steer_ki_150", 0.0, 100.0, 50.0, 20.0, config_index=43),
+    "steer_accel_ff_gain_150": Parameter(
+        "steer_accel_ff_gain_150", 0.0, 10.0, 0.5, 0.5, config_index=44),
+    "steer_decel_ff_gain_150": Parameter(
+        "steer_decel_ff_gain_150", 0.0, 10.0, 2.5, 0.5, config_index=45),
+    "steer_backcalc_gain_150": Parameter(
+        "steer_backcalc_gain_150", 0.0, 20.0, 0.0, 2.0, config_index=46),
+    "steer_brake_kp_multiplier_150": Parameter(
+        "steer_brake_kp_multiplier_150", 1.0, 4.0, 2.0, 0.5,
+        config_index=51),
 }
 
 
@@ -190,6 +253,14 @@ def apply_parameters(can_sock, api, values):
             time.sleep(0.025)
         elif spec.web_field is not None:
             web_values[spec.web_field] = value
+    # steer_rate_dps is clamped against the cap that was active before the
+    # request, so update the commissioning cap first in a separate request.
+    if "steer_commissioning_cap_rpm" in web_values:
+        cap_result = api.set({
+            "steer_commissioning_cap_rpm":
+                web_values.pop("steer_commissioning_cap_rpm")})
+        if not cap_result.get("ok"):
+            raise RuntimeError(f"Web UI rejected commissioning cap: {cap_result}")
     if web_values:
         result = api.set(web_values)
         if not result.get("ok"):
@@ -209,6 +280,140 @@ def wait_for_wheel(api, target_rpm, timeout_s, tolerance_rpm):
             return latest
         time.sleep(0.04)
     raise RuntimeError(f"wheel failed to reach {target_rpm}rpm; last={latest}")
+
+
+def high_speed_trace_metrics(rows, direction):
+    """Extract braking lag and scaling duration from one fresh-sample trace.
+
+    The actual deceleration start is represented by the directional-speed
+    peak.  This remains measurable when the plant continues accelerating
+    after the reference has begun braking, which is the high-rpm failure mode
+    this telemetry is intended to expose.
+    """
+    speed_samples = [
+        (row["t"], direction * row["steer_rpm"])
+        for row in rows if row.get("steer_rpm") is not None
+    ]
+    if speed_samples:
+        actual_peak_time_s, actual_peak_rpm = max(
+            speed_samples, key=lambda item: item[1])
+        actual_peak_rpm = max(0.0, actual_peak_rpm)
+    else:
+        actual_peak_time_s = math.nan
+        actual_peak_rpm = math.nan
+
+    reference_decel_start_s = math.nan
+    previous_rate = None
+    for row in rows:
+        rate = row.get("profile_rate_dps")
+        if rate is None:
+            continue
+        directional_rate = max(0.0, direction * rate)
+        if (previous_rate is not None and previous_rate > 1.0 and
+                directional_rate < previous_rate - 0.1):
+            reference_decel_start_s = row["t"]
+            break
+        previous_rate = directional_rate
+    brake_onset_lag_s = (
+        actual_peak_time_s - reference_decel_start_s
+        if math.isfinite(actual_peak_time_s) and
+        math.isfinite(reference_decel_start_s) else math.nan)
+
+    saturation_total_s = 0.0
+    saturation_longest_s = 0.0
+    saturation_run_s = 0.0
+    for index in range(len(rows) - 1):
+        dt_s = max(0.0, min(0.1, rows[index + 1]["t"] - rows[index]["t"]))
+        if rows[index].get("torque_scaling_active"):
+            saturation_total_s += dt_s
+            saturation_run_s += dt_s
+            saturation_longest_s = max(saturation_longest_s, saturation_run_s)
+        else:
+            saturation_run_s = 0.0
+
+    return {
+        "actual_steer_peak_rpm": actual_peak_rpm,
+        "reference_decel_start_s": reference_decel_start_s,
+        "actual_decel_start_s": actual_peak_time_s,
+        "brake_onset_lag_s": brake_onset_lag_s,
+        "steer_saturation_total_s": saturation_total_s,
+        "steer_saturation_longest_s": saturation_longest_s,
+    }
+
+
+def first_directional_threshold_crossing(rows, direction, threshold):
+    """Interpolate the first crossing of a directional error threshold.
+
+    At 150 axis rpm the steer angle advances about 9 degrees between 100 Hz
+    HTTP samples.  Looking only for a sample inside a +/-2 degree band can
+    therefore miss the first pass completely and report the post-overshoot
+    re-entry as the initial response.  The target approach starts with
+    ``direction * destination_error`` negative, so a band entry is the
+    crossing of ``-band`` and the target crossing is the crossing of zero.
+    """
+    previous = None
+    for row in rows:
+        error = row.get("destination_error")
+        sample_time = row.get("t")
+        if error is None or sample_time is None:
+            continue
+        directional_error = direction * error
+        if directional_error >= threshold:
+            if previous is not None:
+                previous_time, previous_error = previous
+                delta = directional_error - previous_error
+                if previous_error < threshold and delta > 0.0:
+                    fraction = (threshold - previous_error) / delta
+                    fraction = max(0.0, min(1.0, fraction))
+                    return previous_time + fraction * (sample_time - previous_time)
+            return sample_time
+        previous = (sample_time, directional_error)
+    return None
+
+
+def first_arrival_metrics(rows, direction, settle_time, settle_band_deg):
+    """Keep fast arrival separate from overshoot recovery and final settling."""
+    first_entry_2deg_s = first_directional_threshold_crossing(
+        rows, direction, -2.0)
+    first_entry_band_s = first_directional_threshold_crossing(
+        rows, direction, -settle_band_deg)
+    first_crossing_s = first_directional_threshold_crossing(
+        rows, direction, 0.0)
+    resettle_after_entry_2deg_s = (
+        max(0.0, settle_time - first_entry_2deg_s)
+        if settle_time is not None and first_entry_2deg_s is not None else None)
+    return {
+        "first_entry_2deg_s": first_entry_2deg_s,
+        "first_entry_band_s": first_entry_band_s,
+        "first_crossing_s": first_crossing_s,
+        "resettle_after_entry_2deg_s": resettle_after_entry_2deg_s,
+    }
+
+
+def build_interleaved_schedule(candidate_count, repeats, wheel_rpms, rng):
+    """Balance every candidate across direction while alternating every move.
+
+    A block contains one move in each direction for every candidate and ends
+    at its starting angle. Odd/even repeats use opposite adjacent 90-degree
+    sectors so absolute-angle effects are shared across all candidates.
+    """
+    if candidate_count < 2:
+        raise ValueError("interleaved comparison needs at least two candidates")
+    schedule = []
+    for repeat_number in range(1, repeats + 1):
+        first_direction = 1 if repeat_number % 2 == 1 else -1
+        for wheel_rpm in wheel_rpms:
+            first_order = list(range(candidate_count))
+            rng.shuffle(first_order)
+            shift = rng.randrange(1, candidate_count)
+            return_order = first_order[shift:] + first_order[:shift]
+            for first_candidate, return_candidate in zip(
+                    first_order, return_order):
+                schedule.append((repeat_number, wheel_rpm,
+                                 first_direction, first_candidate))
+                schedule.append((repeat_number, wheel_rpm,
+                                 -first_direction, return_candidate))
+    return schedule
 
 
 def run_move(api, direction, wheel_rpm, move_deg, timeout_s, poll_hz,
@@ -314,9 +519,37 @@ def run_move(api, direction, wheel_rpm, move_deg, timeout_s, poll_hz,
                 "destination_error": destination_error,
                 "tracking_error": telemetry.get("err_deg"),
                 "profile_rate_dps": state.get("profile_steer_rate_dps"),
+                "profile_accel_dps2": state.get(
+                    "profile_steer_accel_dps2"),
                 "wheel": telemetry.get("wheel_rpm_actual"),
                 "steer_rpm": telemetry.get("steer_rpm_actual"),
                 "motion_settled": telemetry.get("motion_settled"),
+                "observer_angle": telemetry.get("steer_observer_angle_deg"),
+                "observer_rpm": telemetry.get("steer_observer_rpm"),
+                "observer_innovation": telemetry.get(
+                    "steer_observer_innovation_deg"),
+                "schedule_rpm": telemetry.get("steer_schedule_rpm"),
+                "scheduled_kp": telemetry.get("scheduled_steer_kp"),
+                "scheduled_ki": telemetry.get("scheduled_steer_ki"),
+                "scheduled_accel_ff": telemetry.get("scheduled_accel_ff_gain"),
+                "scheduled_decel_ff": telemetry.get("scheduled_decel_ff_gain"),
+                "scheduled_kaw": telemetry.get(
+                    "scheduled_steer_backcalc_gain"),
+                "steer_current_unsaturated": telemetry.get(
+                    "steer_current_unsaturated"),
+                "steer_current_applied": telemetry.get("steer_current_applied"),
+                "steer_saturation_residual": telemetry.get(
+                    "steer_saturation_residual"),
+                "steer_saturation_duration_ms": telemetry.get(
+                    "steer_saturation_duration_ms"),
+                "steer_backcalc_correction": telemetry.get(
+                    "steer_backcalc_correction"),
+                "drive_backcalc_correction": telemetry.get(
+                    "drive_backcalc_correction"),
+                "torque_scaling_active": telemetry.get("torque_scaling_active"),
+                "steer_braking_active": telemetry.get("steer_braking_active"),
+                "steer_accel_explicit_active": telemetry.get(
+                    "steer_accel_explicit_active"),
                 "temp1": telemetry.get("t1"),
                 "temp2": telemetry.get("t2"),
                 "i1": telemetry.get("i1"),
@@ -346,6 +579,9 @@ def run_move(api, direction, wheel_rpm, move_deg, timeout_s, poll_hz,
                           if value is not None]
     measured_currents = [abs(value) for row in rows for value in (row["q1"], row["q2"])
                          if value is not None]
+    high_speed_metrics = high_speed_trace_metrics(rows, direction)
+    arrival_metrics = first_arrival_metrics(
+        rows, direction, settle_time, settle_band_deg)
     return {
         "direction": direction,
         "wheel_rpm": wheel_rpm,
@@ -360,6 +596,7 @@ def run_move(api, direction, wheel_rpm, move_deg, timeout_s, poll_hz,
         "response_ratio": (
             settle_time / kinematic_lower_bound_s
             if settle_time is not None else None),
+        **arrival_metrics,
         "overshoot_deg": max(0.0, max(signed_overshoots)),
         "post_profile_peak_abs_deg": max(
             abs(row["destination_error"]) for row in post_profile),
@@ -369,6 +606,7 @@ def run_move(api, direction, wheel_rpm, move_deg, timeout_s, poll_hz,
         "temp_max_c": max(temperatures) if temperatures else math.nan,
         "command_current_peak_raw": max(commanded_currents) if commanded_currents else math.nan,
         "measured_current_peak_raw": max(measured_currents) if measured_currents else math.nan,
+        **high_speed_metrics,
         "safety_reason": safety_reason,
         "samples": len(rows),
     }, rows
@@ -377,21 +615,15 @@ def run_move(api, direction, wheel_rpm, move_deg, timeout_s, poll_hz,
 def trial_score(metrics, timeout_s):
     if metrics["safety_reason"]:
         return 1000.0
-    settle = metrics["settle_s"]
-    lower_bound = metrics["kinematic_lower_bound_s"]
-    if settle is None:
-        settle_cost = (
-            timeout_s + 5.0 + 2.0 * metrics["terminal_abs_error_deg"]
-        ) / lower_bound
-    else:
-        settle_cost = settle / lower_bound
-        if not metrics.get("deadline_met", False):
-            settle_cost += 5.0
+    first_entry = metrics["first_entry_2deg_s"]
+    arrival_cost = (4.0 * first_entry if first_entry is not None
+                    else 4.0 * timeout_s + 10.0)
     wheel_mae = metrics["wheel_mae_rpm"]
     track = metrics["max_tracking_error_deg"]
     return (
-        settle_cost
+        arrival_cost
         + 0.30 * metrics["overshoot_deg"]
+        + 0.50 * metrics["terminal_abs_error_deg"]
         + 0.08 * (0.0 if math.isnan(track) else track)
         + 0.02 * (0.0 if math.isnan(wheel_mae) else wheel_mae)
     )
@@ -401,6 +633,87 @@ def candidate_score(scores):
     # Mean rewards general performance; the worst-case term prevents one very
     # good direction hiding a stick/oscillation in the opposite direction.
     return sum(scores) / len(scores) + 0.35 * max(scores)
+
+
+def summarize_candidate(round_number, candidate_number, candidate,
+                        metrics_list, scores):
+    settled = [m["settle_s"] for m in metrics_list
+               if m["settle_s"] is not None]
+    response_ratios = [m["response_ratio"] for m in metrics_list
+                       if m["response_ratio"] is not None]
+    first_entries = [m["first_entry_2deg_s"] for m in metrics_list
+                     if m["first_entry_2deg_s"] is not None]
+    resettle_delays = [m["resettle_after_entry_2deg_s"] for m in metrics_list
+                       if m["resettle_after_entry_2deg_s"] is not None]
+    strict_acceptance_failures = (0 if metrics_list else 1) + sum(
+        bool(m["safety_reason"])
+        or m["settle_s"] is None
+        or m["settle_s"] > STRICT_ACCEPT_WORST_SETTLE_S
+        or not math.isfinite(m["overshoot_deg"])
+        or m["overshoot_deg"] > STRICT_ACCEPT_OVERSHOOT_DEG
+        for m in metrics_list)
+    acceptance_failures = (0 if metrics_list else 1) + sum(
+        bool(m["safety_reason"])
+        or m["first_entry_2deg_s"] is None
+        or m["first_entry_2deg_s"] > ACCEPT_FIRST_ENTRY_2DEG_S
+        or not math.isfinite(m["overshoot_deg"])
+        or m["overshoot_deg"] > ACCEPT_OVERSHOOT_DEG
+        or not math.isfinite(m["terminal_abs_error_deg"])
+        or m["terminal_abs_error_deg"] > ACCEPT_TERMINAL_ERROR_DEG
+        for m in metrics_list)
+    return {
+        "round": round_number,
+        "candidate": candidate_number,
+        **candidate,
+        "score": candidate_score(scores) if scores else 1000.0,
+        "mean_first_entry_2deg_s": (
+            sum(first_entries) / len(first_entries) if first_entries else ""),
+        "worst_first_entry_2deg_s": max(first_entries) if first_entries else "",
+        "mean_resettle_after_entry_2deg_s": (
+            sum(resettle_delays) / len(resettle_delays)
+            if resettle_delays else ""),
+        "worst_resettle_after_entry_2deg_s": (
+            max(resettle_delays) if resettle_delays else ""),
+        "mean_settle_s": sum(settled) / len(settled) if settled else "",
+        "worst_settle_s": max(settled) if settled else "",
+        "mean_response_ratio": (
+            sum(response_ratios) / len(response_ratios)
+            if response_ratios else ""),
+        "worst_response_ratio": max(response_ratios) if response_ratios else "",
+        "worst_overshoot_deg": max(
+            (m["overshoot_deg"] for m in metrics_list), default=""),
+        "worst_terminal_abs_error_deg": max(
+            (m["terminal_abs_error_deg"] for m in metrics_list), default=""),
+        "temp_max_c": max(
+            (m["temp_max_c"] for m in metrics_list
+             if not math.isnan(m["temp_max_c"])), default=""),
+        "command_current_peak_raw": max(
+            (m["command_current_peak_raw"] for m in metrics_list
+             if not math.isnan(m["command_current_peak_raw"])), default=""),
+        "measured_current_peak_raw": max(
+            (m["measured_current_peak_raw"] for m in metrics_list
+             if not math.isnan(m["measured_current_peak_raw"])), default=""),
+        "actual_steer_peak_rpm": max(
+            (m["actual_steer_peak_rpm"] for m in metrics_list
+             if not math.isnan(m["actual_steer_peak_rpm"])), default=""),
+        "worst_brake_onset_lag_s": max(
+            (m["brake_onset_lag_s"] for m in metrics_list
+             if not math.isnan(m["brake_onset_lag_s"])), default=""),
+        "steer_saturation_total_s": sum(
+            m["steer_saturation_total_s"] for m in metrics_list
+            if not math.isnan(m["steer_saturation_total_s"])),
+        "worst_steer_saturation_s": max(
+            (m["steer_saturation_longest_s"] for m in metrics_list
+             if not math.isnan(m["steer_saturation_longest_s"])), default=""),
+        "failed_trials": sum(
+            m["settle_s"] is None or not m.get("deadline_met", False)
+            or bool(m["safety_reason"])
+            for m in metrics_list),
+        "acceptance_failures": acceptance_failures,
+        "acceptance_pass": acceptance_failures == 0,
+        "strict_settle_failures": strict_acceptance_failures,
+        "strict_settle_pass": strict_acceptance_failures == 0,
+    }
 
 
 def failed_trial(direction, wheel_rpm, reason):
@@ -416,6 +729,10 @@ def failed_trial(direction, wheel_rpm, reason):
         "performance_deadline_s": math.nan,
         "deadline_met": False,
         "response_ratio": None,
+        "first_entry_2deg_s": None,
+        "first_entry_band_s": None,
+        "first_crossing_s": None,
+        "resettle_after_entry_2deg_s": None,
         "overshoot_deg": math.nan,
         "post_profile_peak_abs_deg": math.nan,
         "terminal_abs_error_deg": math.nan,
@@ -424,6 +741,12 @@ def failed_trial(direction, wheel_rpm, reason):
         "temp_max_c": math.nan,
         "command_current_peak_raw": math.nan,
         "measured_current_peak_raw": math.nan,
+        "actual_steer_peak_rpm": math.nan,
+        "reference_decel_start_s": math.nan,
+        "actual_decel_start_s": math.nan,
+        "brake_onset_lag_s": math.nan,
+        "steer_saturation_total_s": math.nan,
+        "steer_saturation_longest_s": math.nan,
         "safety_reason": reason,
         "samples": 0,
     }
@@ -493,6 +816,10 @@ def main():
     parser.add_argument("--span", action="append", default=[], metavar="NAME=VALUE")
     parser.add_argument("--fixed", action="append", default=[], metavar="NAME=VALUE",
                         help="hold an unsearched parameter at this value")
+    parser.add_argument(
+        "--compare-values", default=None, metavar="V1,V2,...",
+        help="interleave explicit values for exactly one --params name; "
+             "each value gets both directions at wheel=0/--wheel-rpm")
     parser.add_argument("--rounds", type=int, default=3)
     parser.add_argument("--shrink", type=float, default=0.5)
     parser.add_argument("--wheel-rpm", type=float, default=265.0)
@@ -531,6 +858,11 @@ def main():
         parser.error(f"unknown --params: {','.join(unknown)}")
     if args.rounds < 1 or args.repeats < 1 or not (0.0 < args.shrink < 1.0):
         parser.error("--rounds/--repeats must be >=1 and 0 < --shrink < 1")
+    if args.evaluate_only:
+        # Repetition belongs to --repeats. Running the same center once per
+        # search round caused the default --rounds 3 to triple regression
+        # motion unexpectedly.
+        args.rounds = 1
     if not (1.0 <= args.trajectory_time_scale <= 4.0):
         parser.error("--trajectory-time-scale must be in [1,4]")
 
@@ -548,12 +880,77 @@ def main():
         if spans[name] <= 0.0:
             parser.error(f"span must be positive: {name}={spans[name]}")
 
+    compare_candidates = None
+    if args.compare_values is not None:
+        if len(names) != 1:
+            parser.error("--compare-values requires exactly one --params name")
+        try:
+            compare_values = [float(raw.strip())
+                              for raw in args.compare_values.split(",")
+                              if raw.strip()]
+        except ValueError as exc:
+            parser.error(f"invalid --compare-values: {exc}")
+        spec = PARAMETERS[names[0]]
+        compare_values = [clamp(value, spec.minimum, spec.maximum)
+                          for value in compare_values]
+        if len(compare_values) < 2 or len(set(compare_values)) != len(compare_values):
+            parser.error("--compare-values needs at least two unique values")
+        compare_candidates = [{names[0]: value} for value in compare_values]
+
     if args.self_check:
         candidates = build_candidates(center, spans, names)
         expected_max = 1 + 2 * len(names)
         assert 1 <= len(candidates) <= expected_max
         assert all(PARAMETERS[n].minimum <= c[n] <= PARAMETERS[n].maximum
                    for c in candidates for n in names)
+        trace_metrics = high_speed_trace_metrics([
+            {"t": 0.00, "profile_rate_dps": 60.0, "steer_rpm": 5.0,
+             "torque_scaling_active": 0},
+            {"t": 0.01, "profile_rate_dps": 120.0, "steer_rpm": 10.0,
+             "torque_scaling_active": 1},
+            {"t": 0.02, "profile_rate_dps": 100.0, "steer_rpm": 12.0,
+             "torque_scaling_active": 1},
+            {"t": 0.03, "profile_rate_dps": 80.0, "steer_rpm": 11.0,
+             "torque_scaling_active": 0},
+        ], direction=1)
+        assert abs(trace_metrics["actual_steer_peak_rpm"] - 12.0) < 1e-9
+        assert abs(trace_metrics["reference_decel_start_s"] - 0.02) < 1e-9
+        assert abs(trace_metrics["brake_onset_lag_s"]) < 1e-9
+        assert abs(trace_metrics["steer_saturation_total_s"] - 0.02) < 1e-9
+        assert abs(trace_metrics["steer_saturation_longest_s"] - 0.02) < 1e-9
+        arrival = first_arrival_metrics([
+            {"t": 0.10, "destination_error": -8.0},
+            {"t": 0.20, "destination_error": -1.5},
+            {"t": 0.30, "destination_error": -0.4},
+            {"t": 0.40, "destination_error": 0.2},
+        ], direction=1, settle_time=0.55, settle_band_deg=0.5)
+        assert abs(arrival["first_entry_2deg_s"] - 0.19230769230769232) < 1e-9
+        assert abs(arrival["first_entry_band_s"] - 0.2909090909090909) < 1e-9
+        assert abs(arrival["first_crossing_s"] - 0.3666666666666667) < 1e-9
+        assert abs(arrival["resettle_after_entry_2deg_s"] -
+                   0.3576923076923077) < 1e-9
+        for direction, errors in ((1, (-8.0, 4.0)), (-1, (8.0, -4.0))):
+            skipped_band = first_arrival_metrics([
+                {"t": 0.10, "destination_error": errors[0]},
+                {"t": 0.11, "destination_error": errors[1]},
+            ], direction=direction, settle_time=0.30, settle_band_deg=0.5)
+            assert abs(skipped_band["first_entry_2deg_s"] - 0.105) < 1e-9
+            assert abs(skipped_band["first_crossing_s"] -
+                       0.10666666666666667) < 1e-9
+        schedule = build_interleaved_schedule(
+            3, 2, [0.0, 265.0], random.Random(1234))
+        assert len(schedule) == 24
+        for repeat_number in (1, 2):
+            expected_direction = 1 if repeat_number == 1 else -1
+            for wheel_rpm in (0.0, 265.0):
+                block = [item for item in schedule
+                         if item[0] == repeat_number and item[1] == wheel_rpm]
+                assert all(item[2] == (expected_direction
+                                       if index % 2 == 0 else -expected_direction)
+                           for index, item in enumerate(block))
+                for direction in (-1, 1):
+                    assert sorted(item[3] for item in block
+                                  if item[2] == direction) == [0, 1, 2]
         print(f"SELF_CHECK PASS parameters={len(names)} candidates={len(candidates)}")
         return 0
     if not args.yes_wheel_lifted:
@@ -563,6 +960,9 @@ def main():
     initial = api.status()
     if initial.get("enabled"):
         parser.error("unit is already enabled; STOP it before auto tuning")
+    initial_config = initial.get("config") or {}
+    initial_time_scale = initial_config.get(
+        "trajectory_time_scale", args.trajectory_time_scale)
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%SZ")
     result_dir = args.output_dir / stamp
@@ -570,25 +970,44 @@ def main():
     trial_fields = [
         "round", "candidate", *names, "repeat", "direction", "wheel_rpm", "start_deg",
         "destination_deg", "profile_s", "settle_s", "kinematic_lower_bound_s",
-        "performance_deadline_s", "deadline_met", "response_ratio", "overshoot_deg",
+        "performance_deadline_s", "deadline_met", "response_ratio",
+        "first_entry_2deg_s", "first_entry_band_s", "first_crossing_s",
+        "resettle_after_entry_2deg_s", "overshoot_deg",
         "post_profile_peak_abs_deg", "terminal_abs_error_deg",
         "max_tracking_error_deg", "wheel_mae_rpm", "temp_max_c",
         "command_current_peak_raw", "measured_current_peak_raw",
+        "actual_steer_peak_rpm", "reference_decel_start_s",
+        "actual_decel_start_s", "brake_onset_lag_s",
+        "steer_saturation_total_s", "steer_saturation_longest_s",
         "safety_reason", "samples", "trial_score",
     ]
     summary_fields = [
         "round", "candidate", *names, "score", "mean_settle_s",
-        "worst_settle_s", "mean_response_ratio", "worst_response_ratio",
+        "worst_settle_s", "mean_first_entry_2deg_s", "worst_first_entry_2deg_s",
+        "mean_resettle_after_entry_2deg_s", "worst_resettle_after_entry_2deg_s",
+        "mean_response_ratio", "worst_response_ratio",
         "worst_overshoot_deg", "worst_terminal_abs_error_deg",
         "temp_max_c", "command_current_peak_raw", "measured_current_peak_raw",
-        "failed_trials",
+        "actual_steer_peak_rpm", "worst_brake_onset_lag_s",
+        "steer_saturation_total_s", "worst_steer_saturation_s",
+        "failed_trials", "acceptance_failures", "acceptance_pass",
+        "strict_settle_failures", "strict_settle_pass",
     ]
     trials_csv = IncrementalCsv(result_dir / "trials.csv", trial_fields)
     summary_csv = IncrementalCsv(result_dir / "summary.csv", summary_fields)
     sample_fields = [
         "round", "candidate", "repeat", "direction", "wheel_rpm",
         "t", "sequence", "destination_error", "tracking_error",
-        "profile_rate_dps", "wheel", "steer_rpm", "motion_settled",
+        "profile_rate_dps", "profile_accel_dps2", "wheel", "steer_rpm",
+        "motion_settled",
+        "observer_angle", "observer_rpm", "observer_innovation",
+        "schedule_rpm", "scheduled_kp", "scheduled_ki",
+        "scheduled_accel_ff", "scheduled_decel_ff", "scheduled_kaw",
+        "steer_current_unsaturated", "steer_current_applied",
+        "steer_saturation_residual", "steer_saturation_duration_ms",
+        "steer_backcalc_correction", "drive_backcalc_correction",
+        "torque_scaling_active", "steer_braking_active",
+        "steer_accel_explicit_active",
         "temp1", "temp2", "i1", "i2",
         "q1", "q2",
     ]
@@ -598,7 +1017,16 @@ def main():
         "arguments": vars(args) | {"output_dir": str(args.output_dir)},
         "starting_center": center,
         "starting_spans": spans,
-        "score_formula": "mean(trial_score)+0.35*max(trial_score)",
+        "score_formula": (
+            "mean(trial_score)+0.35*max(trial_score); trial score uses "
+            "first-entry/overshoot/terminal-error, not strict settle"),
+        "acceptance_gate": (
+            f"all trials first-entry-2deg<={ACCEPT_FIRST_ENTRY_2DEG_S}s, "
+            f"overshoot<={ACCEPT_OVERSHOOT_DEG}deg, terminal-error<="
+            f"{ACCEPT_TERMINAL_ERROR_DEG}deg, and no safety reason"),
+        "strict_diagnostic_gate": (
+            f"all trials overshoot<={STRICT_ACCEPT_OVERSHOOT_DEG}deg and "
+            f"settle<={STRICT_ACCEPT_WORST_SETTLE_S}s"),
     }
     (result_dir / "metadata.json").write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -634,6 +1062,135 @@ def main():
             # minimum-time reference. Production/GUI operation restores x2.
             "trajectory_time_scale": args.trajectory_time_scale,
         })
+        if compare_candidates is not None:
+            # Establish every non-compared parameter once. Between matched
+            # moves only the explicitly compared value is changed.
+            comparison_baseline = dict(baseline_values)
+            comparison_baseline.update(starting_center)
+
+            per_candidate = [
+                {"metrics": [], "scores": []}
+                for _ in compare_candidates
+            ]
+            schedule = build_interleaved_schedule(
+                len(compare_candidates), args.repeats,
+                [0.0, args.wheel_rpm], rng)
+            aborted = False
+            try:
+                for move_number, (repeat_number, wheel_rpm, direction,
+                                  candidate_index) in enumerate(schedule, 1):
+                    candidate = compare_candidates[candidate_index]
+                    full_candidate = dict(comparison_baseline)
+                    full_candidate.update(candidate)
+                    enabled_for_move = False
+                    try:
+                        # STOP after every scored move resets PI/observer state,
+                        # preventing one Kaw candidate's integral from leaking
+                        # into the next candidate. STOP also zeros profile rate,
+                        # so the complete test condition is reapplied here.
+                        apply_parameters(can_sock, api, full_candidate)
+                        api.set({"wheel_rpm": 0.0})
+                        api.status()
+                        api.enable()
+                        enabled_for_move = True
+                        metrics, trace = run_move(
+                            api, direction, wheel_rpm, args.move_deg,
+                            args.trial_timeout, args.poll_hz,
+                            args.settle_band_deg, args.settle_dwell,
+                            args.temp_limit_c)
+                    except Exception as exc:
+                        metrics = failed_trial(
+                            direction, wheel_rpm, f"trial error: {exc}")
+                        trace = []
+                    finally:
+                        if enabled_for_move:
+                            api.stop()
+                    candidate_number = candidate_index + 1
+                    for sample in trace:
+                        samples_csv.write({
+                            "round": 1,
+                            "candidate": candidate_number,
+                            "repeat": repeat_number,
+                            "direction": direction,
+                            "wheel_rpm": wheel_rpm,
+                            **sample,
+                        })
+                    score = trial_score(metrics, args.trial_timeout)
+                    per_candidate[candidate_index]["metrics"].append(metrics)
+                    per_candidate[candidate_index]["scores"].append(score)
+                    trials_csv.write({
+                        "round": 1,
+                        "candidate": candidate_number,
+                        **candidate,
+                        "repeat": repeat_number,
+                        **metrics,
+                        "trial_score": score,
+                    })
+                    print(
+                        f"  move {move_number}/{len(schedule)} "
+                        f"candidate={candidate_number} values={candidate} "
+                        f"wheel={wheel_rpm:.0f} dir={direction:+d} "
+                        f"entry2={metrics.get('first_entry_2deg_s')} "
+                        f"settle={metrics.get('settle_s')} "
+                        f"overshoot={metrics.get('overshoot_deg')}")
+                    if metrics["safety_reason"]:
+                        aborted = True
+                        break
+            finally:
+                try:
+                    if api.status().get("enabled"):
+                        api.stop()
+                except (OSError, urllib.error.URLError, socket.timeout):
+                    emergency_disable(args.can_iface)
+
+            round_rows = []
+            for candidate_index, candidate in enumerate(compare_candidates):
+                data = per_candidate[candidate_index]
+                summary = summarize_candidate(
+                    1, candidate_index + 1, candidate,
+                    data["metrics"], data["scores"])
+                summaries.append(summary)
+                round_rows.append(summary)
+                summary_csv.write(summary)
+                print(
+                    f"  summary candidate={candidate_index + 1} "
+                    f"values={candidate} "
+                    f"entry2={summary['mean_first_entry_2deg_s']} "
+                    f"settle={summary['mean_settle_s']} "
+                    f"overshoot={summary['worst_overshoot_deg']} "
+                    f"accept={summary['acceptance_pass']}")
+
+            passing = [row for row in round_rows if row["acceptance_pass"]]
+            selection_pool = passing if passing else round_rows
+            if passing:
+                best = min(
+                    selection_pool,
+                    key=lambda row: row["mean_first_entry_2deg_s"])
+            else:
+                best = min(selection_pool, key=lambda row: row["score"])
+            write_svg(result_dir / "score.svg", summaries, names, best)
+            best_values = {name: float(best[name]) for name in names}
+            final_full_values = dict(baseline_values)
+            if args.apply_best and passing and not aborted:
+                final_full_values.update(best_values)
+            else:
+                final_full_values.update(starting_center)
+            final_apply_values = final_full_values
+            metadata["completed_utc"] = datetime.now(timezone.utc).isoformat()
+            metadata["best"] = best_values | {"score": best["score"]}
+            metadata["accepted"] = bool(passing) and not aborted
+            metadata["left_applied"] = (
+                best_values if args.apply_best and passing and not aborted
+                else starting_center)
+            (result_dir / "metadata.json").write_text(
+                json.dumps(metadata, indent=2, ensure_ascii=False),
+                encoding="utf-8")
+            print(
+                f"BEST score={best['score']:.3f} values={best_values} "
+                f"accepted={bool(passing) and not aborted}")
+            print(f"results: {result_dir}")
+            return 0
+
         for round_number in range(1, args.rounds + 1):
             candidates = ([dict(center)] if args.evaluate_only
                           else build_candidates(center, spans, names))
@@ -699,35 +1256,10 @@ def main():
                             break
                 finally:
                     api.stop()
-                score = candidate_score(scores) if scores else 1000.0
-                settled = [m["settle_s"] for m in metrics_list if m["settle_s"] is not None]
-                response_ratios = [m["response_ratio"] for m in metrics_list
-                                   if m["response_ratio"] is not None]
-                summary = {
-                    "round": round_number,
-                    "candidate": candidate_number,
-                    **candidate,
-                    "score": score,
-                    "mean_settle_s": sum(settled) / len(settled) if settled else "",
-                    "worst_settle_s": max(settled) if settled else "",
-                    "mean_response_ratio": (
-                        sum(response_ratios) / len(response_ratios)
-                        if response_ratios else ""),
-                    "worst_response_ratio": max(response_ratios) if response_ratios else "",
-                    "worst_overshoot_deg": max((m["overshoot_deg"] for m in metrics_list), default=""),
-                    "worst_terminal_abs_error_deg": max((m["terminal_abs_error_deg"] for m in metrics_list), default=""),
-                    "temp_max_c": max((m["temp_max_c"] for m in metrics_list if not math.isnan(m["temp_max_c"])), default=""),
-                    "command_current_peak_raw": max(
-                        (m["command_current_peak_raw"] for m in metrics_list
-                         if not math.isnan(m["command_current_peak_raw"])), default=""),
-                    "measured_current_peak_raw": max(
-                        (m["measured_current_peak_raw"] for m in metrics_list
-                         if not math.isnan(m["measured_current_peak_raw"])), default=""),
-                    "failed_trials": sum(
-                        m["settle_s"] is None or not m.get("deadline_met", False)
-                        or bool(m["safety_reason"])
-                                         for m in metrics_list),
-                }
+                summary = summarize_candidate(
+                    round_number, candidate_number, candidate,
+                    metrics_list, scores)
+                score = summary["score"]
                 summaries.append(summary)
                 round_rows.append(summary)
                 summary_csv.write(summary)
@@ -764,7 +1296,10 @@ def main():
         if final_apply_values is not None:
             apply_parameters(can_sock, api, final_apply_values)
         try:
-            api.set({"trajectory_time_scale": 2.0})
+            # Restore the operator's starting Web UI state.  The historical
+            # hard-coded 2.0 here silently undid the adopted 1.0 default after
+            # every tuning run.
+            api.set({"trajectory_time_scale": initial_time_scale})
         except (OSError, urllib.error.URLError, socket.timeout):
             pass
         send_set_config(can_sock, 22, 0.0)

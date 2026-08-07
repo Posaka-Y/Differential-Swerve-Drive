@@ -16,13 +16,21 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "config/steer_calibration.h"
 #include "control/unit_controller.h"
 #include "platform/amt22.h"
+#include "platform/bench_uart.h"
+#include "platform/calibration_flash.h"
 #include "platform/clock.h"
 #include "platform/fdcan.h"
 #include "platform/gpio.h"
 #include "platform/uart.h"
 #include "protocol/c620.h"
+
+/* Bench-only transport: ESP32 GPIO UART -> USART1 PA9/PA10. Production
+ * architecture remains the central CAN-FD bus. */
+#define BENCH_CONTROL_UART_ENABLED 1
+#define BENCH_SAVE_CURRENT_ZERO_ON_BOOT 0
 
 enum {
     CONTROL_PERIOD_MS = 1U,
@@ -43,15 +51,29 @@ enum {
     CAN_ID_UNIT_CTRL_BASE = 0x120U,
     CAN_ID_UNIT_CTRL = CAN_ID_UNIT_CTRL_BASE + UNIT_ID,
     UNIT_CTRL_SET_ENABLE = 0x01U,
+    UNIT_CTRL_CALIB_START = 0x02U,
+    UNIT_CTRL_CALIB_SAVE_ZERO = 0x03U,
+    UNIT_CTRL_CALIB_CLEAR = 0x04U,
+    UNIT_CTRL_PING = 0x05U,
     CAN_ID_SET_CONFIG_BASE = 0x140U,
     CAN_ID_SET_CONFIG = CAN_ID_SET_CONFIG_BASE + UNIT_ID,
+    /* Classic-CAN bench companion to TRAJECTORY_FD.thetaDDot.  Production
+     * coordinated control will carry this value in TRAJECTORY_FD; keeping a
+     * separate 8-byte frame here lets the current MTU=16 bench exercise the
+     * same explicit-acceleration path without changing SET_TARGET_FF. */
+    CAN_ID_SET_TARGET_ACCEL_FF_BASE = 0x160U,
+    CAN_ID_SET_TARGET_ACCEL_FF = CAN_ID_SET_TARGET_ACCEL_FF_BASE + UNIT_ID,
     CAN_ID_STATUS1_BASE = 0x180U,
     CAN_ID_STATUS1 = CAN_ID_STATUS1_BASE + UNIT_ID,
     CAN_ID_STATUS2_BASE = 0x190U,
     CAN_ID_STATUS2 = CAN_ID_STATUS2_BASE + UNIT_ID,
     CAN_ID_STATUS3_BASE = 0x1A0U,
     CAN_ID_STATUS3 = CAN_ID_STATUS3_BASE + UNIT_ID,
-    TARGET_TIMEOUT_MS = 1000U,
+    CAN_ID_UNIT_STATUS_DIAG_BASE = 0x1B0U,
+    CAN_ID_UNIT_STATUS_DIAG = CAN_ID_UNIT_STATUS_DIAG_BASE + UNIT_ID,
+    CAN_ID_CALIB_RESULT_BASE = 0x1C0U,
+    CAN_ID_CALIB_RESULT = CAN_ID_CALIB_RESULT_BASE + UNIT_ID,
+    TARGET_TIMEOUT_MS = 200U,
     STATUS1_NORMAL_PERIOD_MS = 20U,
     STATUS2_NORMAL_PERIOD_MS = 50U,
     STATUS3_PERIOD_MS = 20U,
@@ -62,6 +84,8 @@ enum {
     TARGET_FF_TIMEOUT_MS = 200U,
     /* mdeg/s -> rpm: /1000 (mdeg->deg) then /6 (deg/s->rpm) = /6000. */
     STEER_RATE_FF_MDEG_PER_S_TO_RPM_DIV = 6000,
+    /* mdeg/s^2 -> axis rpm/s uses the same degree/revolution conversion. */
+    STEER_ACCEL_FF_MDEG_PER_S2_TO_RPM_PER_S_DIV = 6000,
 };
 
 enum {
@@ -73,6 +97,24 @@ enum {
     STATUS_FLAG_WHEEL_IN_BAND = 1U << 5,
     STATUS_FLAG_MOTION_SETTLED = 1U << 6,
     STATUS_FLAG_LIMITING_ACTIVE = 1U << 7,
+    STATUS_FLAG_CALIBRATED = 1U << 8,
+    STATUS_FLAG_CONFIG_CRC_ERROR = 1U << 9,
+    STATUS_FLAG_CALIB_PAGE_FULL = 1U << 10,
+    STATUS_FLAG_TORQUE_SCALING_ACTIVE = 1U << 11,
+    STATUS_FLAG_STEER_BRAKING_ACTIVE = 1U << 12,
+};
+
+enum {
+    ERROR_FLAG_NOT_CALIBRATED = 1UL << 6,
+    ERROR_FLAG_CONFIG_CRC = 1UL << 8,
+};
+
+enum {
+    CALIB_RESULT_CALIBRATED = 1U << 0,
+    CALIB_RESULT_CRC_ERROR = 1U << 1,
+    CALIB_RESULT_PAGE_FULL = 1U << 2,
+    CALIB_RESULT_LAST_OP_FAILED = 1U << 3,
+    CALIB_RESULT_RAW_FRESH = 1U << 4,
 };
 
 #define SETTLE_ANGLE_BAND_DEG 0.5f
@@ -94,6 +136,10 @@ static motor_state_t motors[2];
 static unit_controller_t controller;
 static unit_control_output_t output;
 static bool unit_enabled = false;
+/* A local safety stop must not be undone by the next 20ms UART frame while
+ * the operator still holds the deadman. It is cleared only after an explicit
+ * enable=0 frame (R1 released). */
+static bool enable_rearm_required = false;
 static bool target_received = false;
 static uint32_t last_target_ms = 0U;
 static uint32_t last_target_log_ms = 0U;
@@ -106,10 +152,17 @@ static bool ff_received = false;
 static uint32_t last_ff_ms = 0U;
 static uint32_t last_ff_log_ms = 0U;
 static float can_steer_rate_ff_rpm = 0.0f;
+/* Legacy fallback derived from SET_TARGET_FF receive intervals. */
 static float can_steer_accel_ff_rpm_per_s = 0.0f;
 static int32_t can_wheel_accel_ff_rpm_milli_per_s = 0;
+/* Explicit bench thetaDDot. Fresh explicit data takes precedence over the
+ * receive-time derivative above; timeout restores backward compatibility. */
+static bool accel_ff_received = false;
+static uint32_t last_accel_ff_ms = 0U;
+static float can_explicit_steer_accel_ff_rpm_per_s = 0.0f;
 static float applied_steer_rate_ff_rpm = 0.0f;
 static float applied_steer_accel_ff_rpm_per_s = 0.0f;
+static bool applied_steer_accel_ff_is_explicit = false;
 /* Normal STATUS periods are defined above. SET_CONFIG index 22 temporarily
  * overrides STATUS1/2 to 1..100ms for bench identification; zero restores
  * the normal 20/50ms periods. */
@@ -119,6 +172,10 @@ static bool wheel_in_band = false;
 static bool motion_settled = false;
 static bool settle_candidate_active = false;
 static uint32_t settle_candidate_since_ms = 0U;
+static bool latest_amt_ok = false;
+static uint16_t latest_amt_position = 0U;
+static uint32_t latest_amt_ms = 0U;
+static bool calibration_last_op_failed = false;
 
 static int32_t to_milli(float value)
 {
@@ -167,6 +224,23 @@ static void write_u16_le(uint8_t *data, uint16_t value)
     data[1] = (uint8_t)(value >> 8U);
 }
 
+static void write_i16_le(uint8_t *data, int16_t value)
+{
+    write_u16_le(data, (uint16_t)value);
+}
+
+static int16_t float_to_i16(float value)
+{
+    const float clamped = clampf(value, -32768.0f, 32767.0f);
+    return (int16_t)(clamped >= 0.0f ? clamped + 0.5f : clamped - 0.5f);
+}
+
+static uint16_t float_to_u16_scaled(float value, float scale)
+{
+    const float scaled = clampf(value * scale, 0.0f, 65535.0f);
+    return (uint16_t)(scaled + 0.5f);
+}
+
 static void write_u32_le(uint8_t *data, uint32_t value)
 {
     data[0] = (uint8_t)value;
@@ -196,6 +270,90 @@ static bool ff_is_fresh(uint32_t now_ms)
            (uint32_t)(now_ms - last_ff_ms) < TARGET_FF_TIMEOUT_MS;
 }
 
+static bool explicit_accel_ff_is_fresh(uint32_t now_ms)
+{
+    return accel_ff_received &&
+           (uint32_t)(now_ms - last_accel_ff_ms) < TARGET_FF_TIMEOUT_MS;
+}
+
+static bool calibration_raw_is_fresh(uint32_t now_ms)
+{
+    return latest_amt_ok && (uint32_t)(now_ms - latest_amt_ms) < 100U;
+}
+
+static bool calibration_motion_is_stopped(uint32_t now_ms)
+{
+    return !unit_enabled && calibration_raw_is_fresh(now_ms) &&
+           motors[0].received && motors[1].received &&
+           (uint32_t)(now_ms - motors[0].last_rx_ms) < FEEDBACK_TIMEOUT_MS &&
+           (uint32_t)(now_ms - motors[1].last_rx_ms) < FEEDBACK_TIMEOUT_MS &&
+           motors[0].feedback.rpm >= -(int16_t)M3508_INTERNAL_REDUCTION &&
+           motors[0].feedback.rpm <= (int16_t)M3508_INTERNAL_REDUCTION &&
+           motors[1].feedback.rpm >= -(int16_t)M3508_INTERNAL_REDUCTION &&
+           motors[1].feedback.rpm <= (int16_t)M3508_INTERNAL_REDUCTION;
+}
+
+static void send_calibration_result(uint32_t now_ms)
+{
+    const calibration_flash_status_t calibration = calibration_flash_status();
+    uint16_t flags = 0U;
+    flags |= calibration.calibrated ? CALIB_RESULT_CALIBRATED : 0U;
+    flags |= calibration.crc_error ? CALIB_RESULT_CRC_ERROR : 0U;
+    flags |= calibration.page_full ? CALIB_RESULT_PAGE_FULL : 0U;
+    flags |= calibration_last_op_failed ? CALIB_RESULT_LAST_OP_FAILED : 0U;
+    flags |= calibration_raw_is_fresh(now_ms) ? CALIB_RESULT_RAW_FRESH : 0U;
+    fdcan_frame_t frame = {
+        .id = CAN_ID_CALIB_RESULT,
+        .dlc = 8U,
+        .extended = false,
+        .remote = false,
+    };
+    write_u16_le(&frame.data[0], calibration.calibrated
+        ? calibration.zero_position_counts : UINT16_MAX);
+    write_u16_le(&frame.data[2], calibration_raw_is_fresh(now_ms)
+        ? latest_amt_position : UINT16_MAX);
+    write_u16_le(&frame.data[4], (uint16_t)calibration.sequence);
+    write_u16_le(&frame.data[6], flags);
+    (void)fdcan_send(FDCAN_BUS_CENTRAL, &frame);
+}
+
+static void handle_calibration_command(uint8_t command, uint32_t now_ms)
+{
+    bool attempted = false;
+    bool ok = true;
+    if (command == UNIT_CTRL_CALIB_START || command == UNIT_CTRL_PING) {
+        ok = command == UNIT_CTRL_PING || !unit_enabled;
+    } else if (command == UNIT_CTRL_CALIB_SAVE_ZERO) {
+        attempted = true;
+        ok = calibration_motion_is_stopped(now_ms) &&
+             calibration_flash_save_zero(latest_amt_position);
+    } else if (command == UNIT_CTRL_CALIB_CLEAR) {
+        attempted = true;
+        ok = calibration_motion_is_stopped(now_ms) &&
+             calibration_flash_clear();
+    } else {
+        return;
+    }
+    calibration_last_op_failed = !ok;
+    const calibration_flash_status_t calibration = calibration_flash_status();
+    debug_printf("CALIB cmd=%u ok=%u raw=%u zero=%u seq=%u flags=%x\n",
+                 (uint32_t)command, ok ? 1U : 0U,
+                 calibration_raw_is_fresh(now_ms)
+                     ? (uint32_t)latest_amt_position : UINT32_MAX,
+                 calibration.calibrated
+                     ? (uint32_t)calibration.zero_position_counts : UINT32_MAX,
+                 calibration.sequence,
+                 (calibration.calibrated ? CALIB_RESULT_CALIBRATED : 0U) |
+                 (calibration.crc_error ? CALIB_RESULT_CRC_ERROR : 0U) |
+                 (calibration.page_full ? CALIB_RESULT_PAGE_FULL : 0U) |
+                 (!ok ? CALIB_RESULT_LAST_OP_FAILED : 0U));
+    if (attempted && ok) {
+        unit_controller_reset(&controller);
+        reset_settle_state();
+    }
+    send_calibration_result(now_ms);
+}
+
 /* SET_CONFIG (0x140+unitId) param indices; each clamp is the safety range for
  * that field, independent of what the CAN sender asks for. */
 enum {
@@ -221,12 +379,80 @@ enum {
     SET_CONFIG_STEER_DECEL_FF_GAIN = 20U,
     SET_CONFIG_STEER_FRICTION_FF_CURRENT = 21U,
     SET_CONFIG_STATUS_PERIOD_MS = 22U,
+    SET_CONFIG_STEER_OBSERVER_TAU_S = 23U,
+    SET_CONFIG_STEER_FRICTION_FF_FADE_AXIS_RPM = 24U,
+    SET_CONFIG_STEER_BACKCALC_GAIN = 25U,
+    SET_CONFIG_DRIVE_BACKCALC_GAIN = 26U,
+    /* Four knots x five fields, ordered kp/ki/accelFF/decelFF/Kaw.
+     * Indices 27..46 let bench tools tune one speed band without changing
+     * the legacy scalar indices 3/4/18/20/25 (which still mean all bands). */
+    SET_CONFIG_STEER_GAIN_KNOT_BASE = 27U,
+    SET_CONFIG_STEER_GAIN_KNOT_END = 47U,
+    SET_CONFIG_STEER_BRAKE_KP_MULTIPLIER = 47U,
+    SET_CONFIG_STEER_BRAKE_KP_KNOT_BASE = 48U,
+    SET_CONFIG_STEER_BRAKE_KP_KNOT_END = 52U,
+};
+
+enum {
+    STEER_GAIN_KNOT_FIELD_KP = 0U,
+    STEER_GAIN_KNOT_FIELD_KI = 1U,
+    STEER_GAIN_KNOT_FIELD_ACCEL_FF = 2U,
+    STEER_GAIN_KNOT_FIELD_DECEL_FF = 3U,
+    STEER_GAIN_KNOT_FIELD_BACKCALC = 4U,
+    STEER_GAIN_KNOT_FIELD_COUNT = 5U,
 };
 
 static void apply_set_config(uint8_t idx, int32_t value_milli)
 {
     const float value = (float)value_milli * 0.001f;
     float applied;
+    if (idx >= SET_CONFIG_STEER_GAIN_KNOT_BASE &&
+        idx < SET_CONFIG_STEER_GAIN_KNOT_END) {
+        const uint8_t offset = idx - SET_CONFIG_STEER_GAIN_KNOT_BASE;
+        const uint8_t knot_index = offset / STEER_GAIN_KNOT_FIELD_COUNT;
+        const uint8_t field = offset % STEER_GAIN_KNOT_FIELD_COUNT;
+        unit_steer_gain_knot_t knot = controller.steer_gain_knots[knot_index];
+        switch (field) {
+        case STEER_GAIN_KNOT_FIELD_KP:
+            applied = clampf(value, 0.0f, 500.0f);
+            knot.mode_kp = applied;
+            break;
+        case STEER_GAIN_KNOT_FIELD_KI:
+            applied = clampf(value, 0.0f, 500.0f);
+            knot.mode_ki = applied;
+            break;
+        case STEER_GAIN_KNOT_FIELD_ACCEL_FF:
+            applied = clampf(value, 0.0f, 10.0f);
+            knot.accel_ff_gain = applied;
+            break;
+        case STEER_GAIN_KNOT_FIELD_DECEL_FF:
+            applied = clampf(value, 0.0f, 10.0f);
+            knot.decel_ff_gain = applied;
+            break;
+        case STEER_GAIN_KNOT_FIELD_BACKCALC:
+        default:
+            applied = clampf(value, 0.0f, 20.0f);
+            knot.backcalc_gain = applied;
+            break;
+        }
+        (void)unit_controller_set_steer_gain_knot(
+            &controller, knot_index, knot.mode_kp, knot.mode_ki,
+            knot.accel_ff_gain, knot.decel_ff_gain, knot.backcalc_gain);
+        debug_printf("SET_CONFIG idx=%u val=%d\n",
+                     (uint32_t)idx, to_milli(applied));
+        return;
+    }
+    if (idx >= SET_CONFIG_STEER_BRAKE_KP_KNOT_BASE &&
+        idx < SET_CONFIG_STEER_BRAKE_KP_KNOT_END) {
+        const uint8_t knot_index =
+            idx - SET_CONFIG_STEER_BRAKE_KP_KNOT_BASE;
+        applied = clampf(value, 1.0f, 4.0f);
+        (void)unit_controller_set_steer_brake_kp_knot(
+            &controller, knot_index, applied);
+        debug_printf("SET_CONFIG idx=%u val=%d\n",
+                     (uint32_t)idx, to_milli(applied));
+        return;
+    }
     switch (idx) {
     case SET_CONFIG_DRIVE_MODE_KP:
         applied = clampf(value, 0.0f, 500.0f);
@@ -239,10 +465,12 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
     case SET_CONFIG_STEER_MODE_KP:
         applied = clampf(value, 0.0f, 500.0f);
         controller.config.steer_mode_kp = applied;
+        unit_controller_set_uniform_steer_gain_schedule(&controller);
         break;
     case SET_CONFIG_STEER_MODE_KI:
         applied = clampf(value, 0.0f, 500.0f);
         controller.config.steer_mode_ki = applied;
+        unit_controller_set_uniform_steer_gain_schedule(&controller);
         break;
     case SET_CONFIG_ANGLE_KP_RPM_PER_DEG:
         applied = clampf(value, 0.0f, 10.0f);
@@ -253,8 +481,12 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
         controller.config.angle_deadband_deg = applied;
         break;
     case SET_CONFIG_STEER_MAX_RPM:
-        /* Axis rpm; 60rpm = 360deg/s. Range x4 with the 8/11 ratio fix. */
-        applied = clampf(value, 0.0f, 60.0f);
+        /* Axis rpm.  The runtime tuning ceiling follows the wheel=0 hard
+         * motor envelope: 469 * (8/11) = 341.1 axis rpm.  The much lower
+         * commissioning guard (currently 60rpm, then 80/100rpm) is owned by
+         * the central/Web profiler; unit_controller_update() independently
+         * projects combined steer+drive demand onto the 469rpm diamond. */
+        applied = clampf(value, 0.0f, 341.1f);
         controller.config.steer_max_rpm = applied;
         break;
     case SET_CONFIG_STEER_MIN_RPM:
@@ -262,7 +494,12 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
         controller.config.steer_min_rpm = applied;
         break;
     case SET_CONFIG_STEER_ACCEL_RPM_PER_S:
-        applied = clampf(value, 0.0f, 2000.0f);
+        /* This is the unit-local target-rate guard, not the normal motion
+         * profiler. The central profiler publishes explicit acceleration up
+         * to 2000 axis rpm/s (12000deg/s2), so allow 2x headroom here to
+         * avoid stacking two equal ramps while retaining a finite fallback
+         * limit for stale/legacy target senders. Boot default stays 600. */
+        applied = clampf(value, 0.0f, 4000.0f);
         controller.config.steer_accel_rpm_per_s = applied;
         break;
     case SET_CONFIG_WHEEL_ACCEL_RPM_PER_S:
@@ -303,6 +540,7 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
     case SET_CONFIG_STEER_ACCEL_FF_GAIN:
         applied = clampf(value, 0.0f, 10.0f);
         controller.config.steer_accel_ff_current_per_mode_rpm_per_s = applied;
+        unit_controller_set_uniform_steer_gain_schedule(&controller);
         break;
     case SET_CONFIG_MOVING_ANGLE_KP:
         applied = clampf(value, 0.0f, 10.0f);
@@ -311,6 +549,7 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
     case SET_CONFIG_STEER_DECEL_FF_GAIN:
         applied = clampf(value, 0.0f, 10.0f);
         controller.config.steer_decel_ff_current_per_mode_rpm_per_s = applied;
+        unit_controller_set_uniform_steer_gain_schedule(&controller);
         break;
     case SET_CONFIG_STEER_FRICTION_FF_CURRENT:
         applied = clampf(value, 0.0f, 1000.0f);
@@ -323,6 +562,30 @@ static void apply_set_config(uint8_t idx, int32_t value_milli)
          * 1kHz loop on the 115200-baud debug UART. */
         applied = value <= 0.0f ? 0.0f : clampf(value, 1.0f, 100.0f);
         status_period_ms = (uint32_t)(applied + 0.5f);
+        break;
+    case SET_CONFIG_STEER_OBSERVER_TAU_S:
+        /* Zero is a useful diagnostic (AMT-direct estimate); normal tuning
+         * range is milliseconds to one second. */
+        applied = clampf(value, 0.0f, 1.0f);
+        controller.config.steer_observer_correction_tau_s = applied;
+        break;
+    case SET_CONFIG_STEER_FRICTION_FF_FADE_AXIS_RPM:
+        applied = clampf(value, 0.0f, 100.0f);
+        controller.config.steer_friction_ff_fade_axis_rpm = applied;
+        break;
+    case SET_CONFIG_STEER_BACKCALC_GAIN:
+        applied = clampf(value, 0.0f, 20.0f);
+        controller.config.steer_mode_backcalc_gain = applied;
+        unit_controller_set_uniform_steer_gain_schedule(&controller);
+        break;
+    case SET_CONFIG_DRIVE_BACKCALC_GAIN:
+        applied = clampf(value, 0.0f, 20.0f);
+        controller.config.drive_mode_backcalc_gain = applied;
+        break;
+    case SET_CONFIG_STEER_BRAKE_KP_MULTIPLIER:
+        applied = clampf(value, 1.0f, 4.0f);
+        controller.config.steer_brake_kp_multiplier = applied;
+        unit_controller_set_uniform_steer_brake_kp_schedule(&controller);
         break;
     default:
         debug_printf("SET_CONFIG BAD idx=%u\n", (uint32_t)idx);
@@ -377,10 +640,26 @@ static void receive_central_can(uint32_t now_ms)
                              wheel_accel_ff_rpm_milli_per_s);
             }
         } else if (!frame.extended && !frame.remote &&
-                   frame.id == CAN_ID_UNIT_CTRL && frame.dlc >= 2U &&
-                   frame.data[0] == UNIT_CTRL_SET_ENABLE) {
-            unit_enabled = frame.data[1] != 0U;
-            debug_printf("UNIT_CTRL enable=%u\n", unit_enabled ? 1U : 0U);
+                   frame.id == CAN_ID_SET_TARGET_ACCEL_FF && frame.dlc == 8U) {
+            const int32_t steer_accel_ff_mdeg_per_s2 =
+                read_i32_le(&frame.data[0]);
+            /* Match the unit's current 2000 axis-rpm/s commissioning guard.
+             * This removes the legacy derivative's tighter +/-1000 clamp
+             * without allowing a bench sender to bypass the local limit. */
+            can_explicit_steer_accel_ff_rpm_per_s = clampf(
+                (float)steer_accel_ff_mdeg_per_s2 /
+                    (float)STEER_ACCEL_FF_MDEG_PER_S2_TO_RPM_PER_S_DIV,
+                -2000.0f, 2000.0f);
+            last_accel_ff_ms = now_ms;
+            accel_ff_received = true;
+        } else if (!frame.extended && !frame.remote &&
+                   frame.id == CAN_ID_UNIT_CTRL && frame.dlc >= 2U) {
+            if (frame.data[0] == UNIT_CTRL_SET_ENABLE) {
+                unit_enabled = frame.data[1] != 0U;
+                debug_printf("UNIT_CTRL enable=%u\n", unit_enabled ? 1U : 0U);
+            } else {
+                handle_calibration_command(frame.data[0], now_ms);
+            }
         } else if (!frame.extended && !frame.remote &&
                    frame.id == CAN_ID_SET_CONFIG && frame.dlc == 8U) {
             apply_set_config(frame.data[0], read_i32_le(&frame.data[4]));
@@ -396,6 +675,33 @@ static void receive_central_can(uint32_t now_ms)
                          (uint32_t)frame.data[5],
                          (uint32_t)frame.data[6],
                          (uint32_t)frame.data[7]);
+        }
+    }
+}
+
+static void receive_bench_uart(uint32_t now_ms)
+{
+    bench_uart_command_t command;
+    while (bench_uart_receive_command(&command)) {
+        const bool first_command = !target_received;
+        can_target_steer_deg = (float)command.steer_mdeg * 0.001f;
+        can_target_wheel_rpm = (float)command.wheel_rpm_milli * 0.001f;
+        last_target_ms = now_ms;
+        target_received = true;
+        const bool previous_enabled = unit_enabled;
+        if (!command.enable) {
+            unit_enabled = false;
+            enable_rearm_required = false;
+        } else if (!enable_rearm_required) {
+            unit_enabled = true;
+        }
+        if (unit_enabled != previous_enabled) {
+            debug_printf("UART_CTRL enable=%u\n", unit_enabled ? 1U : 0U);
+        }
+        if (first_command) {
+            last_target_log_ms = now_ms;
+            debug_printf("UART_LINK_OK steer=%d wheel=%d\n",
+                         command.steer_mdeg, command.wheel_rpm_milli);
         }
     }
 }
@@ -473,6 +779,61 @@ static void send_status3(uint16_t status_flags, uint32_t error_flags)
     (void)fdcan_send(FDCAN_BUS_CENTRAL, &frame);
 }
 
+/* Classic-CAN migration form of UNIT_STATUS_FD. The final FD transport will
+ * replace these four 8-byte pages on the same 0x1B0+id identifier. Keeping
+ * it page-multiplexed now avoids extending the blocking 115200-baud debug
+ * line, which would perturb the 1kHz loop being measured. */
+static void send_unit_status_diag(bool active, uint8_t page)
+{
+    fdcan_frame_t frame = {
+        .id = CAN_ID_UNIT_STATUS_DIAG,
+        .dlc = 8U,
+        .extended = false,
+        .remote = false,
+    };
+    const uint8_t diag_flags = active
+        ? ((output.torque_scaling_active ? 1U : 0U) |
+           (output.steer_braking_active ? 2U : 0U) |
+           (applied_steer_accel_ff_is_explicit ? 4U : 0U))
+        : 0U;
+    frame.data[0] = page;
+    frame.data[1] = diag_flags;
+    if (page == 0U) {
+        write_u16_le(&frame.data[2], float_to_u16_scaled(
+            active ? output.steer_schedule_rpm : 0.0f, 100.0f));
+        write_u16_le(&frame.data[4], float_to_u16_scaled(
+            active ? output.scheduled_steer_mode_kp : 0.0f, 10.0f));
+        write_u16_le(&frame.data[6], float_to_u16_scaled(
+            active ? output.scheduled_steer_mode_ki : 0.0f, 10.0f));
+    } else if (page == 1U) {
+        write_u16_le(&frame.data[2], float_to_u16_scaled(
+            active ? output.scheduled_steer_accel_ff_gain : 0.0f,
+            1000.0f));
+        write_u16_le(&frame.data[4], float_to_u16_scaled(
+            active ? output.scheduled_steer_decel_ff_gain : 0.0f,
+            1000.0f));
+        write_u16_le(&frame.data[6], active &&
+            output.steer_saturation_duration_ms < UINT16_MAX
+            ? (uint16_t)output.steer_saturation_duration_ms
+            : (active ? UINT16_MAX : 0U));
+    } else if (page == 2U) {
+        write_i16_le(&frame.data[2], float_to_i16(
+            active ? output.steer_mode_current_unsaturated : 0.0f));
+        write_i16_le(&frame.data[4], float_to_i16(
+            active ? output.steer_mode_current_applied : 0.0f));
+        write_i16_le(&frame.data[6], float_to_i16(
+            active ? output.steer_saturation_residual : 0.0f));
+    } else {
+        write_u16_le(&frame.data[2], float_to_u16_scaled(
+            active ? output.scheduled_steer_backcalc_gain : 0.0f, 1000.0f));
+        write_i16_le(&frame.data[4], float_to_i16(
+            active ? output.steer_backcalc_correction * 1000.0f : 0.0f));
+        write_i16_le(&frame.data[6], float_to_i16(
+            active ? output.drive_backcalc_correction * 1000.0f : 0.0f));
+    }
+    (void)fdcan_send(FDCAN_BUS_CENTRAL, &frame);
+}
+
 int main(void)
 {
     static const unit_controller_config_t control_config = {
@@ -480,7 +841,9 @@ int main(void)
         /* Rescaled x4 on 2026-07-08 when STEER_RATIO was corrected 2/11->8/11
          * (values are true steer-axis rpm now); physical behavior identical
          * to the tuned 10rpm/150 set: 90deg step <0.5deg in ~0.7-0.9s. */
-        .steer_max_rpm = 40.0f,
+        /* 40->60rpm commissioning stage accepted 26/26 across wheel=0/265,
+         * absolute-angle boundary and 90deg tests on 2026-07-31. */
+        .steer_max_rpm = 60.0f,
         .steer_min_rpm = 0.0f,
         .steer_accel_rpm_per_s = 600.0f,
         /* 4000 + drive Kp=30 + current_limit 4000: 0->500rpm rise 0.41s,
@@ -494,18 +857,42 @@ int main(void)
          * measured-mode filter. 11/12 moves met the 0.5deg dwell criterion;
          * the remaining cold/static-friction case ended at 0.088deg but
          * entered the band too late. This is the best current gain-only
-         * package; see auto-tune/2026-07-30T17-31-36Z. */
+         * package; see auto-tune/2026-07-30T17-31-36Z.
+         *
+         * 2026-07-31: a wheel=0 outer-loop-disabled step/PRBS grid found
+         * Kp=60/Ki=100 gives a cleaner isolated mode-velocity step response
+         * (0% overshoot vs 34% for Kp=120 at Ki=0). Tried it as the new
+         * default and flashed it, but a same-day closed-loop A/B via
+         * unit_web_ui.py's production profile + MOTION_SETTLED (the metric
+         * that actually matters) showed it REGRESSES real 90deg convergence:
+         * ~1.8-3.7s (one 6s+ non-convergence) vs 120/50's steady ~1.1-1.2s
+         * over 6 trials each. Lower Kp slows the inner loop's response to
+         * the outer angle-P loop's velocity commands enough to hurt final
+         * approach/settling, which the open-loop mode-step test can't see.
+         * Reverted to 120/50. Lesson: validate any inner-loop candidate
+         * against the full closed-loop MOTION_SETTLED metric before
+         * adopting it, not just the isolated step/PRBS response. */
         .steer_mode_kp = 120.0f,
         .steer_mode_ki = 50.0f,
+        .steer_brake_kp_multiplier = 1.0f,
         /* Kp=20 also trims the integral-floor overspeed bias at 25rpm to
          * ~+8% with no stick (see CONTROL_LOOP_TUNING.md 2026-07-08). */
         .drive_mode_kp = 30.0f,
         .drive_mode_ki = 20.0f,
+        /* Enabled only after saturation A/B. Zero exactly preserves the
+         * adopted conditional-integration controller. */
+        .steer_mode_backcalc_gain = 0.0f,
+        .drive_mode_backcalc_gain = 0.0f,
         /* Above worst-case breakaway (~850-950 raw, 2026-07-05/06 measurements) so the
          * integral can still defeat static friction, below current_limit so a
          * stuck-phase charge cannot release as a full-limit jump. */
         .mode_integral_limit = 1200.0f,
         .mode_rpm_filter_tau_s = 0.002f,
+        .steer_schedule_filter_tau_s = 0.010f,
+        /* Complementary observer: motor-mode velocity is the high-frequency
+         * predictor, AMT22 angle corrects drift over 50ms. The estimated rate
+         * schedules friction FF; angle feedback and settled checks stay raw. */
+        .steer_observer_correction_tau_s = 0.050f,
         /* Raised 2000->4000 (~4.9A, M3508 rated 10A continuous) with user
          * approval 2026-07-08; acceleration peaks reach ~3700 with temps
          * steady at 29C on the bench. SET_CONFIG ceiling is 6000. */
@@ -515,7 +902,17 @@ int main(void)
          * reduces braking overshoot without reaching the current clamp. */
         .steer_accel_ff_current_per_mode_rpm_per_s = 0.5f,
         .steer_decel_ff_current_per_mode_rpm_per_s = 0.5f,
-        .steer_friction_ff_current = 0.0f,
+        /* 2026-07-31: tapered to 0 above WHEEL_LOW_SPEED_TRANSITION_RPM=30 in
+         * unit_controller.c, so this only assists the wheel=0/near-0 case
+         * (the stick-slip stall diagnosis and A/B in firmware/PROGRESS.md).
+         * A flat (non-tapered) 200-300 fixed the wheel=0 stall too but
+         * regressed wheel=265rpm convergence 1.1-1.4s -> 2.4-4.0s; with the
+         * taper wheel=265/600rpm A/B showed no regression (1.18-1.44s). */
+        .steer_friction_ff_current = 200.0f,
+        /* Full breakaway assist at rest, linearly removed by 10 axis rpm.
+         * A/B on 2026-07-31 cut wheel=0 mean settle 0.956->0.757s and
+         * worst 2.040->0.975s without changing wheel>=30rpm behavior. */
+        .steer_friction_ff_fade_axis_rpm = 10.0f,
         /* Kinetic-friction FF stays disabled (0); integral floor and motion
          * threshold are 2026-07-07 measured values (kinetic friction ~200 raw). */
         .drive_kinetic_ff_current = 0.0f,
@@ -530,12 +927,39 @@ int main(void)
     clock_init();
     board_io_init();
     debug_uart_init(115200U);
+    bench_uart_init(115200U);
     amt22_init();
     unit_controller_init(&controller, &control_config);
+    calibration_flash_init();
+
+#if BENCH_SAVE_CURRENT_ZERO_ON_BOOT
+    /* One-shot bench calibration image. The caller has positioned the lifted,
+     * disabled unit at mechanical zero. Restore this macro to 0 immediately
+     * after verifying the stored position. */
+    clock_delay_ms(250U);
+    amt22_sample_t zero_sample;
+    const bool zero_read_ok = amt22_read(&zero_sample) &&
+                              zero_sample.check_bits_ok;
+    const bool zero_save_ok = zero_read_ok &&
+                              calibration_flash_save_zero(zero_sample.position);
+    debug_printf("ZERO_ON_BOOT raw=%u read=%u save=%u\n",
+                 zero_read_ok ? (uint32_t)zero_sample.position : UINT32_MAX,
+                 zero_read_ok ? 1U : 0U,
+                 zero_save_ok ? 1U : 0U);
+#endif
+
+    const calibration_flash_status_t boot_calibration = calibration_flash_status();
 
     debug_printf("\n=== CAN target differential unit test ===\n");
     debug_printf("WHEEL MUST BE LIFTED CLEAR OF THE GROUND before UNIT_CTRL enable.\n");
     debug_printf("boots disabled; press B1 any time to abort and latch disabled\n");
+    debug_printf("calibration: valid=%u zero=%u seq=%u crcErr=%u full=%u\n",
+                 boot_calibration.calibrated ? 1U : 0U,
+                 boot_calibration.calibrated
+                     ? (uint32_t)boot_calibration.zero_position_counts : UINT32_MAX,
+                 boot_calibration.sequence,
+                 boot_calibration.crc_error ? 1U : 0U,
+                 boot_calibration.page_full ? 1U : 0U);
     debug_printf("limit=%d iLimit=%d wheelAccel=%drpm/s targetTimeout=%ums\n",
                  (int32_t)control_config.current_limit,
                  (int32_t)control_config.mode_integral_limit,
@@ -543,12 +967,14 @@ int main(void)
                  TARGET_TIMEOUT_MS);
     clock_delay_ms(250U);
 
+#if !BENCH_CONTROL_UART_ENABLED
     if (!fdcan_init(FDCAN_BUS_CENTRAL, FDCAN_MODE_NORMAL)) {
         debug_printf("FDCAN1 init FAILED\n");
         for (;;) {
             status_led_write(((clock_millis() / 100U) & 1U) != 0U);
         }
     }
+#endif
 
     if (!fdcan_init(FDCAN_BUS_C620, FDCAN_MODE_NORMAL)) {
         debug_printf("FDCAN2 init FAILED\n");
@@ -558,7 +984,7 @@ int main(void)
     }
 
     send_currents(0, 0);
-    debug_printf("ready: central CAN SET_TARGET + UNIT_CTRL enable, unitId=%u\n",
+    debug_printf("ready: UART1 PA9/TX PC5/RX 115200 CRC8, unitId=%u\n",
                  UNIT_ID);
 
     bool active = false;
@@ -567,12 +993,18 @@ int main(void)
     uint32_t last_status1_ms = last_control_ms;
     uint32_t last_status2_ms = last_control_ms;
     uint32_t last_status3_ms = last_control_ms;
+    uint32_t last_status_diag_ms = last_control_ms;
+    uint8_t status_diag_page = 0U;
     float current_angle_deg = 0.0f;
     float test_target_deg = 0.0f;
 
     for (;;) {
         const uint32_t now_ms = clock_millis();
+#if BENCH_CONTROL_UART_ENABLED
+        receive_bench_uart(now_ms);
+#else
         receive_central_can(now_ms);
+#endif
         receive_c620(now_ms);
 
         const uint32_t elapsed_ms = now_ms - last_control_ms;
@@ -589,7 +1021,19 @@ int main(void)
         const bool amt_transfer_ok = amt22_read(&encoder);
         const bool amt_ok = amt_transfer_ok && encoder.check_bits_ok;
         if (amt_ok) {
-            current_angle_deg = (float)encoder.position * (360.0f / 4096.0f);
+            latest_amt_ok = true;
+            latest_amt_position = encoder.position;
+            latest_amt_ms = now_ms;
+            const calibration_flash_status_t calibration =
+                calibration_flash_status();
+            const uint16_t calibrated_position = calibration.calibrated
+                ? steer_calibration_apply(encoder.position,
+                                          calibration.zero_position_counts)
+                : encoder.position;
+            current_angle_deg =
+                (float)calibrated_position * (360.0f / 4096.0f);
+        } else {
+            latest_amt_ok = false;
         }
 
         const bool pressed = user_button_is_pressed();
@@ -597,6 +1041,7 @@ int main(void)
             debug_printf("STOP: B1 abort\n");
             active = false;
             unit_enabled = false;
+            enable_rearm_required = true;
             unit_controller_reset(&controller);
             reset_settle_state();
         } else if (!active && unit_enabled && target_is_fresh(now_ms) &&
@@ -623,6 +1068,7 @@ int main(void)
             debug_printf("STOP: target timeout\n");
             active = false;
             unit_enabled = false;
+            enable_rearm_required = true;
             unit_controller_reset(&controller);
             reset_settle_state();
         }
@@ -631,6 +1077,7 @@ int main(void)
             debug_printf("STOP: sensor/C620 timeout\n");
             active = false;
             unit_enabled = false;
+            enable_rearm_required = true;
             unit_controller_reset(&controller);
             reset_settle_state();
         }
@@ -642,6 +1089,7 @@ int main(void)
                          (uint32_t)motors[1].feedback.temperature_c);
             active = false;
             unit_enabled = false;
+            enable_rearm_required = true;
             unit_controller_reset(&controller);
             reset_settle_state();
         }
@@ -665,8 +1113,13 @@ int main(void)
              * per the 200ms SET_TARGET_FF timeout. */
             applied_steer_rate_ff_rpm =
                 ff_is_fresh(now_ms) ? can_steer_rate_ff_rpm : 0.0f;
+            applied_steer_accel_ff_is_explicit =
+                explicit_accel_ff_is_fresh(now_ms);
             applied_steer_accel_ff_rpm_per_s =
-                ff_is_fresh(now_ms) ? can_steer_accel_ff_rpm_per_s : 0.0f;
+                applied_steer_accel_ff_is_explicit
+                ? can_explicit_steer_accel_ff_rpm_per_s
+                : (ff_is_fresh(now_ms)
+                   ? can_steer_accel_ff_rpm_per_s : 0.0f);
             unit_controller_set_steer_rate_ff_rpm(&controller,
                                                   applied_steer_rate_ff_rpm);
             unit_controller_set_steer_accel_ff_rpm_per_s(
@@ -679,6 +1132,7 @@ int main(void)
                              to_milli(output.angle_error_deg));
                 active = false;
                 unit_enabled = false;
+                enable_rearm_required = true;
                 unit_controller_reset(&controller);
                 reset_settle_state();
             } else {
@@ -733,8 +1187,14 @@ int main(void)
               DRIVE_RATIO;
         if ((uint32_t)(now_ms - last_status1_ms) >= status1_period_ms) {
             last_status1_ms = now_ms;
+#if BENCH_CONTROL_UART_ENABLED
+            bench_uart_send_status(to_milli(current_angle_deg),
+                                   to_milli(status_wheel_rpm), active);
+#else
             send_status1(current_angle_deg, status_wheel_rpm);
+#endif
         }
+#if !BENCH_CONTROL_UART_ENABLED
         if ((uint32_t)(now_ms - last_status2_ms) >= status2_period_ms) {
             last_status2_ms = now_ms;
             send_status2();
@@ -753,17 +1213,55 @@ int main(void)
             status_flags |= motion_settled ? STATUS_FLAG_MOTION_SETTLED : 0U;
             status_flags |= (active && output.limiting_active)
                 ? STATUS_FLAG_LIMITING_ACTIVE : 0U;
-            send_status3(status_flags, 0U);
+            const calibration_flash_status_t calibration =
+                calibration_flash_status();
+            status_flags |= calibration.calibrated
+                ? STATUS_FLAG_CALIBRATED : 0U;
+            status_flags |= calibration.crc_error
+                ? STATUS_FLAG_CONFIG_CRC_ERROR : 0U;
+            status_flags |= calibration.page_full
+                ? STATUS_FLAG_CALIB_PAGE_FULL : 0U;
+            status_flags |= (active && output.torque_scaling_active)
+                ? STATUS_FLAG_TORQUE_SCALING_ACTIVE : 0U;
+            status_flags |= (active && output.steer_braking_active)
+                ? STATUS_FLAG_STEER_BRAKING_ACTIVE : 0U;
+            uint32_t error_flags = 0U;
+            error_flags |= calibration.calibrated
+                ? 0U : ERROR_FLAG_NOT_CALIBRATED;
+            error_flags |= calibration.crc_error
+                ? ERROR_FLAG_CONFIG_CRC : 0U;
+            send_status3(status_flags, error_flags);
         }
+        if ((uint32_t)(now_ms - last_status_diag_ms) >= status1_period_ms) {
+            last_status_diag_ms = now_ms;
+            send_unit_status_diag(active, status_diag_page);
+            status_diag_page = (uint8_t)((status_diag_page + 1U) % 4U);
+        }
+#else
+        (void)status2_period_ms;
+        (void)last_status2_ms;
+        (void)last_status3_ms;
+        (void)last_status_diag_ms;
+        (void)status_diag_page;
+#endif
         status_led_write(active);
 
         if (active && (uint32_t)(now_ms - last_report_ms) >= REPORT_PERIOD_MS) {
             last_report_ms = now_ms;
+#if BENCH_CONTROL_UART_ENABLED
+            debug_printf("run angle=%d target=%d wheel=%d en=%u tgt=%u\n",
+                         to_milli(current_angle_deg),
+                         to_milli(test_target_deg),
+                         to_milli(output.drive_mode_measured_rpm * DRIVE_RATIO),
+                         unit_enabled ? 1U : 0U,
+                         target_is_fresh(now_ms) ? 1U : 0U);
+#else
             debug_printf("run=%u step=%u angle=%d target=%d err=%d steer=%d "
                          "m1=%d/%d i1=%d q1=%d t1=%u m2=%d/%d i2=%d q2=%d t2=%u "
                          "steerMode=%d/%d iSteer=%d sInt=%d "
                          "driveMode=%d/%d iDrive=%d dInt=%d mov=%u onset=%u onsetN=%u floor=%u scale=%u "
-                         "wheel=%d ffS=%d ffA=%d aFF=%d\n",
+                         "wheel=%d ffS=%d ffA=%d ffExplicit=%u aFF=%d "
+                         "obsA=%d obsR=%d obsE=%d\n",
                          active ? 1U : 0U, 0U,
                          to_milli(current_angle_deg),
                          to_milli(test_target_deg),
@@ -795,16 +1293,47 @@ int main(void)
                          to_milli(output.wheel_rpm_command),
                          to_milli(applied_steer_rate_ff_rpm),
                          to_milli(applied_steer_accel_ff_rpm_per_s),
-                         to_milli(output.steer_accel_ff_current));
+                         applied_steer_accel_ff_is_explicit ? 1U : 0U,
+                         to_milli(output.steer_accel_ff_current),
+                         to_milli(output.steer_angle_observer_deg),
+                         to_milli(output.steer_axis_observer_rpm),
+                         to_milli(output.steer_observer_innovation_deg));
+#endif
         } else if (!active &&
                    (uint32_t)(now_ms - last_report_ms) >= IDLE_REPORT_PERIOD_MS) {
             last_report_ms = now_ms;
-            debug_printf("idle angle=%d amtOk=%u fdbkOk=%u en=%u tgtOk=%u can2psr=%x\n",
-                         to_milli(current_angle_deg), amt_ok ? 1U : 0U,
+            const calibration_flash_status_t calibration =
+                calibration_flash_status();
+#if BENCH_CONTROL_UART_ENABLED
+            debug_printf("idle angle=%d fdbk=%u en=%u tgt=%u uartB=%u uartE=%u\n",
+                         to_milli(current_angle_deg),
                          feedback_is_fresh(now_ms) ? 1U : 0U,
                          unit_enabled ? 1U : 0U,
                          target_is_fresh(now_ms) ? 1U : 0U,
+                         bench_uart_rx_byte_count(),
+                         bench_uart_rx_error_count());
+            (void)calibration;
+#else
+            debug_printf("idle angle=%d raw=%u amtOk=%u fdbkOk=%u en=%u tgtOk=%u "
+                         "uartBytes=%u uartErr=%u cal=%u zero=%u calSeq=%u "
+                         "calErr=%u calFull=%u can2psr=%x\n",
+                         to_milli(current_angle_deg),
+                         amt_ok ? (uint32_t)encoder.position : UINT32_MAX,
+                         amt_ok ? 1U : 0U,
+                         feedback_is_fresh(now_ms) ? 1U : 0U,
+                         unit_enabled ? 1U : 0U,
+                         target_is_fresh(now_ms) ? 1U : 0U,
+                         bench_uart_rx_byte_count(),
+                         bench_uart_rx_error_count(),
+                         calibration.calibrated ? 1U : 0U,
+                         calibration.calibrated
+                             ? (uint32_t)calibration.zero_position_counts
+                             : UINT32_MAX,
+                         calibration.sequence,
+                         calibration.crc_error ? 1U : 0U,
+                         calibration.page_full ? 1U : 0U,
                          fdcan_protocol_status(FDCAN_BUS_C620));
+#endif
         }
     }
 }

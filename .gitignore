@@ -5,6 +5,13 @@
 # Firmware build outputs and editor-local state
 firmware/build/
 firmware/out/
+central_firmware/build/
+esp32_gateway/.pio/
+esp32_gateway/include/secrets.h
+esp32_gateway/logs/*.csv
+esp32_gateway/logs/*.events.log
+esp32_gateway/logs/*.summary.md
+esp32_gateway/logs/*.png
 .cache/
 .vscode/*.log
 __pycache__/

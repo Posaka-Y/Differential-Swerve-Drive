@@ -13,7 +13,10 @@
 | 5 | `control/DYNAMIC_CONTROL_PLAN.md` | 静的配分から動的配分へ進める制御計画 |
 | 5.5 | `control/CALIBRATION_AND_ADAPTATION_PLAN.md` | 将来計画: CALフェーズの機構自己同定(接地対応)とLESO/LADRC負荷適応 |
 | 5.7 | `control/CENTRAL_COORDINATED_CONTROL.md` | 車体協調制御: 中央ツイストプロファイラ、車体IK+FF、デサチュレーション、反転ポリシー、段階導入 |
+| 5.75 | `../central_firmware/README.md` | Teensy中央制御の実装入口: ハード非依存3輪IK・共通デサチュレーション・全輪settled集約 |
 | 5.8 | `control/LOAD_ADAPTIVE_CONTROL_ROADMAP.md` | 負荷適応制御: mode PIを土台にFF、摩擦補償、mode-space DOB、状態推定、必要時MPCへ進めるロードマップ |
+| 5.85 | `control/HIGH_SPEED_STEER_GAIN_SCHEDULING_PLAN.md` | 100rpm超のステア追従: 速度帯連続gain schedule、anti-windup、モデルFF、電流引上げ条件 |
+| 5.86 | `control/HIGH_SPEED_STEER_HANDOFF_2026-07-31.md` | P0 telemetry/P1 back-calculation実装、実機Kaw予備A/B、現在値と次作業の引継ぎ |
 | 6 | `communication/COMMUNICATION_NAMING_AND_IDS.md` | 中央-ユニット通信、ネット名、ID、メッセージ |
 | 7 | `electrical/POWER_DISTRIBUTION_AND_ESTOP.md` | 6S LiPo x2、分電、降圧、非常停止 |
 | 8 | `electrical/CARRIER_BOARD_REQUIREMENTS.md` | ユニット基板(STM32G474自作基板)の設計要件 |
@@ -33,6 +36,8 @@
 | 11.4 | `testing/UNIT_AUTO_TUNER.md` | 単一ユニットの粗→細実機パラメータ探索、応答倍率、CSV/SVG出力、空走→接地の再探索手順 |
 | 11.5 | `../firmware/docs/MATEK_CAN_G474_PORT.md` | CAN-G474へのファーム移植、ST-LINK書込み、ArduPilot参照範囲 |
 | 12 | `software/MINIPC_GUI_AND_TEENSY.md` | mini PC GUI、Teensy、ユニットMCUの役割 |
+| 12.2 | `software/ESP32_DUALSENSE_CAN_GATEWAY.md` | DualSense→mini PC UDP→ESP32-C3 TWAI→Teensy CAN2の配線、プロトコル、起動・試験 |
+| 12.5 | `software/HOKUYO_LIDAR_SETUP.md` | mini PC上のHokuyo USB LiDARのROS 2/RViz設定と復旧手順 |
 | 13 | `checklists/REVIEW_CHECKLIST.md` | 回路・制御・実装レビュー用チェックリスト |
 
 ## レイヤー構造

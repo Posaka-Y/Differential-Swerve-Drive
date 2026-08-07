@@ -34,10 +34,37 @@ C620 x2
 | レイヤー | 物理層 | 役割 |
 |---|---|---|
 | mini PC - Teensy | USBシリアル、将来Ethernet | GUI、ログ、設定 |
+| mini PC - ESP32-C3 | Wi-Fi/UDP、50Hz | DualSenseの手動車体twist要求 |
+| ESP32-C3 - Teensy CAN2 | Classic CAN 1Mbps | `MANUAL_TWIST_CMD`。ESP32は3輪IKを行わない |
 | Teensy CAN3 - Unit MCU FDCAN1 | 駆動中央CAN(CAN FD nominal 1Mbps/data 2Mbps、BRS) | 時刻付き軌道、状態、キャリブレーション |
 | Unit MCU - C620 | C620専用CAN(1Mbps固定、FDCAN2想定) | M3508制御、フィードバック取得 |
 | Teensy CAN1 - F405 | センサーCAN(Classic CAN 1Mbps) | オドメトリ/IMU |
 | Unit MCU - AMT22 | SPI | ステア絶対角取得 |
+
+ESP32-C3内蔵TWAIはClassic CAN専用なので、CAN FDフレームが流れる駆動CAN3へ接続しない。
+手動入力ゲートウェイは汎用拡張のTeensy CAN2へ接続し、Teensyが受信した車体twistを
+通常の中央プロファイラ・3輪IKへ渡す。物理配線とUDP詳細は
+`docs/software/ESP32_DUALSENSE_CAN_GATEWAY.md`を正本とする。
+
+## 手動入力CAN2プロトコル
+
+`MANUAL_TWIST_CMD`は標準11bit ID、Classic CAN 8byte、1Mbps、50Hz。複数バイト整数は
+little-endian。ESP32はUDPが150ms以上途絶した場合、速度をすべて0、flagsを0にして送る。
+
+| CAN ID | 方向 | 名前 | 内容 |
+|---:|---|---|---|
+| `0x080` | ESP32-C3 -> Teensy CAN2 | `MANUAL_TWIST_CMD` | 手動車体速度要求。安全Enableやユニット目標ではない |
+
+| offset | フィールド | 型 | 単位/意味 |
+|---:|---|---|---|
+| 0 | `vxMmPerS` | int16 | 車体+X前、mm/s |
+| 2 | `vyMmPerS` | int16 | 車体+Y左、mm/s |
+| 4 | `omegaMradPerS` | int16 | 反時計回り正、mrad/s |
+| 6 | `sequenceLow` | uint8 | UDP sequence下位8bit |
+| 7 | `flags` | uint8 | bit0=`DEADMAN`、bit1=`WIFI_FRESH`。両方1でのみ有効 |
+
+Teensy側でもCAN受信watchdogを持ち、freshな連番と両flagを確認できない場合は手動twistを0へ
+ランプダウンする。無線の停止要求は補助停止であり、`ESTOP`やハードNCループの代替にしない。
 
 ## ネット名
 
@@ -155,6 +182,7 @@ UNIT_ID2
 | `0x130+id` | Teensy -> Unit | `TRAJECTORY_FD` | 1区間のsteer/wheel状態・微分、32byte |
 | `0x140+id` | Teensy -> Unit | `SET_CONFIG` | 制御パラメータ書込 |
 | `0x150+id` | Teensy -> Unit | `REQUEST` | CONFIG/CALIB_RESULT等の読出要求 |
+| `0x160+id` | mini PC bench -> Unit | `SET_TARGET_ACCEL_FF` | 明示ステア角加速度FF、Classic CAN移行ベンチ専用 |
 | `0x180+id` | Unit -> Teensy | `STATUS1` | 現在ステア角、現在ホイールrpm |
 | `0x190+id` | Unit -> Teensy | `STATUS2` | モーター1/2のrpm |
 | `0x1A0+id` | Unit -> Teensy | `STATUS3` | バス電圧、状態フラグ、エラーフラグ |
@@ -197,7 +225,36 @@ planned/hard包絡scale、状態/エラーフラグを含める。詳細offset�
 | `0x02` | `CALIB_START` |
 | `0x03` | `CALIB_SAVE_ZERO` |
 | `0x04` | `CALIB_CLEAR` |
-| `0x05` | `PING`(ユニットはSTATUS3を即時返信) |
+| `0x05` | `PING`(ユニットは`CALIB_RESULT`を即時返信) |
+
+`CALIB_SAVE_ZERO`と`CALIB_CLEAR`は、ユニット無効・AMT読取正常・C620フィードバック正常・
+両モーター出力軸速度1rpm以下の場合だけ受理する。`CALIB_START`はFlashを書き換えない状態確認、
+`PING`は保存状態の読出しに使う。
+
+### CALIB_RESULT payload(8バイト、2026-07-31実装)
+
+`UNIT_CTRL`の`CALIB_START` / `CALIB_SAVE_ZERO` / `CALIB_CLEAR` / `PING`に対し、
+`0x1C0+id`で即時返信する。複数バイト整数はlittle-endian。
+
+| offset | フィールド | 型 | 内容 |
+|---:|---|---|---|
+| 0 | `zeroPositionCounts` | uint16 | 保存済みAMT生カウント。未校正は`0xFFFF` |
+| 2 | `currentRawPositionCounts` | uint16 | 現在のAMT生カウント。stale/無効は`0xFFFF` |
+| 4 | `sequence` | uint16 | 保存レコードsequence下位16bit |
+| 6 | `flags` | uint16 | 下表 |
+
+| flags bit | 名前 | 意味 |
+|---:|---|---|
+| 0 | `CALIBRATED` | 有効なCRC付き原点レコードあり |
+| 1 | `CRC_ERROR` | ページ内に破損/電断途中レコードあり。以前の有効レコードは使用可能 |
+| 2 | `PAGE_FULL` | 追記領域なし。明示`CALIB_CLEAR`が必要 |
+| 3 | `LAST_OP_FAILED` | 直前の指令を安全条件またはFlashエラーで拒否 |
+| 4 | `RAW_FRESH` | 現在生カウントが100ms以内 |
+
+AMT角の適用式は`(rawPositionCounts - zeroPositionCounts) & 0x0FFF`。G474REのFlash最終
+2KiBページをファーム領域から予約し、24byte CRC32付きレコードを追記する。通常保存では
+ページを自動消去せず、書込み途中でも直前の有効レコードを残す。ページ消去はGUIで確認を
+伴う`CALIB_CLEAR`だけが行う。
 
 ## SET_TARGET payload(8バイト)
 
@@ -232,6 +289,52 @@ planned/hard包絡scale、状態/エラーフラグを含める。詳細offset�
 - ユニットはステア角速度FFを速度指令へ直接加算する(`θ̇_FF/6 [rpm]` + 角度P項)。
 - FF未受信またはSET_TARGETより古い場合はFF=0として動作する(後方互換。FF無しでも
   従来のステップ追従として成立する)。
+
+## SET_TARGET_ACCEL_FF payload(8バイト、Classic CANベンチ移行用)
+
+CAN FDの`TRAJECTORY_FD.targetSteerAccelMdegPerS2`を実装・評価するまで、現行MTU=16の
+単体ベンチだけで使う互換フレーム。mini PCは`SET_TARGET_FF`と同じ200Hzで送る。
+
+| offset | フィールド | 型 | 単位 |
+|---:|---|---|---|
+| 0 | `targetSteerAccelMdegPerS2` | int32 | mdeg/s^2 |
+| 4 | `reserved` | int32 | 0固定 |
+
+G474は200ms以内の明示加速度を受信中、これを加速/制動phase判定と加速度FFへ優先使用する。
+値は現コミッショニング範囲の±2000 axis rpm/sへclampする。フレームが途絶した場合は、既存
+`SET_TARGET_FF`角速度の受信周期差分(±1000 axis rpm/s clamp)へ自動復帰する。最終構成では
+同じ値を`TRAJECTORY_FD`へ統合し、このIDは単体ベンチ互換経路だけに残す。
+
+## SET_CONFIG payload(8バイト、ベンチ調整用)
+
+| offset | フィールド | 型 | 単位 |
+|---:|---|---|---|
+| 0 | `parameterIndex` | uint8 | 下表のindex |
+| 1 | reserved | uint8[3] | 0 |
+| 4 | `valueMilli` | int32 | パラメータ値 x1000 |
+
+現行実装の追加パラメータ:
+
+| index | 名前 | 範囲 | 既定値 | 備考 |
+|---:|---|---:|---:|---|
+| 22 | `status_period_ms` | 0、1〜100ms | 0 | 0でSTATUS1/2を通常周期へ戻す |
+| 23 | `steer_observer_correction_tau_s` | 0〜1s | 0.050s | motor mode速度予測をAMT22絶対角へ戻す相補observer時定数。0はAMT直接追従 |
+| 24 | `steer_friction_ff_fade_axis_rpm` | 0〜100rpm | 10rpm | observer軸速度0でfriction FFを全量、指定速度で0まで線形減衰。0は減衰無効 |
+| 25 | `steer_mode_backcalc_gain` | 0〜20/s | 0 | 共通current scale後のsteer残差を積分へ戻す。0は無効 |
+| 26 | `drive_mode_backcalc_gain` | 0〜20/s | 0 | 共通current scale後のdrive残差を積分へ戻す。0は無効 |
+| 27〜31 | steer gain knot 0 (0rpm) | field依存 | 既定scalar値 | 順に`Kp/Ki/accelFF/decelFF/Kaw` |
+| 32〜36 | steer gain knot 1 (60rpm) | field依存 | 既定scalar値 | 順に`Kp/Ki/accelFF/decelFF/Kaw` |
+| 37〜41 | steer gain knot 2 (100rpm) | field依存 | 既定scalar値 | 順に`Kp/Ki/accelFF/decelFF/Kaw` |
+| 42〜46 | steer gain knot 3 (150rpm) | field依存 | 既定scalar値 | 順に`Kp/Ki/accelFF/decelFF/Kaw` |
+| 47 | `steer_brake_kp_multiplier` | 1〜4 | 1 | target加速度と速度が逆符号の制動phaseだけscheduled Kpへ乗算 |
+| 48〜51 | steer brake Kp multiplier knot | 1〜4 | index 47の値 | 順に0/60/100/150rpm。速度scheduleで連続補間し、制動phaseだけ適用 |
+
+gain knot各fieldの範囲は`Kp/Ki=0〜500`、`accelFF/decelFF=0〜10`、
+`Kaw=0〜20/s`。legacy scalar index 3/4/18/20/25を書き込むと全knotを同じ値へ戻す。
+index 47も全brake倍率knotを同じ値へ戻す。したがって個別knotはscalar値より後に送信する。
+
+observer出力はindex 24のfriction FFスケジュールだけに使用する。角度P、保護判定、
+`MOTION_SETTLED`は従来のAMT角/mode速度を使用する。
 
 ## STATUS payload(3フレームに分割)
 
@@ -274,10 +377,60 @@ STATUS3(8バイト):
 | 5 | `WHEEL_IN_BAND` | wheel誤差がmax(12rpm, 目標の6%)以下、wheel加速度FFが±1rpm/s以下 |
 | 6 | `MOTION_SETTLED` | bit4/5を100ms連続で満たした |
 | 7 | `LIMITING_ACTIVE` | ユニット内rpm包絡の保護制限が作動 |
+| 8 | `CALIBRATED` | CRC付きAMT原点をFlashから読出し済み |
+| 9 | `CONFIG_CRC_ERROR` | 校正ページにCRC不一致/途中書込みレコードあり |
+| 10 | `CALIB_PAGE_FULL` | 校正追記ページに空きなし |
+| 11 | `TORQUE_SCALING_ACTIVE` | 合成motor電流が上限を超え、steer/driveを共通scale中 |
+| 12 | `STEER_BRAKING_ACTIVE` | 現行加速度FFが制動gainを選択中 |
 
 中央は新しい指令後に一度`MOTION_SETTLED=0`を確認してから立上りを採用し、前指令の残留フラグを
 完了と誤認しない。中央自身のプロファイル完了も同時に必要で、フラグ単独を経路完了にしない。
 現行周期はSTATUS1/3=20ms、STATUS2=50ms。idx22使用時もSTATUS3は20msを維持する。
+
+### UNIT_STATUS_DIAG(移行用Classic CAN、2026-07-31実装)
+
+中央CANをCAN FDへ切り替える前の実機ベンチでは、`0x1B0+id`を8byte×4pageで巡回送信する。
+通常はSTATUS1と同じ20msごとに1page、`SET_CONFIG idx22`使用時は指定周期ごとに1pageを送る。
+最終的には同じIDの`UNIT_STATUS_FD`へ置換し、このpage形式は互換ベンチ経路だけに残す。
+
+共通byte:
+
+| offset | フィールド | 型 | 内容 |
+|---:|---|---|---|
+| 0 | `page` | uint8 | 0〜2 |
+| 1 | `diagFlags` | uint8 | bit0=current scale、bit1=steer braking、bit2=explicit steer accel active |
+
+page 0:
+
+| offset | フィールド | 型 | 単位 |
+|---:|---|---|---|
+| 2 | `steerScheduleRpmCenti` | uint16 | steer axis rpm x100 |
+| 4 | `scheduledKpDeci` | uint16 | Kp x10 |
+| 6 | `scheduledKiDeci` | uint16 | Ki x10 |
+
+page 1:
+
+| offset | フィールド | 型 | 単位 |
+|---:|---|---|---|
+| 2 | `scheduledAccelFfMilli` | uint16 | gain x1000 |
+| 4 | `scheduledDecelFfMilli` | uint16 | gain x1000 |
+| 6 | `steerSaturationDurationMs` | uint16 | 現在の連続飽和時間、65535でclamp |
+
+page 2:
+
+| offset | フィールド | 型 | 単位 |
+|---:|---|---|---|
+| 2 | `steerCurrentUnsaturated` | int16 | current raw、共通scale前 |
+| 4 | `steerCurrentApplied` | int16 | current raw、共通scale後 |
+| 6 | `steerSaturationResidual` | int16 | applied - unsaturated |
+
+page 3:
+
+| offset | フィールド | 型 | 単位 |
+|---:|---|---|---|
+| 2 | `scheduledSteerKawMilli` | uint16 | back-calculation gain x1000 |
+| 4 | `steerBackcalcCorrectionMilli` | int16 | 当該1kHz周期の積分補正current raw x1000 |
+| 6 | `driveBackcalcCorrectionMilli` | int16 | 当該1kHz周期の積分補正current raw x1000 |
 
 ## オドメトリユニット(unitId=4)のSTATUS payload
 

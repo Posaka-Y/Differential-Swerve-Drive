@@ -3,13 +3,16 @@
 #include <stdint.h>
 
 #define PERIPH_BASE       (0x40000000UL)
+#define AHB1PERIPH_BASE   (PERIPH_BASE + 0x00020000UL)
 #define AHB2PERIPH_BASE   (PERIPH_BASE + 0x08000000UL)
+#define FLASH_R_BASE      (AHB1PERIPH_BASE + 0x2000UL)
 #define RCC_BASE          (0x40021000UL)
 #define GPIOA_BASE        (AHB2PERIPH_BASE + 0x0000UL)
 #define GPIOB_BASE        (AHB2PERIPH_BASE + 0x0400UL)
 #define GPIOC_BASE        (AHB2PERIPH_BASE + 0x0800UL)
 #define GPIOD_BASE        (AHB2PERIPH_BASE + 0x0C00UL)
 #define LPUART1_BASE      (PERIPH_BASE + 0x8000UL)
+#define USART1_BASE       (PERIPH_BASE + 0x13800UL)
 #define SPI3_BASE         (PERIPH_BASE + 0x3C00UL)
 #define FDCAN1_BASE       (PERIPH_BASE + 0x6400UL)
 #define FDCAN2_BASE       (PERIPH_BASE + 0x6800UL)
@@ -149,17 +152,31 @@ typedef struct {
     volatile const uint32_t CALIB;
 } systick_registers_t;
 
+typedef struct {
+    volatile uint32_t ACR;
+    volatile uint32_t PDKEYR;
+    volatile uint32_t KEYR;
+    volatile uint32_t OPTKEYR;
+    volatile uint32_t SR;
+    volatile uint32_t CR;
+    volatile uint32_t ECCR;
+    uint32_t RESERVED0;
+    volatile uint32_t OPTR;
+} flash_registers_t;
+
 #define GPIOA   ((gpio_registers_t *)GPIOA_BASE)
 #define GPIOB   ((gpio_registers_t *)GPIOB_BASE)
 #define GPIOC   ((gpio_registers_t *)GPIOC_BASE)
 #define GPIOD   ((gpio_registers_t *)GPIOD_BASE)
 #define RCC     ((rcc_registers_t *)RCC_BASE)
 #define LPUART1 ((lpuart_registers_t *)LPUART1_BASE)
+#define USART1  ((lpuart_registers_t *)USART1_BASE)
 #define SPI3    ((spi_registers_t *)SPI3_BASE)
 #define FDCAN1  ((fdcan_registers_t *)FDCAN1_BASE)
 #define FDCAN2  ((fdcan_registers_t *)FDCAN2_BASE)
 #define FDCAN3  ((fdcan_registers_t *)FDCAN3_BASE)
 #define SYSTICK ((systick_registers_t *)SYSTICK_BASE)
+#define FLASH   ((flash_registers_t *)FLASH_R_BASE)
 
 #define RCC_AHB2ENR_GPIOAEN   (1UL << 0)
 #define RCC_AHB2ENR_GPIOBEN   (1UL << 1)
@@ -168,6 +185,7 @@ typedef struct {
 #define RCC_APB1ENR1_SPI3EN   (1UL << 15)
 #define RCC_APB1ENR1_FDCANEN  (1UL << 25)
 #define RCC_APB1ENR2_LPUART1EN (1UL << 0)
+#define RCC_APB2ENR_USART1EN    (1UL << 14)
 /* FDCANSEL[25:24]: 00=HSE, 01=PLLQ, 10=PCLK1 */
 #define RCC_CCIPR_FDCANSEL_SHIFT 24U
 #define RCC_CCIPR_FDCANSEL_MASK  (3UL << RCC_CCIPR_FDCANSEL_SHIFT)
@@ -176,12 +194,50 @@ typedef struct {
 #define SYSTICK_CTRL_TICKINT  (1UL << 1)
 #define SYSTICK_CTRL_CLKSOURCE (1UL << 2)
 
+#define FLASH_SR_EOP       (1UL << 0)
+#define FLASH_SR_OPERR     (1UL << 1)
+#define FLASH_SR_PROGERR   (1UL << 3)
+#define FLASH_SR_WRPERR    (1UL << 4)
+#define FLASH_SR_PGAERR    (1UL << 5)
+#define FLASH_SR_SIZERR    (1UL << 6)
+#define FLASH_SR_PGSERR    (1UL << 7)
+#define FLASH_SR_MISERR    (1UL << 8)
+#define FLASH_SR_FASTERR   (1UL << 9)
+#define FLASH_SR_RDERR     (1UL << 14)
+#define FLASH_SR_OPTVERR   (1UL << 15)
+#define FLASH_SR_BSY       (1UL << 16)
+#define FLASH_SR_ERROR_FLAGS (FLASH_SR_OPERR | FLASH_SR_PROGERR | \
+                              FLASH_SR_WRPERR | FLASH_SR_PGAERR | \
+                              FLASH_SR_SIZERR | FLASH_SR_PGSERR | \
+                              FLASH_SR_MISERR | FLASH_SR_FASTERR | \
+                              FLASH_SR_RDERR | FLASH_SR_OPTVERR)
+#define FLASH_SR_CLEARABLE_FLAGS (FLASH_SR_EOP | FLASH_SR_ERROR_FLAGS)
+#define FLASH_CR_PG        (1UL << 0)
+#define FLASH_CR_PER       (1UL << 1)
+#define FLASH_CR_PNB_SHIFT 3U
+#define FLASH_CR_PNB_MASK  (0x7FUL << FLASH_CR_PNB_SHIFT)
+#define FLASH_CR_BKER      (1UL << 11)
+#define FLASH_CR_STRT      (1UL << 16)
+#define FLASH_CR_LOCK      (1UL << 31)
+
 #define LPUART_CR1_UE   (1UL << 0)
 #define LPUART_CR1_RE   (1UL << 2)
 #define LPUART_CR1_TE   (1UL << 3)
 #define LPUART_ISR_RXNE (1UL << 5)
 #define LPUART_ISR_TC   (1UL << 6)
 #define LPUART_ISR_TXE  (1UL << 7)
+
+#define USART_CR1_UE    (1UL << 0)
+#define USART_CR1_RE    (1UL << 2)
+#define USART_CR1_TE    (1UL << 3)
+#define USART_CR1_FIFOEN (1UL << 29)
+#define USART_ISR_FE    (1UL << 1)
+#define USART_ISR_NE    (1UL << 2)
+#define USART_ISR_ORE   (1UL << 3)
+#define USART_ISR_RXNE  (1UL << 5)
+#define USART_ISR_TXE   (1UL << 7)
+#define USART_ISR_ERROR_MASK (USART_ISR_FE | USART_ISR_NE | USART_ISR_ORE)
+#define USART_ICR_ERROR_CLEAR ((1UL << 1) | (1UL << 2) | (1UL << 3))
 
 #define SPI_CR1_CPHA    (1UL << 0)
 #define SPI_CR1_CPOL    (1UL << 1)

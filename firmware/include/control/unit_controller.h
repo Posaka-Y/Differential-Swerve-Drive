@@ -2,6 +2,20 @@
 
 #include <stdint.h>
 
+enum { UNIT_STEER_GAIN_KNOT_COUNT = 4 };
+
+typedef struct {
+    float speed_rpm;
+    float mode_kp;
+    float mode_ki;
+    float accel_ff_gain;
+    float decel_ff_gain;
+    float backcalc_gain;
+    /* Applied only in the braking phase. Scheduling this separately keeps
+     * high-speed damping without carrying the same P boost into final hold. */
+    float brake_kp_multiplier;
+} unit_steer_gain_knot_t;
+
 typedef struct {
     float motor_max_rpm;
     float steer_max_rpm;
@@ -26,8 +40,16 @@ typedef struct {
      * margin over the worst-case measured breakaway current for this to work. */
     float steer_mode_kp;
     float steer_mode_ki;
+    /* Multiplies scheduled steer Kp only while target acceleration opposes
+     * target velocity. 1.0 preserves symmetric acceleration/braking gains. */
+    float steer_brake_kp_multiplier;
     float drive_mode_kp;
     float drive_mode_ki;
+    /* Back-calculation gains [1/s]. Zero disables and preserves the previous
+     * conditional-integration-only behavior. The residual is taken after the
+     * shared steer/drive current scale. */
+    float steer_mode_backcalc_gain;
+    float drive_mode_backcalc_gain;
 
     /* Separate clamp on each mode integral (RoboMaster-style max_iout).
      * Must sit above the worst-case breakaway current (so the integral can
@@ -37,6 +59,17 @@ typedef struct {
 
     /* First-order low-pass applied to the measured mode rpm before the PI. */
     float mode_rpm_filter_tau_s;
+
+    /* Gain-scheduling speed LPF. max(|steer reference|, |observer rate|) is
+     * filtered with this time constant before the 0/60/100/150rpm table is
+     * interpolated. unit_controller_init() seeds every knot from the fixed
+     * scalar gains above, preserving legacy behavior until knots are tuned. */
+    float steer_schedule_filter_tau_s;
+
+    /* Complementary steer observer correction time constant. Motor-mode
+     * velocity supplies the high-frequency prediction; AMT22 absolute angle
+     * removes low-frequency drift. Zero snaps the estimate to AMT each cycle. */
+    float steer_observer_correction_tau_s;
 
     float current_limit;
     float steer_motor_sign;
@@ -50,6 +83,9 @@ typedef struct {
     /* Coulomb-friction feedforward in steer mode. Applied in the direction
      * of a nonzero steer-mode target; zero disables. */
     float steer_friction_ff_current;
+    /* If positive, taper steer friction FF to zero as observer axis speed
+     * rises from zero to this rpm. Zero preserves the legacy constant FF. */
+    float steer_friction_ff_fade_axis_rpm;
 
     /* Kinetic-friction feedforward: while |filtered drive-mode rpm| exceeds
      * drive_motion_threshold_rpm (i.e. the wheel is actually moving), this
@@ -108,9 +144,30 @@ typedef struct {
     float drive_mode_target_rpm;
     float steer_mode_measured_rpm;
     float drive_mode_measured_rpm;
+    /* Complementary observer outputs. The rate schedules steer friction FF;
+     * angle feedback and the settled decision deliberately stay on raw AMT. */
+    float steer_angle_observer_deg;
+    float steer_axis_observer_rpm;
+    float steer_observer_innovation_deg;
     float steer_mode_current;
     float steer_accel_ff_current;
     float drive_mode_current;
+    /* P0 high-speed-control telemetry.  "unsaturated" is the complete mode
+     * demand after PI and feedforward but before the shared per-motor current
+    * scale; "applied" is the mode demand after that scale. */
+    float steer_schedule_rpm;
+    float scheduled_steer_mode_kp;
+    float scheduled_steer_mode_ki;
+    float scheduled_steer_accel_ff_gain;
+    float scheduled_steer_decel_ff_gain;
+    float scheduled_steer_backcalc_gain;
+    float steer_mode_current_unsaturated;
+    float steer_mode_current_applied;
+    float steer_saturation_residual;
+    float steer_backcalc_correction;
+    float drive_backcalc_correction;
+    uint32_t steer_saturation_duration_ms;
+    uint8_t steer_braking_active;
     /* Integral states are exposed for tuning telemetry.  They are the stored
      * mode-PI I terms before P addition/current scaling. */
     float steer_mode_integral;
@@ -134,6 +191,11 @@ typedef struct {
     float drive_mode_integral;
     float steer_mode_filtered_rpm;
     float drive_mode_filtered_rpm;
+    float steer_angle_observer_deg;
+    float steer_schedule_rpm;
+    unit_steer_gain_knot_t steer_gain_knots[UNIT_STEER_GAIN_KNOT_COUNT];
+    float steer_saturation_duration_s;
+    uint8_t steer_observer_initialized;
     /* Previous-cycle combined saturation; freezes both integrals for one cycle
      * (conditional integration against cross-mode windup). */
     uint8_t combined_saturated;
@@ -154,6 +216,21 @@ void unit_controller_set_steer_rate_ff_rpm(unit_controller_t *controller,
                                            float steer_rate_ff_rpm);
 void unit_controller_set_steer_accel_ff_rpm_per_s(
     unit_controller_t *controller, float steer_accel_ff_rpm_per_s);
+/* Re-seed all 0/60/100/150rpm knots from the scalar config. Runtime updates
+ * to legacy SET_CONFIG gains call this to preserve their all-band meaning. */
+void unit_controller_set_uniform_steer_gain_schedule(
+    unit_controller_t *controller);
+void unit_controller_set_uniform_steer_brake_kp_schedule(
+    unit_controller_t *controller);
+/* Updates one knot while keeping its fixed speed coordinate. Returns 0 for an
+ * invalid index and 1 on success. */
+uint8_t unit_controller_set_steer_gain_knot(
+    unit_controller_t *controller, uint8_t index,
+    float mode_kp, float mode_ki, float accel_ff_gain,
+    float decel_ff_gain, float backcalc_gain);
+uint8_t unit_controller_set_steer_brake_kp_knot(
+    unit_controller_t *controller, uint8_t index,
+    float brake_kp_multiplier);
 void unit_controller_reset(unit_controller_t *controller);
 void unit_controller_update(unit_controller_t *controller,
                             const unit_measurement_t *measurement,

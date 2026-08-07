@@ -16,8 +16,11 @@ set(MCU_FLAGS
 
 add_executable(${PROJECT_NAME}.elf
     src/main.c
+    src/config/steer_calibration.c
     src/control/unit_controller.c
     src/platform/amt22.c
+    src/platform/bench_uart.c
+    src/platform/calibration_flash.c
     src/platform/clock.c
     src/platform/fdcan.c
     src/platform/gpio.c
