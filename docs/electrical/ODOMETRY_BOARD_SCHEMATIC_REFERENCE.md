@@ -1,5 +1,7 @@
 # オドメトリ基板 フラット回路図作成リファレンス
 
+> **V2改版（2026-09-23着手）**: デバッグ・TP・V1修正の変更要件は[共通V2要件](UNIT_ODOMETRY_V2_REQUIREMENTS.md)を優先する。本文のGH6/SWD・UART一体配列はV1仕様。V2の正式ヘッダ型番とPCB配線は未確定/未完了。
+
 作成日: 2026-07-25。対象: STM32F405RGT6 + AMT102 x3 + ICM-42688-Pオドメトリ基板 Rev.A。
 
 ## 方針
@@ -33,7 +35,7 @@
 | 範囲 | ブロック | 主な部品 |
 |---:|---|---|
 | 100 | 5V入力・逆接/逆流保護 | J101、U101 LM66100、C101 |
-| 200 | 3.3V LDO | U201 TLV1117LV33、C201～C204 |
+| 200 | 3.3V LDO | U201 TLV76133、C201～C204 |
 | 300 | F405最小回路 | U301、Y301、FB301、C301～C313、R301～R302 |
 | 400 | センサーCAN | U401、D401、SW401、R401、C401～C402、J401～J402 |
 | 500 | AMT102入力 x3 | J501～J503、D501～D503、U501～U503、C501～C503、C511～C516、R511～R516 |
@@ -54,7 +56,7 @@
 
 - J101=`SM02B-GHS-TB`、1=5V、2=GND。
 - U101=`LM66100DCKR`。CE_N=VOUT、ST/NCは未接続。
-- U201=`TLV1117LV33DCYR`。tab=VOUT。入力/出力へ各100nF+10uF。
+- U201=`TLV76133DCYR`。tab=VOUT。入力/出力へ各100nF+10uF。
 
 ### STM32F405RGT6最小回路
 
@@ -65,7 +67,7 @@
 | VBAT | pin 1を3V3、100nF |
 | VDDA/VSSA | FB301経由3V3、100nF+1uF、VSSA=GND |
 | VCAP_1/2 | pin 31/47から各2.2uF・ESR<2ΩをGND。他ネットへ接続禁止 |
-| HSE | PH0 pin5 / PH1 pin6、8MHz `ECS-80-8-33Q-JES-TR`、C0G 10pF x2 |
+| HSE | PH0 pin5 / PH1 pin6、8MHz `FC3BAEBDI8.0-T1`、C0G 10pF x2 |
 | NRST | pin7、100nF to GND、J701、TP |
 | BOOT0 | pin60、10kΩ pull-down、BOOT/3V3隣接TP |
 
@@ -73,7 +75,7 @@ F405電源部品:
 
 - VDD 100nF: `C0603C104K5RACTU`
 - VDD bulk: `GRM21BZ71E475KE15K` 4.7uF
-- VDDA: `BLM18AG601SN1D` + 100nF + `TMK107B7105KA-T` 1uF
+- VDDA: `BLM18AG601SN1D` + 100nF + `C1608X7R1E105K080AB` 1uF
 - VCAP: `GCM21BR71E225KA73L` x2
 
 ### センサーCAN
@@ -139,7 +141,7 @@ J601は購入モジュールの8信号を表す。実物の物理pin番号は到
 ### Debug・ID・LED
 
 - J701=`BM06B-GHS-TBT`: 1=GND、2=SWCLK(PA14)、3=SWDIO(PA13)、4=NRST、5=DBG_TX(PA2 USART2_TX)、6=DBG_RX(PA3 USART2_RX)。
-- SW701=`A6S-3104-H`: PC6/PC7/PC8を各switch経由でGND。内部pull-up、ON=Low。unitId=4はbit2だけON。
+- SW701=`DS04-254-1-03BK-SMT`: PC6/PC7/PC8を各switch経由でGND。内部pull-up、ON=Low。unitId=4はbit2だけON。旧A6S用footprintと列中心間8.9mm、縦pitch 2.54mm、pad寸法が一致する。
 - D701 PWR緑、D702 RUN緑(PA5)、D703 COMM黄(PB10)、D704 ERR赤(PB11)。各1kΩ。
 - PB3はSWOテストポイント。
 

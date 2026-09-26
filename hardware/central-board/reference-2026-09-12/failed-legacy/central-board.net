@@ -1,0 +1,350 @@
+(export
+	(version "E")
+	(design
+		(source "C:\\Users\\ttiro\\Desktop\\Differential Swerve\\hardware\\central-board\\reference-2026-09-12\\central-board.sch")
+		(date "2026-09-12T18:48:48")
+		(tool "Eeschema 10.0.4")
+		(sheet
+			(number "1")
+			(name "/")
+			(tstamps "/")
+			(title_block
+				(title "Teensy 4.1 Central Board - Module Index")
+				(company "Differential Swerve")
+				(rev "A - HUMAN REVIEW DRAFT")
+				(date "2026-08-04")
+				(source "central-board.sch")
+				(comment
+					(number "1")
+					(value "Responsibility-based hierarchical schematic")
+				)
+				(comment
+					(number "2")
+					(value "Global labels connect modules")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+		(sheet
+			(number "2")
+			(name "/100 100 Power Input and 5V Distribution/")
+			(tstamps "/00000000-0000-0000-0000-000000007001/")
+			(title_block
+				(title "100 Power Input and 5V Distribution")
+				(company "Differential Swerve")
+				(rev "A - HUMAN REVIEW DRAFT")
+				(date "2026-08-04")
+				(source "100-power.sch")
+				(comment
+					(number "1")
+					(value "Responsibility-based hierarchical schematic")
+				)
+				(comment
+					(number "2")
+					(value "Global labels connect modules")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+		(sheet
+			(number "3")
+			(name "/600 600 E-stop and Contactor Safety/")
+			(tstamps "/00000000-0000-0000-0000-000000007004/")
+			(title_block
+				(title "600 E-stop and Contactor Safety")
+				(company "Differential Swerve")
+				(rev "A - HUMAN REVIEW DRAFT")
+				(date "2026-08-04")
+				(source "600-safety.sch")
+				(comment
+					(number "1")
+					(value "Responsibility-based hierarchical schematic")
+				)
+				(comment
+					(number "2")
+					(value "Global labels connect modules")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+		(sheet
+			(number "4")
+			(name "/200 200 Teensy 4.1 Carrier and Safety GPIO/")
+			(tstamps "/00000000-0000-0000-0000-000000007002/")
+			(title_block
+				(title "200 Teensy 4.1 Carrier and Safety GPIO")
+				(company "Differential Swerve")
+				(rev "A - HUMAN REVIEW DRAFT")
+				(date "2026-08-04")
+				(source "200-teensy.sch")
+				(comment
+					(number "1")
+					(value "Responsibility-based hierarchical schematic")
+				)
+				(comment
+					(number "2")
+					(value "Global labels connect modules")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+		(sheet
+			(number "5")
+			(name "/700 700 Battery and Motor Power Monitoring/")
+			(tstamps "/00000000-0000-0000-0000-000000007005/")
+			(title_block
+				(title "700 Battery and Motor Power Monitoring")
+				(company "Differential Swerve")
+				(rev "A - HUMAN REVIEW DRAFT")
+				(date "2026-08-04")
+				(source "700-monitoring.sch")
+				(comment
+					(number "1")
+					(value "Responsibility-based hierarchical schematic")
+				)
+				(comment
+					(number "2")
+					(value "Global labels connect modules")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+		(sheet
+			(number "6")
+			(name "/300-500 300-500 CAN Communication/")
+			(tstamps "/00000000-0000-0000-0000-000000007003/")
+			(title_block
+				(title "300-500 CAN Communication")
+				(company "Differential Swerve")
+				(rev "A - HUMAN REVIEW DRAFT")
+				(date "2026-08-04")
+				(source "300-can.sch")
+				(comment
+					(number "1")
+					(value "Responsibility-based hierarchical schematic")
+				)
+				(comment
+					(number "2")
+					(value "Global labels connect modules")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+		(sheet
+			(number "7")
+			(name "/800-900 800 Expansion and Test Access/")
+			(tstamps "/00000000-0000-0000-0000-000000007006/")
+			(title_block
+				(title "800 Expansion and Test Access")
+				(company "Differential Swerve")
+				(rev "A - HUMAN REVIEW DRAFT")
+				(date "2026-08-04")
+				(source "800-expansion.sch")
+				(comment
+					(number "1")
+					(value "Responsibility-based hierarchical schematic")
+				)
+				(comment
+					(number "2")
+					(value "Global labels connect modules")
+				)
+				(comment
+					(number "3")
+					(value "")
+				)
+				(comment
+					(number "4")
+					(value "")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+	)
+	(components)
+	(groups)
+	(variants)
+	(libparts)
+	(libraries)
+	(nets)
+)

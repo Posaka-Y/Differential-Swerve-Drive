@@ -1,0 +1,1269 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-08-05T00:09:22",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.4",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/cdb60579-f192-43a7-86d7-10cb974d2bc4",
+            "violations": [
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN2_RX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4191
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000002"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN2_TX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4445
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000003"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'MOTOR_PWR_EN'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4699
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000004"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'ESTOP_LOOP_OK_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4953
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000005"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'ESTOP1_AUX_OK_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5207
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000006"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'ESTOP2_AUX_OK_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5461
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000007"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'REARM_SW_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5715
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000008"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'STATUS_G_LED'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5969
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000009"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'STATUS_R_LED'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6223
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000010"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'AUX_OUTPUT_EN'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6477
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000011"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_CS0_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6731
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000012"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_MOSI'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6985
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000013"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_MISO'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.7239
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000014"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO24_A10'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.7747
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000016"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO25_A11'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8001
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000017"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO26_A12'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8255
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000018"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO27_A13'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8509
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000019"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART7_RX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8763
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000020"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART7_TX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9017
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000021"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN3_RX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9271
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000022"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN3_TX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9525
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000023"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'PWR_5V_FAULT_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9779
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000024"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART8_RX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.4191
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000026"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART8_TX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.4445
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000027"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_CS1_N'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.4699
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000028"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO40_A16'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.5715
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000032"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO41_A17'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.5969
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000033"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_SCK'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.6477
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000035"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'MOTOR_PWR_SENSE'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.6731
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000036"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'BAT_MON_ALERT_N'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.6985
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000037"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C1_SCL'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.7239
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000038"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C1_SDA'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.7493
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000039"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C0_SDA'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.7747
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000040"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C0_SCL'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8001
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000041"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO20_A6'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8255
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000042"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO21_A7'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8509
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000043"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN1_TX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8763
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000044"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN1_RX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.9017
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000045"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label '+5V_TEENSY'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.9779
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000048"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                }
+            ]
+        },
+        {
+            "path": "/Power Input and 5V Distribution/",
+            "uuid_path": "/cdb60579-f192-43a7-86d7-10cb974d2bc4/00000000-0000-0000-0000-000000007001",
+            "violations": []
+        },
+        {
+            "path": "/E-stop and Contactor Safety/",
+            "uuid_path": "/cdb60579-f192-43a7-86d7-10cb974d2bc4/00000000-0000-0000-0000-000000007004",
+            "violations": []
+        },
+        {
+            "path": "/Teensy 4.1 Carrier and Safety GPIO/",
+            "uuid_path": "/cdb60579-f192-43a7-86d7-10cb974d2bc4/00000000-0000-0000-0000-000000007002",
+            "violations": [
+                {
+                    "description": "Hierarchical label CAN2_RX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN2_RX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4191
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000002"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label CAN2_TX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN2_TX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4445
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000003"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label MOTOR_PWR_EN has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'MOTOR_PWR_EN'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4699
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000004"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label ESTOP_LOOP_OK_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'ESTOP_LOOP_OK_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.4953
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000005"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label ESTOP1_AUX_OK_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'ESTOP1_AUX_OK_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5207
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000006"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label ESTOP2_AUX_OK_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'ESTOP2_AUX_OK_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5461
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000007"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label REARM_SW_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'REARM_SW_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5715
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000008"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label STATUS_G_LED has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'STATUS_G_LED'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.5969
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000009"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label STATUS_R_LED has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'STATUS_R_LED'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6223
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000010"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label AUX_OUTPUT_EN has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'AUX_OUTPUT_EN'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6477
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000011"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label SPI_CS0_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_CS0_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6731
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000012"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label SPI_MOSI has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_MOSI'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.6985
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000013"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label SPI_MISO has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_MISO'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.7239
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000014"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO24_A10 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO24_A10'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.7747
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000016"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO25_A11 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO25_A11'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8001
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000017"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO26_A12 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO26_A12'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8255
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000018"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO27_A13 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO27_A13'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8509
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000019"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label UART7_RX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART7_RX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.8763
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000020"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label UART7_TX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART7_TX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9017
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000021"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label CAN3_RX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN3_RX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9271
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000022"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label CAN3_TX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN3_TX'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9525
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000023"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label PWR_5V_FAULT_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'PWR_5V_FAULT_N'",
+                            "pos": {
+                                "x": 0.6096,
+                                "y": 0.9779
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000024"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label UART8_RX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART8_RX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.4191
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000026"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label UART8_TX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'UART8_TX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.4445
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000027"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label SPI_CS1_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_CS1_N'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.4699
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000028"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO40_A16 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO40_A16'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.5715
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000032"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO41_A17 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO41_A17'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.5969
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000033"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label SPI_SCK has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'SPI_SCK'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.6477
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000035"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label MOTOR_PWR_SENSE has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'MOTOR_PWR_SENSE'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.6731
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000036"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label BAT_MON_ALERT_N has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'BAT_MON_ALERT_N'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.6985
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000037"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label I2C1_SCL has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C1_SCL'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.7239
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000038"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label I2C1_SDA has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C1_SDA'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.7493
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000039"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label I2C0_SDA has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C0_SDA'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.7747
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000040"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label I2C0_SCL has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'I2C0_SCL'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8001
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000041"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO20_A6 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO20_A6'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8255
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000042"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label IO21_A7 has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'IO21_A7'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8509
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000043"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label CAN1_TX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN1_TX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.8763
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000044"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label CAN1_RX has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'CAN1_RX'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.9017
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000045"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label +3V3_TEENSY has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label '+3V3_TEENSY'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.9271
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000046"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label GND_CTRL has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label 'GND_CTRL'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.9525
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000047"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                },
+                {
+                    "description": "Hierarchical label +5V_TEENSY has no matching sheet pin in the parent sheet",
+                    "items": [
+                        {
+                            "description": "Hierarchical Label '+5V_TEENSY'",
+                            "pos": {
+                                "x": 0.9779,
+                                "y": 0.9779
+                            },
+                            "uuid": "b0000000-0000-4000-8000-000000000048"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "hier_label_mismatch"
+                }
+            ]
+        },
+        {
+            "path": "/Battery and Motor Power Monitoring (page 5)/",
+            "uuid_path": "/cdb60579-f192-43a7-86d7-10cb974d2bc4/00000000-0000-0000-0000-000000007005",
+            "violations": []
+        },
+        {
+            "path": "/CAN Communication/",
+            "uuid_path": "/cdb60579-f192-43a7-86d7-10cb974d2bc4/00000000-0000-0000-0000-000000007003",
+            "violations": []
+        },
+        {
+            "path": "/Expansion and Test Access/",
+            "uuid_path": "/cdb60579-f192-43a7-86d7-10cb974d2bc4/00000000-0000-0000-0000-000000007006",
+            "violations": []
+        }
+    ],
+    "source": "central-board.kicad_sch"
+}

@@ -1,0 +1,14 @@
+Schematic physical refs 62 PCB refs 65
+Missing PCB refs: []
+Extra PCB refs: ['G***', 'QR*****', 'REF**']
+Schematic pin to PCB pad mismatches:
+U5 | 4 | unconnected-(U5-N/C-Pad4) | unconnected-(U5-N{slash}C-Pad4)
+Mismatch count 1
+PCB pads absent from schematic pin list:
+J1 | MP | 
+J4 |  | 
+J5 |  | 
+J6 |  | 
+J7 |  | 
+REF** |  | 
+SW1 |  | 

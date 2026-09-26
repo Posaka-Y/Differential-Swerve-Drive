@@ -1563,7 +1563,7 @@
 				)
 			)
 		)
-		(property "Value" "RC0603FR-0722KL 22k"
+		(property "Value" "RC0603FR-0710KL 10k"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "bb17e916-048c-4b72-b012-2996d07cad2d")
@@ -3629,7 +3629,7 @@
 				)
 			)
 		)
-		(property "Value" "TLV1117LV33DCYR"
+		(property "Value" "TLV76133DCYR"
 			(at 0 4.500001 0)
 			(layer "F.Fab")
 			(uuid "a5dca827-76d0-4225-8b0a-64b0c57156ee")
@@ -4832,7 +4832,7 @@
 				)
 			)
 		)
-		(property "Value" "RC0603FR-0733KL 33k"
+		(property "Value" "RC0603FR-0722KL 22k"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "b9d7cc9a-271f-478e-bb4a-2f83ab07b7db")
@@ -6959,7 +6959,7 @@
 				)
 			)
 		)
-		(property "Value" "ECS-80-8-33Q-JES-TR"
+		(property "Value" "FC3BAEBDI8.0-T1"
 			(at 0 2.450001 0)
 			(layer "F.Fab")
 			(uuid "228b5b95-4b12-4235-9e0b-5b8253354147")
@@ -17738,7 +17738,7 @@
 				)
 			)
 		)
-		(property "Value" "A6S-3104-H"
+		(property "Value" "DS04-254-1-03BK-SMT"
 			(at 0 5.34 90)
 			(layer "F.Fab")
 			(uuid "d7d4ffe3-31c1-417d-8a5a-78c8222c4465")
@@ -21731,7 +21731,7 @@
 				)
 			)
 		)
-		(property "Value" "BAT54SLT1G"
+		(property "Value" "BAT54S-HF"
 			(at 0 2.4 0)
 			(layer "F.Fab")
 			(uuid "d08e3712-1cba-452b-b044-98bc527a5660")

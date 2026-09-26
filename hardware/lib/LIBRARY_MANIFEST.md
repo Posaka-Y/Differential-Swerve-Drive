@@ -17,6 +17,7 @@
 | `LM66100DCKR` | `DifferentialSwerve:LM66100DCKR` | `Package_TO_SOT_SMD:SOT-363_SC-70-6` | SamacSys由来。pin typeをデータシート通りに設定 |
 | `JS102011SAQN` | `DifferentialSwerve:JS102011SAQN` | `DifferentialSwerve:JS102011SAQN` | SamacSys由来。pin 1の誤no_connectをpassiveへ修正。**footprintはメーカー図面との照合が未実施** |
 | `S1751-46R` | 標準`Connector:TestPoint` | `DifferentialSwerve:Harwin_S1751-46R` | Harwin推奨pad 3.45x1.85mmで作成 |
+| Teensy 4.1 socket 2x24 | 48pin symbol要作成 | `DifferentialSwerve:Teensy41_Socket_2x24` | PJRC公式寸法の列間15.24mm/ピッチ2.54mm。番号・穴径・実装注意は`TEENSY41_SOCKET_FOOTPRINT.md` |
 
 footprintはSOIC-8/SOT-23/SC-70-6とも照合済みのKiCad標準を割り当てた(SamacSysのIPC名footprintは使わない)。JS102011SAQNのみSamacSys footprintを取り込み(2.5mmピッチSMD 3pad+位置決めNPTH 0.9mm x2)、発注前に図面照合する。
 
@@ -25,8 +26,8 @@ footprintはSOIC-8/SOT-23/SC-70-6とも照合済みのKiCad標準を割り当て
 | 正式型番 | Symbol | Footprint |
 |---|---|---|
 | `STM32G474RET6` | `MCU_ST_STM32G4:STM32G474RETx` | `Package_QFP:LQFP-64_10x10mm_P0.5mm` |
-| `TLV1117LV33DCYR` | `Regulator_Linear:TLV1117-33`を公式pinoutと照合 | `Package_TO_SOT_SMD:SOT-223-3_TabPin2` |
-| `BAT54SLT1G` | `Device:D_Schottky_x2_Serial_AKC` | `Package_TO_SOT_SMD:SOT-23` |
+| `TLV76133DCYR` | `Regulator_Linear:TLV1117-33`を公式pinoutと照合 | `Package_TO_SOT_SMD:SOT-223-3_TabPin2` |
+| Comchip `BAT54S-HF` | `Device:D_Schottky_x2_Serial_AKC` | `Package_TO_SOT_SMD:SOT-23` |
 | 3225-4pad HSE | `Device:Crystal_GND24` | `Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm` |
 | `SM02B-GHS-TB` | `Connector_Generic:Conn_01x02` | `Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | `SM03B-GHS-TB` | `Connector_Generic:Conn_01x03` | `Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal` |
@@ -35,7 +36,8 @@ footprintはSOIC-8/SOT-23/SC-70-6とも照合済みのKiCad標準を割り当て
 ## まだ作らないもの
 
 - JST GH: KiCad公式footprintが存在するためコピーしない。使用時にJST最新版の推奨land patternと照合する。
-- `TLV1117LV33DCYR`: 標準シンボルを使うが、tab=VOUT/pin2であることを回路図レビューで再確認する。
+- `TLV76133DCYR`: 標準シンボルを使うが、tab=VOUT/pin2であることを回路図レビューで再確認する。回路図Valueが旧`TLV1117LV33DCYR`の箇所も、調達BOMでは本品を実装する。
+- `DS04-254-1-03BK-SMT`: 既存のOmron A6S 3極SMD footprintを使用する。メーカー推奨ランドの列中心間8.9mm、縦pitch 2.54mm、pad 1.5x1.1mmが一致することを2026-09-06確認済み。
 
 ## 導入方法
 

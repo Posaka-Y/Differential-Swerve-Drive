@@ -1,0 +1,29 @@
+Drill report for Oddom board.kicad_pcb
+Created on 2026-09-25T19:22:45
+
+Copper Layer Stackup:
+    =============================================================
+    L1 :  F.Cu                      front
+    L2 :  GND Plane                 in1
+    L3 :  Power Signal              in2
+    L4 :  B.Cu                      back
+
+
+Drill file 'Oddom board-PTH.drl' contains
+    plated through holes:
+    =============================================================
+    T1  0.300mm  0.0118"  (90 holes))
+    T2  0.950mm  0.0374"  (20 holes))
+    T3  1.000mm  0.0394"  (3 holes))
+
+    Total plated holes count 113
+
+
+Drill file 'Oddom board-NPTH.drl' contains
+    unplated through holes:
+    =============================================================
+    T1  0.900mm  0.0354"  (2 holes))
+    T2  1.200mm  0.0472"  (4 holes))
+    T3  2.700mm  0.1063"  (2 holes))
+
+    Total unplated holes count 8

@@ -772,7 +772,13 @@ static void send_status3(uint16_t status_flags, uint32_t error_flags)
         .remote = false,
     };
     /* Bus voltage ADC is not connected in this bench target. 0xffff is the
-     * protocol's explicit "unavailable" value, not a fabricated reading. */
+     * protocol's explicit "unavailable" value, not a fabricated reading.
+     *
+     * On the custom unit board the 5 V rail reaches PA0 through R13/R14.
+     * Those are 22k (high side) / 10k (low side) as of 2026-09-21, not the
+     * 33k/22k the older docs show, so the conversion is
+     *   Vin = raw / 4095.0f * 3.3f / 0.3125f
+     * See docs/ARCHITECTURE_DECISIONS.md for why the divider changed. */
     write_u16_le(&frame.data[0], UINT16_MAX);
     write_u16_le(&frame.data[2], status_flags);
     write_u32_le(&frame.data[4], error_flags);

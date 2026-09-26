@@ -1,0 +1,264 @@
+** Drc report for Oddom board.kicad_pcb **
+** Created on 2026-09-25T18:07:32 **
+** Report includes: Errors, Warnings **
+
+** Found 62 DRC violations **
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(109.4750 mm, 102.5750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(109.4750 mm, 102.5750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(121.7000 mm, 92.5000 mm): Via [/AMT102_input1/W1_B] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(121.7000 mm, 92.5000 mm): Via [/AMT102_input1/W1_B] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1250 mm)
+    Local override; error
+    @(121.9265 mm, 93.4500 mm): Track [PWR_3.3V] on F.Cu, length 2.3921 mm
+    @(121.7500 mm, 94.4750 mm): Via [/AMT102_input1/W1_A] on F.Cu - B.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(121.7500 mm, 94.4750 mm): Via [/AMT102_input1/W1_A] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(121.7500 mm, 94.4750 mm): Via [/AMT102_input1/W1_A] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(105.8500 mm, 105.7118 mm): Via [PWR_5V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(75.8250 mm, 104.2250 mm): Via [PWR_5V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(105.8500 mm, 105.7118 mm): Via [PWR_5V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(75.8250 mm, 104.2250 mm): Via [PWR_5V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1514 mm)
+    Local override; error
+    @(100.6250 mm, 109.3000 mm): Track [GND] on F.Cu, length 1.5203 mm
+    @(100.2000 mm, 107.8125 mm): Pad 3 [PWR_5V] of U5 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1791 mm)
+    Local override; error
+    @(109.1750 mm, 89.7500 mm): Via [GND] on F.Cu - B.Cu
+    @(111.6750 mm, 88.1750 mm): Track [PWR_3.3V] on Power Signal, length 3.1113 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(75.6500 mm, 96.4250 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(104.5500 mm, 111.2750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(111.6750 mm, 88.1750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(104.5500 mm, 111.2750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(102.8500 mm, 103.6000 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1968 mm)
+    Local override; error
+    @(90.4250 mm, 107.9250 mm): Via [GND] on F.Cu - B.Cu
+    @(88.6914 mm, 108.7086 mm): Track [PWR_3.3V] on Power Signal, length 8.4974 mm
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(75.6500 mm, 96.4250 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(111.6750 mm, 88.1750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(102.8500 mm, 103.6000 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(77.6250 mm, 96.4000 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(77.6250 mm, 96.4000 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1350 mm)
+    Local override; error
+    @(119.8250 mm, 98.3300 mm): Track [NRST] on F.Cu, length 1.2304 mm
+    @(120.2350 mm, 95.1415 mm): Track [PWR_3.3V] on F.Cu, length 6.7985 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(93.0000 mm, 102.3750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(98.3707 mm, 102.3540 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(93.0000 mm, 102.3750 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(98.3707 mm, 102.3540 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(86.6914 mm, 108.7086 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1350 mm)
+    Local override; error
+    @(119.8250 mm, 103.4250 mm): Track [NRST] on F.Cu, length 5.0950 mm
+    @(120.2350 mm, 101.9400 mm): Track [PWR_3.3V] on F.Cu, length 0.8485 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(75.3250 mm, 105.8250 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(86.6914 mm, 108.7086 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(75.3250 mm, 105.8250 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.0000 mm)
+    Local override; error
+    @(99.0750 mm, 96.2500 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[hole_clearance]: Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.0000 mm)
+    Rule: board setup constraints hole; error
+    @(99.0750 mm, 96.2500 mm): Via [PWR_3.3V] on F.Cu - B.Cu
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(74.6000 mm, 113.3500 mm): Pad 4 [unconnected-(J8-MP1-Pad4)] of J8 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.4000 mm, 113.3500 mm): Pad 5 [unconnected-(J8-MP2-Pad5)] of J8 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.2500 mm, 92.7375 mm): Pad 2 [Net-(D4-A2)] of D4 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.3500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.5875 mm, 105.9500 mm): Pad 3 [GND] of D1 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(131.7500 mm, 92.7625 mm): Pad 1 [Net-(D3-A1)] of D3 on F.Cu
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(86.7750 mm, 91.6696 mm): Track [ERR] on F.Cu, length 1.7238 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(86.3750 mm, 87.4300 mm): Track [ERR] on F.Cu, length 0.5657 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(86.7750 mm, 87.8300 mm): Track [ERR] on F.Cu, length 3.8396 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(87.9939 mm, 92.8885 mm): Track [ERR] on F.Cu, length 0.3784 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(88.3724 mm, 92.8885 mm): Track [ERR] on F.Cu, length 0.8074 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(90.9999 mm, 96.6250 mm): Track [RUN] on F.Cu, length 1.5915 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(86.4258 mm, 91.9038 mm): Track [RUN] on F.Cu, length 0.2974 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(86.4133 mm, 93.6133 mm): Track [RUN] on F.Cu, length 4.2592 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(86.4133 mm, 92.2136 mm): Track [RUN] on F.Cu, length 1.3997 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(89.4250 mm, 96.6250 mm): Track [RUN] on F.Cu, length 1.5749 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(85.2206 mm, 90.6985 mm): Track [RUN] on F.Cu, length 1.7045 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(82.3750 mm, 87.8750 mm): Track [RUN] on F.Cu, length 3.9931 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(85.1985 mm, 90.6985 mm): Track [RUN] on F.Cu, length 0.0220 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(86.4258 mm, 92.2011 mm): Track [RUN] on F.Cu, length 0.0177 mm
+[track_width]: Track width (board setup constraints min width 0.2000 mm; actual 0.1750 mm)
+    Rule: netclass 'Default'; error
+    @(82.3750 mm, 87.4500 mm): Track [RUN] on F.Cu, length 0.4250 mm
+[track_dangling]: Track has unconnected end
+    Local override; warning
+    @(77.3925 mm, 108.1500 mm): Track [Net-(D1-IO_1)] on F.Cu, length 0.0583 mm
+[isolated_copper]: Isolated copper fill
+    Local override; warning
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[lib_footprint_mismatch]: Footprint 'SW_DIP_SPSTx03_Slide_Omron_A6S-310x_W8.9mm_P2.54mm' does not match copy in library 'Button_Switch_SMD'
+    Local override; warning
+    @(108.9250 mm, 96.3375 mm): Footprint SW3
+[lib_footprint_mismatch]: Footprint 'JST_XH_B8B-XH-AM_1x08_P2.50mm_Vertical' does not match copy in library 'Connector_JST'
+    Local override; warning
+    @(129.5250 mm, 112.1500 mm): Footprint J7
+[lib_footprint_mismatch]: Footprint 'SOT-23-6' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(124.0750 mm, 93.4500 mm): Footprint U7
+[lib_footprint_mismatch]: Footprint 'SOT-23' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(69.5250 mm, 105.9500 mm): Footprint D1
+
+** Found 4 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(92.1253 mm, 101.0504 mm): Pad 12 [GND] of U1 on F.Cu
+    @(95.7750 mm, 101.2540 mm): Track [GND] on F.Cu, length 0.1442 mm
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(89.5000 mm, 107.1000 mm): Track [PWR_3.3V] on F.Cu, length 0.9674 mm
+    @(88.6914 mm, 108.7086 mm): Track [PWR_3.3V] on Power Signal, length 8.4974 mm
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(94.5673 mm, 94.4718 mm): Track [PWR_3.3V] on F.Cu, length 2.4536 mm
+    @(87.8500 mm, 91.2243 mm): Track [PWR_3.3V] on F.Cu, length 0.5461 mm
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(103.7125 mm, 103.6000 mm): Track [PWR_3.3V] on F.Cu, length 1.4319 mm
+    @(109.4750 mm, 103.0625 mm): Track [PWR_3.3V] on F.Cu, length 2.1920 mm
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Silkscreen clearance
+    - Silkscreen clipped by solder mask
+    - Silkscreen clipped by board edge
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

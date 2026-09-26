@@ -1,5 +1,7 @@
 # Teensy 4.1中央基板 ピン割当
 
+> 2026-09-23確認: 本文の旧Rev.A表よりARCHITECTURE_DECISIONSとRev.1転記表を優先。Teensy pin9/socket pad11とpin14/socket pad36はRev.1ではNC（旧AUX_OUTPUT_EN/MOTOR_PWR_SENSEを復活させない）。pin2/socket pad4はMOTOR_PWR_ENを維持。 詳細: [次回PCB一括発注計画](PCB_BATCH_V2_CENTRAL_PLAN.md)。
+
 作成: 2026-08-04
 対象: 中央制御基板 Rev.A
 
@@ -32,11 +34,11 @@
 | 14 | 12 | `SPI_MISO` | In | 汎用SPI MISO |
 | 35 | 13 | `SPI_SCK` | Out | 汎用SPI SCK、TeensyオンボードLED併用 |
 | 36 | 14/A0 | `MOTOR_PWR_SENSE` | Analog In | コンタクタ後24Vモータバス電圧 |
-| 37 | 15/A1 | `BAT_MON_ALERT_N` | In | INA238 ALERT |
+| 37 | 15/A1 | `BAT_MON_ALERT_N` | Reserve / NC | Matek I2C-INA-BMはGH4にALERTを出さないためRev.Aでは未使用 |
 | 38 | 16/A2 | `I2C1_SCL` | I/O | 第2拡張I2C |
 | 39 | 17/A3 | `I2C1_SDA` | I/O | 第2拡張I2C |
-| 40 | 18/A4 | `I2C0_SDA` | I/O | INA238＋第1拡張I2C |
-| 41 | 19/A5 | `I2C0_SCL` | I/O | INA238＋第1拡張I2C |
+| 40 | 18/A4 | `I2C0_SDA` | I/O | Matek I2C-INA-BM＋第1拡張I2C |
+| 41 | 19/A5 | `I2C0_SCL` | I/O | Matek I2C-INA-BM＋第1拡張I2C |
 | 44 | 22/A8 | `CAN1_TX` | Out | センサーCAN送信、Classic 1Mbps |
 | 45 | 23/A9 | `CAN1_RX` | In | センサーCAN受信、Classic 1Mbps |
 | 20 | 28 | `UART7_RX` | In | デバッグ/拡張UART 1 |
@@ -74,7 +76,7 @@ Teensy pin 33、37、38、39はRev.Aでは未使用とし、ソケットpinへNo
 | 48 | VIN | 保護後`+5V_SYS` |
 
 - VUSBは通常の48pinソケットに含めず、Teensy裏面のVUSB-VINジャンパを組立時に切断する。
-- TeensyはPJRC推奨のSullins `PPPC241LFBN-RC`または`PPTC241LFBN-RC` 1x24 socket 2本へ挿入する。Teensy側header候補はAmphenol `68000-224HLF`。列間17.78mm、USB側の向きをシルクと組立図へ明記し、Teensy直下は裏面部品との干渉を避ける全面keepoutとする。
+- TeensyはPJRC推奨のSullins `PPPC241LFBN-RC`または`PPTC241LFBN-RC` 1x24 socket 2本へ挿入する。Teensy側header候補はAmphenol `68000-224HLF`。列中心間15.24mm、USB側の向きをシルクと組立図へ明記し、Teensy直下は裏面部品との干渉を避ける全面keepoutとする。
 - Program/On-Off/VBAT/USB Host/Ethernetの追加pinはRev.Aでは接続しない。Teensy本体のProgramボタンとmicro USBへ組付け後もアクセス可能な配置にする。
 
 ## ファームウェアの初期状態

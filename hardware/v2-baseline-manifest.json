@@ -1,0 +1,92 @@
+[
+  {
+    "source": "hardware\\unit-board\\5V monitoring.kicad_sch",
+    "copy": "hardware\\unit-board-v2\\5V monitoring.kicad_sch",
+    "source_sha256": "461f3a17ac3399c972593c0f807137d803ee4b8a05f03571c616131d8290fd81"
+  },
+  {
+    "source": "hardware\\unit-board\\can_interface.kicad_sch",
+    "copy": "hardware\\unit-board-v2\\can_interface.kicad_sch",
+    "source_sha256": "1697e648ff2c0d31fa4ae28978eb4d2ade28bce1d4ebb533c9d700ff17a172b8"
+  },
+  {
+    "source": "hardware\\unit-board\\can_main_interface.kicad_sch",
+    "copy": "hardware\\unit-board-v2\\can_main_interface.kicad_sch",
+    "source_sha256": "a612b1b4322d69c3c93d708ecdeae62aa66dd53599c8f9ed656f4ffe5751b946"
+  },
+  {
+    "source": "hardware\\unit-board\\fp-lib-table",
+    "copy": "hardware\\unit-board-v2\\fp-lib-table",
+    "source_sha256": "8b1cc9e308cc0c7094881ff600a9d93c3531397352d9ed2bca3abb1653622d0b"
+  },
+  {
+    "source": "hardware\\unit-board\\power_3v3.kicad_sch",
+    "copy": "hardware\\unit-board-v2\\power_3v3.kicad_sch",
+    "source_sha256": "1133436bf9c6da47e2d5a9afe60eeb25460e9e6d41cd21112b4b6aa86d5cba3b"
+  },
+  {
+    "source": "hardware\\unit-board\\STM32G474 Minimum System.kicad_sch",
+    "copy": "hardware\\unit-board-v2\\STM32G474 Minimum System.kicad_sch",
+    "source_sha256": "50335b4faecea9f901bf8a6426939932b95a1b20fb48302ea808cf32e7a2a60d"
+  },
+  {
+    "source": "hardware\\unit-board\\sym-lib-table",
+    "copy": "hardware\\unit-board-v2\\sym-lib-table",
+    "source_sha256": "946bf99bedbb84a2d19b7cc45a6db571244204e28ef930685852300a4c6ddca9"
+  },
+  {
+    "source": "hardware\\unit-board\\unit-board.kicad_dru",
+    "copy": "hardware\\unit-board-v2\\unit-board.kicad_dru",
+    "source_sha256": "7bf3685246fe8c86124c90590c0acfecda86d1d255de3fb9afb16a2c9d15feab"
+  },
+  {
+    "source": "hardware\\unit-board\\unit-board.kicad_pcb",
+    "copy": "hardware\\unit-board-v2\\unit-board.kicad_pcb",
+    "source_sha256": "92d0b62896f4227becdd5e48e334f3e3bf79f8646b1af2c4b31741916a02ddac"
+  },
+  {
+    "source": "hardware\\unit-board\\unit-board.kicad_pro",
+    "copy": "hardware\\unit-board-v2\\unit-board.kicad_pro",
+    "source_sha256": "a5b9dc97fd5259e1adf02a2abe210f971c9efd87ef8e93b0584f3277a41e5d2c"
+  },
+  {
+    "source": "hardware\\unit-board\\unit-board.kicad_sch",
+    "copy": "hardware\\unit-board-v2\\unit-board.kicad_sch",
+    "source_sha256": "b86109a6ffd98e718ef52c83562a9735ae3a24d20179af09e7c4fa591097d5f3"
+  },
+  {
+    "source": "hardware\\odometry-board\\Oddom board\\AMT102_input.kicad_sch",
+    "copy": "hardware\\odometry-board-v2\\AMT102_input.kicad_sch",
+    "source_sha256": "e2eacc837b60dbd37816b66d4a94d13274a8828e696512f8365922dd090009f7"
+  },
+  {
+    "source": "hardware\\odometry-board\\Oddom board\\CAN_interface.kicad_sch",
+    "copy": "hardware\\odometry-board-v2\\CAN_interface.kicad_sch",
+    "source_sha256": "4547df112386dfe09f224269cb004341e672d00316b415b0b70536690e302a88"
+  },
+  {
+    "source": "hardware\\odometry-board\\Oddom board\\fp-lib-table",
+    "copy": "hardware\\odometry-board-v2\\fp-lib-table",
+    "source_sha256": "08ff71416b6ad5f4c8abda2b35d96de1c8c0b10b7188d8d03503c248037bc5d9"
+  },
+  {
+    "source": "hardware\\odometry-board\\Oddom board\\Oddom board.kicad_pcb",
+    "copy": "hardware\\odometry-board-v2\\Oddom board.kicad_pcb",
+    "source_sha256": "a788e20be7124c2424d44c1f0e9b28a985447b7caffa639fbfb083add3ecc823"
+  },
+  {
+    "source": "hardware\\odometry-board\\Oddom board\\Oddom board.kicad_pro",
+    "copy": "hardware\\odometry-board-v2\\Oddom board.kicad_pro",
+    "source_sha256": "4d379b21003c6ad09512f5a6bf9a1c53e224867307f6612178e6b3a956746b30"
+  },
+  {
+    "source": "hardware\\odometry-board\\Oddom board\\Oddom board.kicad_sch",
+    "copy": "hardware\\odometry-board-v2\\Oddom board.kicad_sch",
+    "source_sha256": "f0e01b1d4301b5858e39ccde9c6308616bbf0becf658c0a76af5e919adaeb176"
+  },
+  {
+    "source": "hardware\\odometry-board\\Oddom board\\sym-lib-table",
+    "copy": "hardware\\odometry-board-v2\\sym-lib-table",
+    "source_sha256": "aba4ecba4a70280b6776faa5de4bc993719146a183234b62254a59ee91fbb439"
+  }
+]

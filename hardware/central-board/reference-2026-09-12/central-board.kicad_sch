@@ -1,0 +1,173 @@
+(kicad_sch 
+	(version 20260306) 
+	(generator eeschema) 
+	(generator_version "10.0") 
+	(uuid "c0000000-0000-4000-8000-000000000001") 
+	(paper "A4") 
+	(title_block 
+		(title "Teensy 4.1 Central Board - Native Hierarchy") 
+		(date "2026-09-12") 
+		(rev "A - REFERENCE DRAFT / NOT FOR MANUFACTURE") 
+		(company "Differential Swerve") 
+		(comment 1 "Global-label boundaries: CAN1 sensor, CAN2 expansion, CAN3 drive")) 
+	(lib_symbols) 
+	(sheet 
+		(at 20 25) 
+		(size 65 35) 
+		(exclude_from_sim no) 
+		(in_bom yes) 
+		(on_board yes) 
+		(dnp no) 
+		(stroke 
+			(width 0.1524) 
+			(type solid)) 
+		(fill 
+			(color 0 0 0 0)) 
+		(uuid "c0000000-0000-4000-8000-000000000002") 
+		(property "Sheetname" "200 Teensy Socket / Global Net Origin" 
+			(at 20 24 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27)))) 
+		(property "Sheetfile" "TEENSY_SOCKET_PARENT.kicad_sch" 
+			(at 20 61 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27))))) 
+	(sheet 
+		(at 110 25) 
+		(size 65 35) 
+		(exclude_from_sim no) 
+		(in_bom yes) 
+		(on_board yes) 
+		(dnp no) 
+		(stroke 
+			(width 0.1524) 
+			(type solid)) 
+		(fill 
+			(color 0 0 0 0)) 
+		(uuid "c0000000-0000-4000-8000-000000000003") 
+		(property "Sheetname" "300 CAN1 Sensor" 
+			(at 110 24 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27)))) 
+		(property "Sheetfile" "CAN1_SENSOR.kicad_sch" 
+			(at 110 61 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27))))) 
+	(sheet 
+		(at 20 70) 
+		(size 65 35) 
+		(exclude_from_sim no) 
+		(in_bom yes) 
+		(on_board yes) 
+		(dnp no) 
+		(stroke 
+			(width 0.1524) 
+			(type solid)) 
+		(fill 
+			(color 0 0 0 0)) 
+		(uuid "c0000000-0000-4000-8000-000000000004") 
+		(property "Sheetname" "400 CAN2 Expansion" 
+			(at 20 69 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27)))) 
+		(property "Sheetfile" "CAN2_EXPANSION.kicad_sch" 
+			(at 20 106 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27))))) 
+	(sheet 
+		(at 110 70) 
+		(size 65 35) 
+		(exclude_from_sim no) 
+		(in_bom yes) 
+		(on_board yes) 
+		(dnp no) 
+		(stroke 
+			(width 0.1524) 
+			(type solid)) 
+		(fill 
+			(color 0 0 0 0)) 
+		(uuid "c0000000-0000-4000-8000-000000000005") 
+		(property "Sheetname" "500 CAN3 Drive CAN-FD" 
+			(at 110 69 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27)))) 
+		(property "Sheetfile" "CAN3_DRIVE.kicad_sch" 
+			(at 110 106 0) 
+			(effects 
+				(font 
+					(size 1.27 1.27))))) 
+	(sheet 
+		(at 20 115) (size 65 35) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+		(stroke (width 0.1524) (type solid)) (fill (color 0 0 0 0))
+		(uuid "c0000000-0000-4000-8000-000000000006")
+		(property "Sheetname" "100 Power A / B1" (at 20 114 0) (effects (font (size 1.27 1.27))))
+		(property "Sheetfile" "modules-native/POWER_A_B1.kicad_sch" (at 20 151 0) (effects (font (size 1.27 1.27)))))
+	(sheet 
+		(at 110 115) (size 65 35) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+		(stroke (width 0.1524) (type solid)) (fill (color 0 0 0 0))
+		(uuid "c0000000-0000-4000-8000-000000000007")
+		(property "Sheetname" "600 Safety D" (at 110 114 0) (effects (font (size 1.27 1.27))))
+		(property "Sheetfile" "modules-native/SAFETY_D.kicad_sch" (at 110 151 0) (effects (font (size 1.27 1.27)))))
+	(sheet 
+		(at 20 160) (size 65 35) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+		(stroke (width 0.1524) (type solid)) (fill (color 0 0 0 0))
+		(uuid "c0000000-0000-4000-8000-000000000008")
+		(property "Sheetname" "700 Monitoring E" (at 20 159 0) (effects (font (size 1.27 1.27))))
+		(property "Sheetfile" "modules-native/MONITORING_E.kicad_sch" (at 20 196 0) (effects (font (size 1.27 1.27)))))
+	(sheet 
+		(at 110 160) (size 65 35) (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+		(stroke (width 0.1524) (type solid)) (fill (color 0 0 0 0))
+		(uuid "c0000000-0000-4000-8000-000000000009")
+		(property "Sheetname" "800 Expansion F / F1" (at 110 159 0) (effects (font (size 1.27 1.27))))
+		(property "Sheetfile" "modules-native/EXPANSION_F_F1.kicad_sch" (at 110 196 0) (effects (font (size 1.27 1.27)))))
+	(sheet_instances 
+		(path "/" 
+			(page "1")) 
+		(path "/c0000000-0000-4000-8000-000000000002" 
+			(page "2")) 
+		(path "/c0000000-0000-4000-8000-000000000003" 
+			(page "3")) 
+		(path "/c0000000-0000-4000-8000-000000000004" 
+			(page "4")) 
+		(path "/c0000000-0000-4000-8000-000000000005" 
+			(page "5")) 
+		(path "/c0000000-0000-4000-8000-000000000006" (page "6"))
+		(path "/c0000000-0000-4000-8000-000000000007" (page "7"))
+		(path "/c0000000-0000-4000-8000-000000000008" (page "8"))
+		(path "/c0000000-0000-4000-8000-000000000009" (page "9"))) 
+	(embedded_fonts no) 
+	(global_label "GND" 
+		(shape bidirectional) 
+		(at 205 25 0) 
+		(effects 
+			(font 
+				(size 1.27 1.27))) 
+		(uuid "7e83f4ec-8042-4e4b-b41d-317fe0435efd")) 
+	(global_label "GND_CTRL" 
+		(shape bidirectional) 
+		(at 240 25 0) 
+		(effects 
+			(font 
+				(size 1.27 1.27))) 
+		(uuid "34374c1d-f9fd-4e3c-9e4c-4d9883c36834")) 
+	(wire 
+		(pts 
+			(xy 205 25) 
+			(xy 240 25)) 
+		(stroke 
+			(width 0) 
+			(type default)) 
+		(uuid "b9584f88-288c-4a30-aab2-f6bde73f6515")) 
+	(text "GND / GND_CTRL: same control-ground net" 
+		(at 222 32 0) 
+		(effects 
+			(font 
+				(size 1.27 1.27))) 
+		(uuid "a5ae42b2-d543-4403-9be4-5033165a1a53")))

@@ -1,0 +1,12 @@
+(version 1)
+
+# Rev.A baseline rules. Manufacturer-specific stackup and impedance rules are
+# intentionally deferred until the PCB vendor is selected.
+
+(rule "HSE tracks stay on front copper"
+  (condition "A.NetClass == 'HSE' && A.Type == 'Track' && A.Layer != 'F.Cu'")
+  (constraint disallow track))
+
+(rule "HSE vias are forbidden"
+  (condition "A.NetClass == 'HSE'")
+  (constraint disallow via))

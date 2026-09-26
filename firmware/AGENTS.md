@@ -10,6 +10,11 @@
 - Build only under `firmware/build/`; do not generate into source directories.
 - Preserve the Cortex-M4F hard-float flags. Recheck linker memory sizes when the custom-board MCU is selected.
 - Before handoff, run `firmware/scripts/build.ps1`.
+- Start a hardware session with `firmware/scripts/doctor.ps1` (add `-Json` when parsing it). It reports toolchain, ST-Link driver state, COM ports, and build artifacts without changing anything. `probe.ps1` then confirms the target answers over SWD before any flashing. Both are CLI-only and safe to repeat.
+- On a machine with no toolchain, `firmware/scripts/setup-windows.ps1` installs Arm GCC, CMake, Ninja, and OpenOCD from winget. The ST-Link debug-interface driver is the one piece winget cannot supply.
+- `flash.ps1` prefers OpenOCD and falls back to `STM32_Programmer_CLI`; pass `-Tool` to force one. Pass `-Target stm32f4x` for the ODOM board.
+- When SWD is unavailable, `bootloader-ping.ps1` and `flash-uart.ps1` reach the MCU through the UART system bootloader on PA2/PA3 (J7 pin 5/6) with BOOT0 shorted to the adjacent 3V3 test point. Both implement AN3155 directly, so they need no external tool. `flash-uart.ps1 -SelfTest` checks the framing without hardware, and the script refuses to write unless Get ID reports 0x469.
+- The `blink` CMake target builds a dependency-free image that only toggles PA5. Use it to decide whether a bring-up failure is the MCU or the surrounding peripherals, and flash it to a NUCLEO for a side-by-side comparison.
 - Match interrupt handlers to exact vector-table slots before enabling an IRQ.
 - Read `firmware/docs/BOARD_BRINGUP.md` before hardware tests or programming changes.
 - Read `firmware/PROGRESS.md` before continuing work in a new session.

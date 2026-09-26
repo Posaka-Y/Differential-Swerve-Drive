@@ -28,6 +28,10 @@
 - ネット名・信号名の命名規則は `docs/communication/COMMUNICATION_NAMING_AND_IDS.md` に従う(COMM_A/B抽象名、`_N`はLow active等)。
 - 部品を変更する場合はデータシートを確認してから要件書を更新する(推測で書かない)。
 
+## KiCad(ERC/DRCチェック・部品選定)
+
+`.claude/skills/kicad-check/SKILL.md`参照。Codexはスキル自動起動はしないが、内容はそのまま手順書として使える。
+
 ## ビルド・書き込み(firmware)
 
 ```powershell

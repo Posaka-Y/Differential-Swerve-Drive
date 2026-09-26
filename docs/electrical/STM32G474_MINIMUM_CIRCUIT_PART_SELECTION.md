@@ -12,19 +12,19 @@
 
 | 用途 | 採用品 | 仕様/パッケージ | 備考 |
 |---|---|---|---|
-| 8MHz HSE | `ECS-80-8-33Q-JES-TR` | 8MHz、CL=8pF、ESR max 500Ω、±20ppm、−40～125℃、AEC-Q200、3225-4pad | Active、リフロー対応、正規流通在庫あり |
+| 8MHz HSE | `FC3BAEBDI8.0-T1` | 8MHz、CL=8pF、ESR max 500Ω、±20ppm、−40～125℃、AEC-Q200、3225-4pad | 2026-09-06 DigiKey在庫品へ変更 |
 | HSE負荷容量 | `GRM1885C1H100JA01D` x2 | 10pF、C0G、±5%、50V、0603 | 初期実装値。8.2pF/12pF同一0603を調整候補にする |
 | VDDAフェライト | `BLM18AG601SN1D` | 600Ω@100MHz、500mA、DCR max 0.38Ω、0603、−55～125℃ | Murata Active、広く流通 |
 | 100nFデカップリング | `GRM188R71A104KA01D` | 100nF、X7R、10V、±10%、0603 | 各VDD/VSS対、VDDAに使用 |
-| 1uFデカップリング | `GRM188R71A105KA61D` | 1uF、X7R、10V、±10%、0603 | VDDAおよびVREF+に使用 |
-| VREF+高周波容量 | `GRM1885C1H103JA01D` | 10nF、C0G、50V、±5%、0603 | VREF+ピン直近 |
+| 1uFデカップリング | `C1608X7R1E105K080AB` | 1uF、X7R、25V、±10%、0603 | VDDAおよびVREF+に使用。2026-09-06在庫確認 |
+| VREF+高周波容量 | `C1608C0G1H103J080AA` | 10nF、C0G、50V、±5%、0603 | VREF+ピン直近。2026-09-06在庫確認 |
 | VDDバルク | `GRM21BR71A475KA73L` | 4.7uF、X7R、10V、±10%、0805 | ST推奨の4.7uF。基板の3.3V入口付近に1個 |
 | VREF+接続 | `RC0603JR-070RL` | 0Ω、0603 | `VDDA_A`とVREF+を接続。将来外部基準を使う場合に外せる |
 | NRST容量 | `GRM188R71H104KA93D` | 100nF、X7R、50V、0603 | NRST-GND間。外付けpull-upは置かない |
 | BOOT0 pull-down | `RC0603FR-0710KL` | 10kΩ、±1%、0603 | PB8/BOOT0の既定Low |
-| 5V監視分圧 | `RC0603FR-0733KL` / `RC0603FR-0722KL` | 33kΩ/22kΩ、±1%、0603 | `PWR_5V`を0.4倍してPA0へ入力 |
+| 5V監視分圧 | `RC0603FR-0722KL` / `RC0603FR-0710KL` | 22kΩ(5V側)/10kΩ(GND側)、±1%、0603 | `PWR_5V`を0.3125倍してPA0へ入力。2026-09-21に33kΩ/22kΩ(0.4倍)から変更(33kΩ現物なし) |
 | ADCフィルタ | `GRM188R71H103KA01D` | 10nF、X7R、50V、0603 | PA0-GND、分圧抵抗と約1.2kHz LPF |
-| ADCクランプ | `BAT54SLT1G` | dual series Schottky、30V、SOT-23 | PA0をGND/3V3へクランプ |
+| ADCクランプ | Comchip `BAT54S-HF` | dual series Schottky、30V、200mA、SOT-23 | onsemi/Diotec品欠品のため2026-09-07変更。PA0をGND/3V3へクランプ |
 | 電源LED | `LTST-C190KGKT` | 緑、0603 | 3V3存在表示、1kΩ直列 |
 | 通信LED | `LTST-C190KSKT` | 黄、0603 | PB10 GPIO表示、1kΩ直列 |
 | エラーLED | `LTST-C190KRKT` | 赤、0603 | PB11 GPIO表示、1kΩ直列 |
@@ -41,8 +41,8 @@ Rev.Aを4枚組み立てる購入BOMでは、電気仕様を変えずにDigiKey�
 |---|---|---|---|
 | HSE負荷 `C3,C4` | `CL10C100JB8NNNC` | `1276-1027-1-ND` | 10pF、C0G、±5%、50V、0603 |
 | 100nF `C1,C2,C5-C9,C13,C15,C17,C18,C201,C203` | `C0603C104K5RACTU` | `399-C0603C104K5RACTUCT-ND` | 100nF、X7R、±10%、50V、0603 |
-| VDDA/VREF+ `C11,C14` | `TMK107B7105KA-T` | `587-2984-1-ND` | 1uF、X7R、±10%、25V、0603 |
-| VREF+ `C12` | `CGA3E2NP01H103J080AA` | `445-12383-1-ND` | 10nF、C0G、±5%、50V、0603 |
+| VDDA/VREF+ `C11,C14` | `C1608X7R1E105K080AB` | `445-5956-1-ND` | 1uF、X7R、±10%、25V、0603。旧Taiyo Yuden品在庫0 |
+| VREF+ `C12` | `C1608C0G1H103J080AA` | `445-7404-1-ND` | 10nF、C0G、±5%、50V、0603 |
 | 3V3バルク `C10` | `GRM21BZ71E475KE15K` | `490-GRM21BZ71E475KE15KCT-ND` | 4.7uF、X7R、±10%、25V、0805 |
 | ADCフィルタ `C16` | `GRM188R72A103KA01D` | `490-GRM188R72A103KA01DCT-ND` | 10nF、X7R、±10%、100V、0603 |
 
@@ -117,9 +117,9 @@ gmcrit = 4 * ESR * (2*pi*F)^2 * (C0+CL)^2
 ## 5V監視ADC
 
 ```text
-PWR_5V --- 33k ---+--- PA0/ADC
+PWR_5V --- 22k ---+--- PA0/ADC
                   |
-                 22k
+                 10k
                   |
                  GND
 
@@ -131,7 +131,7 @@ PA0 --- BAT54S clamp --- GND/3V3
 - 理想換算は`PWR_5V = ADC_voltage * 2.5`。抵抗許容差、VDDA/VREF+、ADC gain/offsetを含め、基板ごとに実測係数をFlashへ保存できるようにする。
 - Thevenin抵抗は13.2kΩ。10nFとのカットオフは約1.21kHz。高速波形観測用ではなく、電源低下・異常の診断用とする。
 - ADCサンプリング時間は短い既定値を使わず、G474 ADCのsource impedance条件を満たす長さに設定する。複数回平均も行う。
-- `BAT54SLT1G`はpin 3をPA0、pin 1をGND、pin 2を3V3として上下クランプにする。KiCadシンボルのダイオード向きと公式pinoutを必ず照合する。
+- Comchip `BAT54S-HF`はpin 3をPA0、pin 1をGND、pin 2を3V3として上下クランプにする。KiCadシンボルのダイオード向きと公式pinoutを必ず照合する。
 - この回路は保護後の基板内`PWR_5V`監視用であり、24V外部入力へ直接使用しない。
 
 ## 状態LED

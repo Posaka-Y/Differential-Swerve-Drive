@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "DifferentialSwerve")(type "KiCad")(uri "${KIPRJMOD}/../../lib/DifferentialSwerve.kicad_sym")(options "")(descr "Differential Swerve exact-orderable parts"))
+)

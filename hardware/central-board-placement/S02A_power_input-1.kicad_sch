@@ -1,0 +1,1601 @@
+(kicad_sch 
+(version 20250114) 
+(generator "eeschema") 
+(uuid "016fff7a-b25e-5ccd-9a49-61ceca6bc777") 
+(paper "A3") 
+(title_block 
+(title "5V input / eFuse / USB diode OR (1)") 
+(date "2026-09-23") 
+(rev "PLACEMENT ONLY") 
+(company "Differential Swerve") 
+(comment 1 "Unwired draft - not for fabrication")) 
+(lib_symbols 
+(symbol "Connector_Generic:Conn_01x02" 
+(pin_names 
+(offset 1.016) 
+(hide yes)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "J" 
+(at 0 2.54 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "Conn_01x02" 
+(at 0 -5.08 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "connector" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "Connector*:*_1x??_*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "Conn_01x02_1_1" 
+(rectangle 
+(start -1.27 1.27) 
+(end 1.27 -3.81) 
+(stroke 
+(width 0.254) 
+(type default)) 
+(fill 
+(type background))) 
+(rectangle 
+(start -1.27 0.127) 
+(end 0 -0.127) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type none))) 
+(rectangle 
+(start -1.27 -2.413) 
+(end 0 -2.667) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type none))) 
+(pin passive line 
+(at -5.08 0 0) 
+(length 3.81) 
+(name "Pin_1" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at -5.08 -2.54 0) 
+(length 3.81) 
+(name "Pin_2" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
+(symbol "Connector:TestPoint" 
+(pin_numbers 
+(hide yes)) 
+(pin_names 
+(offset 0.762) 
+(hide yes)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "TP" 
+(at 0 6.858 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "TestPoint" 
+(at 0 5.08 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 5.08 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 5.08 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "test point" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "test point tp" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "Pin* Test*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "TestPoint_0_1" 
+(circle 
+(center 0 3.302) 
+(radius 0.762) 
+(stroke 
+(width 0) 
+(type default)) 
+(fill 
+(type none)))) 
+(symbol "TestPoint_1_1" 
+(pin passive line 
+(at 0 0 90) 
+(length 2.54) 
+(name "1" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
+(symbol "CentralPlacement:TPS259470LRPWR" 
+(pin_names 
+(offset 1.016)) 
+(in_bom yes) 
+(on_board yes) 
+(property "Reference" "U" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "TPS259470LRPWR" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "TPS259470LRPWR_0_1" 
+(rectangle 
+(start -17.78 10.16) 
+(end 17.78 -10.16) 
+(stroke 
+(width 0.254) 
+(type default)) 
+(fill 
+(type background)))) 
+(symbol "TPS259470LRPWR_1_1" 
+(pin input line 
+(at -22.86 5.08 0) 
+(length 5.08) 
+(name "EN/UVLO" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin input line 
+(at -22.86 2.54 0) 
+(length 5.08) 
+(name "OVLO" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin open_collector line 
+(at -22.86 0.0 0) 
+(length 5.08) 
+(name "AUXOFF" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "3" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin open_collector line 
+(at -22.86 -2.54 0) 
+(length 5.08) 
+(name "FLT" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "4" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin power_in line 
+(at -22.86 -5.08 0) 
+(length 5.08) 
+(name "IN" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "5" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin power_out line 
+(at 22.86 5.08 180) 
+(length 5.08) 
+(name "OUT" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "6" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 22.86 2.54 180) 
+(length 5.08) 
+(name "dVdt" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "7" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin power_in line 
+(at 22.86 0.0 180) 
+(length 5.08) 
+(name "GND" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "8" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 22.86 -2.54 180) 
+(length 5.08) 
+(name "ILM" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "9" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 22.86 -5.08 180) 
+(length 5.08) 
+(name "ITIMER" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "10" 
+(effects 
+(font 
+(size 1.27 1.27))))))) 
+(symbol "Device:R" 
+(pin_numbers 
+(hide yes)) 
+(pin_names 
+(offset 0)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "R" 
+(at 2.032 0 90) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "R" 
+(at 0 0 90) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at -1.778 0 90) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "Resistor" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "R res resistor" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "R_*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "R_0_1" 
+(rectangle 
+(start -1.016 -2.54) 
+(end 1.016 2.54) 
+(stroke 
+(width 0.254) 
+(type default)) 
+(fill 
+(type none)))) 
+(symbol "R_1_1" 
+(pin passive line 
+(at 0 3.81 270) 
+(length 1.27) 
+(name "" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 0 -3.81 90) 
+(length 1.27) 
+(name "" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
+(symbol "Device:C" 
+(pin_numbers 
+(hide yes)) 
+(pin_names 
+(offset 0.254)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "C" 
+(at 0.635 2.54 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(justify left))) 
+(property "Value" "C" 
+(at 0.635 -2.54 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(justify left))) 
+(property "Footprint" "" 
+(at 0.9652 -3.81 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "Unpolarized capacitor" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "cap capacitor" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "C_*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "C_0_1" 
+(polyline 
+(pts 
+(xy -2.032 0.762) 
+(xy 2.032 0.762)) 
+(stroke 
+(width 0.508) 
+(type default)) 
+(fill 
+(type none))) 
+(polyline 
+(pts 
+(xy -2.032 -0.762) 
+(xy 2.032 -0.762)) 
+(stroke 
+(width 0.508) 
+(type default)) 
+(fill 
+(type none)))) 
+(symbol "C_1_1" 
+(pin passive line 
+(at 0 3.81 270) 
+(length 2.794) 
+(name "" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 0 -3.81 90) 
+(length 2.794) 
+(name "" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
+(symbol "Device:D_Schottky" 
+(pin_numbers 
+(hide yes)) 
+(pin_names 
+(offset 1.016) 
+(hide yes)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "D" 
+(at 0 2.54 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "D_Schottky" 
+(at 0 -2.54 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "Schottky diode" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "diode Schottky" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "D_Schottky_0_1" 
+(polyline 
+(pts 
+(xy -1.905 0.635) 
+(xy -1.905 1.27) 
+(xy -1.27 1.27) 
+(xy -1.27 -1.27) 
+(xy -0.635 -1.27) 
+(xy -0.635 -0.635)) 
+(stroke 
+(width 0.254) 
+(type default)) 
+(fill 
+(type none))) 
+(polyline 
+(pts 
+(xy 1.27 1.27) 
+(xy 1.27 -1.27) 
+(xy -1.27 0) 
+(xy 1.27 1.27)) 
+(stroke 
+(width 0.254) 
+(type default)) 
+(fill 
+(type none))) 
+(polyline 
+(pts 
+(xy 1.27 0) 
+(xy -1.27 0)) 
+(stroke 
+(width 0) 
+(type default)) 
+(fill 
+(type none)))) 
+(symbol "D_Schottky_1_1" 
+(pin passive line 
+(at -3.81 0 0) 
+(length 2.54) 
+(name "K" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 3.81 0 180) 
+(length 2.54) 
+(name "A" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no))) 
+(text "5V input / eFuse / USB diode OR (1)" 
+(at 205 18 0) 
+(effects 
+(font 
+(size 2.0 2.0))) 
+(uuid "62aafd39-7a7e-5abe-8ff6-f6c3643666ce")) 
+(text "PLACEMENT ONLY - all pins intentionally unwired; see notes in symbol properties." 
+(at 205 26 0) 
+(effects 
+(font 
+(size 1.27 1.27))) 
+(uuid "835df768-bb11-5d5b-9717-2161501e1663")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x02") 
+(at 58.42 55.88 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "28fbe446-0a14-5a9d-8b29-21ae8a5e322b") 
+(property "Reference" "J101" 
+(at 58.42 47.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "XT30PW-M" 
+(at 58.42 51.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Connector_AMASS:AMASS_XT30PW-M_1x02_P2.50mm_Horizontal" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "J101") 
+(unit 1))))) 
+(symbol 
+(lib_id "Connector:TestPoint") 
+(at 128.27 58.42 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "49717f28-7abc-5a63-943d-1f0e6694e2f5") 
+(property "Reference" "J102" 
+(at 128.27 48.118 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "VUSB pickup TBD" 
+(at 128.27 52.118 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "引出し方法とfootprint未確定" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "J102") 
+(unit 1))))) 
+(text "Footprint TBD" 
+(at 128.27 63.42 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "8d9d0a39-4c43-5d44-8932-26812c8cf20b")) 
+(text "REVIEW" 
+(at 128.27 67.42 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "5babbf5a-3bcf-599e-9230-e09ee47be209")) 
+(symbol 
+(lib_id "CentralPlacement:TPS259470LRPWR") 
+(at 200.66 64.77 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "210c8cea-bed6-5b08-88b9-5f6b5afbfcf2") 
+(property "Reference" "U101" 
+(at 200.66 47.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "TPS259470LRPWR" 
+(at 200.66 51.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "正本10pin表に基づく自作symbol。RPW land pattern未確定、footprint空欄; pin表出典: 転記リファレンス3.1、TI TPS25947 SLVSFC9C Rev.C DS照合済み記載" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "U101") 
+(unit 1))))) 
+(text "Footprint TBD" 
+(at 200.66 79.92999999999999 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "210de99e-447b-5b06-9456-0897503fa86d")) 
+(text "REVIEW" 
+(at 200.66 83.92999999999999 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "600480d7-07ff-5f1f-9601-f14e56c1b833")) 
+(symbol 
+(lib_id "Device:R") 
+(at 274.32 58.42 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "f6f70519-659e-54df-9c5d-4c278b6a3eff") 
+(property "Reference" "R101" 
+(at 274.32 47.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "750" 
+(at 274.32 51.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "R101") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:R") 
+(at 345.44 58.42 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "90fa0866-2a8e-5388-b6be-ad95e55fd2f8") 
+(property "Reference" "R102" 
+(at 345.44 47.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "732k" 
+(at 345.44 51.61 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "R102") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:R") 
+(at 55.88 102.87 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "1366d579-5f59-5306-9493-39b6eef05a0c") 
+(property "Reference" "R103" 
+(at 55.88 92.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "51.1k" 
+(at 55.88 96.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "R103") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:R") 
+(at 128.27 102.87 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "48492352-af50-5b55-9be3-82c5dc2d0457") 
+(property "Reference" "R104" 
+(at 128.27 92.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "221k" 
+(at 128.27 96.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "R104") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:R") 
+(at 199.39 102.87 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "c5697f76-754d-5a22-8a0b-03f497089a16") 
+(property "Reference" "R105" 
+(at 199.39 92.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "10k" 
+(at 199.39 96.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "R105") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:R") 
+(at 271.78 102.87 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "3b242cb5-7a42-54a6-b94e-f6ea8a33b886") 
+(property "Reference" "R106" 
+(at 271.78 92.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "0" 
+(at 271.78 96.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "dVdt series proposal: 0R for 10nF, 100R if >10nF" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "R106") 
+(unit 1))))) 
+(text "REVIEW" 
+(at 271.78 111.68 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "8ab70e30-353a-5a8b-990b-8bbe76c3da79")) 
+(symbol 
+(lib_id "Device:C") 
+(at 344.17 102.87 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "bfa3b8c7-ac6f-5810-9d38-81bdfff66f0e") 
+(property "Reference" "C101" 
+(at 344.17 92.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "100uF 10V" 
+(at 344.17 96.06 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "MPN/package TBD" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "C101") 
+(unit 1))))) 
+(text "Footprint TBD" 
+(at 344.17 111.68 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "8cdc408d-591a-5459-bdad-22457afc77fb")) 
+(text "REVIEW" 
+(at 344.17 115.68 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "0a944dfe-a1d4-513c-b605-7d7096fbb372")) 
+(symbol 
+(lib_id "Device:C") 
+(at 55.88 143.51 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "c2112411-1f65-5fec-a924-0c46d5deec05") 
+(property "Reference" "C102" 
+(at 55.88 132.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "1uF" 
+(at 55.88 136.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Capacitor_SMD:C_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "C1608X7R1E105K080AB" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "C102") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:C") 
+(at 128.27 143.51 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "f5fcdfcb-7b92-5193-9f3a-fffc09b08468") 
+(property "Reference" "C103" 
+(at 128.27 132.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "1uF" 
+(at 128.27 136.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Capacitor_SMD:C_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "C1608X7R1E105K080AB" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "C103") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:C") 
+(at 199.39 143.51 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "99585999-2d66-5925-a9bb-5fa09e468da0") 
+(property "Reference" "C104" 
+(at 199.39 132.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "470uF 10V low-ESR" 
+(at 199.39 136.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "MPN/package TBD" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "C104") 
+(unit 1))))) 
+(text "Footprint TBD" 
+(at 199.39 152.32 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "d753150d-e651-5b5f-9b19-6c226f51e6bd")) 
+(text "REVIEW" 
+(at 199.39 156.32 0) 
+(effects 
+(font 
+(size 1.0 1.0))) 
+(uuid "fe1d3aa7-04fe-53b4-911a-406fa94cde9b")) 
+(symbol 
+(lib_id "Device:C") 
+(at 271.78 143.51 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "da9cd96b-cbf3-531d-b3bb-e05073495ecc") 
+(property "Reference" "C105" 
+(at 271.78 132.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "10nF" 
+(at 271.78 136.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Capacitor_SMD:C_0603_1608Metric" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "C1608C0G1H103J080AA" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "C105") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:D_Schottky") 
+(at 344.17 140.97 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "d3466dec-906d-5411-923b-661bc6c71d3f") 
+(property "Reference" "D101" 
+(at 344.17 132.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "PMEG2010EA,115" 
+(at 344.17 136.7 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Diode_SMD:D_SOD-323" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "D101") 
+(unit 1))))) 
+(symbol 
+(lib_id "Device:D_Schottky") 
+(at 55.88 180.34 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "5c44c802-ece4-5d2a-b687-9395f3bdd947") 
+(property "Reference" "D102" 
+(at 55.88 172.07 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "PMEG2010EA,115" 
+(at 55.88 176.07 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "Diode_SMD:D_SOD-323" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "D102") 
+(unit 1))))) 
+(symbol 
+(lib_id "Connector:TestPoint") 
+(at 128.27 182.88 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "ef4d4199-08ce-5e2b-b5fc-cf7d7113d15e") 
+(property "Reference" "TP101" 
+(at 128.27 172.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "+5V_RAW" 
+(at 128.27 176.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "DifferentialSwerve:Harwin_S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "TP101") 
+(unit 1))))) 
+(symbol 
+(lib_id "Connector:TestPoint") 
+(at 199.39 182.88 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "c0f4737c-1c1a-535b-a45b-130137019a16") 
+(property "Reference" "TP102" 
+(at 199.39 172.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "+5V_SYS" 
+(at 199.39 176.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "DifferentialSwerve:Harwin_S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "TP102") 
+(unit 1))))) 
+(symbol 
+(lib_id "Connector:TestPoint") 
+(at 271.78 182.88 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "39f088fd-110f-51eb-9819-54a9e75d28cd") 
+(property "Reference" "TP103" 
+(at 271.78 172.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "VIN_TEENSY" 
+(at 271.78 176.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "DifferentialSwerve:Harwin_S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "TP103") 
+(unit 1))))) 
+(symbol 
+(lib_id "Connector:TestPoint") 
+(at 344.17 182.88 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "067bd19e-0b81-5658-b0b0-84a1b418a55f") 
+(property "Reference" "TP104" 
+(at 344.17 172.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "GND_CTRL" 
+(at 344.17 176.578 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "DifferentialSwerve:Harwin_S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "S1751-46R" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "TP104") 
+(unit 1))))) 
+(symbol 
+(lib_id "Connector:TestPoint") 
+(at 55.88 222.25 0) 
+(unit 1) 
+(in_bom yes) 
+(on_board yes) 
+(dnp no) 
+(uuid "f118f53f-5822-55dc-ad77-dce99b7bab52") 
+(property "Reference" "TP105" 
+(at 55.88 211.948 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "PWR_5V_FAULT_N" 
+(at 55.88 215.948 0) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "TestPoint:TestPoint_Pad_D1.5mm" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(property "Placement note" "Signal pad" 
+(at 0 0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/5746d33b-29ca-5651-aacb-9e02822eead7" 
+(reference "TP105") 
+(unit 1))))))

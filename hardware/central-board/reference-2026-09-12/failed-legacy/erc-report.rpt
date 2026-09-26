@@ -1,0 +1,2517 @@
+ERC report (2026-09-12T18:46:38, Encoding UTF8)
+Report includes: Errors, Warnings, Exclusions
+
+***** Sheet /
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 27.94 mm): Label '+5V_RAW'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 35.56 mm): Label '+5V_FUSED'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 80.01 mm): Label '+5V_UNIT1'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 82.55 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 88.90 mm): Label '+5V_UNIT2'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 91.44 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 97.79 mm): Label '+5V_UNIT3'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 100.33 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 106.68 mm): Label '+5V_ODOM'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 109.22 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 27.94 mm): Label '+5V_RAW'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 30.48 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 80.01 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 88.90 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 97.79 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 106.68 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(52.07 mm, 27.94 mm): Label '+5V_FUSED'
+[label_dangling]: Label not connected
+    ; error
+    @(52.07 mm, 35.56 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 80.01 mm): Label '+5V_UNIT1'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 88.90 mm): Label '+5V_UNIT2'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 97.79 mm): Label '+5V_UNIT3'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 106.68 mm): Label '+5V_ODOM'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 80.01 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 88.90 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 26.67 mm): Label '+5V_FUSED'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 31.75 mm): Label 'EN_UVLO'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 36.83 mm): Label '+5V_FUSED'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 41.91 mm): Label 'OVLO'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 46.99 mm): Label 'ILM'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 52.07 mm): Label 'DVDT'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 57.15 mm): Label 'ITIMER'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 62.23 mm): Label 'PWR_5V_FAULT_N'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 25.40 mm): Label 'EN_UVLO'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 27.94 mm): Label 'OVLO'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 30.48 mm): Label 'AUXOFF'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 33.02 mm): Label 'PWR_5V_FAULT_N'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 35.56 mm): Label '+5V_FUSED'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 38.10 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 40.64 mm): Label 'DVDT'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 43.18 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 45.72 mm): Label 'ILM'
+[label_dangling]: Label not connected
+    ; error
+    @(78.74 mm, 48.26 mm): Label 'ITIMER'
+[label_dangling]: Label not connected
+    ; error
+    @(87.63 mm, 80.01 mm): Label '+5V_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(87.63 mm, 88.90 mm): Label '+5V_EXP'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 26.67 mm): Label 'EN_UVLO'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 31.75 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 36.83 mm): Label 'OVLO'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 41.91 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 46.99 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 52.07 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 57.15 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 62.23 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 26.67 mm): Label '+24V_CTRL_RAW'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 29.21 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 128.27 mm): Label 'MOTOR_BUS_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(34.29 mm, 130.81 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 26.67 mm): Label '+24V_CTRL_RAW'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 34.29 mm): Label '+24V_CTRL_RAW'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 41.91 mm): Label '+24V_CTRL_RAW'
+[label_dangling]: Label not connected
+    ; error
+    @(41.91 mm, 128.27 mm): Label 'MOTOR_BUS_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 67.31 mm): Label 'OPTO1_A'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 69.85 mm): Label 'OPTO1_K'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 72.39 mm): Label 'OPTO2_A'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 74.93 mm): Label 'OPTO2_K'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 77.47 mm): Label 'OPTO3_A'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 80.01 mm): Label 'OPTO3_K'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 82.55 mm): Label 'OPTO4_A'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 85.09 mm): Label 'OPTO4_K'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 87.63 mm): Label 'OPTO4_E'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 90.17 mm): Label 'OPTO4_C'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 92.71 mm): Label 'OPTO3_E'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 95.25 mm): Label 'OPTO3_C'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 97.79 mm): Label 'OPTO2_E'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 100.33 mm): Label 'OPTO2_C'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 102.87 mm): Label 'OPTO1_E'
+[label_dangling]: Label not connected
+    ; error
+    @(44.45 mm, 105.41 mm): Label 'OPTO1_C'
+[label_dangling]: Label not connected
+    ; error
+    @(45.72 mm, 73.66 mm): Label 'OPTO1_K'
+[label_dangling]: Label not connected
+    ; error
+    @(45.72 mm, 83.82 mm): Label 'OPTO2_K'
+[label_dangling]: Label not connected
+    ; error
+    @(45.72 mm, 93.98 mm): Label 'OPTO3_K'
+[label_dangling]: Label not connected
+    ; error
+    @(49.53 mm, 68.58 mm): Label 'ESTOP_LOOP_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(49.53 mm, 78.74 mm): Label 'ESTOP1_AUX_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(49.53 mm, 88.90 mm): Label 'ESTOP2_AUX_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 26.67 mm): Label '+24V_LOOP'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 34.29 mm): Label '+24V_LED'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 41.91 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(59.69 mm, 128.27 mm): Label 'SENSE_DIV'
+[label_dangling]: Label not connected
+    ; error
+    @(59.69 mm, 135.89 mm): Label 'SENSE_DIV'
+[label_dangling]: Label not connected
+    ; error
+    @(63.50 mm, 73.66 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(63.50 mm, 83.82 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(63.50 mm, 93.98 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 68.58 mm): Label 'LOOP_R_MID'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 68.58 mm): Label 'LOOP_R_MID'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 78.74 mm): Label 'AUX1_R_MID'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 78.74 mm): Label 'AUX1_R_MID'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 88.90 mm): Label 'AUX2_R_MID'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 88.90 mm): Label 'AUX2_R_MID'
+[label_dangling]: Label not connected
+    ; error
+    @(77.47 mm, 128.27 mm): Label 'SENSE_DIV'
+[label_dangling]: Label not connected
+    ; error
+    @(77.47 mm, 135.89 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(85.09 mm, 68.58 mm): Label 'OPTO1_A'
+[label_dangling]: Label not connected
+    ; error
+    @(85.09 mm, 78.74 mm): Label 'OPTO2_A'
+[label_dangling]: Label not connected
+    ; error
+    @(85.09 mm, 88.90 mm): Label 'OPTO3_A'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 25.40 mm): Label 'ESTOP_LOOP_OUT'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 27.94 mm): Label 'ESTOP_LOOP_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 30.48 mm): Label 'ESTOP_LED_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 33.02 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 35.56 mm): Label 'ESTOP1_AUX_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 38.10 mm): Label 'ESTOP2_AUX_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 69.85 mm): Label 'OPTO1_C'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 80.01 mm): Label 'OPTO2_C'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 90.17 mm): Label 'OPTO3_C'
+[label_dangling]: Label not connected
+    ; error
+    @(92.71 mm, 97.79 mm): Label 'OPTO1_E'
+[label_dangling]: Label not connected
+    ; error
+    @(95.25 mm, 25.40 mm): Label '+24V_LOOP'
+[label_dangling]: Label not connected
+    ; error
+    @(95.25 mm, 30.48 mm): Label '+24V_LED'
+[label_dangling]: Label not connected
+    ; error
+    @(95.25 mm, 128.27 mm): Label 'MOTOR_PWR_SENSE'
+[label_dangling]: Label not connected
+    ; error
+    @(95.25 mm, 135.89 mm): Label 'MOTOR_PWR_SENSE'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 69.85 mm): Label 'OPTO1_C'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 69.85 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 80.01 mm): Label 'OPTO2_C'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 80.01 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 90.17 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 90.17 mm): Label 'OPTO3_C'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 97.79 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(110.49 mm, 100.33 mm): Label 'OPTO2_E'
+[label_dangling]: Label not connected
+    ; error
+    @(113.03 mm, 25.40 mm): Label 'ESTOP_LOOP_OUT'
+[label_dangling]: Label not connected
+    ; error
+    @(113.03 mm, 30.48 mm): Label 'ESTOP_LED_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(113.03 mm, 135.89 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 49.53 mm): Label 'CONTACTOR_COIL_N'
+[label_dangling]: Label not connected
+    ; error
+    @(123.19 mm, 39.37 mm): Label 'MOTOR_PWR_EN'
+[label_dangling]: Label not connected
+    ; error
+    @(128.27 mm, 69.85 mm): Label 'ESTOP_LOOP_OK_N'
+[label_dangling]: Label not connected
+    ; error
+    @(128.27 mm, 80.01 mm): Label 'ESTOP1_AUX_OK_N'
+[label_dangling]: Label not connected
+    ; error
+    @(128.27 mm, 90.17 mm): Label 'ESTOP2_AUX_OK_N'
+[label_dangling]: Label not connected
+    ; error
+    @(128.27 mm, 100.33 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(128.27 mm, 102.87 mm): Label 'OPTO3_E'
+[label_dangling]: Label not connected
+    ; error
+    @(132.08 mm, 49.53 mm): Label 'ESTOP_LOOP_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(135.89 mm, 45.72 mm): Label 'CONTACTOR_GATE'
+[label_dangling]: Label not connected
+    ; error
+    @(137.16 mm, 53.34 mm): Label 'CONTACTOR_COIL_N'
+[label_dangling]: Label not connected
+    ; error
+    @(140.97 mm, 39.37 mm): Label 'CONTACTOR_GATE'
+[label_dangling]: Label not connected
+    ; error
+    @(146.05 mm, 102.87 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(149.86 mm, 26.67 mm): Label 'ESTOP_LOOP_RETURN'
+[label_dangling]: Label not connected
+    ; error
+    @(149.86 mm, 29.21 mm): Label 'CONTACTOR_COIL_N'
+[label_dangling]: Label not connected
+    ; error
+    @(153.67 mm, 45.72 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(154.94 mm, 53.34 mm): Label 'ESTOP_LOOP_RETURN'
+[wire_dangling]: Wires not connected to anything
+    ; error
+    @(156.21 mm, 31.75 mm): Horizontal Wire, length 19.05 mm
+[wire_dangling]: Wires not connected to anything
+    ; error
+    @(156.21 mm, 34.29 mm): Horizontal Wire, length 19.05 mm
+[wire_dangling]: Wires not connected to anything
+    ; error
+    @(156.21 mm, 36.83 mm): Horizontal Wire, length 19.05 mm
+[label_dangling]: Label not connected
+    ; error
+    @(24.13 mm, 106.68 mm): Label 'MOTOR_PWR_EN'
+[label_dangling]: Label not connected
+    ; error
+    @(24.13 mm, 111.76 mm): Label 'AUX_OUTPUT_EN'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 109.22 mm): Label '+5V_TEENSY (PPTC OUT)'
+[label_dangling]: Label not connected
+    ; error
+    @(35.56 mm, 116.84 mm): Label 'VUSB_PAD'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 109.22 mm): Label 'VUSB_PAD'
+[label_dangling]: Label not connected
+    ; error
+    @(41.91 mm, 106.68 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(41.91 mm, 111.76 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 26.67 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 29.21 mm): Label 'CAN2_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 31.75 mm): Label 'CAN2_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 34.29 mm): Label 'MOTOR_PWR_EN'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 36.83 mm): Label 'ESTOP_LOOP_OK_N'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 39.37 mm): Label 'ESTOP1_AUX_OK_N'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 41.91 mm): Label 'ESTOP2_AUX_OK_N'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 44.45 mm): Label 'REARM_SW_N'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 46.99 mm): Label 'STATUS_G_LED'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 49.53 mm): Label 'STATUS_R_LED'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 52.07 mm): Label 'AUX_OUTPUT_EN'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 54.61 mm): Label 'SPI_CS0_N'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 57.15 mm): Label 'SPI_MOSI'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 59.69 mm): Label 'SPI_MISO'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 62.23 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 64.77 mm): Label 'IO24_A10'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 67.31 mm): Label 'IO25_A11'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 69.85 mm): Label 'IO26_A12'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 72.39 mm): Label 'IO27_A13'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 74.93 mm): Label 'UART7_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 77.47 mm): Label 'UART7_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 80.01 mm): Label 'CAN3_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 82.55 mm): Label 'CAN3_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(46.99 mm, 85.09 mm): Label 'PWR_5V_FAULT_N'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 109.22 mm): Label 'VIN_PAD48'
+[label_dangling]: Label not connected
+    ; error
+    @(53.34 mm, 116.84 mm): Label 'VIN_PAD48'
+[label_dangling]: Label not connected
+    ; error
+    @(57.15 mm, 106.68 mm): Label 'REARM_SW_N'
+[label_dangling]: Label not connected
+    ; error
+    @(57.15 mm, 114.30 mm): Label 'REARM_SW_N'
+[label_dangling]: Label not connected
+    ; error
+    @(69.088 mm, 114.30 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(74.93 mm, 106.68 mm): Label '+3V3_TEENSY'
+[wire_dangling]: Wires not connected to anything
+    ; error
+    @(76.20 mm, 111.76 mm): Horizontal Wire, length 15.24 mm
+[wire_dangling]: Wires not connected to anything
+    ; error
+    @(76.20 mm, 114.30 mm): Horizontal Wire, length 15.24 mm
+[wire_dangling]: Wires not connected to anything
+    ; error
+    @(76.20 mm, 116.84 mm): Horizontal Wire, length 15.24 mm
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 26.67 mm): Label 'TP_GPIO33'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 29.21 mm): Label 'UART8_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 31.75 mm): Label 'UART8_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 34.29 mm): Label 'SPI_CS1_N'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 36.83 mm): Label 'TP_GPIO37'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 39.37 mm): Label 'TP_GPIO38'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 41.91 mm): Label 'TP_GPIO39'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 44.45 mm): Label 'IO40_A16'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 46.99 mm): Label 'IO41_A17'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 49.53 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 52.07 mm): Label 'SPI_SCK'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 54.61 mm): Label 'MOTOR_PWR_SENSE'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 57.15 mm): Label 'BAT_MON_ALERT_N'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 59.69 mm): Label 'I2C1_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 62.23 mm): Label 'I2C1_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 64.77 mm): Label 'I2C0_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 67.31 mm): Label 'I2C0_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 69.85 mm): Label 'IO20_A6'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 72.39 mm): Label 'IO21_A7'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 74.93 mm): Label 'CAN1_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 77.47 mm): Label 'CAN1_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 80.01 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 82.55 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(81.28 mm, 85.09 mm): Label '+5V_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(27.94 mm, 31.75 mm): Label 'CONTACTOR_GATE'
+[label_dangling]: Label not connected
+    ; error
+    @(27.94 mm, 34.29 mm): Label 'GND_24V'
+[label_dangling]: Label not connected
+    ; error
+    @(27.94 mm, 36.83 mm): Label 'CONTACTOR_COIL_N'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 26.67 mm): Label 'SHUNT_BAT'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 29.21 mm): Label 'SHUNT_LOAD'
+[label_dangling]: Label not connected
+    ; error
+    @(68.58 mm, 33.02 mm): Label 'SHUNT_LOAD'
+[label_dangling]: Label not connected
+    ; error
+    @(68.58 mm, 39.37 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(68.58 mm, 45.72 mm): Label 'BAT_MON_ALERT_N'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 24.13 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 26.67 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 29.21 mm): Label 'BAT_MON_ALERT_N'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 31.75 mm): Label 'I2C0_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 34.29 mm): Label 'I2C0_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 36.83 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 39.37 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 41.91 mm): Label 'BAT_VBUS'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 44.45 mm): Label 'SHUNT_LOAD'
+[label_dangling]: Label not connected
+    ; error
+    @(69.85 mm, 46.99 mm): Label 'SHUNT_BAT'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 33.02 mm): Label 'BAT_VBUS'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 39.37 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 45.72 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(17.78 mm, 111.76 mm): Label 'VIN_PAD48'
+[label_dangling]: Label not connected
+    ; error
+    @(17.78 mm, 114.30 mm): Label 'NC'
+[label_dangling]: Label not connected
+    ; error
+    @(19.05 mm, 83.82 mm): Label 'CAN1_H'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 59.69 mm): Label 'CAN1_H'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 62.23 mm): Label 'CAN1_L'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 64.77 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 71.12 mm): Label 'CAN1_H'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 73.66 mm): Label 'CAN1_L'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 76.20 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 83.82 mm): Label 'CAN1_TERM'
+[label_dangling]: Label not connected
+    ; error
+    @(36.83 mm, 83.82 mm): Label 'CAN1_TERM'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 27.94 mm): Label 'CAN1_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 29.21 mm): Label '+5V_CAN1'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 30.48 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 33.02 mm): Label '+5V_CAN1'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 34.29 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 35.56 mm): Label 'CAN1_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 38.10 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 40.64 mm): Label 'CAN1_L'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 43.18 mm): Label 'CAN1_H'
+[label_dangling]: Label not connected
+    ; error
+    @(38.10 mm, 45.72 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(46.228 mm, 83.82 mm): Label 'CAN1_L'
+[label_dangling]: Label not connected
+    ; error
+    @(55.88 mm, 29.21 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(55.88 mm, 34.29 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(62.23 mm, 71.12 mm): Label 'CAN1_H'
+[label_dangling]: Label not connected
+    ; error
+    @(62.23 mm, 73.66 mm): Label 'CAN1_L'
+[label_dangling]: Label not connected
+    ; error
+    @(62.23 mm, 76.20 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(96.52 mm, 83.82 mm): Label 'CAN2_H'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 59.69 mm): Label 'CAN2_H'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 62.23 mm): Label 'CAN2_L'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 64.77 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 71.12 mm): Label 'CAN2_H'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 73.66 mm): Label 'CAN2_L'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 76.20 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 83.82 mm): Label 'CAN2_TERM'
+[label_dangling]: Label not connected
+    ; error
+    @(114.30 mm, 83.82 mm): Label 'CAN2_TERM'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 27.94 mm): Label 'CAN2_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 29.21 mm): Label '+5V_CAN2'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 30.48 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 33.02 mm): Label '+5V_CAN2'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 34.29 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 35.56 mm): Label 'CAN2_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 38.10 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 40.64 mm): Label 'CAN2_L'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 43.18 mm): Label 'CAN2_H'
+[label_dangling]: Label not connected
+    ; error
+    @(115.57 mm, 45.72 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(123.698 mm, 83.82 mm): Label 'CAN2_L'
+[label_dangling]: Label not connected
+    ; error
+    @(133.35 mm, 29.21 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(133.35 mm, 34.29 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(139.70 mm, 71.12 mm): Label 'CAN2_H'
+[label_dangling]: Label not connected
+    ; error
+    @(139.70 mm, 73.66 mm): Label 'CAN2_L'
+[label_dangling]: Label not connected
+    ; error
+    @(139.70 mm, 76.20 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(173.99 mm, 83.82 mm): Label 'CAN3_H'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 59.69 mm): Label 'CAN3_H'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 62.23 mm): Label 'CAN3_L'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 64.77 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 71.12 mm): Label 'CAN3_H'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 73.66 mm): Label 'CAN3_L'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 76.20 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 83.82 mm): Label 'CAN3_TERM'
+[label_dangling]: Label not connected
+    ; error
+    @(191.77 mm, 83.82 mm): Label 'CAN3_TERM'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 27.94 mm): Label 'CAN3_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 29.21 mm): Label '+5V_CAN3'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 30.48 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 33.02 mm): Label '+5V_CAN3'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 34.29 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 35.56 mm): Label 'CAN3_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 38.10 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 40.64 mm): Label 'CAN3_L'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 43.18 mm): Label 'CAN3_H'
+[label_dangling]: Label not connected
+    ; error
+    @(193.04 mm, 45.72 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(201.168 mm, 83.82 mm): Label 'CAN3_L'
+[label_dangling]: Label not connected
+    ; error
+    @(210.82 mm, 29.21 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(210.82 mm, 34.29 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(217.17 mm, 71.12 mm): Label 'CAN3_H'
+[label_dangling]: Label not connected
+    ; error
+    @(217.17 mm, 73.66 mm): Label 'CAN3_L'
+[label_dangling]: Label not connected
+    ; error
+    @(217.17 mm, 76.20 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 25.40 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 27.94 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 30.48 mm): Label 'I2C0_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 33.02 mm): Label 'I2C0_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 39.37 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 41.91 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 44.45 mm): Label 'I2C1_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 46.99 mm): Label 'I2C1_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 55.88 mm): Label 'UART7_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 58.42 mm): Label 'UART7_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 60.96 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 67.31 mm): Label 'UART8_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 69.85 mm): Label 'UART8_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 72.39 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 78.74 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 81.28 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 83.82 mm): Label 'SPI_SCK'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 86.36 mm): Label 'SPI_MOSI'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 88.90 mm): Label 'SPI_MISO'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 91.44 mm): Label 'SPI_CS0_N'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 93.98 mm): Label 'SPI_CS1_N'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 97.79 mm): Label 'I2C0_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 100.33 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 102.87 mm): Label 'I2C0_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 105.41 mm): Label 'I2C1_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 107.95 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 110.49 mm): Label 'I2C1_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 119.38 mm): Label 'SPI_CS1_N'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 121.92 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 124.46 mm): Label 'TBD_SPI_SPARE1'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 127.00 mm): Label 'TBD_SPI_SPARE2'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 129.54 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(43.18 mm, 132.08 mm): Label 'TBD_SPI_SPARE3'
+[label_dangling]: Label not connected
+    ; error
+    @(49.53 mm, 26.67 mm): Label 'I2C0_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(49.53 mm, 31.75 mm): Label 'I2C0_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(49.53 mm, 40.64 mm): Label 'I2C1_SDA'
+[label_dangling]: Label not connected
+    ; error
+    @(49.53 mm, 45.72 mm): Label 'I2C1_SCL'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 26.67 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 31.75 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 40.64 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(67.31 mm, 45.72 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 119.38 mm): Label 'IO20_A6'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 121.92 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 124.46 mm): Label 'IO21_A7'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 127.00 mm): Label 'IO24_A10'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 129.54 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(86.36 mm, 132.08 mm): Label 'IO25_A11'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 25.40 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 27.94 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 30.48 mm): Label 'IO20_A6'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 33.02 mm): Label 'IO21_A7'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 35.56 mm): Label 'IO24_A10'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 38.10 mm): Label 'IO25_A11'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 40.64 mm): Label 'IO26_A12'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 43.18 mm): Label 'IO27_A13'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 45.72 mm): Label 'IO40_A16'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 48.26 mm): Label 'IO41_A17'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 63.50 mm): Label 'AUX_OUTPUT_EN'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 66.04 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 68.58 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 74.93 mm): Label 'REARM_SW_N'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 77.47 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 85.09 mm): Label '+5V_EXP'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 87.63 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 90.17 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 92.71 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 95.25 mm): Label 'NC'
+[label_dangling]: Label not connected
+    ; error
+    @(109.22 mm, 97.79 mm): Label 'NC'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 97.79 mm): Label 'UART7_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 100.33 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 102.87 mm): Label 'UART7_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 105.41 mm): Label 'UART8_TX'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 107.95 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 110.49 mm): Label 'UART8_RX'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 119.38 mm): Label 'IO26_A12'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 121.92 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 124.46 mm): Label 'IO27_A13'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 127.00 mm): Label 'IO40_A16'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 129.54 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(129.54 mm, 132.08 mm): Label 'IO41_A17'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 25.40 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 27.94 mm): Label '+5V_SYS'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 30.48 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 33.02 mm): Label 'TP_GPIO33'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 35.56 mm): Label 'TP_GPIO37'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 38.10 mm): Label 'TP_GPIO38'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 40.64 mm): Label 'TP_GPIO39'
+[label_dangling]: Label not connected
+    ; error
+    @(166.37 mm, 43.18 mm): Label 'PWR_5V_FAULT_N'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 97.79 mm): Label 'SPI_SCK'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 100.33 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 102.87 mm): Label 'SPI_MOSI'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 105.41 mm): Label 'SPI_MISO'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 107.95 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 110.49 mm): Label 'SPI_CS0_N'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 119.38 mm): Label 'ACT_TAP_TBD'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 121.92 mm): Label 'ACT_LED_CATHODE'
+[label_dangling]: Label not connected
+    ; error
+    @(172.72 mm, 124.46 mm): Label 'GND_CTRL'
+[label_dangling]: Label not connected
+    ; error
+    @(179.07 mm, 119.38 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(179.07 mm, 127.00 mm): Label '+3V3_TEENSY'
+[label_dangling]: Label not connected
+    ; error
+    @(196.85 mm, 119.38 mm): Label 'ACT_LED_CATHODE'
+[label_dangling]: Label not connected
+    ; error
+    @(196.85 mm, 127.00 mm): Label 'ACT_LED_CATHODE'
+[footprint_link_issues]: Footprint 'AMASS_XT30PW-M_1x02_P5.00mm_Horizontal' not found in library 'Connector_AMASS'
+    ; warning
+    @(22.86 mm, 27.94 mm): Symbol J101 [Conn_01x02]
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 80.01 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 82.55 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 88.90 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 91.44 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 97.79 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 100.33 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 106.68 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 109.22 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 27.94 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 30.48 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(40.64 mm, 27.94 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(40.64 mm, 35.56 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 97.79 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 106.68 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(45.72 mm, 27.94 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(45.72 mm, 35.56 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 97.79 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 106.68 mm): Horizontal Wire, length 6.35 mm
+[footprint_link_issues]: Footprint 'WQFN-10-1EP_2x2mm_P0.5mm_EP0.75x1.6mm' not found in library 'Package_DFN_QFN'
+    ; warning
+    @(59.69 mm, 25.40 mm): Symbol U101 [Conn_01x10]
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 25.40 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 27.94 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 30.48 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 33.02 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 35.56 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 38.10 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 40.64 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 43.18 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 45.72 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(64.77 mm, 48.26 mm): Horizontal Wire, length 13.97 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 26.67 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 31.75 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 36.83 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 41.91 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 46.99 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 52.07 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 57.15 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 62.23 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(81.28 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 26.67 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 31.75 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 36.83 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 41.91 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 46.99 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 52.07 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 57.15 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(86.36 mm, 62.23 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 26.67 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 29.21 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 67.31 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 69.85 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 72.39 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 74.93 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 77.47 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 80.01 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 82.55 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 85.09 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 87.63 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 90.17 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 92.71 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 95.25 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 97.79 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 100.33 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 102.87 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 105.41 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 128.27 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(26.67 mm, 130.81 mm): Horizontal Wire, length 7.62 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 26.67 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 41.91 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 26.67 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 41.91 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(48.26 mm, 128.27 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(52.07 mm, 73.66 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(52.07 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(52.07 mm, 93.98 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 128.27 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(55.88 mm, 68.58 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(55.88 mm, 78.74 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(55.88 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(57.15 mm, 73.66 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(57.15 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(57.15 mm, 93.98 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(60.96 mm, 68.58 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(60.96 mm, 78.74 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(60.96 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(66.04 mm, 135.89 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(71.12 mm, 135.89 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 25.40 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 27.94 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 30.48 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 33.02 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 35.56 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 38.10 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 68.58 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 78.74 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(78.74 mm, 68.58 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(78.74 mm, 78.74 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(78.74 mm, 88.90 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(83.82 mm, 128.27 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(88.90 mm, 128.27 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(99.06 mm, 69.85 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(99.06 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(99.06 mm, 90.17 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(99.06 mm, 97.79 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(101.60 mm, 25.40 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(101.60 mm, 30.48 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(101.60 mm, 135.89 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(104.14 mm, 69.85 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(104.14 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(104.14 mm, 90.17 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(104.14 mm, 97.79 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(106.68 mm, 25.40 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(106.68 mm, 30.48 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(106.68 mm, 135.89 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 69.85 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 90.17 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 100.33 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(120.65 mm, 49.53 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(121.92 mm, 69.85 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(121.92 mm, 80.01 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(121.92 mm, 90.17 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(121.92 mm, 100.33 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(125.73 mm, 49.53 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(129.54 mm, 39.37 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(132.08 mm, 26.67 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(132.08 mm, 29.21 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(134.62 mm, 39.37 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(134.62 mm, 102.87 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(139.70 mm, 102.87 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(142.24 mm, 45.72 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(143.51 mm, 53.34 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(147.32 mm, 45.72 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(148.59 mm, 53.34 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(156.21 mm, 31.75 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(156.21 mm, 34.29 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(156.21 mm, 36.83 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(156.21 mm, 31.75 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(156.21 mm, 34.29 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(156.21 mm, 36.83 mm): Horizontal Wire, length 19.05 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 26.67 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 29.21 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 31.75 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 34.29 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 36.83 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 39.37 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 41.91 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 44.45 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 46.99 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 49.53 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 52.07 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 54.61 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 57.15 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 59.69 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 62.23 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 64.77 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 67.31 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 69.85 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 72.39 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 74.93 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 77.47 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 80.01 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 82.55 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 85.09 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 109.22 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 106.68 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 111.76 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(35.56 mm, 106.68 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(35.56 mm, 111.76 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 109.22 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(41.91 mm, 116.84 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 109.22 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(46.99 mm, 116.84 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 26.67 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 29.21 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 31.75 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 34.29 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 36.83 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 39.37 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 41.91 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 44.45 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 46.99 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 49.53 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 52.07 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 54.61 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 57.15 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 59.69 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 62.23 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 64.77 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 67.31 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 69.85 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 72.39 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 74.93 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 77.47 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 80.01 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 82.55 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(59.69 mm, 85.09 mm): Horizontal Wire, length 21.59 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(63.50 mm, 106.68 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(63.50 mm, 114.30 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(68.58 mm, 106.68 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(68.58 mm, 114.30 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(68.58 mm, 114.30 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 111.76 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 114.30 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 116.84 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 111.76 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 114.30 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(76.20 mm, 116.84 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 26.67 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 29.21 mm): Horizontal Wire, length 15.24 mm
+[footprint_link_issues]: Footprint 'VSSOP-10_3x3mm_P0.5mm' not found in library 'Package_SO'
+    ; warning
+    @(48.26 mm, 24.13 mm): Symbol U701 [Conn_01x10]
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 24.13 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 26.67 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 29.21 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 31.75 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 34.29 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 36.83 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 39.37 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 41.91 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 44.45 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(53.34 mm, 46.99 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(74.93 mm, 33.02 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(74.93 mm, 39.37 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(74.93 mm, 45.72 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(80.01 mm, 33.02 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(80.01 mm, 39.37 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(80.01 mm, 45.72 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 27.94 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 30.48 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 33.02 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 35.56 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 38.10 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 40.64 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 43.18 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 45.72 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 59.69 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 62.23 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 64.77 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 71.12 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 73.66 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 76.20 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(25.40 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(40.64 mm, 83.82 mm): Horizontal Wire, length 3.81 mm
+[footprint_link_issues]: Footprint 'SW_SPST_CK_JS102011SAQN' not found in library 'Button_Switch_SMD'
+    ; warning
+    @(43.18 mm, 83.82 mm): Symbol SW301 [SW_SPST]
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(44.45 mm, 29.21 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(44.45 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(45.72 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(49.53 mm, 29.21 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(49.53 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(50.80 mm, 71.12 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(50.80 mm, 73.66 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(50.80 mm, 76.20 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(45.72 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 27.94 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 30.48 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 33.02 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 35.56 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 38.10 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 40.64 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 43.18 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 45.72 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 59.69 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 62.23 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 64.77 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 71.12 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 73.66 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 76.20 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(102.87 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(107.95 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(118.11 mm, 83.82 mm): Horizontal Wire, length 3.81 mm
+[footprint_link_issues]: Footprint 'SW_SPST_CK_JS102011SAQN' not found in library 'Button_Switch_SMD'
+    ; warning
+    @(120.65 mm, 83.82 mm): Symbol SW401 [SW_SPST]
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(121.92 mm, 29.21 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(121.92 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(123.19 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(127.00 mm, 29.21 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(127.00 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(128.27 mm, 71.12 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(128.27 mm, 73.66 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(128.27 mm, 76.20 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(123.19 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 27.94 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 30.48 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 33.02 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 35.56 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 38.10 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 40.64 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 43.18 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 45.72 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 59.69 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 62.23 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 64.77 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 71.12 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 73.66 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 76.20 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(180.34 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(185.42 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(195.58 mm, 83.82 mm): Horizontal Wire, length 3.81 mm
+[footprint_link_issues]: Footprint 'SW_SPST_CK_JS102011SAQN' not found in library 'Button_Switch_SMD'
+    ; warning
+    @(198.12 mm, 83.82 mm): Symbol SW501 [SW_SPST]
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(199.39 mm, 29.21 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(199.39 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(200.66 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(204.47 mm, 29.21 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(204.47 mm, 34.29 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(205.74 mm, 71.12 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(205.74 mm, 73.66 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(205.74 mm, 76.20 mm): Horizontal Wire, length 11.43 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(200.66 mm, 83.82 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 25.40 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 27.94 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 30.48 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 33.02 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 39.37 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 41.91 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 44.45 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 46.99 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 55.88 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 58.42 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 60.96 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 67.31 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 69.85 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 72.39 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 78.74 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 81.28 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 83.82 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 86.36 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 88.90 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 91.44 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(27.94 mm, 93.98 mm): Horizontal Wire, length 15.24 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 97.79 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 100.33 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 102.87 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 105.41 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 107.95 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 110.49 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 119.38 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 121.92 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 124.46 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 127.00 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 129.54 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(30.48 mm, 132.08 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(55.88 mm, 26.67 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(55.88 mm, 31.75 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(55.88 mm, 40.64 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(55.88 mm, 45.72 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(60.96 mm, 26.67 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(60.96 mm, 31.75 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(60.96 mm, 40.64 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(60.96 mm, 45.72 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 119.38 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 121.92 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 124.46 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 127.00 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 129.54 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(73.66 mm, 132.08 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 25.40 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 27.94 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 30.48 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 33.02 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 35.56 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 38.10 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 40.64 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 43.18 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 45.72 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 48.26 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 63.50 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 66.04 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 68.58 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 74.93 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 77.47 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 85.09 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 87.63 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 90.17 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 92.71 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 95.25 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(91.44 mm, 97.79 mm): Horizontal Wire, length 17.78 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 97.79 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 100.33 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 102.87 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 105.41 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 107.95 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 110.49 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 119.38 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 121.92 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 124.46 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 127.00 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 129.54 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(116.84 mm, 132.08 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 25.40 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 27.94 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 30.48 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 33.02 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 35.56 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 38.10 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 40.64 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(149.86 mm, 43.18 mm): Horizontal Wire, length 16.51 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 97.79 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 100.33 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 102.87 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 105.41 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 107.95 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 110.49 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 119.38 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 121.92 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(160.02 mm, 124.46 mm): Horizontal Wire, length 12.70 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(185.42 mm, 119.38 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(185.42 mm, 127.00 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(190.50 mm, 119.38 mm): Horizontal Wire, length 6.35 mm
+[unconnected_wire_endpoint]: Unconnected wire endpoint
+    ; warning
+    @(190.50 mm, 127.00 mm): Horizontal Wire, length 6.35 mm
+
+***** Sheet /100 100 Power Input and 5V Distribution/
+
+***** Sheet /600 600 E-stop and Contactor Safety/
+[multiple_net_names]: Both +3V3_TEENSY and OPTO2_C are attached to the same items; +3V3_TEENSY will be used in the netlist
+    ; warning
+    @(110.49 mm, 69.85 mm): Label '+3V3_TEENSY'
+    @(44.45 mm, 100.33 mm): Label 'OPTO2_C'
+
+***** Sheet /200 200 Teensy 4.1 Carrier and Safety GPIO/
+[multiple_net_names]: Both +5V_TEENSY (PPTC OUT) and VUSB_PAD are attached to the same items; +5V_TEENSY (PPTC OUT) will be used in the netlist
+    ; warning
+    @(35.56 mm, 109.22 mm): Label '+5V_TEENSY (PPTC OUT)'
+    @(38.10 mm, 109.22 mm): Label 'VUSB_PAD'
+
+***** Sheet /700 700 Battery and Motor Power Monitoring/
+[multiple_net_names]: Both +3V3_TEENSY and GND_CTRL are attached to the same items; +3V3_TEENSY will be used in the netlist
+    ; warning
+    @(86.36 mm, 45.72 mm): Label '+3V3_TEENSY'
+    @(69.85 mm, 24.13 mm): Label 'GND_CTRL'
+
+***** Sheet /300-500 300-500 CAN Communication/
+
+***** Sheet /800-900 800 Expansion and Test Access/
+
+ ** ERC messages: 830  Errors 408  Warnings 422
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

@@ -1,5 +1,7 @@
 # 差動ステアユニット基板(STM32G474自作基板)要件
 
+> **V2改版（2026-09-23着手）**: デバッグ・TP・V1修正の変更要件は[共通V2要件](UNIT_ODOMETRY_V2_REQUIREMENTS.md)を優先する。本文のGH6/SWD・UART一体配列はV1仕様。V2の正式ヘッダ型番とPCB配線は未確定/未完了。
+
 ## 目的
 
 各差動ステアユニットに載せる、STM32G474直載せの自作基板をKiCadで設計する。
@@ -30,7 +32,7 @@ Matek CAN-G474のファーム用ピン定義はArduPilotの`MatekG474` hwdefを�
 | VDDA/VREF+ | `BLM18AG601SN1D`後にVDDA 100nF+1uF。VREF+はVDDAへ0Ω接続し10nF+1uF。ADCを使うため省略しない |
 | NRST | 100nF + デバッグGH6 + SMTテストポイントへ引き出し。内部weak pull-upを使い外付けpull-upなし |
 | BOOT0 | `RC0603FR-0710KL` 10kΩ pull-down + BOOT0/3V3隣接SMTテストポイント。2.54mmジャンパは載せない |
-| クロック | **`ECS-80-8-33Q-JES-TR` 8MHzを実装し、C0G 10pF x2を初期値とする。** HSI16は常温±1%だが全温度で−2/+1.5%(DS12288)であり、CAN 1Mbpsの理論許容を外れうる。負荷容量は実基板評価で8.2/10/12pFから調整。ファームはHSE起動+CSSでHSIフォールバック |
+| クロック | **`FC3BAEBDI8.0-T1` 8MHzを実装し、C0G 10pF x2を初期値とする(2026-09-06調達変更)。** CL=8pF、ESR max 500Ω、3225-4padを旧ECS品から維持する。負荷容量は実基板評価で8.2/10/12pFから調整。ファームはHSE起動+CSSでHSIフォールバック |
 | SWD/デバッグUART | **ロボット側JST GH 6pinへ統一。** 1=GND、2=SWCLK(PA14)、3=SWDIO(PA13)、4=NRST、5=DBG_TX(PA2、ターゲット→デバッガ)、6=DBG_RX(PA3、デバッガ→ターゲット)。WeActStudio MiniDebugger側SH 10pinとの専用変換ケーブルを使う。SWO(PB3)は基板上テストパッドへ残す。デバッガ側5V/3.3Vは接続せず、ターゲットを通常の5V入力から自己給電する |
 | デバッグUART | 1ch分をヘッダに出しておく(printf/ログ用) |
 
@@ -57,7 +59,7 @@ NUCLEO-G474REのmorphoに全ピンが出ており、開発ボードと自作基�
 | LED(電源/動作) | PA5 | GPIO | NUCLEOのLD2と同一。開発時の動作確認互換 |
 | LED(通信) | PB10 | GPIO | |
 | LED(エラー) | PB11 | GPIO | |
-| 5V監視 | PA0 | ADC | 33kΩ/22kΩ分圧+10nF+`BAT54SLT1G`クランプで保護後5Vを監視 |
+| 5V監視 | PA0 | ADC | 22kΩ(R13)/10kΩ(R14)分圧+10nF+Comchip `BAT54S-HF`クランプで保護後5Vを監視 |
 | SWD | PA13 / PA14 | - | 専用。他用途に使わない |
 | SWO(予約) | PB3 | - | トレース用に空けておく |
 | BOOT0 | PB8 | - | G4はPB8がBOOT0共用。10kプルダウン+ジャンパ。GPIOとして使わない |
@@ -188,7 +190,8 @@ AMT22コネクタのピン配置(データシートrev1.10で確認済み、`har
 
 | 候補 | 備考 |
 |---|---|
-| `TLV1117LV33DCYR` | **採用**。1A、SOT-223、セラミック安定、代表dropout 455mV |
+| `TLV1117LV33DCYR` | 生産中止のため2026-09-06に調達対象から除外 |
+| `TLV76133DCYR` | **採用**。1A、SOT-223、1=GND/2=VOUT/3=VIN/タブ=VOUT、1µF以上のセラミック出力コンデンサで安定 |
 | `MCP1826S-3302E/DB` | 成立するが、少量価格と流通性から代替候補 |
 
 保険として、5V入力部に**広入力レンジ降圧モジュールのフットプリントを予備実装として置く**ことを推奨する(例: OKI-78SR-5/1.5-W36-C、三端子レギュレータ互換ピン配置、入力7〜36V)。ハーネスの電圧降下で5V分配が苦しくなった場合、配線を24V分配に切り替えて同じ基板で受けられる。通常時は未実装+ジャンパでバイパス。
@@ -211,9 +214,9 @@ AMT22コネクタのピン配置(データシートrev1.10で確認済み、`har
 | C620 CAN終端 | `RC0603FR-07120RL` + `JS102011SAQN` | 120Ω + SMTスライドスイッチ |
 | C620 CAN保護 | `ESD2CAN24DBZRQ1` | SOT-23、リフロー |
 | 5V入力保護 | `LM66100DCKR` | SC70-6、CE_N=VOUT、1.5A、RPP+RCB |
-| LDO | `TLV1117LV33DCYR` | SOT-223、タブ=VOUT |
+| LDO | `TLV76133DCYR` | SOT-223、タブ=VOUT。旧TLV1117LV33DCYRと同一ピン配置 |
 | MCU | STM32G474RET6(LQFP64) | 0.5mmピッチ、ドラッグはんだ |
-| 水晶 | `ECS-80-8-33Q-JES-TR` + `GRM1885C1H100JA01D` x2 | 8MHz、3225-4pad、10pF C0G x2 |
+| 水晶 | `FC3BAEBDI8.0-T1` + `CL10C100JB8NNNC` x2 | 8MHz、CL=8pF、ESR max 500Ω、3225-4pad、10pF C0G x2 |
 | SWD/デバッグUART | JST GH: `GHR-06V-S` + `SSHL-002T-P0.2`、基板側は上挿し`BM06B-GHS-TBT` | WeAct SH 10pin→ロボットGH 6pin専用ケーブルを作る |
 | BOOT0 | `RC0603FR-0710KL` + BOOT0/3V3 `S1751-46R` | 10kΩ pull-down、隣接TPを治具で短絡 |
 | ID設定 | 3bit DIPスイッチ(型番は部品選定で確定) | PC6-8、内部プルアップ、ON=GND短絡。起動時にRUN LEDをID回数点滅、ID=0(全OFF)は未設定エラー扱い |
@@ -222,7 +225,7 @@ AMT22コネクタのピン配置(データシートrev1.10で確認済み、`har
 | 外部電源 | `SM02B-GHS-TB` + `GHR-02V-S` | 横挿しGH2、1=5V、2=GND、AWG26、CANと分離 |
 | 中央CANパススルー | 横挿しJST GH 3pin x2(COMM_A/COMM_B/GND) | `SM03B-GHS-TB`、基板上でIN/OUT直結 |
 | 予備降圧 | OKI-78SR-5互換フットプリント + バイパスジャンパ(通常未実装) | スルーホール |
-| 5V監視 | 33kΩ/22kΩ + 10nF + `BAT54SLT1G` | PA0、0.4倍、SOT-23クランプ |
+| 5V監視 | R13 22kΩ(5V側)/R14 10kΩ(GND側) + 10nF + Comchip `BAT54S-HF` | PA0、0.3125倍、dual-series SOT-23クランプ。2026-09-21に33kΩ/22kΩ(0.4倍)から変更(33kΩ現物なし)。ADCスケールは`Vin = ADC/4095*3.3/0.3125` |
 | 状態LED | `LTST-C190KGKT`緑、`LTST-C190KSKT`黄、`LTST-C190KRKT`赤 + 各1kΩ | PWR/RUN/COMM/ERRの4表示、0603 |
 | テストポイント | `S1751-46R` | 主要5V/3.3V/GND/CAN/NRST/BOOT0/SWO。補助信号は露出銅pad |
 
@@ -234,7 +237,7 @@ KiCad 10標準ライブラリに以下の検証済みシンボルがあり、ピ
 |---|---|---|
 | STM32G474RET6 | `MCU_ST_STM32G4:STM32G474RETx` | 64pin。NRST=PG10(pin7)、BOOT0=PB8(pin61)、VDD=16/32/48/64、VSS=15/31/47/63、VDDA=29、VSSA=27、VREF+=28、VBAT=1 |
 | `TCAN1051VDRQ1` | 自作または検証済み互換シンボル | 1=TXD、2=GND、3=VCC(5V)、4=RXD、5=VIO(3.3V)、6=CANL、7=CANH、8=S |
-| `TLV1117LV33DCYR` | `Regulator_Linear:TLV1117-33`を公式pinoutと照合 | 1=GND、2=VOUT、3=VIN、タブ=VOUT |
+| `TLV76133DCYR` | `Regulator_Linear:TLV1117-33`を公式pinoutと照合 | 1=GND、2=VOUT、3=VIN、タブ=VOUT。既存footprintを変更せず実装可 |
 | `LM66100DCKR` | `Power_Management:LM66100DCK` | 1=VIN、2=GND、3=CE_N、4=NC、5=ST、6=VOUT。CE_N→VOUTでRPP+RCB |
 | OKI-78SR-5(予備降圧) | `Converter_DCDC:OKI-78SR-5_1.5-W36-C` | 7805互換3pin |
 

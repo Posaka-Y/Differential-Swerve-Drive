@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(.\\firmware\\scripts\\doctor.ps1*)",
+      "PowerShell(.\\firmware\\scripts\\probe.ps1*)",
+      "PowerShell(.\\firmware\\scripts\\build.ps1*)",
+      "PowerShell(.\\firmware\\scripts\\serial-monitor.ps1*)",
+      "PowerShell(winget search*)",
+      "PowerShell(winget list*)",
+      "PowerShell(Get-PnpDevice*)",
+      "PowerShell(Get-PnpDeviceProperty*)",
+      "PowerShell(pnputil /enum-drivers*)",
+      "PowerShell(git status*)",
+      "PowerShell(git diff*)",
+      "PowerShell(git log*)"
+    ]
+  }
+}

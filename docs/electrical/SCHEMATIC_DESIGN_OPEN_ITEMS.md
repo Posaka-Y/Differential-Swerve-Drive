@@ -46,9 +46,9 @@ Rev.Aは受動部品0603以上、LQFP/SOIC/TSSOP/SOT系ICを優先する。BGA/W
 | COM-02 | P2 | **上挿し`BM06B-GHS-TBT`、ラッチ側を基板内側に確定。** 1番を向ける基板方向のみ未確定 | ユニット、オドメトリ | `GHR-06V-S`+`SSHL-002T-P0.2`。配列は1=GND、2=SWCLK、3=SWDIO、4=NRST、5=DBG_TX、6=DBG_RX。配置時にシルクの1番表示とケーブル引出方向を確定する |
 | COM-03 | P0 | **解消(2026-07-19): `TCAN1051VDRQ1`採用、`TJA1051T/3`代替候補** | 全基板 | VCC=5V、VIO=3.3V、SOIC-8、バスフォルト±58V。詳細は`CAN_COMMON_BLOCK_PART_SELECTION.md` |
 | COM-04 | P0 | **解消(2026-07-19): `ESD2CAN24DBZRQ1`採用** | 全基板 | SOT-23、2ch双方向、±24V working。旧PESD1CAN-UはNot for Design Inのため不採用 |
-| COM-05 | P0 | **解消(2026-07-19): `TLV1117LV33DCYR`、入出力各100nF+10uF X7Rを採用** | ユニット、オドメトリ | SOT-223のVOUTタブへ放熱銅箔を設け、実負荷で温度確認。詳細は`POWER_5V_COMMON_BLOCK_PART_SELECTION.md` |
+| COM-05 | P0 | **解消(2026-07-19、2026-09-06部品更新): `TLV76133DCYR`、入出力各100nF+10uF X7Rを採用** | ユニット、オドメトリ | SOT-223のVOUTタブへ放熱銅箔を設け、実負荷で温度確認。詳細は`POWER_5V_COMMON_BLOCK_PART_SELECTION.md` |
 | COM-06 | P0 | **解消(2026-08-04): MCUノード=`LM66100DCKR`、中央5A主入力=`TPS259470LRPWR`** | 全基板 | 中央入力逆接は別の60V級series保護が必要。eFuse UVLO/OVLOはworst-case計算後に抵抗値を確定する |
-| COM-07 | P1 | **ユニット基板のみ解消(2026-07-19): 33kΩ/22kΩ分圧、10nF、`BAT54SLT1G`上下クランプをPA0へ接続** | ユニット | 5Vを0.4倍。長いADC sample timeと基板別校正を使う。F405オドメトリRev.AはPA0をTIM2_CH1へ使うため5V監視ADCを非実装。詳細は各基板要件 |
+| COM-07 | P1 | **ユニット基板のみ解消(2026-07-19): 分圧、10nF、上下クランプをPA0へ接続** (分圧は2026-09-21にR13=22kΩ/R14=10kΩ=0.3125倍へ変更、クランプは`BAT54S-HF`) | ユニット | 5Vを0.3125倍。長いADC sample timeと基板別校正を使う。F405オドメトリRev.AはPA0をTIM2_CH1へ使うため5V監視ADCを非実装。詳細は各基板要件 |
 | COM-08 | P1 | **MCUノード側解消(2026-07-19、F405流用2026-07-25): Lite-On C190シリーズ緑/黄/赤、各1kΩ** | 全基板 | PWR/RUN=`LTST-C190KGKT`、COMM=`LTST-C190KSKT`、ERR=`LTST-C190KRKT`。中央基板固有LEDは別途決定 |
 | COM-09 | P1 | **解消(2026-07-19): CAN=`SM03B-GHS-TB`、5V=`SM02B-GHS-TB`。ハウジングは各極数の`GHR`、端子`SSHL-002T-P0.2`** | 全基板 | 常設電源/CANは横挿し・AWG26を原則とし、デバッグGH 6pinだけ上挿し |
 | COM-10 | P1 | **解消(2026-07-19): 終端スイッチ`JS102011SAQN`、抵抗`RC0603FR-07120RL`** | 全基板 | SPDTのCommonと片側throwを使用し、`TERM ON/OFF`をシルク表示する |
@@ -85,7 +85,7 @@ Rev.Aは受動部品0603以上、LQFP/SOIC/TSSOP/SOT系ICを優先する。BGA/W
 | ID | 優先度 | 未確定事項 | 決定・確認方法 |
 |---|---|---|---|
 | CTR-01 | P0 | **解消(2026-08-04): `TEENSY41_CENTRAL_PIN_ASSIGNMENT.md`へCAN1/2/3、安全I/O、ADC、I2C、SPI、UART、LEDを固定** | PJRC公式pinout Rev.3/4と照合済み。CAN3=pin 30/31 |
-| CTR-02 | P0 | **解消(2026-08-04): PJRC推奨Sullins `PPPC241LFBN-RC`/`PPTC241LFBN-RC` x2、Teensy側header候補`68000-224HLF`、列間17.78mm** | Teensy直下を全面keepoutとし、micro USB、Program button、microSDのサービス空間をPCBで確認する |
+| CTR-02 | P0 | **解消(2026-08-04): PJRC推奨Sullins `PPPC241LFBN-RC`/`PPTC241LFBN-RC` x2、Teensy側header候補`68000-224HLF`、列中心間15.24mm** | Teensy直下を全面keepoutとし、micro USB、Program button、microSDのサービス空間をPCBで確認する |
 | CTR-03 | P0 | **解消(2026-07-26): KILIGEN E228を実績根拠付きで採用、24V/75〜80mA coil** | 再使用前に接点の摩耗・ピッティングを目視確認する |
 | CTR-04 | P0 | **回路方式解消(2026-08-04): `IRLML0100TRPBF`、Gate 100Ω、47kΩ pulldown、diode+TVS clamp** | 3.3V gate駆動、Q1 VDS、coil解放時間を実測してTVS定格を確定する。1N4007単独clampは初期案にしない |
 | CTR-05 | P0 | **回路方式解消(2026-08-04): `LTV-847S` 4ch、各入力2.2kΩ x2で直列loop・補助接点x2を絶縁監視** | 約5mA入力で全温度のLow levelと抵抗損失を実測する |

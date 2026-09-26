@@ -1,0 +1,59 @@
+** Drc report for Oddom board.kicad_pcb **
+** Created on 2026-09-25T18:46:59 **
+** Report includes: Errors, Warnings **
+
+** Found 8 DRC violations **
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2250 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(74.6750 mm, 113.3750 mm): Pad 4 [unconnected-(J8-MP1-Pad4)] of J8 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2250 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.4750 mm, 113.3750 mm): Pad 5 [unconnected-(J8-MP2-Pad5)] of J8 on F.Cu
+[track_dangling]: Track has unconnected end
+    Local override; warning
+    @(76.5765 mm, 105.8250 mm): Track [PWR_3.3V] on Power Signal, length 2.0142 mm
+[via_dangling]: Via is not connected or connected on only one layer
+    Local override; warning
+    @(75.3375 mm, 92.7125 mm): Via [Net-(R9-Pad2)] on F.Cu - B.Cu
+[isolated_copper]: Isolated copper fill
+    Local override; warning
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[lib_footprint_mismatch]: Footprint 'SW_DIP_SPSTx03_Slide_Omron_A6S-310x_W8.9mm_P2.54mm' does not match copy in library 'Button_Switch_SMD'
+    Local override; warning
+    @(108.9250 mm, 96.3375 mm): Footprint SW3
+[lib_footprint_mismatch]: Footprint 'JST_XH_B8B-XH-AM_1x08_P2.50mm_Vertical' does not match copy in library 'Connector_JST'
+    Local override; warning
+    @(129.5250 mm, 112.1500 mm): Footprint J7
+[lib_footprint_mismatch]: Footprint 'SOT-23-6' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(123.5750 mm, 93.4750 mm): Footprint U7
+
+** Found 3 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(92.1253 mm, 101.0504 mm): Pad 12 [GND] of U1 on F.Cu
+    @(95.6730 mm, 101.1520 mm): Pad 2 [GND] of C14 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(88.2362 mm, 91.6105 mm): Pad 32 [PWR_3.3V] of U1 on F.Cu
+    @(94.5673 mm, 94.4718 mm): Track [PWR_3.3V] on F.Cu, length 2.4536 mm
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(104.7250 mm, 104.7352 mm): Track [PWR_3.3V] on F.Cu, length 0.1227 mm
+    @(111.0250 mm, 104.7352 mm): Track [PWR_3.3V] on Power Signal, length 2.1920 mm
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Silkscreen clearance
+    - Silkscreen clipped by solder mask
+    - Silkscreen clipped by board edge
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

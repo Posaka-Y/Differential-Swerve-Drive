@@ -1,0 +1,6 @@
+(kicad_sch (version 20260306) (generator "eeschema") (generator_version "10.0") (uuid "feacfbd1-ac8f-433f-9a4c-bb2697392a4d") (paper "A4") (lib_symbols (symbol "Central:Test"
+  (pin_names (offset 1.0)) (exclude_from_sim no) (in_bom yes) (on_board yes)
+  (property "Reference" "T" (at 0 8 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27)))) (property "Value" "Test" (at 0 -8 0) (show_name no) (do_not_autoplace no) (effects (font (size 1.27 1.27))))
+  (property "Footprint" "" (at 0 0 0) (show_name no) (do_not_autoplace no) (hide yes) (effects (font (size 1.27 1.27)))) (property "Datasheet" "" (at 0 0 0) (show_name no) (do_not_autoplace no) (hide yes) (effects (font (size 1.27 1.27)))) (property "Description" "Embedded reference symbol" (at 0 0 0) (show_name no) (do_not_autoplace no) (hide yes) (effects (font (size 1.27 1.27))))
+  (symbol "Test_0_1" (rectangle (start -7 7) (end 7 -7) (stroke (width 0.3) (type default)) (fill (type background))))
+  (symbol "Test_1_1" (pin passive line (at -10 0 0) (length 3) (name "1" (effects (font (size 1.0 1.0)))) (number "1" (effects (font (size 1.0 1.0))))) (pin passive line (at 10 0 180) (length 3) (name "2" (effects (font (size 1.0 1.0)))) (number "2" (effects (font (size 1.0 1.0)))))) (embedded_fonts no))) (sheet_instances (path "/" (page "1"))))

@@ -1,4 +1,382 @@
 # Project progress
+## 2026-09-25 (駆動V2シルク参照番号を非表示)
+
+- ユーザーの新規配置配線完了後の依頼で駆動V2 PCBを更新。開いているunit-board-v2と最新保存時刻22:55:11から対象を確認。
+- F.SilkSのReference表示55件を非表示。保存読戻しでF/B.SilkS参照表示0。部品番号情報、製品名など他文字、配置、pad/net、配線、zoneは保持しfingerprint一致を確認。
+- 退避/記録: output/kicad-check/unit-v2-2026-09-25/hide-silk-refs/。表示変更だけなのでERC/DRC再実行なし。ODOMは未変更。次: PCBを開き直して確認、電気的検査は別途実施。
+
+## 2026-09-25 (駆動V2 C620 CAN終端の実装漏れを確認)
+
+- ユーザーの終端有無質問を受け、最新駆動V2 netlistとPCB padネットを確認。C620_CAN_H/Lに接続されるのはU5/D2/J4/J5のみで、基板内終端抵抗はない。
+- R1=120RとSW1は中央CAN COMM_A/B側の終端。CARRIER_BOARD_REQUIREMENTS.mdのC620終端120Ω+スライドスイッチ部品表に対し、回路図/PCB未反映。
+- 回路図/PCBは今回変更なし。次: C620側/ハーネスの終端有無を踏まえて駆動V2の終端追加を検討。今回生成した製造ZIPはODOM V2で、C620バスは対象外。
+
+## 2026-09-25 (ODOM V2製造ZIP出力・検査残件あり)
+
+- ユーザー依頼で最新保存PCBの固定snapshotから4層Gerber・PTH/NPTHドリルを出力し、output/manufacturing/odometry-v2-2026-09-25/odometry-v2-2026-09-25-NOT_RELEASED.zipを作成。中断後再開時も原本PCBとsnapshotのSHA256一致を確認。
+- ZIPは11 Gerber+job+2 drillの14ファイル。展開内容と出力ファイルのbyte一致、4銅箔層、外形中心線65×30mm、PTH113穴/NPTH8穴を検証。原本変更・注文はしていない。
+- 最新未接続0。DRC8件（J8固定pad端間隔2、孤立GND、library形状/参照警告等）、別parity7、ERC0エラー/FP警告2が残り、製造検査合格扱いではない。QA-NOT_RELEASED.mdに残件記載。
+- 次: J8銅箔端間隔0.225mmと製造条件、library/実装属性等の残件を確認してから発注判断。ZIPは生成済みで、発注は未実施。
+
+## 2026-09-25 (ODOM V2シルク参照番号を非表示)
+
+- ユーザー指定でODOM V2 PCBのF/B.SilkS上のReference表示22件を非表示。保存読戻しで表示参照0件を確認。
+- Ref情報、他field、信号表示、pad/net、配置、配線、zoneは保持。変更前後fingerprint一致を確認。表示変更のみのためERC/DRC再実行なし。
+- 退避/検証記録: output/kicad-check/odometry-v2-2026-09-25/hide-silk-refs/。PCBを開き直すと反映される。電気的残件は前回検査を参照。
+
+## 2026-09-25 (ODOM V2再確認2: DRC7+未接続1)
+
+- 最新保存PCBをread-only検査。前回DRC8+未接続3から7+未接続1へ改善。U1 GND/3.3V未接続とR9入力のdangling viaは解消。
+- 残り: J8固定pad4/5の端間隔0.225mm（要求0.5）、3.3V dangling track、孤立GND、SW3/J7/U7 library差。未接続1は3.3V配線(104.725,104.7352)と(109.475,103.1852)間。
+- ERC0エラー/FP警告2、別parity警告6は継続。pad機能不一致0、規則/除外変更なし。原本編集なし。
+- 詳細: output/kicad-check/odometry-v2-2026-09-25/recheck-02/recheck.md。次は残る3.3V接続とJ8基板端間隔を修正。
+
+## 2026-09-25 (ODOM V2再確認: DRC8+未接続3)
+
+- ユーザーの修正後をread-only再検査。前回DRC20+未接続4から8+未接続3へ改善。配線間隔/線幅違反0。ERCエラー0/footprint参照警告2、回路図整合の別警告6は継続。規則/除外の変更なし。
+- 残件: J8固定padの端間隔2、dangling track/via各1、孤立GND1、library差3。未接続はU1.12 GND、U1.32 3V3、3V3配線の一部。座標はoutput/kicad-check/odometry-v2-2026-09-25/recheck-01/recheck.md。
+- エンコーダJ4/J5/J6 1=A/2=+5V/3=B/4=GNDはねじれ防止の意図した変更とユーザー確認。ADR・ODOM要件・ピン割当・V2要件に明記し、旧配列との差を不具合から除外。SWD/CAN/UART/encoderの回路図とPCB接続一致。
+- PCB/回路図は今回変更なし。次: 電源/GNDの未接続3件とJ8端間隔を修正する。
+
+## 2026-09-25 (ODOM V2: 保存後の原本へ修正反映)
+
+- ユーザー「保存したから反映して」に従い最新ファイルを退避。PCBは前回baselineと同一、回路図は更新済み。ベタ再充填・LED線幅15本修正・不要枝削除を原本PCBへ反映し、SWD J3のDNPを最新回路図に合わせて解除。
+- DRC20+未接続4。ERC0エラー/2警告（J3/J8 footprint library名未指定）。整合検査の別6警告はfootprint ID差2、CAN J8 DNP差1、REF**取付穴extra/duplicate3。規則緩和/除外追加なし。
+- 新回路図とPCBのRef/UUID、電気的接続は一致（U5 NCエスケープ差のみ）。J3=SWD/J8=CAN/J9=UART。ユーザーが入力RC6個を削除、encoder J4/J5/J6を1=A/2=5V/3=B/4=GNDに合わせたため旧不一致指摘は解消、資料との仕様差として残した。
+- 最新一覧: output/kicad-check/odometry-v2-2026-09-25/REVIEW.md。退避/反映後検査はapplied/。次は未接続4件・配線/端間隔・局所100nF・library/DNP整合を解消する。まだ製造不可。
+
+## 2026-09-25 (ODOM V2 PCB初回監査・修正候補)
+
+- ユーザーからPCB設計完了とエラー一覧/可能な修正依頼。保存済みデータを退避・監査し、output/kicad-check/odometry-v2-2026-09-25/REVIEW.mdへ一覧化。
+- ERC0。原本DRC62+未接続4。別candidate PCBへベタ再充填・LED線幅15本0.175→0.200mm・不要短枝線除去を行い、DRC20+未接続4へ削減。原本PCB/回路図は変更していない。
+- 残り: clearance10、edge5、孤立ベタ1、lib差4、未接続4。規則緩和/除外追加は行わない。
+- 保存済み回路図/PCB間でSWDとCANのRef/UUID、J4/J5/J6のピン割当、入力RC6個等に不一致。PCB SWD J3がDNP。U3/U7の直近100nFも不足。UART J9とbuffer電源padネット割当は一致。
+- 回路図エディタに未保存マークあり、保存/終了を質問中。最新保存後に再照合して候補修正を原本へ取り込む必要がある。候補も製造不可。詳細・snapshot・修正候補は同出力フォルダへ保存。
+
+## 2026-09-23 (駆動/ODOM V2: UARTを3pinヘッダ化)
+
+- ユーザー指定で両V2回路図のUART用TP901/902/903を除去し、J9へ置換。共通1=GND、2=MCU TX、3=MCU RX、3.3Vロジック、電源ピンなし。
+- Connector_Generic:Conn_01x03とConnector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Verticalを使用。2.54mmピッチのスルーホールで必要時だけヘッダ実装可。
+- 駆動J9.2=U4 PA2/pin14、J9.3=PA3/pin17。ODOM J9.2=U1 PA2/pin16、J9.3=PA3/pin17。10pin SWDとODOMバッファ電源修正は維持。
+- 両基板ERCエラー0/警告0。旧TP/新J9を除く接続集合は変更前後で一致（駆動77、ODOM85）。検証記録はoutput/kicad-check/v2/{unit,odometry}/uart-header-check.md。
+- 今回の対象は回路図で、PCB配置・配線はユーザー担当。次: 変更後回路図を開き直し、PCBへJ9を反映する。SWDの正式ヘッダfootprint選定は残る。
+
+## 2026-09-23 (ODOM V2: 10pin変更の再反映)
+
+- ユーザーから変更が見えないと報告。実ファイルを読むと、19:48:22の保存時点でJ8がGH6へ戻り、V2のライブラリ参照表も無くなっていた。原因は断定しない。
+- 現状態を退避し、他の接続を維持してJ8 10pin/UART TPを再反映。ユーザーよりエディタを閉じたと確認。専用symbol/footprintの参照表を復元。
+- 保存後の実ファイル読戻し、ERCエラー0/警告0、U3/U7/U9 pin2=GND/pin5=PWR_3.3Vを確認。V1とPCBの編集は行わない。
+- 次: hardware/odometry-board-v2/Oddom board.kicad_schを開き直してJ8を確認。PCBはユーザー担当、正式10pinヘッダのfootprintは未選定。
+
+## 2026-09-23 (ODOM V2: J8を10pin SWDへ変更)
+
+- ユーザー指定でhardware/odometry-board-v2/Oddom board.kicad_schのJ8を旧GH6からCortex Debug 10pinへ変更。pin1=PWR_3.3V(VTref)、2=PA13/U1.46、3/5/9=GND、4=PA14/U1.49、6=PB3/U1.55(SWO)、7/8=NC、10=NRST/U1.7。MCUのデジタルVDDと同じレールをVTrefに使用。
+- UARTはTP901=USART2_TX(U1.16)、TP902=USART2_RX(U1.17)、TP903=GNDへ分離。既存U3/U7/U9電源修正を維持。
+- ERCエラー0/警告0。変更対象を除いた82接続集合が変更前と一致し、回路図PDFも目視確認。レポートはoutput/kicad-check/v2/odometry/swd-10pin-check.md。
+- V1とPCBは変更しない作業範囲を維持。J8 footprintは正式ヘッダ/キー/ケーブル未選定のため空欄。
+- 次: ヘッダ/ケーブル適合を確定し、ユーザー側でPCBへ同期・配置・配線する。10pin SWD回路図対応は駆動V2とODOM V2の両方完了。残りTPとCAN2pin対象の確認は別作業。
+
+## 2026-09-23 (駆動V2: エンコーダ端子・SWD確認、LED配置方針)
+
+- ユーザー指定のAMT22端子順を駆動V2のJ6で再照合。1=+5V、2=SCLK(R15経由PC10)、3=MOSI(R16経由PC12)、4=GND、5=MISO(R17経由PC11)、6=CHIP SELECT(R18経由PD2)で既に一致し、並べ替えは不要。
+- ST-LINK V3用10pin指定を再確認。既存V2 J7は1=VTref(デジタル3.3V)、2=SWDIO、3/5/9=GND、4=SWCLK、6=SWO、7/8=NC、10=NRST。正式コネクタ/ケーブルの機構適合確認は未完了。
+- PWR/RUN/COMM/ERRを一か所へまとめる配置方針をADR/V2要件に追加。PCBはユーザー担当で、AIは回路図・接続確認を担当する。
+- CAN 2pin化の追加指定あり。駆動V2の中央用J2/J3・C620用J4/J5の両方か、中央用だけかを確認中。現時点ではCAN回路図/PCBの変更なし。
+- 次: CAN対象の回答後にGH横挿し2pinへ回路図変更し、ERC・ネット接続を再照合する。V1実機はCAN確認中。
+
+## 2026-09-23 (V2着手前: ODOMバッファのfootprint照合)
+
+- ユーザー指定でSOT-23-6を先に確認。ODOM U3/U7/U9の設計指定はSN74LVC2G17DBVR。TI公式SCES381N/DBV0006AはSOT-23-6、端子pitch 0.95mmで、KiCad割当のパッケージ種別・pitch・番号配置と整合する。
+- TI推奨ランド例とKiCad標準ランドは寸法が同一ではない。実購入品の末尾型番は未確認で、DCK版等との取り違えは別途照合が必要。今回は回路図/PCB変更なし。
+- 次: 手元品の正式型番と照合し、V2のSWD共通化・測定TP追加へ進む。V1はユーザーがCAN確認中。
+
+
+## 2026-09-23 (現在地訂正: CAN確認中)
+
+- ユーザーより「今CANの確認中」と訂正。現在の実機作業はCAN確認。前の記録からAMT102手回しを直近作業と推定した案内を撤回する。
+- CANの対象基板/バス、送受信結果、他機能の確認結果はこの報告だけでは確定しない。
+- 次: 現在のCAN確認を継続し、結果・不具合・ジャンパ修正を記録してV2設計へ反映する。
+
+## 2026-09-23 (進行方針: V1で機能確認、V2で改良を並行)
+
+### やったこと・現在の状態
+
+- ユーザーとV1実機の機能確認を継続しながらV2を改良する方針で合意し、ADR/V2要件へ記録した。
+- V1の個体/ファーム/ジャンパ/実測結果を残してV2修正台帳へ反映する。検証中のV1から高価なICを先に回収しない。
+- 本区切りは方針記録のみ。実機通電・ファーム書き込み・回路図/PCB変更は実施していない。
+
+### 次の作業
+
+1. ODOM V1のAMT102を手回しし、正逆カウント変化を確認する。記録上、F405の書込/実行/LED確認は済み、エンコーダ機能の成立は未確認。
+2. カウントが変わらなければ、センサ5V・A/B→バッファ電源/出力→MCU入力の順に実測して切り分ける。
+3. 駆動V1も電源/SWD→AMT22→CAN→統合の段階で確認し、結果をV2のSWD/TP/接続修正へ反映する。
+4. V2設計と中央の人手KiCad転記を並行し、機能に関わる未解決点を整理してから次回3種類の製造データを確定する。
+
+
+## 2026-09-23 (最終方針: CAN横挿しGH3・主接点専用監視なし)
+
+- ユーザー指定でCANコネクタは横挿しJST GH3（1 COMM_A / 2 COMM_B / 3 GND）に確定。同日の駆動/ODOM CAN2pin案を撤回。既存汎用4pinとC620純正ハーネスは別仕様。
+- コンタクタ主接点の専用監視を今回省略する方針で合意。C620のCAN応答消失を駆動MCUが検知して中央へ送る補助診断とし、表示は「OFF指令中・C620応答なし」。無応答を遮断成功や溶着検出とみなさず、中央通信断は情報不明として区別する。
+- ハードNC E-stop遮断、起動/reset/Hi-Z OFF、明示再アーム、E-stopループ/ボタン補助接点の監視は維持。CONTACTOR_STATUS_N/主接点後24V監視を追加しない。
+- ADR・中央要件/転記注記・一括発注計画・V2要件を同期。中央PDF（2026-09-23版、13ページ）の該当箇所も更新し、変更ページを再レンダリング・目視確認。ファーム/GUI/中央KiCad/PCBは未変更。
+- 次: 残るコイルclamp・ヒューズ・24V帰路/コイル端子詳細を確定し、人手でKiCadへ転記する。CANシリーズ/極数/向きと主接点監視の要否は未確定から外す。
+
+
+## 2026-09-23 (中央回路図PDF改版・Teensyソケット寸法訂正)
+
+### やったこと
+
+- ユーザーは中央KiCadの自動編集でなく、見ながら手で転記できる回路図PDFを指定。既存PDFの読みやすさ改善も指定。軽量サブエージェントへ接続照合・PDF作成・フットプリント検証を委譲した。
+- 次回PCBの範囲を駆動V2/ODOM V2/中央の3種類とし、中央給電CAN1/3を2pin、別電源LED/スイッチングCANを3pinへ変更。電源2pinとの誤挿入防止とGND共通化条件を計画書へ明記。
+- コンタクタ励磁回路を中央へ統合する基本案へ更新。ハードNC E-stop・起動OFF・Teensy直接許可は維持。正式clamp/コネクタ/帰路は未確定を明示する。
+- **PJRC公式寸法図で誤記訂正**: Teensy基板幅17.78mmとソケット列中心間15.24mmが混同されていた。関連6資料とADRを訂正。
+- `hardware/lib/DifferentialSwerve.pretty/Teensy41_Socket_2x24.kicad_mod`を新規作成。48pad一意、2.54mm pitch、15.24mm列中心間、USB側pad1=GND/pad48=VINを公式ピンカードと照合し、KiCad読込/SVG目視確認。中央PCBへは未配置。
+- 専用footprintの説明は`hardware/lib/TEENSY41_SOCKET_FOOTPRINT.md`。既存24pinシンボル2個それぞれへ一体footprintを割り当てず、使用時は1個の48pinシンボルと対応させる。
+
+### 現在の状態・次の作業
+
+- 中央KiCad回路図/PCBは今回変更していない。既存PCBのソケット2列配置は寸法が合わないため、PCB着手時に修正が必要。
+- footprintの穴径1.0mmはKiCad標準ソケット基準。購入ソケットの端子径・1:1印刷・実物適合、Teensy下部/USB/microSD空間を確認してから製造する。
+- 最終出力は`output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-23.pdf`（A3横13ページ）。生成元`tmp/pdfs/build_central_board_rev1_schematic_2026_09_23.py`、変更記録`docs/electrical/CENTRAL_BOARD_REV1_PDF_CHANGELOG_2026-09-23.md`。旧PDFを保存し、電源/eFuse/USB/分配を分割した独立図へ再描画。全ページをPNG化し、独立レビューと修正を実施。
+- 未確定はCAN/コイル端子MPN、F401/clamp定数・過渡/解放時間、24V帰路結合、VUSB取り出し/実ソケット適合等。KiCad手動転記時に該当箇所を確定する。基板発注・部品購入は未実施。
+
+
+## 2026-09-23 (駆動基板V2: SWD回路図とUART TP)
+
+### やったこと
+
+- `hardware/unit-board-v2/unit-board.kicad_sch`の旧GH6デバッグJ7をCortex Debug 1.27mm 2×5配列に置換。J7 pin1=MCUデジタル3.3VのVTref、2=SWDIO(U4 PA13/pin49)、3/5/9=GND、4=SWCLK(PA14/pin50)、6=SWO(PB3/pin56)、7/8=NC、10=NRST(pin7)。
+- UARTを別のTP901(TX=PA2/pin14)、TP902(RX=PA3/pin17)、TP903(GND)へ分離。旧デバッグ枠と見出しを図面から除去。
+- KiCad ERCは0エラー/0警告。XML netlistでJ7と新TP以外の既存75ネットの接続集合がV2分岐時の基準と完全一致。回路図PDFのルートページを目視確認。V1回路図/PCBは変更なし。
+
+### 現在の状態・次の作業
+
+- J7の正式MPN、キー形状、嵌合ケーブル、フットプリントは未選定。回路図Footprintは意図的に空欄。V2 PCBは旧GH6のままで、回路図同期・配置・配線と全pad照合が必要。製造不可。
+- UART以外の測定TP、SWDコネクタの機構確認、PCB ERC/DRC・実装検査を続ける。
+
+## 2026-09-23 (駆動/ODOM V2着手: デバッグ改善要件・作業データ分離)
+
+### やったこと
+
+- ユーザーのV1反省を`docs/electrical/UNIT_ODOMETRY_V2_REQUIREMENTS.md`へ具体化。VTref付き共通SWD、UART別TP、Pin1/キー/測定点、段階bring-up、回収部品と予備在庫、発注前の回路図/PCB全pin照合を定義。
+- V2基本案を1.27mm 2×5 Cortex Debugとし、ST UM2910のMIPI10/STDC14対応表を照合。正式コネクタMPN/ケーブルは未確定。
+- `hardware/unit-board-v2/`と`hardware/odometry-board-v2/`へ保存済み作業ツリーから分岐。元の18ファイルはSHA256で変更なしを確認。基準は`hardware/v2-baseline-manifest.json`。
+- ODOM共有`AMT102_input.kicad_sch`に74LVC2G17のunit Cを追加し、U3/U7/U9のpin5=PWR_3.3V、pin2=GNDを接続。TI SCES381Nでpinout照合。ERCはエラー3/警告3→0。XML netlistで6電源pinの接続を検証。
+- 駆動は複製時ERC 0。レポートは`output/kicad-check/v2-baseline/`と`output/kicad-check/v2/odometry/`。
+- 9/22 firmware記録から、V3MINIEによるF405書込/LED成功、バッファ電源ジャンパ施工済み、AMT入力の切り分け継続中を確認。V1の未解決実装問題をV2で根拠なく回路変更しない。
+
+### 現在の状態
+
+- V2は設計途中。SWD/TPの回路置換、ODOM電源のPCB反映・配線、DRC/製造検証は未完了。PCBにはV1の旧配線が残るため発注不可。
+- ODOM PCBのU3/U7/U9 pad2/5が未割当のままであることを確認。回路図ERC 0はPCB修正完了を意味しない。
+- 元のV1 KiCadデータやユーザー作業中の変更を維持。両プロジェクトに状態READMEを配置。
+
+### 次の作業
+
+1. キー付きSWDヘッダ/接続ケーブルのMPNとメーカー図面・機構スペースを照合し、両回路図へ反映する。
+2. UART/電源/CAN/センサTPを追加し、ODOM各バッファの100nFを確認する。
+3. その他のジャンパ接続元/先をユーザー記録と照合して修正台帳へ追加。
+4. PCBを回路図へ同期し再配置・配線。ERC/DRCと全IC電源pad/回路図対PCB照合後に製造データを生成する。
+
+
+## 2026-09-21 (実装前チェック: ODOM基板 74LVC2G17電源未接続を発見・組立資料生成)
+
+### やったこと
+
+- 部品着荷を受け、駆動(unit)基板とオドメトリ(ODOM)基板の実装着手前監査を行った。
+- `kicad_pcb`のパッド単位でネット未割当と1パッドのみのネットを機械的に抽出した。
+  - unit基板(`hardware/unit-board/unit-board.kicad_pcb`): 未接続はGHコネクタの取付脚(MP)のみで正常。
+    1パッドネットは未使用の`I2C_SDA`/`I2C_SCL`/`SWO`(U4のみ)で実害なし。
+  - **ODOM基板: U3/U7/U9(74LVC2G17)のpad 2(GND)とpad 5(VCC)が全て未接続**。
+    発注に使ったコミット`bcd22f1`(2026-07-29のGerber生成元)の`.kicad_pcb`でも同じ状態のため、
+    届いた実基板も同じと判断。2026-07-26に回路図側でunit3(電源)を追加した修正が、
+    PCBへ`Update PCB from Schematic`されないままGerberが出ている。
+  - AMT102 3ch全てがこのバッファ経由(J4/J5/J6 pin1=PWR_5Vで5V出力を3.3Vへ受け直す構成)のため、
+    未修正だとエンコーダ入力が全滅する。KiCad DRCの「unconnected pads 0」はネット無しパッドを
+    検出しないので、DRCレポートでは気付けない。
+- ジャンパ候補位置を抽出した(mm、PCB座標)。U3@(119.6,95.0)/U7@(77.7,102.4)/U9@(110.4,95.1)。
+  - GND: 各バッファ隣のDNPコンデンサのGND側パッド(U3=C15/C17 pad2、U7=C23/C24 pad2、U9=C25/C26 pad2)が空きパッドとして使える(約2〜4mm)。
+  - 3V3: 最寄りの`PWR_3.3V`ビアはU3=(128.275,104.0)約12.5mm、U7=(80.275,96.8)約6.1mm、U9=(109.475,100.775)約5.8mm。
+- 組立用資料を生成した。
+  - `output/assembly/unit-board-placement-refdes.pdf`、`output/assembly/odometry-board-placement-refdes.pdf`
+    (F.Fab+Edge.Cuts+Courtyard、RefDesのみ、パッド番号表示、DNPは×印)
+  - `output/assembly/unit-board-assembly-top.pdf`、`output/assembly/odometry-board-assembly-top.pdf`(値付き)
+  - `output/assembly/odometry-board-position.csv`(ODOMの実装座標。unit基板は既存の`output/fabrication/unit-board-revA/unit-board-position.csv`)
+- 基板寸法/構成: unit 45.0x45.0mm、ODOM 65.0x27.5mm。両方とも4層1.6mm・内層GNDプレーン・
+  裏面実装部品0・裏面ペースト開口0(unitはTHTパッド0、ODOMはJ4/J5/J6/J7のXHのみTHT)。
+- BOMと現物の型番差異を確認: `TLV1117LV33DCYR`→`TLV76133DCYR`、`ECS-80-8-33Q-JES-TR`→`FC3BAEBDI8.0-T1`、
+  `A6S-3104-H`→`DS04-254-1-03BK-SMT`、`BAT54SLT1G`→`BAT54S-HF`。
+  `.kicad_pcb`のValueは更新済みだがfootprintは旧品のまま。特にDIPスイッチは別メーカー別形状のため、
+  ペースト印刷前に裸基板で仮置きしてランドの一致を確認する必要がある。
+
+- 実装作業手順書PDFを作成した。`output/pdf/BOARD_ASSEMBLY_PROCEDURE_2026-09-21.pdf`
+  (A4横9ページ、生成`tmp/assembly/build_assembly_procedure.py`)。
+  p1表紙/対象基板、p2着手前チェック3件、p3 Sn63Pb37プロファイル+ドラッグはんだ、p4チェックリスト式実装手順、
+  p5ジャンパ施工図(配線イメージ図つき)、p6通電bring-up、p7極性確認/参照、p8-9配置図。
+  `PROJECT_DOCUMENT_INDEX.md`へ9.98として追加。
+- **ハンダと表面処理を確定**: 当初はユーザー所有の`Sn42Bi58`(融点138℃、低温鉛フリー)前提で書いたが、
+  BiはPbと混ざると Sn-Pb-Bi 三元共晶(約96℃)を作るため、表面処理が有鉛HASLだと使えない。
+  ユーザーが実基板を確認して**有鉛HASL**と判明したため、**`Sn63Pb37`(融点183℃)**へ切替えて手順書を作り直した。
+  有鉛HASL + Sn63Pb37 は濡れの点で最良の組合せで、合金の相性問題は消滅した。
+  なお発注時の表面処理はリポジトリに記録が無く(2026-07-29の「次の作業」以来未決着)、今回実物確認で決着した。
+- リフロープロファイル(基板温度基準): 予熱130〜150℃×90〜120秒 → ピーク200〜215℃(183℃超えで45〜75秒) →
+  自然冷却。プレート設定は基板温度より10〜20℃高めが目安(4層1.6mm・内層GNDプレーンのため)。
+- **5V監視の分圧を変更(2026-09-21確定)**: 実装時にR13の33kΩの現物が無かったため、在庫のある値で
+  **R13=22kΩ(5V側) / R14=10kΩ(GND側)**へ組み替えた。分圧比0.400→0.3125、5.00V入力時のADC電圧
+  2.000V→1.5625V、測定上限8.25V→10.56V、分圧電流91µA→156µA。過電圧クランプはD7(BAT54S-HF)が
+  担うため保護性能は変化しない。在庫は10kΩ 10個(R4で4個使用)、22kΩ 10個なので4枚分を賄える。
+  22kΩ/22kΩ(比0.5)案も成立するが、22kΩ在庫をほぼ使い切るため不採用。
+  **ファームのADCスケールは`Vin = raw/4095*3.3/0.3125`**。`firmware/src/main.c`の`send_status3()`へ
+  コメントで明記した(ADC自体は未実装)。
+  反映先: `hardware/unit-board/5V monitoring.kicad_sch`、`unit-board.kicad_pcb`のValue、
+  `ARCHITECTURE_DECISIONS.md`、`CARRIER_BOARD_REQUIREMENTS.md`(2箇所)、
+  `UNIT_BOARD_SCHEMATIC_REFERENCE.md`(R304/R305表記の3箇所)。
+  変更後に`kicad-cli sch erc`で駆動基板0件を確認し、配置図/座標CSV/フラット結線表/実装手順書PDFを再生成した。
+- 作業中に参照する回路図資料を3種類整備した。
+  1. `output/pdf/UNIT_BOARD_SCHEMATIC_KICAD_2026-09-21.pdf`(6ページ)、
+     `output/pdf/ODOMETRY_BOARD_SCHEMATIC_KICAD_2026-09-21.pdf`(5ページ) — `kicad-cli sch export pdf`で
+     実回路図をそのまま出力。正確だが階層シート構成で追いづらい。
+  2. `output/pdf/BOARD_FLAT_NETLIST_2026-09-21.pdf`(5ページ、生成`tmp/assembly/build_flat_netlist.py`) —
+     **階層を潰したフラット結線表**。製造された`.kicad_pcb`のネットリストから、MCU全64ピン→ネット、
+     ネット→接続ピン(RefDes.pad(ピン名))、部品一覧を起こす。RefDes・ピン番号が実基板シルクと完全一致するので
+     テスターを当てながら使える。ネット未割当パッドの検出結果も各基板の末尾に出力する
+     (unit=無し、ODOM=U3.2/U3.5/U7.2/U7.5/U9.2/U9.5)。
+  3. 既存の`docs/electrical/UNIT_BOARD_SCHEMATIC_WITH_BOM.pdf`等(2026-07-21) — 機能別1ページで読みやすいが、
+     RefDesが旧番号体系(U301/U401/J401…)で実基板(U4/U3/U5/J2-J5…)と**一致しない**。参照時は注意。
+- **追加で判明**: ODOM基板の74LVC2G17は、PCBだけでなく**回路図側でもunit 3(VCC/GND)が未配置**
+  (`AMT102_input.kicad_sch`に配置されているのはunit 1とunit 2のみ)。2026-07-26のエントリにある
+  「unit3を新規配置しERC 0件」は現在のワーキングツリーの内容と一致しない。2026-09-07に記録した
+  ERCエラー3件(電源unit C未配置)が現状の正しい姿。Rev.B以降では回路図→PCBの順で修正が必要。
+- HASLはパッドが平坦でないためステンシルが密着せず、LQFP64(0.5mmピッチ)で印刷ブリッジが出やすい。
+  対策(捨て基板で囲う/スキージ45°1回/印刷直後のルーペ確認)と、逃げ道としてLQFP64のみ
+  フラックス+ドラッグはんだで手付けする手順を手順書へ入れた。
+
+### 現在の状態
+
+- 実装未着手。ODOM基板は上記バッファ電源のジャンパ対応が前提。unit基板は製造データ上の阻害要因なし。
+- 現行ファームはHSI 16MHz動作でLED_RUN=PA5(NUCLEOと同じピン)のため、unit基板の初回生存確認に流用できる。
+  F405 ODOM基板用のファームは未着手。
+
+### 次の作業
+
+1. 実基板でU3/U7/U9 pin5-3V3、pin2-GNDの導通をテスターで確認し、ジャンパ要否を確定する。
+2. DIPスイッチ(DS04-254-1-03BK-SMT)とその他置換品を裸基板へ仮置きしてランド適合を確認する。
+3. unit基板1枚を先行実装し、電流制限電源で5V→3.3V、SWD Device ID、PA5点滅まで確認する。
+4. ODOM基板を実装し、ジャンパ後にAMT102 A/B波形をバッファ出力で確認する。
+5. ODOM回路図の`AMT102_input.kicad_sch`へ74LVC2G17のunit 3(VCC=PWR_3.3V / GND)を配置してERC 0件にし、
+   PCBへUpdate PCB from Schematicを流す(Rev.B用。今回の実基板はジャンパで対応)。
+
+## 2026-09-17 (24VアクチュエータCANノード Rev.A 人が読む回路図PDF・訂正と提案)
+
+- `output/pdf/ACTUATOR_CAN_NODE_REV_A_BLOCK_DIAGRAM_AND_BOM_2026-09-17.pdf`(ブロック図+暫定BOM)を、LEDノードと同じ粒度の部品・ピン番号・ネット名付き回路図 `output/pdf/ACTUATOR_CAN_NODE_REV_A_SCHEMATIC_2026-09-17.pdf`(A3横9ページ: S01全体/訂正一覧、S02入力保護/GNDスター/Buck/LDO/24Vセンス、S03 F303K8全32pin+TIM AF、S04 CAN、S05 OUT2-4 (AHCT125+IRLML0100)、S06 DRV8251A、S07 分離式CONTACTOR_DRIVER、S08 KiCad割当/BOM数量、S09 ERC非検出13項目+未確定11件)に描き直した。生成は`tmp/actuator-node/build_actuator_rev_a_schematic.py`。PNG化→目視→修正を5周。
+- データシート直接照合: TI DRV8251A SLVSFU6(DDA pin 1 IPROPI/2 IN2/3 IN1/4 VREF/5 VM/6 OUT1/7 GND/8 OUT2、`ITRIP×AIPROPI=VREF/RIPROPI`、AIPROPI 1575µA/A、VREF 0〜3.6V、IN内蔵100k PD)、SN74AHCT125 SCLS264R(PW 14pin)、TCAN1051-Q1 SLLSET0D、ESD2CAN24-Q1 SLVSFW5D、Infineon IRLML0100(1G 2S 3D、RDS(on) max 235mΩ@4.5V)。STM32F303K8はst.comに繋がらないため、ST公式GitHub `STM32_open_pin_data` の`STM32F303K(6-8)Tx.xml`とGPIO modes XMLでピン番号とAF番号を取得(LEDノードのU201ピン表もこれで裏付け、転記表へ注記)。
+- 訂正: LMR51606のMPN/ピン順/FB分圧(LEDノードと同じ誤り)を要件書§2へ反映。前版ブロック図のRefDes重複(J501がSWDとMOTORの両方)を解消し、SWD=J201、MOTOR=J501、OUT1タブ=U601/Q601/J601/J602/J603とした。
+- 提案(未承認、要件書に PROPOSAL として追記): OUT1〜4=PA6/PA7/PB0/PB1(TIM3_CH1〜4 AF2)で§9-1のSTOPを解消案。PA9 service inputはSWDヘッダのUART(PA9/PA10)と衝突するため、SERVICE_IN=PB5、LED_COMM/FAULT=PB3/PB4、PWR LEDは3.3V直結。GND_PWR/GND_CTRLはNT101で1点結合。
+- 新たに見つけた正本内の矛盾: §4「未分離時ESTOP_LOOP_RETURNは未接続」と「VIN_ACTがタブを渡る」が両立しない(未分離OUT1負荷の24V供給元が不明)。PDFでは24Vタブ橋を破線の解釈として描き、要件書に未解決注記。 また中央基板Rev.1転記表のJ402-4は`GND_CTRL`、本要件書のパッド4は`GND_PWR`で不一致(未確定#12)。
+- 次: (1) 未確定#1〜#3(GPIO/PA9/LED割当)と#6(24Vタブ橋)をユーザー判断で確定 → (2) 入力段・RIPROPI・clamp・コネクタのSTOPは実測後 → (3) 自作symbol(LMR51606XDBVR/TCAN1051VDRQ1/ESD2CAN24DBZRQ1/DRV8251ADDA)を作成 → (4) KiCad転記+`kicad-check`。
+
+## 2026-09-17 (中央基板Rev.1 PDFのコンタクタ制御境界訂正)
+
+### やったこと
+
+- `output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-14.pdf`の旧表現「アクチュエータCANノードがCAN指令でコンタクタを励磁」を削除し、中央Teensyの`MOTOR_PWR_EN` 3.3V ON/OFFを別体`CONTACTOR_DRIVER`へ直接渡す構成へ訂正した。
+- S01/S02B/S04/S06/S07を更新し、Teensy pin 2、J402 5線interface、ハードNCループ、別体gate buffer/low-side MOSFET、Reset/Hi-Z時OFFの関係を明記した。
+- `ARCHITECTURE_DECISIONS.md`、`CENTRAL_BOARD_REV1_CONSTITUTION.md`、`CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md`、PDF生成スクリプトを同じ境界へ同期した。
+
+### 現在の状態
+
+- 中央PCBは24VコイルMOSFETを持たず、3.3V許可信号だけを出力する。E228 24Vコイルの励磁MOSFET/clampは別体`CONTACTOR_DRIVER`側に置き、コンタクタ制御はCANノードを経由しない。
+- PDFは8ページを再生成し、全ページのレンダリング、主要ページの文字切れ・重なり、旧表現の残存なしを確認済み。
+
+### 次の作業
+
+1. J402の正式コネクタ型式とpin順、`CONTACTOR_STATUS_N`の実装有無を別体driver回路図と同時に確定する。
+2. KiCad転記時に`MOTOR_PWR_EN`の起動時Low、driver入力/gate pulldown、Reset/Hi-Z時Q1 OFFを実測確認する。
+
+## 2026-09-17 (LED CANノード Rev.A 人が読む回路図PDF・転記表の誤り3件訂正)
+
+- `output/pdf/LED_CAN_NODE_REV_A_HUMAN_SCHEMATIC_2026-09-14.pdf`(ブロック図)を、中央基板Rev.1と同じ流れで部品・ピン番号・ネット名付きの回路図PDF `output/pdf/LED_CAN_NODE_REV_A_SCHEMATIC_2026-09-17.pdf`(A3横6ページ: S01全体/訂正一覧、S02電源、S03 F303K8 LQFP-32全32pin、S04 CAN+AHCTデータ出力、S05ハーネス/TP/KiCadライブラリ割当、S06 ERC非検出13項目+未確定11件+チェック手順)に描き直した。生成スクリプトは`tmp/led-node/build_led_rev_a_schematic.py`(KiCad同梱Python + schemdraw + reportlab)。PyMuPDFでPNG化→目視→ラベル衝突修正を5周。`PROJECT_DOCUMENT_INDEX.md`へ9.11として追加(9.10は旧版注記)。
+- **データシート照合で転記表の誤り3件を発見・訂正**(TI `LMR51606` SLUSEY1B Rev.B / `TLV761` SBVS349D / `SN74AHCT1G125` SCLS378P はcurlで取得しpymupdfで本文抽出。STM32F303K8はst.comに接続できずKiCad 10標準symbol `STM32F303K8Tx` の32pinで照合、DS9866 Table 13での再確認は未):
+  1. U101 LMR51606 DBVのピン順。旧「1 GND 2 FB 3 EN 4 VIN 5 SW 6 BOOT」→ 正「1 CB(BOOT) 2 GND 3 FB 4 EN 5 VIN 6 SW」。MPNも`XDDCR`はDSのDevice Comparison Tableに無く`LMR51606XDBVR`が正。footprintは標準`SOT-23-6`で可。
+  2. U101 FB分圧。VREF=0.8Vのため旧R101/R102=100k/24.9kは4.0V出力(TCAN1051V/AHCTのVCC min 4.5V未満)。DS例の118k/22.1k(5.07V)へ変更。DNPのUVLO分圧100k/13.3kはDS閾値で10.4V rising/8.5V falling(旧記載8.0Vは根拠なし)。
+  3. U201のLQFP-32ピン表がLQFP-48(F303C8)の内容(VBAT/PC13/PC14/PC15/VSSA、VDD=21等)で誤り。正: 1 VDD 2 PF0 3 PF1 4 NRST 5 VDDA/VREF+ 6〜13 PA0〜PA7 14 PB0 15 PB1 16 VSS 17 VDD 18〜25 PA8〜PA15 26〜30 PB3〜PB7 31 BOOT0 32 VSS。PC13が無いため`LED_FAULT`はPB0を提案(未確定)。VREF+用C208/C209はVDDAと同一ピンのためC206/C207へ統合を提案。
+- 訂正は`LED_CAN_NODE_KICAD_ENTRY_REFERENCE.md` §3/§4(日付付き注記+表差替え)、`LED_CAN_NODE_PART_SELECTION.md` §1/§2、`LED_CAN_NODE_REQUIREMENTS.md` §3ピン表(PC13→PB0提案)へ反映。TLV76133DCY(1 GND 2 OUT+tab 3 IN)、AHCT1G125(1 OE 2 A 3 GND 4 Y 5 VCC)、TCAN1051/ESD2CAN24は正本どおりで問題なし。
+- 正本に無く本資料が提案RefDesで埋めたもの: 状態LED R211〜R214/D211〜D214(1k、0603)、BOOT0 R201 10k+TP201、SERVICE_IN R202 100k+TP202、センス分圧R105〜R108/C105/C106、TP101〜104/TP301/302/TP401。S06未確定表で承認後に正本へ追記する。
+- 次: (1) 未確定#2(LED_FAULTピン)・#3(C208/C209削除)・#5(VIN_LED_SENSE分圧)・#6(GH2誤挿入防止)をユーザー判断で確定 → (2) DS9866 Table 13でU201ピン番号を再確認(st.com復旧後) → (3) 自作symbol 3種(LMR51606XDBVR/TCAN1051VDRQ1/ESD2CAN24DBZRQ1)をDifferentialSwerveライブラリへ作成 → (4) ゾーンごとにKiCad転記+`kicad-check`でERC 0件。
+
+## 2026-09-17 (24VアクチュエータCANノード ブロック図+BOM作成)
+
+### やったこと
+
+- `output/pdf/ACTUATOR_CAN_NODE_REV_A_BLOCK_DIAGRAM_AND_BOM_2026-09-17.pdf`を作成。A3横9ページで、全体構成、入力保護/5V/3.3V、F303+CAN、安全状態機械、4ch low-side MOS、DRV8251A H bridge、分離式CONTACTOR_DRIVER、暫定BOM、release gatesを整理した。
+- 主要部品をメーカー資料で再照合し、`DRV8251ADDA`の8pinには`nFAULT`が存在しないことを確認。正本のpin budget、protection記述、status記述、bring-up記述を訂正した。
+- `OUT1=breakaway contactor`の4ch境界と旧GPIO表のPA5+PA6-PB1(合計5制御)が矛盾するため、KiCad転記前のSTOP項目に変更した。
+- BOMは確定部品、回路分割PROPOSAL、DNP/STOPを区別。入力逆接/TVS、power connector/fuse、負荷別clamp、motor bulk、`RIPROPI`/`VREF`は実負荷/波形測定前に発注確定しない構成とした。
+
+### 現在の状態
+
+- 人間レビュー用ブロック図と基板1枚あたりの暫定BOMは完成。PDFはレンダリングして9ページすべての文字切れ、重なり、表崩れがないことを確認済み。
+- KiCad回路図/PCBは未作成。PDFは発注用・製造releaseではない。
+
+### 次の作業
+
+1. OUT1をbreakaway上に置く前提でF303の4ch GPIO/PWM割当を確定する。
+2. 実DC motorのstall currentから`RIPROPI`/`VREF`、bulk capacitor、connector/fuseを計算する。
+3. 入力最大同時電流とハーネスtransientを測り、逆接保護、入力TVS、J101、外部ヒューズを選定する。
+4. 各OUT負荷を確定し、flyback diode/TVS/connectorを選定後、KiCad転記用1pin-1net表を作る。
+
+## 2026-09-14 (中央基板Rev.1 KiCad転記用リファレンス作成・LTV-847Sピン対応の誤り訂正)
+
+- `output/pdf/CENTRAL_BOARD_REV1_HUMAN_SCHEMATIC_2026-09-14.pdf`(S01〜S05ブロック図)を、人がKiCad GUIで回路図を起こせる粒度へ具体化した`docs/electrical/CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md`を作成。シート構成とRefDes体系(PDFページ番号=百の位、PDF既出のRefDesは維持)、全ネット名、Teensy socket 48pad表(Rev.1で不要になったpin 2/9/14はNC提案)、部品ごとのピン番号付き接続表、KiCad標準/自作symbol・footprint割当、ERC非検出注意17項目、未確定事項17件、転記後チェック手順を収録。`PROJECT_DOCUMENT_INDEX.md`へ9.25として追加。
+- データシート直接照合: TI `TPS25947`(SLVSFC9C Rev.C 2026-05)のRPW 10pin配置(1 EN/UVLO、2 OVLO、3 AUXOFF、4 FLT、5 IN、6 OUT、7 dVdt、8 GND、9 ILM、10 ITIMER)、`RILM=750Ω`→ILIM 3.96/4.45/4.84A(DS表値)、`CdVdt[pF]=2000/SR[V/ms]`(10nF→約25ms、>10nFは100Ω直列推奨)、UVLO/OVLO閾値1.20V、故障ラッチ復帰は電源断のみ(EN固定分圧のため)。Nexperia `PMEG2010EA` SOD-323はpin1=K/pin2=A。
+- **訂正**: `LTV-847S`のチャネル対応。Rev.A `CENTRAL_BOARD_SCHEMATIC_REFERENCE.md` D3と`reference-2026-09-12/`安全シートの「ch1=A1/K2, E9/C10」はLite-On図面(BNS-OD-C131/A4 内部接続図)と不一致。正しくはミラー対でch1=1/2↔16/15、ch2=3/4↔14/13、ch3=5/6↔12/11、ch4=7/8↔10/9。旧対応のまま描くとループ監視と予備ch、補助接点1/2が入れ替わる。D3は修正済み、9/12 KiCad参照シートは未修正(Rev.1で作り直す前提)。
+- KiCad 10標準ライブラリ確認: `Isolator:LTV-847S`(既定footprint `SMDIP-16_W9.53mm`、実物照合要)、`Power_Protection:SRV05-4`、JST GH SM02/03/04/07/10B横挿し、Molex `43650-0600`、AMASS `XT30PW-M`、`PinSocket_1x24`は存在。`TPS259470` RPWのsymbol/footprintとTeensy 4.1 socket symbolは標準に無く自作が必要(9/14ドラフトのfootprint名`WQFN-10-1EP_2x2mm_P0.5mm_EP0.75x1.6mm`は標準ライブラリに存在しない)。
+- 転記リファレンスから人が読む回路図PDF `output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-14.pdf`(A3横8ページ: 全体構成/S02A電源/S02Bスター+Teensy 48pad/S03 CAN/S04安全/S05 I/O/ERC非検出注意/未確定事項)を生成。生成スクリプトは`tmp/pdfs/build_central_board_rev1_schematic.py`(KiCad同梱Python + schemdraw 0.23 + reportlab、日本語はYu Gothic/HeiseiKakuGo)。schemdrawの`Ic`は直前要素の向きを継承するため`.theta(0)`、`Rect`の座標は`.at()`相対、ピン並びはリスト逆順(下→上)という3点に注意が必要だった。
+- 同日追記の`ACTUATOR_CAN_NODE_REQUIREMENTS.md`(`J_SAFE`=1 `ESTOP_LOOP_RETURN`/2 `GND_PWR`、ノード5Vは中央CAN2 4pinポートから)に合わせ、J402=`J_SAFE`対、J403=`+24V_CTRL_IN`入力の提案Bで記述。**文書間不整合**: PDF S04は「2本ともノードへ」、ノード仕様書はループ往路24Vを供給しない。往路24V/LED 24Vの供給元(ノード経由か24V制御系直接か)と、`GND_CTRL_LED`(=ノード`GND_PWR`参照)を`GND_CTRL`と結合しない扱いはユーザー判断待ち。
+- 作業フロー(再利用用): (1) ブロック図PDFと正本docs(決定事項・要件・ピン割当・Rev.A参照・部品選定)を全部読み、PDFに無い前提と矛盾を洗い出す → (2) ピン配置が誤りやすい部品(TPS25947/LTV-847S/PMEG2010EA)はメーカーPDFを取得しpymupdfで本文抽出、図面ページはPNG化して目視で照合 → (3) KiCad 10標準ライブラリを`ls`/`grep`してsymbol/footprintの実在を確認、無いものは「自作」と明記 → (4) 転記用Markdownを「シート/RefDes体系 → ネット名 → シート別ピン番号付き接続表 → BOM+ライブラリ割当 → ERC非検出注意 → 未確定事項 → チェック手順」の順で書き、確定/DS照合/提案/未確定を印で分離 → (5) 同日追記の関連docs(ノード仕様)と突き合わせて矛盾を未確定表へ → (6) schemdraw+reportlabで1シート1ページのPDFを生成し、pymupdfでPNG化→目視→修正を数周 → (7) PROGRESS/索引/旧docの訂正注記を更新。
+- 次: 未確定事項(J402/J403の型式・ピン順と24V供給元、`GND_CTRL_LED`と`GND_CTRL`の結合、Teensy pin 2/9/14の扱い、CANポート数、F205/F206定格)をユーザー判断で確定→`TEENSY41_CENTRAL_PIN_ASSIGNMENT.md`をRev.1へ更新→KiCad転記→`kicad-check`でERC 0件。
+
+## 2026-09-14 (24VアクチュエータCANノード Rev.A仕様固定)
+
+- 中央基板から分離したコンタクタコイル/24V負荷駆動について、`docs/electrical/ACTUATOR_CAN_NODE_REQUIREMENTS.md`を新設してRev.Aの設計境界を固定した。
+- MCUは`STM32F303K8T6`（Classic CAN 1MbpsのCAN2には十分、LQFP32）、CANは`TCAN1051VDRQ1`、E228コイル専用低側MOSFETは`IRLML0100TRPBF`、汎用24V低側4chも同MOSFET、DCモーターは`DRV8251ADDA`の保護付きHブリッジ1chを採用した。
+- DCモーターchは24V、連続1.5A、短時間3Aに限定し、C620/走行輪や主電流には使わない。CAN timeout、watchdog/reset、E-stopで全出力OFF・明示再アーム必須とした。
+- 追加方針: アクチュエータノードは`VIN_ACT=12〜24V`から局所`LMR51606XDDCR` Buckで5V/3.3Vを作る自己給電構成に変更し、中央とのハーネスを`COMM_A/B`のCAN 2線だけにした。コンタクタQ1は、通常はnodeのOUT1、分離時は中央E-stop loopと直接`MOTOR_PWR_EN`を使う`CONTACTOR_DRIVER`になる共用edge blockとした。
+- `CONTACTOR_DRIVER`の実装形態を更新: CANノード上で未分離なら通常の`OUT1`、mouse-biteで切り離した場合だけ中央基板用のE228 coil driverになる。切断境界の両側には通常未実装の2.54mm 1x5 through-hole interface padsを置き、中央へ使う時だけpin headerまたは電線をはんだ付けする。
+
+### 次の作業
+
+1. この要件を基にKiCadプロジェクト/回路図を作成し、電源・MCU/CAN・contactor・Hブリッジ・汎用出力を階層化する。
+2. E228実コイルでrelease waveformを測り、Q1のflyback diode/TVS最終定数を決める。
+3. 使用するDCモーター候補のstall currentを測り、1.5A継続定格内かを判定する。
+
+## 2026-09-14 (KiCadスキル導入・中央基板アーキテクチャ再修正・電源回路ドラフト着手)
+
+- `.claude/skills/kicad-check/SKILL.md`を追加。KiCad ERC/DRCチェックと部品選定を有料プラグイン(ALT TAB Circuit Copilot)なしでkicad-cli+Claude Codeで回す運用に統一。`AGENTS.md`にもCodex向け参照リンクを追記(スキル自動起動はClaude Code専用だが手順書として読める)。
+- unit-board/odometry-boardは発注済みのため今回ノータッチ。central-boardに絞って作業。
+- **アーキテクチャ変更1**: コンタクタ含む24V/12V機器駆動を中央基板から独立CANノード基板へ分離する方針に変更(2026-07-19・2026-09-12確定分を撤回)。中央基板はE-stopボタン2個の集約・絶縁監視のみ担い、ハードNCループを2pinコネクタ×2でノード基板へ延長する。ノード基板の詳細は未設計。`ARCHITECTURE_DECISIONS.md`・`CENTRAL_BOARD_REV1_CONSTITUTION.md`更新済み。
+- **アーキテクチャ変更2**: 中央基板の24V→5V Buck内蔵化(LM76005、2026-09-12確定)を撤回し、外部`SD-25B-5`モジュールで降圧済みの5Vを入力する旧方式に復帰。`ARCHITECTURE_DECISIONS.md`・`CENTRAL_BOARD_REV1_CONSTITUTION.md`更新、`CENTRAL_BOARD_POWER_BLOCK_REV1.md`は冒頭に不採用注記を追加して参考保存。
+- 電源回路(XT30入力→TPS259470 eFuse→5V分配)をAI一括生成ではなく1コンポーネントずつのドラフト方式に変更。`hardware/central-board/central-board/modules-generated/`にJ101(XT30)・R105(FAULT pull-up)まで作成。U101(TPS259470)のピン名は初回誤り(TI別eFuse系統と混同)と判明し要修正: パッケージはRPW=10-pin VQFN-HR(HotRod QFN)2x2mm、確認済み実ピンはVIN/VOUT/GND/EN(UVLO)/ILIM/dVdT(SLEW)/FAULT、正確なpin1-10対応は未確認(ユーザーがデータシートをローダーで読んで確認予定)。
+- 次: TPS259470の正確なピン配置確認→電源回路ドラフト完成→KiCad GUIで取り込み・実シンボル化。CANノード基板(コンタクタ)の設計は未着手。
+
+## 2026-09-12 (root generated artifact cleanup)
+
+ルート直下の参照なし `.ai_*` 生成物10件を `archive/cleanup-2026-09-12/root-ai/` へ回復可能な移動。CAD・KiCad・BOM・ログ・ソース・仕様、lock、他出力先は変更なし。
+
+## 2026-09-12 (組付け後の差動ステア高応答化計画)
+
+### やったこと
+
+- unit制御、ESP UART入力、中央trajectory coreと既存試験記録を監査し、`docs/control/RESPONSE_IMPROVEMENT_PLAN_2026-09-12.md`へ12チケットの実装計画を作成した。
+- 現行UARTでは操舵FFが供給されない点、boot値と7月RAM候補の差、同期UARTログによる周期遅延候補、固定角度摩擦boost、Python/C++のjerk=0非互換を整理した。
+
+### 現在の状態
+
+- 文書のみ変更。制御実装、boot設定、実機状態は変更していない。実機への接続・書込み・試験は未実施。
+
+### 次の作業
+
+- R01の設定/試験metadata、R02の共通応答解析、R03の周期計測から着手し、組付け後の基準を取得する。
 
 プロジェクト全体の進捗ログ。セッション終了時に新しいエントリを**上に**追記する。
 ファームウェア固有の進捗は `firmware/PROGRESS.md` に書く。
@@ -13,6 +391,51 @@
 ```
 
 ---
+
+## 2026-09-07 (駆動4枚 DigiKey発注BOM最終化)
+
+### やったこと
+
+- 駆動モジュール基板4枚（実機3枚＋基板単位の完全予備1枚）について、
+  現行KiCad回路図/BOMと電気設計資料から調達BOMを作成した。ODOM基板分は発注済みのため今回の購入数から除外し、組立確認用内訳だけ残した。
+- DigiKey Japanの2026-09-07時点の在庫・数量別単価を確認し、必要数＋実装予備を確保しつつ、
+  10/25/50/100個の価格境界で総額が下がる品目は境界数量へ最適化した。
+- `outputs/differential-swerve-bom-drive-only-20260907/Differential-Swerve_DigiKey-BOM_Drive4_2026-09-07.xlsx`に
+  サマリー、統合発注BOM、基板別内訳、数量判断、全品の在庫・価格段階・Footprint/電気仕様監査を収録した。
+  税抜概算は11,617.60円、税込参考は12,779.36円（送料・価格変動を除く）。
+- DigiKey BOM Manager投入用CSVを
+  `output/procurement/digikey-bom-drive4-only-2026-09-07.csv`として作成した。
+- 手持ちのSTM32G474RET6、研究室在庫のSTM32F405RGT6、購入済みICM-42688-P breakoutは発注から除外した。
+  ODOMのDNP（C15/C17/C23-C26）も購入・実装対象から除外した。
+- 欠品している元品について、LM66100DCKR→DCKT、SN74LVC2G17DBVR→DBVTは同一IC/同一外形の
+  カットテープ梱包へ切替えた。8MHz水晶は周波数、CL=8pF、ESR=500Ω、3225 4padが一致する
+  `FC3BAEBDI8.0-T1`へ切替えた。
+- 手持ち連絡を反映し、JST GHの2極横向き、6極横向き、6極垂直を発注CSVから除外した。
+  STM32類は当初から発注対象外。
+- DigiKey Quick Viewで`BAT54SLT1G`を追加できずDiotec品も在庫表示が不安定だったため、メーカー資料で
+  直列2ダイオード、30V、200mA、SOT-23、同一ピン構成を確認したComchip `BAT54S-HF`へ置換した。
+  DigiKey品番は`641-BAT54S-HFCT-ND`、発注数は10個（6個との差額1円、確認在庫306,288個）。
+  `TLV1117LV33DCYR`も生産中止表示のため、既存SOT-223 footprintと同一ピン配置で、1A、
+  セラミック出力コンデンサ対応の`TLV76133DCYR`へ変更した。候補表示されたROHM品はTO-252で
+  footprint不一致、NCP1117系は低ESRセラミックでの安定条件が既存回路と一致しないため不採用。
+  DigiKey品番は`296-TLV76133DCYRCT-ND`、発注数6個。
+  ODOM発注済みの訂正反映後は27発注行、税抜概算11,617.60円、税込参考12,779.36円。
+
+### 現在の状態
+
+- DigiKey発注CSVは27行・310個で、Customer Referenceはすべて`UNIT:`のみ。ODOM品は含まない。
+- `SM03B-GHS-TB`だけは確認時に在庫0/繰越注文表示で、形状互換を保証できない代替品は採用していない。
+- Excelは式エラー0件を確認し、全6シートをレンダリングしてレイアウト確認済み。
+- BOMは基板実装部品を対象とし、相手側ハウジング・圧着端子・ケーブル、PCB、ステンシル、はんだ材料は別手配と明記した。
+- KiCad 10.0.4でERCを再実行し、駆動基板は0件。ODOM基板は既存の`74LVC2G17` 3個について
+  電源unit C未配置エラー3件＋警告3件が残る（部品数量には影響しないが基板発注前に要修正）。
+
+### 次の作業
+
+1. CSVをDigiKey BOM Managerへ投入し、`SM03B-GHS-TB`の最新納期と全品の最終単価/在庫を確認する。
+2. 手持ちMCUに加え、駆動用GH 2極横4個・6極横4個・6極垂直4個を満たすか現物確認してから発注を確定する。
+3. 初号機実装後、Fox水晶の発振開始/周波数、CAN、TLV761の3.3V・温度・負荷変動を通電試験する。
+4. ODOM回路図のU3/U7/U9に電源unit Cを配置し、ERC 0件を確認してからPCBを発注する。
 
 ## 2026-08-01 (DualSense Bluetooth復旧・mini PC入力preview実装)
 
@@ -2615,3 +3038,90 @@
   R1停止median=75ms・max=1.300s。単輪の定常操舵と通信は3輪試験へ進める水準と判断した。
 - 次: 3輪浮上状態で回転方向・ステア原点・指令mappingを確認し、成立後は250〜500rpm上限から
   接地試験へ進む。3輪同時動作時の電源・通信・停止ログを採り、profileと通常停止を調整する。
+
+## 2026-09-12 中央基板・回路図リファレンス
+
+- `hardware/central-board/reference-2026-09-12/central-board.kicad_sch`へ電源A/B1・安全D・監視E・拡張F/F1の4階層シートを追加し、既存Teensy/CAN1/2/3を含む9ページのKiCadネイティブPDFを出力した。成果物は`output/pdf/CENTRAL_BOARD_MODULAR_REFERENCE_2026-09-12.pdf`。
+- 全追加シートはKiCad 10で開けることを確認し、PDFをレンダリングして概観を確認した。USB diode-ORは`+5V_SYS -> F101 -> D101 -> VIN_TEENSY`および`TEENSY_VUSB_PAD -> D102 -> VIN_TEENSY`のリファレンスとして反映した。
+- これは組立・発注用ではない。最新ERCは420件で、拡張I/Oの実配線・安全フォトカプラのピン検証・TVS/eFuseの確定・全ERC解消が残る。
+- 購入済みMatek `I2C-INA-BM`の情報に合わせて監視Eを更新した。外付けINA238/100Aシャント案は撤回し、外部モジュールのGH4を`GND/I2C0_SDA/I2C0_SCL/+5V_SYS`として描いた。Matek側I2C pull-upが3.3V安全である実測確認は通電前必須。
+- 主入力はTPS259470の内蔵逆極性/逆流保護を使う方針へ整理し、SD-25B-5を5.00Vへ封印、UVLO/OVLO divider（732k/51.1k/221k、typ 4.43V/5.46V）、入力/出力bulk、FLT pull-up、USB OR用PMEG2010EAを回路図へ反映した。LTV-847Sは実pin mappingへ修正し、各使用入力を2.2k x2＋逆並列1N4148W、各出力10k pull-upとした。拡張全信号の100R、I2C 2.2k＋normally-open jumperも追加した。
+- LTV-847Sは標準SOIC-16に適合しないため、仮footprintを削除した。購入リールとLite-On outlineからwide 2.54mm-pitch SMD用footprintを作成・実物照合するまでPCB配置不可。
+- 中央基板は外部5V入力の旧案を停止し、`docs/electrical/CENTRAL_BOARD_REV1_CONSTITUTION.md`をRev.1最上位正本として追加した。24V+USB共存、基板上24V→5V Buck、24V優先ORing、TN686のMCU非依存E-stop、数chの汎用24Vローサイド出力、危険出力default OFF、終了条件、実装順を固定。既存`hardware/central-board/reference-2026-09-12/`とPDFはRev.1発注対象外。次は24V入力・Buck・USB ORingを部品と定数まで確定する。
+- ただし根本ERCは544件のまま。現行reference生成形式のglobal labelが多数の未接続として報告されるため、次段階は発注前に各シートを本配線へ置換してERCを0へ収束すること。コイルTVSは実コンタクタのrelease waveformを測るまで未決定。
+
+## 2026-09-12 中央基板 Rev.1 Buck選定
+
+- Rev.1の24V→5V電源を基板内蔵へ確定。TI `LM76005RNPR`（60V入力、5A同期整流、内部補償）を採用し、400kHz・6.8µH・FB 100kΩ/24.9kΩ・5V印加時COUT実効180µF以上を初期定数とした。詳細は`docs/electrical/CENTRAL_BOARD_POWER_BLOCK_REV1.md`。
+- 24V入力保護（XT30/Fuse/Pch MOS/TVS）、USBとの24V優先ORing、LiPo UVLOの責務、正式COUT型番は未決。次はBuck入力側の逆接保護とTVSを定数・部品まで決める。
+## 2026-09-14 24V addressable LED CAN node Rev.A specification
+
+- 演出/状態用24VテープLEDを独立CANノード化する仕様を`docs/electrical/LED_CAN_NODE_REQUIREMENTS.md`へ固定した。
+- MCUはアクチュエータノードと同じ`STM32F303K8T6`、CANは`TCAN1051VDRQ1`、ローカル電源は`VIN_LED`(12〜24V)→`LMR51606XDDCR` 5V→`TLV76133DCYR` 3.3V。中央-ノード間は共通GND分電を前提に`COMM_A/B`のCAN 2線だけ。
+- テープ方式はSPIではなくWS2811互換の5V・800kbps・1線アドレサブル方式。F303 timer+DMAでローカル波形を作り、`SN74AHCT1G125`で3.3V→5Vへ変換する。テープの物理LED数ではなく製品依存のpixel group数を扱う。
+- テープ電流を小型制御基板へ無理に通さない。基板経由は5A連続/8A短時間の暫定上限、長尺/大電流は24Vをテープ現地へ直接注入する。起動/CAN timeout/E-stop broadcastでは装飾データをblankする。
+- 次: この正本を元にA3人間レビュー用回路図（電源、F303/CAN、AHCTデータ出力、テープ電力注入）を作成し、選定する実テープの全白電流・pixel group長・コネクタ/ヒューズを確定する。
+## 2026-09-14 (LED CAN node - selection-to-KiCad transfer chain created)
+
+### やったこと
+
+- ユーザー提示の「判断と機械転記を分離する」型に従い、LED CANノードについて要件書の次に`LED_CAN_NODE_PART_SELECTION.md`（データシート照合済み部品・停止条件）と`LED_CAN_NODE_KICAD_ENTRY_REFERENCE.md`（RefDes、固定ネット名、1ピン1ネット、DNP/STOP、目視レビュー）を追加した。
+- F303K/TCAN1051/TLV761/LMR51606/AHCTの回路図転記対象を固定し、特に`PA12 -> TCAN TXD pin1`、`TCAN RXD pin4 -> PA11`、TCAN VCC=5V/VIO=3.3V/S=GND、AHCTのOE pull-upによるreset時データ無効を接続表に明記した。
+- 24V WS2811互換テープ出力は`PA6 (TIM3_CH1) -> SN74AHCT1G125 -> 33R -> LED_DATA_5V`として固定。CAN timeout/E-stopでbufferを無効化する安全動作を維持した。
+- `ARCHITECTURE_DECISIONS.md`の中央4pin CAN拡張ポート記述へ、自己給電アクチュエータ/LEDノードには5V/GNDを用いず`COMM_A/B` 2線だけを使う例外を追記し、ハーネス要件の矛盾を除去した。
+- ユーザー提示のテープ仕様PDFを全8ページ確認。対象は24V・WS2811 IC RGB・2m・630 LED packages/m（計1260 packages）、3線`+24V/Data/GND`、データ矢印方向厳守、追加電源注入目安5mであることを確認した。2mなら始端1点の注入でよい。
+- PDFはW/m/最大電流を明示していないため、テープ電流を制御PCBへ通す案を撤回。24V/GNDは外部5A fuseからテープへ直結し、基板はGH2経由の5VデータとGND referenceだけを外部adapter harnessへ出す。これにより基板パターン/コネクタの大電流推測を排除した。
+- 電源/ESDのSTOPを追加解消: node electronics用逆接は`B160S1F-7`(60V/1A)、入力TVSは`SMBJ33A`(33V standoff/53.3V clamp)、Buck L101は`SRN6045TA-330M`(33uH/1.8A Irms/2.5A Isat)、テープData ESDは`PESD5V0V1BA-Q`(5V/11pF/SOD-323)に固定。UVLO分圧だけはDNPのままEN直結で開始する。
+
+### 現在の状態
+
+- MCU/CAN/降圧/LDO/LEDデータ出力は、推測なしでKiCadへ1部品・1ブロックずつ転記できる。
+- `LED-01`（実テープのpixel group、全白電流、長さ）、`LED-02`（データESD）、`LED-03`（L101実装部品/UVLO確認）、`LED-04`（CAN終端位置）はSTOP扱い。J101/J401、テープ電源ヒューズ、逆接MOSFET/TVSを発注図へ入れる判断はまだ行わない。
+
+### 次の作業
+
+1. 実際に使用する24Vテープの型番・長さ・W/m（または最大A）を確定し、LED-01を閉じる。
+2. J401/fuse/TVS/reverse MOSFET/L101の正式MPNとfootprintを部品選定書へ追加し、STOPを解消する。
+3. 接続表を機械転記してKiCad ERC 0、netlist差分0、Section 7の人手レビュー完了後に人間レビューPDFを生成する。
+## 2026-09-14 (LED CAN node - human schematic PDF / transfer-audit flow)
+
+### やったこと
+
+- 指定された7段階フローでLED CANノードを再監査した。要件書、部品選定書、KiCad転記表、提供されたテープマニュアルPDFを突き合わせ、2m/630 packages/m・24V WS2811・3線入力・5mごとの電源追加という根拠を回路図の外部ハーネス条件へ反映した。
+- 文書間の矛盾を訂正: 旧「基板上の5A tape power pass-through」表現を撤回し、テープ24V/GNDは外部5A fuseからテープ直結、基板は外部1A fuseのlogic tapとJ401のData/GND referenceだけを担当する構成へ統一した。
+- KiCad 10標準ライブラリを実ディスク照合。`STM32F303K8Tx`、`TLV76133DCY`、`74AHCT1G125`、GH connector、SOD-123F/SMB/SOD-323、SRN6045TA footprintは存在する。一方`LMR51606XDDCR`、`TCAN1051VDRQ1`、`ESD2CAN24DBZRQ1` symbolは標準に無いため`DifferentialSwerve`自作symbol必須として転記表に明記した。
+- `output/pdf/LED_CAN_NODE_REV_A_HUMAN_SCHEMATIC_2026-09-14.pdf`を生成。A3横4ページ(S01電源、S02 F303最小回路、S03 CAN/LED Data、S04 harness/release checklist)をPyMuPDFでPNG化して全ページ目視し、配線ラベルがブロック内の文字に重なった初回出力を修正して再生成した。
+
+### 現在の状態
+
+- PDFとKiCad転記表は同じRefDes/net/pinを使う。PDFは人間レビュー用であり、KiCad発注回路図ではない。
+- 残る未確定はLED-01（実テープの全白電流/pixel group数）、LED-03（UVLO dividerはDNP、EN直結で初期実装）、LED-04（CAN物理末端/終端実装）。未確定を推測してPDF/表へ埋めていない。
+
+### 次の作業
+
+1. `LED_CAN_NODE_KICAD_ENTRY_REFERENCE.md`を1ブロックずつKiCadへ機械転記し、各ブロックでERC/netlist diffを行う。
+2. 実テープの全白電流を測り、5A fuseとbrightness ceilingを確定する。
+3. CANの物理末端を決め、R301/SW301の実装状態を確定してからPCB設計へ進む。
+
+## 2026-09-23 (中央基板: 未配線の階層シンボル配置プロジェクト作成)
+
+### やったこと
+
+- ユーザー指定「schematicは部品を置くだけ、配線不要」「階層化」を実施。低レイヤー作業をサブエージェントへ分担し、rootが仕様整理と最終目視を担当。
+- 新規hardware/central-board-placement/central-board-placement.kicad_proを作成。トップ＋7子シート（電源、Teensy/分配、CAN1/2/3、安全、外部I/O）、169部品/172symbol unit。少部品4頁A3、多部品3頁A2。
+- 最新中央仕様の外部5V/eFuse、GH3 CAN、中央コイルdriver、Matek端子、Teensy一体48padを反映。未確定部品はREVIEW/footprint空欄、クランプ等方式未確定は注記として残す。
+- 旧参考eFuseシンボルの誤pin番号を検出し、正本の10pin対応で新規symbol作成。Teensy48pinを専用footprintの全padと照合。Q401は標準MOSFET図形。LTV847は4unitすべて配置。
+- 初回の機械的ページ分割を目視で改善し、同じ機能を同一頁へ集約。独立検査でSW211のunit0部品欠落を検出・修正。
+
+### 現在の状態
+
+- 配線/ラベル/NC/電源シンボルなし。KiCad SVG/netlist出力成功、169部品と一覧一致、重複ref-unitなし、共有接続netなし、footprint指定は全件実在。
+- ERCは意図された未接続464/未駆動24のみ。off-grid/library mismatchなし。完成回路・製造可の判定ではない。
+- 全8頁のSVG→PNGを目視確認。検査output/kicad-check/central-placement/、独立監査independent-review.md PASS。
+- 既存中央プロジェクトの19ファイルは作業前後SHA256一致、PCB変更なし。
+- 生成元tools/kicad/generate-central-placement.pyとcentral-placement-parts.json、Teensy別照合central-teensy-pinmap.json。ユーザーの手編集後は再生成で上書きしない。
+
+### 次の作業
+
+- 新規プロジェクトをKiCadで開き、各子シートへユーザーが配線する。未確定値・コネクタ・footprintを順次確定し、階層pin/電源/NCはその段階で追加。
+- 配線後にERCと正本接続表を照合する。V1 ODOMは本日CAN実機10/10成功、明日はIMU→ジャンパ→エンコーダの順（詳細firmware/PROGRESS.md）。

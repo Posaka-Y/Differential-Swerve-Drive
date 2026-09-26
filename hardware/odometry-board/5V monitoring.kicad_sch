@@ -1305,7 +1305,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "BAT54S"
+		(property "Value" "BAT54S-HF"
 			(at 136.144 50.8 90)
 			(show_name no)
 			(do_not_autoplace no)

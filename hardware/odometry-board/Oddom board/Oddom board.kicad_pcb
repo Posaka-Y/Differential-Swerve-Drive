@@ -8738,7 +8738,7 @@
 				)
 			)
 		)
-		(property "Value" "TLV1117LV33DCYR"
+		(property "Value" "TLV76133DCYR"
 			(at 0 4.500001 0)
 			(layer "F.Fab")
 			(uuid "4e5e24f1-6be6-40f5-ba2c-539ee9e3f0f0")
@@ -11936,7 +11936,7 @@
 				)
 			)
 		)
-		(property "Value" "ECS-80-8-33Q-JES-TR"
+		(property "Value" "FC3BAEBDI8.0-T1"
 			(at 0.3 3.4 0)
 			(layer "F.Fab")
 			(uuid "d73d8e78-ebde-4124-95e5-4e32e1fc1361")
@@ -12118,7 +12118,7 @@
 				)
 			)
 		)
-		(property "Value" "A6S-3104-H"
+		(property "Value" "DS04-254-1-03BK-SMT"
 			(at 0 5.34 0)
 			(layer "F.Fab")
 			(uuid "5b10a537-caf1-48d6-9222-062209c6dd48")

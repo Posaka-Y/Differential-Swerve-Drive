@@ -1,0 +1,2 @@
+C:\Users\ttiro\Desktop\Differential Swerve\hardware\odometry-board-v2\Oddom board.kicad_pcb B76BFC502A8CB9B3F0505EA16508BC63E9D3917613E3ED48732F207DF06D6F80
+C:\Users\ttiro\Desktop\Differential Swerve\hardware\odometry-board-v2\Oddom board.kicad_sch A2F4A7C09849111A95E8CE5AED9D5D15C15C3BAEF9B9A07A132F4DBBC034A9F9

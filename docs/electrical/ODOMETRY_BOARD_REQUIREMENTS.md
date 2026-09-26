@@ -1,5 +1,9 @@
 # オドメトリ基板(STM32F405)要件
 
+> **2026-09-25 ODOM V2確定:** 基板側エンコーダ端子J4/J5/J6は **1=A、2=+5V、3=B、4=GND**。ユーザーがハーネスのねじれ回避のため変更した配列で、V2では本文の旧配列表に優先する。センサ側コネクタの番号とは区別する。
+
+> **V2改版（2026-09-23着手）**: デバッグ・TP・V1修正の変更要件は[共通V2要件](UNIT_ODOMETRY_V2_REQUIREMENTS.md)を優先する。本文のGH6/SWD・UART一体配列はV1仕様。V2の正式ヘッダ型番とPCB配線は未確定/未完了。
+
 ## 目的
 
 3輪オドメトリ(AMT102クアドラチャエンコーダ x3、測定輪)とSPI IMUを扱い、基板上で車体状態を推定してセンサーCANへ配信する専用ノード。unitId=4。
@@ -148,7 +152,7 @@ MCUファミリが変わったことによる、単なるピン名の読み替�
 |---|---|
 | 追加 | AMT102 GH 4pin x3(5V/GND/A/B)、`SN74LVC2G17DBVR` x3、`ESDS452DBZR` x3、A/B直列抵抗100Ω x6、RC調整用DNP footprint x6、固定実装のSPI IMUブレークアウト x1、VCAP_1/VCAP_2用2.2µF x2(F405必須) |
 | 削除 | C620 CANトランシーバ一式、AMT22(SPI)コネクタ、I2C磁気エンコーダコネクタ、I2Cプルアップ、VREF+専用フットプリント(F405はVDDA直結のため不要) |
-| 流用 | `LM66100DCKR`、`TLV1117LV33DCYR`、`TCAN1051VDRQ1`、8MHz HSE、VDDAフェライト/コンデンサ、GHコネクタ、LED、SWD/UART回路。正式型番は`STM32F405_ODOMETRY_PIN_ASSIGNMENT.md`の流用表を正本とする |
+| 流用 | `LM66100DCKR`、`TLV76133DCYR`、`TCAN1051VDRQ1`、8MHz HSE、VDDAフェライト/コンデンサ、GHコネクタ、LED、SWD/UART回路。正式型番は`STM32F405_ODOMETRY_PIN_ASSIGNMENT.md`の流用表を正本とする |
 | 変更 | 5V監視ADCはRev.Aで非実装。デバッグUARTはLPUART1→USART2、HSE pinはPF0/PF1→PH0/PH1、BOOT0はGPIO共用→専用pin(いずれもF405移行に伴う変更) |
 
 ## 廃止案(磁気エンコーダ x3、2026-07-08廃止)の記録

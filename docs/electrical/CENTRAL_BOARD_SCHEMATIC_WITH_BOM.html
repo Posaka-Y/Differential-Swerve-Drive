@@ -81,7 +81,7 @@
 <section class="sheet" id="page-2">
   <header><h1>Block 2 - Teensy 4.1ソケット・ピン機能</h1><div class="meta">J201 / J202: 1x24 socket<br>Top view / USB connector at left</div></header>
   <div class="diagram"><svg viewBox="0 0 1400 520" role="img" aria-label="Teensyソケットと機能別ピン">
-    <rect class="box" x="410" y="55" width="580" height="390"/><text class="part" x="700" y="92" text-anchor="middle">TEENSY 4.1</text><text class="small" x="700" y="120" text-anchor="middle">socketed module / 17.78 mm row spacing</text>
+    <rect class="box" x="410" y="55" width="580" height="390"/><text class="part" x="700" y="92" text-anchor="middle">TEENSY 4.1</text><text class="small" x="700" y="120" text-anchor="middle">socketed module / 15.24 mm row spacing</text>
     <rect class="connector" x="435" y="145" width="80" height="250"/><text class="tiny" x="475" y="138" text-anchor="middle">J201 1-24</text>
     <rect class="connector" x="885" y="145" width="80" height="250"/><text class="tiny" x="925" y="138" text-anchor="middle">J202 25-48</text>
     <rect class="protect" x="575" y="165" width="250" height="115"/><text class="part" x="700" y="197" text-anchor="middle">UNDERSIDE KEEPOUT</text><text class="small" x="700" y="226" text-anchor="middle">部品 / TP / exposed pad禁止</text><text class="small" x="700" y="254" text-anchor="middle">microSD / Program / USB access</text>
@@ -94,7 +94,7 @@
   </svg></div>
   <p class="caption"><span class="warn">組立:</span> Teensy裏面のVUSB-VIN linkをcutし、外部5 VとPC USBの衝突を防ぐ。ソケット下は全面keepoutとし、USB、microSD、Program buttonへ組付け後もアクセス可能にする。</p>
   <div><h2>主要部品・固定pin</h2><table><thead><tr><th class="ref">Ref</th><th class="kind">種別</th><th class="value">値・型番</th><th class="pkg">機械条件</th><th class="note">接続・備考</th></tr></thead><tbody>
-    <tr><td>J201/J202</td><td>1x24 socket</td><td><code>PPPC241LFBN-RC</code> / <code>PPTC241LFBN-RC</code></td><td>2.54 mm pitch, row spacing 17.78 mm</td><td>PJRC推奨候補。Teensy側header候補<code>68000-224HLF</code></td></tr>
+    <tr><td>J201/J202</td><td>1x24 socket</td><td><code>PPPC241LFBN-RC</code> / <code>PPTC241LFBN-RC</code></td><td>2.54 mm pitch, row spacing 15.24 mm</td><td>PJRC推奨候補。Teensy側header候補<code>68000-224HLF</code></td></tr>
     <tr><td>R201/R202</td><td>安全出力pull-down</td><td>47 kΩ</td><td>0603</td><td><code>MOTOR_PWR_EN</code> / <code>AUX_OUTPUT_EN</code>を起動前Low</td></tr>
     <tr><td>SW201</td><td>Rearm option</td><td>board-local tact switch / DNP可</td><td>TBD</td><td>operator panel配置との二者択一</td></tr>
     <tr><td>Pin map</td><td>正本</td><td colspan="2"><code>TEENSY41_CENTRAL_PIN_ASSIGNMENT.md</code></td><td>socket pad 1-48とTeensy GPIOを混同しない</td></tr>

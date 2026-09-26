@@ -1,0 +1,67 @@
+** Drc report for Oddom board.kicad_pcb **
+** Created on 2026-09-25T18:57:47 **
+** Report includes: Errors, Warnings **
+
+** Found 7 DRC violations **
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2250 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(74.6750 mm, 113.3750 mm): Pad 4 [unconnected-(J8-MP1-Pad4)] of J8 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2250 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.4750 mm, 113.3750 mm): Pad 5 [unconnected-(J8-MP2-Pad5)] of J8 on F.Cu
+[track_dangling]: Track has unconnected end
+    Local override; warning
+    @(76.5765 mm, 105.8250 mm): Track [PWR_3.3V] on Power Signal, length 2.0142 mm
+[isolated_copper]: Isolated copper fill
+    Local override; warning
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[lib_footprint_mismatch]: Footprint 'SW_DIP_SPSTx03_Slide_Omron_A6S-310x_W8.9mm_P2.54mm' does not match copy in library 'Button_Switch_SMD'
+    Local override; warning
+    @(108.9250 mm, 96.3375 mm): Footprint SW3
+[lib_footprint_mismatch]: Footprint 'JST_XH_B8B-XH-AM_1x08_P2.50mm_Vertical' does not match copy in library 'Connector_JST'
+    Local override; warning
+    @(129.5250 mm, 112.1500 mm): Footprint J7
+[lib_footprint_mismatch]: Footprint 'SOT-23-6' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(123.5750 mm, 93.4750 mm): Footprint U7
+
+** Found 1 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(104.7250 mm, 104.7352 mm): Track [PWR_3.3V] on F.Cu, length 0.1227 mm
+    @(111.0250 mm, 104.7352 mm): Track [PWR_3.3V] on Power Signal, length 2.1920 mm
+
+** Found 6 Footprint errors **
+[duplicate_footprints]: Duplicate footprints
+    Local override; warning
+    @(71.5000 mm, 100.0000 mm): Footprint REF**
+    @(128.5000 mm, 100.0000 mm): Footprint REF**
+[footprint_symbol_mismatch]: SamacSys:FTSH10501LDVKP doesn't match footprint given by symbol (FTSH10501LDVKP)
+    Local override; warning
+    @(120.6550 mm, 100.0000 mm): Footprint J3
+[footprint_symbol_mismatch]: SamacSys:BM03BGHSTBTLFSN doesn't match footprint given by symbol (BM03BGHSTBTLFSN)
+    Local override; warning
+    @(71.5750 mm, 112.2500 mm): Footprint J8
+[footprint_symbol_mismatch]: Footprint attributes don't match symbol: 'Do not populate' settings differ
+    Local override; warning
+    @(71.5750 mm, 112.2500 mm): Footprint J8
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(128.5000 mm, 100.0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(71.5000 mm, 100.0000 mm): Footprint REF**
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Silkscreen clearance
+    - Silkscreen clipped by solder mask
+    - Silkscreen clipped by board edge
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

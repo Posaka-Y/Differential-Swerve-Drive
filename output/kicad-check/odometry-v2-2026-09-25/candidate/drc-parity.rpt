@@ -1,0 +1,250 @@
+** Drc report for Oddom board.kicad_pcb **
+** Created on 2026-09-25T18:12:02 **
+** Report includes: Errors, Warnings **
+
+** Found 20 DRC violations **
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1968 mm)
+    Local override; error
+    @(90.4250 mm, 107.9250 mm): Via [GND] on F.Cu - B.Cu
+    @(88.6914 mm, 108.7086 mm): Track [PWR_3.3V] on Power Signal, length 8.4974 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1890 mm)
+    Local override; error
+    @(86.4258 mm, 91.9038 mm): Track [RUN] on F.Cu, length 0.2974 mm
+    @(85.5138 mm, 91.6105 mm): Pad 33 [unconnected-(U1-PB12-Pad33)] of U1 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1875 mm)
+    Local override; error
+    @(86.4133 mm, 93.6133 mm): Track [RUN] on F.Cu, length 4.2592 mm
+    @(89.2529 mm, 95.6221 mm): Via [/AMT102_input1/W1_B] on F.Cu - B.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1875 mm)
+    Local override; error
+    @(89.4250 mm, 96.6250 mm): Track [RUN] on F.Cu, length 1.5749 mm
+    @(89.9366 mm, 96.0375 mm): Via [/AMT102_input1/W1_A] on F.Cu - B.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1875 mm)
+    Local override; error
+    @(85.2206 mm, 90.6985 mm): Track [RUN] on F.Cu, length 1.7045 mm
+    @(85.5138 mm, 91.6105 mm): Pad 33 [unconnected-(U1-PB12-Pad33)] of U1 on F.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1350 mm)
+    Local override; error
+    @(119.8250 mm, 98.3300 mm): Track [NRST] on F.Cu, length 1.2304 mm
+    @(120.2350 mm, 95.1415 mm): Track [PWR_3.3V] on F.Cu, length 6.7985 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1350 mm)
+    Local override; error
+    @(119.8250 mm, 103.4250 mm): Track [NRST] on F.Cu, length 5.0950 mm
+    @(120.2350 mm, 101.9400 mm): Track [PWR_3.3V] on F.Cu, length 0.8485 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1250 mm)
+    Local override; error
+    @(121.9265 mm, 93.4500 mm): Track [PWR_3.3V] on F.Cu, length 2.3921 mm
+    @(121.7500 mm, 94.4750 mm): Via [/AMT102_input1/W1_A] on F.Cu - B.Cu
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1791 mm)
+    Local override; error
+    @(109.1750 mm, 89.7500 mm): Via [GND] on F.Cu - B.Cu
+    @(111.6750 mm, 88.1750 mm): Track [PWR_3.3V] on Power Signal, length 3.1113 mm
+[clearance]: Clearance violation ( clearance 0.2000 mm; actual 0.1514 mm)
+    Local override; error
+    @(100.6250 mm, 109.3000 mm): Track [GND] on F.Cu, length 1.5203 mm
+    @(100.2000 mm, 107.8125 mm): Pad 3 [PWR_5V] of U5 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(74.6000 mm, 113.3500 mm): Pad 4 [unconnected-(J8-MP1-Pad4)] of J8 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.4000 mm, 113.3500 mm): Pad 5 [unconnected-(J8-MP2-Pad5)] of J8 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.2500 mm, 92.7375 mm): Pad 2 [Net-(D4-A2)] of D4 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.3500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(68.5875 mm, 105.9500 mm): Pad 3 [GND] of D1 on F.Cu
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4500 mm)
+    Rule: board setup constraints edge; error
+    @(67.5000 mm, 85.0000 mm): Rectangle on Edge.Cuts
+    @(131.7500 mm, 92.7625 mm): Pad 1 [Net-(D3-A1)] of D3 on F.Cu
+[isolated_copper]: Isolated copper fill
+    Local override; warning
+    @(67.5000 mm, 85.0000 mm): Zone [GND] on GND Plane, priority 0
+[lib_footprint_mismatch]: Footprint 'SW_DIP_SPSTx03_Slide_Omron_A6S-310x_W8.9mm_P2.54mm' does not match copy in library 'Button_Switch_SMD'
+    Local override; warning
+    @(108.9250 mm, 96.3375 mm): Footprint SW3
+[lib_footprint_mismatch]: Footprint 'JST_XH_B8B-XH-AM_1x08_P2.50mm_Vertical' does not match copy in library 'Connector_JST'
+    Local override; warning
+    @(129.5250 mm, 112.1500 mm): Footprint J7
+[lib_footprint_mismatch]: Footprint 'SOT-23-6' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(124.0750 mm, 93.4500 mm): Footprint U7
+[lib_footprint_mismatch]: Footprint 'SOT-23' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(69.5250 mm, 105.9500 mm): Footprint D1
+
+** Found 4 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(92.1253 mm, 101.0504 mm): Pad 12 [GND] of U1 on F.Cu
+    @(95.7750 mm, 101.2540 mm): Track [GND] on F.Cu, length 0.1442 mm
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(89.5000 mm, 107.1000 mm): Track [PWR_3.3V] on F.Cu, length 0.9674 mm
+    @(86.6914 mm, 108.7086 mm): Track [PWR_3.3V] on Power Signal, length 2.0000 mm
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(94.5673 mm, 94.4718 mm): Track [PWR_3.3V] on F.Cu, length 2.4536 mm
+    @(88.2362 mm, 91.6105 mm): Pad 32 [PWR_3.3V] of U1 on F.Cu
+[unconnected_items]: Missing connection between items
+    Local override; error
+    @(103.7125 mm, 103.6000 mm): Track [PWR_3.3V] on F.Cu, length 1.4319 mm
+    @(109.4750 mm, 103.0625 mm): Track [PWR_3.3V] on F.Cu, length 2.1920 mm
+
+** Found 48 Footprint errors **
+[duplicate_footprints]: Duplicate footprints
+    Local override; warning
+    @(71.5000 mm, 100.0000 mm): Footprint REF**
+    @(128.5000 mm, 100.0000 mm): Footprint REF**
+[footprint_symbol_mismatch]: Value (J8) doesn't match symbol value (BM03B-GHS-TBT_LF__SN_)
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[footprint_symbol_mismatch]: SamacSys:BM03BGHSTBTLFSN doesn't match footprint given by symbol ()
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[footprint_symbol_mismatch]: Footprint attributes don't match symbol: 'Do not populate' settings differ
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[footprint_symbol_field_mismatch]: Field 'Datasheet' differs (PCB: 'https://www.mouser.com/datasheet/2/564/eGH-3476874.pdf', Schematic: '')
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[net_conflict]: Pad net (Net-(D1-IO_1)) doesn't match net given by schematic (PWR_3.3V)
+    Local override; warning
+    @(72.7500 mm, 110.0000 mm): Pad 1 [Net-(D1-IO_1)] of J8 on F.Cu
+[net_conflict]: Pad net (Net-(D1-IO_2)) doesn't match net given by schematic (SWDIO)
+    Local override; warning
+    @(71.5000 mm, 110.0000 mm): Pad 2 [Net-(D1-IO_2)] of J8 on F.Cu
+[net_conflict]: Pad net (unconnected-(J8-MP1-Pad4)) doesn't match net given by schematic (SWCLK)
+    Local override; warning
+    @(74.6000 mm, 113.3500 mm): Pad 4 [unconnected-(J8-MP1-Pad4)] of J8 on F.Cu
+[net_conflict]: Pad net (unconnected-(J8-MP2-Pad5)) doesn't match net given by schematic (GND)
+    Local override; warning
+    @(68.4000 mm, 113.3500 mm): Pad 5 [unconnected-(J8-MP2-Pad5)] of J8 on F.Cu
+[net_conflict]: No pad found for pin 9 (GND) in schematic
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[net_conflict]: No pad found for pin 10 (NRST) in schematic
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[net_conflict]: No pad found for pin 6 (SWO) in schematic
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[net_conflict]: No pad found for pin 7 in schematic
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[net_conflict]: No pad found for pin 8 in schematic
+    Local override; warning
+    @(71.5000 mm, 112.2250 mm): Footprint J8
+[missing_footprint]: Missing footprint C15 (DNP)
+    Local override; warning
+[missing_footprint]: Missing footprint C17 (DNP)
+    Local override; warning
+[net_conflict]: Pad net (Net-(D2-A2)) doesn't match net given by schematic (PWR_5V)
+    Local override; warning
+    @(96.3000 mm, 87.8500 mm): PTH pad 1 [Net-(D2-A2)] of J4
+[net_conflict]: Pad net (PWR_5V) doesn't match net given by schematic (GND)
+    Local override; warning
+    @(98.8000 mm, 87.8500 mm): PTH pad 2 [PWR_5V] of J4
+[net_conflict]: Pad net (Net-(D2-A1)) doesn't match net given by schematic (Net-(D2-A2))
+    Local override; warning
+    @(101.3000 mm, 87.8500 mm): PTH pad 3 [Net-(D2-A1)] of J4
+[net_conflict]: Pad net (GND) doesn't match net given by schematic (Net-(D2-A1))
+    Local override; warning
+    @(103.8000 mm, 87.8500 mm): PTH pad 4 [GND] of J4
+[net_conflict]: Pad net (Net-(R2-Pad2)) doesn't match net given by schematic (Net-(C15-Pad1))
+    Local override; warning
+    @(107.7250 mm, 90.9750 mm): Pad 2 [Net-(R2-Pad2)] of R2 on F.Cu
+[net_conflict]: Pad net (Net-(R5-Pad2)) doesn't match net given by schematic (Net-(C17-Pad1))
+    Local override; warning
+    @(110.5750 mm, 91.0500 mm): Pad 2 [Net-(R5-Pad2)] of R5 on F.Cu
+[net_conflict]: Pad net (Net-(R2-Pad2)) doesn't match net given by schematic (Net-(C15-Pad1))
+    Local override; warning
+    @(112.7000 mm, 89.2875 mm): Pad 1 [Net-(R2-Pad2)] of U3 on F.Cu
+[net_conflict]: Pad net (Net-(R5-Pad2)) doesn't match net given by schematic (Net-(C17-Pad1))
+    Local override; warning
+    @(114.6000 mm, 89.2875 mm): Pad 3 [Net-(R5-Pad2)] of U3 on F.Cu
+[missing_footprint]: Missing footprint C23 (DNP)
+    Local override; warning
+[missing_footprint]: Missing footprint C24 (DNP)
+    Local override; warning
+[net_conflict]: Pad net (Net-(D3-A2)) doesn't match net given by schematic (PWR_5V)
+    Local override; warning
+    @(122.0500 mm, 87.8500 mm): PTH pad 1 [Net-(D3-A2)] of J5
+[net_conflict]: Pad net (PWR_5V) doesn't match net given by schematic (GND)
+    Local override; warning
+    @(124.5500 mm, 87.8500 mm): PTH pad 2 [PWR_5V] of J5
+[net_conflict]: Pad net (Net-(D3-A1)) doesn't match net given by schematic (Net-(D3-A2))
+    Local override; warning
+    @(127.0500 mm, 87.8500 mm): PTH pad 3 [Net-(D3-A1)] of J5
+[net_conflict]: Pad net (GND) doesn't match net given by schematic (Net-(D3-A1))
+    Local override; warning
+    @(129.5500 mm, 87.8500 mm): PTH pad 4 [GND] of J5
+[net_conflict]: Pad net (Net-(R6-Pad2)) doesn't match net given by schematic (Net-(C23-Pad1))
+    Local override; warning
+    @(126.8000 mm, 92.4750 mm): Pad 2 [Net-(R6-Pad2)] of R6 on F.Cu
+[net_conflict]: Pad net (Net-(R7-Pad2)) doesn't match net given by schematic (Net-(C24-Pad1))
+    Local override; warning
+    @(126.8000 mm, 94.4500 mm): Pad 2 [Net-(R7-Pad2)] of R7 on F.Cu
+[net_conflict]: Pad net (Net-(R6-Pad2)) doesn't match net given by schematic (Net-(C23-Pad1))
+    Local override; warning
+    @(125.2125 mm, 94.4000 mm): Pad 1 [Net-(R6-Pad2)] of U7 on F.Cu
+[net_conflict]: Pad net (Net-(R7-Pad2)) doesn't match net given by schematic (Net-(C24-Pad1))
+    Local override; warning
+    @(125.2125 mm, 92.5000 mm): Pad 3 [Net-(R7-Pad2)] of U7 on F.Cu
+[missing_footprint]: Missing footprint C25 (DNP)
+    Local override; warning
+[missing_footprint]: Missing footprint C26 (DNP)
+    Local override; warning
+[net_conflict]: Pad net (Net-(D4-A2)) doesn't match net given by schematic (PWR_5V)
+    Local override; warning
+    @(70.4500 mm, 87.8500 mm): PTH pad 1 [Net-(D4-A2)] of J6
+[net_conflict]: Pad net (PWR_5V) doesn't match net given by schematic (GND)
+    Local override; warning
+    @(72.9500 mm, 87.8500 mm): PTH pad 2 [PWR_5V] of J6
+[net_conflict]: Pad net (Net-(D4-A1)) doesn't match net given by schematic (Net-(D4-A2))
+    Local override; warning
+    @(75.4500 mm, 87.8500 mm): PTH pad 3 [Net-(D4-A1)] of J6
+[net_conflict]: Pad net (GND) doesn't match net given by schematic (Net-(D4-A1))
+    Local override; warning
+    @(77.9500 mm, 87.8500 mm): PTH pad 4 [GND] of J6
+[net_conflict]: Pad net (Net-(R8-Pad2)) doesn't match net given by schematic (Net-(C25-Pad1))
+    Local override; warning
+    @(73.2250 mm, 94.4375 mm): Pad 2 [Net-(R8-Pad2)] of R8 on F.Cu
+[net_conflict]: Pad net (Net-(R9-Pad2)) doesn't match net given by schematic (Net-(C26-Pad1))
+    Local override; warning
+    @(73.2250 mm, 92.4875 mm): Pad 2 [Net-(R9-Pad2)] of R9 on F.Cu
+[net_conflict]: Pad net (Net-(R8-Pad2)) doesn't match net given by schematic (Net-(C25-Pad1))
+    Local override; warning
+    @(76.5875 mm, 92.6625 mm): Pad 1 [Net-(R8-Pad2)] of U9 on F.Cu
+[net_conflict]: Pad net (Net-(R9-Pad2)) doesn't match net given by schematic (Net-(C26-Pad1))
+    Local override; warning
+    @(74.6875 mm, 92.6625 mm): Pad 3 [Net-(R9-Pad2)] of U9 on F.Cu
+[missing_footprint]: Missing footprint J2 (SM03B-GHS-TB)
+    Local override; warning
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(128.5000 mm, 100.0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(71.5000 mm, 100.0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(120.6550 mm, 100.0000 mm): Footprint J3
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Silkscreen clearance
+    - Silkscreen clipped by solder mask
+    - Silkscreen clipped by board edge
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

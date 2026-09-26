@@ -1,0 +1,769 @@
+EESchema Schematic File Version 4
+LIBS:power
+LIBS:device
+LIBS:Connector_Generic
+LIBS:Switch
+LIBS:Transistor_FET
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 5 7
+Title "600 E-stop and Contactor Safety"
+Date "2026-08-04"
+Rev "A - HUMAN REVIEW DRAFT"
+Comp "Differential Swerve"
+Comment1 "Responsibility-based hierarchical schematic"
+Comment2 "Global labels connect modules"
+$EndDescr
+Text Notes 600 650 0    80   ~ 12
+600 E-STOP / CONTACTOR (HARDWARE PATH + ISOLATED MONITOR)
+$Comp
+L Connector_Generic:Conn_01x02 J601
+U 1 1 1039
+P 850 1050
+F 0 "J601" H 750 1270 50  0000 C CNN
+F 1 "24V_CTRL INPUT" H 750 1180 50  0000 C CNN
+F 2 "Connector_Molex:Molex_Micro-Fit_3.0_43650-0200_1x02_P3.00mm_Horizontal" H 850 1050 50  0001 C CNN
+	1    850 1050
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	950 1050 1350 1050
+Text Label 1350 1050 0    40   ~ 0
++24V_CTRL_RAW
+Wire Wire Line
+	950 1150 1350 1150
+Text Label 1350 1150 0    40   ~ 0
+GND_24V
+$Comp
+L Device:Fuse F601
+U 1 1 103A
+P 1750 1050
+F 0 "F601" H 1650 1270 50  0000 C CNN
+F 1 "LOOP FUSE TBD" H 1650 1180 50  0000 C CNN
+F 2 "" H 1750 1050 50  0001 C CNN
+	1    1750 1050
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1650 1050 1400 1050
+Text Label 1400 1050 0    40   ~ 0
++24V_CTRL_RAW
+Wire Wire Line
+	1850 1050 2100 1050
+Text Label 2100 1050 0    40   ~ 0
++24V_LOOP
+$Comp
+L Device:Fuse F602
+U 1 1 103B
+P 1750 1350
+F 0 "F602" H 1650 1570 50  0000 C CNN
+F 1 "LED/AUX FUSE TBD" H 1650 1480 50  0000 C CNN
+F 2 "" H 1750 1350 50  0001 C CNN
+	1    1750 1350
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1650 1350 1400 1350
+Text Label 1400 1350 0    40   ~ 0
++24V_CTRL_RAW
+Wire Wire Line
+	1850 1350 2100 1350
+Text Label 2100 1350 0    40   ~ 0
++24V_LED
+$Comp
+L Device:D_TVS D601
+U 1 1 103C
+P 1750 1650
+F 0 "D601" H 1650 1870 50  0000 C CNN
+F 1 "24V TVS TBD" H 1650 1780 50  0000 C CNN
+F 2 "" H 1750 1650 50  0001 C CNN
+	1    1750 1650
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1650 1650 1400 1650
+Text Label 1400 1650 0    40   ~ 0
++24V_CTRL_RAW
+Wire Wire Line
+	1850 1650 2100 1650
+Text Label 2100 1650 0    40   ~ 0
+GND_24V
+Text Notes 650 1900 0    45   ~ 12
+Add 60V-class reverse-polarity/surge protection; exact device TBD after 24V source transient definition.
+$Comp
+L Connector_Generic:Conn_01x06 J602
+U 1 1 103D
+P 2700 1000
+F 0 "J602" H 2600 1220 50  0000 C CNN
+F 1 "ESTOP_CTRL 43650-0600" H 2600 1130 50  0000 C CNN
+F 2 "Connector_Molex:Molex_Micro-Fit_3.0_43650-0600_1x06_P3.00mm_Horizontal" H 2700 1000 50  0001 C CNN
+	1    2700 1000
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	2800 1000 3650 1000
+Text Label 3650 1000 0    40   ~ 0
+ESTOP_LOOP_OUT
+Wire Wire Line
+	2800 1100 3650 1100
+Text Label 3650 1100 0    40   ~ 0
+ESTOP_LOOP_RETURN
+Wire Wire Line
+	2800 1200 3650 1200
+Text Label 3650 1200 0    40   ~ 0
+ESTOP_LED_24V
+Wire Wire Line
+	2800 1300 3650 1300
+Text Label 3650 1300 0    40   ~ 0
+GND_24V
+Wire Wire Line
+	2800 1400 3650 1400
+Text Label 3650 1400 0    40   ~ 0
+ESTOP1_AUX_RETURN
+Wire Wire Line
+	2800 1500 3650 1500
+Text Label 3650 1500 0    40   ~ 0
+ESTOP2_AUX_RETURN
+Text Notes 2600 1750 0    45   ~ 12
+MATE: Molex 43645-0600 (single-row). 43025-0600 does NOT mate.
+$Comp
+L Device:R R601
+U 1 1 103E
+P 4100 1000
+F 0 "R601" H 4000 1220 50  0000 C CNN
+F 1 "0R / LINK" H 4000 1130 50  0000 C CNN
+F 2 "" H 4100 1000 50  0001 C CNN
+	1    4100 1000
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4000 1000 3750 1000
+Text Label 3750 1000 0    40   ~ 0
++24V_LOOP
+Wire Wire Line
+	4200 1000 4450 1000
+Text Label 4450 1000 0    40   ~ 0
+ESTOP_LOOP_OUT
+$Comp
+L Device:R R602
+U 1 1 103F
+P 4100 1200
+F 0 "R602" H 4000 1420 50  0000 C CNN
+F 1 "0R / LINK" H 4000 1330 50  0000 C CNN
+F 2 "" H 4100 1200 50  0001 C CNN
+	1    4100 1200
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4000 1200 3750 1200
+Text Label 3750 1200 0    40   ~ 0
++24V_LED
+Wire Wire Line
+	4200 1200 4450 1200
+Text Label 4450 1200 0    40   ~ 0
+ESTOP_LED_24V
+$Comp
+L Connector_Generic:Conn_01x02 J603
+U 1 1 1040
+P 5000 1050
+F 0 "J603" H 4900 1270 50  0000 C CNN
+F 1 "E228 CONTACTOR COIL" H 4900 1180 50  0000 C CNN
+F 2 "Connector_Molex:Molex_Micro-Fit_3.0_43650-0200_1x02_P3.00mm_Horizontal" H 5000 1050 50  0001 C CNN
+	1    5000 1050
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	5100 1050 5900 1050
+Text Label 5900 1050 0    40   ~ 0
+ESTOP_LOOP_RETURN
+Wire Wire Line
+	5100 1150 5900 1150
+Text Label 5900 1150 0    40   ~ 0
+CONTACTOR_COIL_N
+$Comp
+L Connector_Generic:Conn_01x03 Q601
+U 1 1 1041
+P 5950 1250
+F 0 "Q601" H 5850 1470 50  0000 C CNN
+F 1 "IRLML0100TRPBF PIN-EXPLICIT G/S/D" H 5850 1380 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 5950 1250 50  0001 C CNN
+	1    5950 1250
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	6050 1250 6900 1250
+Wire Wire Line
+	6050 1350 6900 1350
+Wire Wire Line
+	6050 1450 6900 1450
+$Comp
+L Device:R R603
+U 1 1 1042
+P 5200 1550
+F 0 "R603" H 5100 1770 50  0000 C CNN
+F 1 "100R" H 5100 1680 50  0000 C CNN
+F 2 "" H 5200 1550 50  0001 C CNN
+	1    5200 1550
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	5100 1550 4850 1550
+Text Label 4850 1550 0    40   ~ 0
+MOTOR_PWR_EN
+Wire Wire Line
+	5300 1550 5550 1550
+Text Label 5550 1550 0    40   ~ 0
+CONTACTOR_GATE
+$Comp
+L Device:R R604
+U 1 1 1043
+P 5700 1800
+F 0 "R604" H 5600 2020 50  0000 C CNN
+F 1 "47k" H 5600 1930 50  0000 C CNN
+F 2 "" H 5700 1800 50  0001 C CNN
+	1    5700 1800
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	5600 1800 5350 1800
+Text Label 5350 1800 0    40   ~ 0
+CONTACTOR_GATE
+Wire Wire Line
+	5800 1800 6050 1800
+Text Label 6050 1800 0    40   ~ 0
+GND_24V
+$Comp
+L Device:D D602
+U 1 1 1044
+P 4850 1950
+F 0 "D602" H 4750 2170 50  0000 C CNN
+F 1 "FAST DIODE TBD" H 4750 2080 50  0000 C CNN
+F 2 "" H 4850 1950 50  0001 C CNN
+	1    4850 1950
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4750 1950 4500 1950
+Text Label 4500 1950 0    40   ~ 0
+CONTACTOR_COIL_N
+Wire Wire Line
+	4950 1950 5200 1950
+Text Label 5200 1950 0    40   ~ 0
+ESTOP_LOOP_RETURN
+$Comp
+L Device:D_TVS D603
+U 1 1 1045
+P 5750 2100
+F 0 "D603" H 5650 2320 50  0000 C CNN
+F 1 "TVS TBD FOR RELEASE TIME" H 5650 2230 50  0000 C CNN
+F 2 "" H 5750 2100 50  0001 C CNN
+	1    5750 2100
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	5650 2100 5400 2100
+Text Label 5400 2100 0    40   ~ 0
+CONTACTOR_COIL_N
+Wire Wire Line
+	5850 2100 6100 2100
+Text Label 6100 2100 0    40   ~ 0
+ESTOP_LOOP_RETURN
+Text Notes 4050 2300 0    45   ~ 12
+Use diode+TVS clamp as first candidate; verify coil release time and Q601 VDS on oscilloscope. 1N4007-only clamp is not accepted by default.
+$Comp
+L Connector_Generic:Conn_01x16 U601
+U 1 1 1046
+P 850 2650
+F 0 "U601" H 750 2870 50  0000 C CNN
+F 1 "LTV-847S (PIN-EXPLICIT)" H 750 2780 50  0000 C CNN
+F 2 "Package_SO:SOP-16_4.4x10.4mm_P1.27mm" H 850 2650 50  0001 C CNN
+	1    850 2650
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	950 2650 1750 2650
+Text Label 1750 2650 0    40   ~ 0
+OPTO1_A
+Wire Wire Line
+	950 2750 1750 2750
+Text Label 1750 2750 0    40   ~ 0
+OPTO1_K
+Wire Wire Line
+	950 2850 1750 2850
+Text Label 1750 2850 0    40   ~ 0
+OPTO2_A
+Wire Wire Line
+	950 2950 1750 2950
+Text Label 1750 2950 0    40   ~ 0
+OPTO2_K
+Wire Wire Line
+	950 3050 1750 3050
+Text Label 1750 3050 0    40   ~ 0
+OPTO3_A
+Wire Wire Line
+	950 3150 1750 3150
+Text Label 1750 3150 0    40   ~ 0
+OPTO3_K
+Wire Wire Line
+	950 3250 1750 3250
+Text Label 1750 3250 0    40   ~ 0
+OPTO4_A
+Wire Wire Line
+	950 3350 1750 3350
+Text Label 1750 3350 0    40   ~ 0
+OPTO4_K
+Wire Wire Line
+	950 3450 1750 3450
+Text Label 1750 3450 0    40   ~ 0
+OPTO4_E
+Wire Wire Line
+	950 3550 1750 3550
+Text Label 1750 3550 0    40   ~ 0
+OPTO4_C
+Wire Wire Line
+	950 3650 1750 3650
+Text Label 1750 3650 0    40   ~ 0
+OPTO3_E
+Wire Wire Line
+	950 3750 1750 3750
+Text Label 1750 3750 0    40   ~ 0
+OPTO3_C
+Wire Wire Line
+	950 3850 1750 3850
+Text Label 1750 3850 0    40   ~ 0
+OPTO2_E
+Wire Wire Line
+	950 3950 1750 3950
+Text Label 1750 3950 0    40   ~ 0
+OPTO2_C
+Wire Wire Line
+	950 4050 1750 4050
+Text Label 1750 4050 0    40   ~ 0
+OPTO1_E
+Wire Wire Line
+	950 4150 1750 4150
+Text Label 1750 4150 0    40   ~ 0
+OPTO1_C
+Text Notes 650 4400 0    45   ~ 12
+U601 pin order follows LTV-847S datasheet; CH4 spare. Each external 24V input uses two series resistors.
+$Comp
+L Device:R R611
+U 1 1 1047
+P 2300 2700
+F 0 "R611" H 2200 2920 50  0000 C CNN
+F 1 "2.2k" H 2200 2830 50  0000 C CNN
+F 2 "" H 2300 2700 50  0001 C CNN
+	1    2300 2700
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2200 2700 1950 2700
+Text Label 1950 2700 0    40   ~ 0
+ESTOP_LOOP_RETURN
+Wire Wire Line
+	2400 2700 2650 2700
+Text Label 2650 2700 0    40   ~ 0
+LOOP_R_MID
+$Comp
+L Device:R R612
+U 1 1 1048
+P 3000 2700
+F 0 "R612" H 2900 2920 50  0000 C CNN
+F 1 "2.2k" H 2900 2830 50  0000 C CNN
+F 2 "" H 3000 2700 50  0001 C CNN
+	1    3000 2700
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2900 2700 2650 2700
+Text Label 2650 2700 0    40   ~ 0
+LOOP_R_MID
+Wire Wire Line
+	3100 2700 3350 2700
+Text Label 3350 2700 0    40   ~ 0
+OPTO1_A
+$Comp
+L Device:R R623
+U 1 1 1049
+P 2150 2900
+F 0 "R623" H 2050 3120 50  0000 C CNN
+F 1 "0R" H 2050 3030 50  0000 C CNN
+F 2 "" H 2150 2900 50  0001 C CNN
+	1    2150 2900
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2050 2900 1800 2900
+Text Label 1800 2900 0    40   ~ 0
+OPTO1_K
+Wire Wire Line
+	2250 2900 2500 2900
+Text Label 2500 2900 0    40   ~ 0
+GND_24V
+$Comp
+L Device:R R613
+U 1 1 104A
+P 2300 3100
+F 0 "R613" H 2200 3320 50  0000 C CNN
+F 1 "2.2k" H 2200 3230 50  0000 C CNN
+F 2 "" H 2300 3100 50  0001 C CNN
+	1    2300 3100
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2200 3100 1950 3100
+Text Label 1950 3100 0    40   ~ 0
+ESTOP1_AUX_RETURN
+Wire Wire Line
+	2400 3100 2650 3100
+Text Label 2650 3100 0    40   ~ 0
+AUX1_R_MID
+$Comp
+L Device:R R614
+U 1 1 104B
+P 3000 3100
+F 0 "R614" H 2900 3320 50  0000 C CNN
+F 1 "2.2k" H 2900 3230 50  0000 C CNN
+F 2 "" H 3000 3100 50  0001 C CNN
+	1    3000 3100
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2900 3100 2650 3100
+Text Label 2650 3100 0    40   ~ 0
+AUX1_R_MID
+Wire Wire Line
+	3100 3100 3350 3100
+Text Label 3350 3100 0    40   ~ 0
+OPTO2_A
+$Comp
+L Device:R R624
+U 1 1 104C
+P 2150 3300
+F 0 "R624" H 2050 3520 50  0000 C CNN
+F 1 "0R" H 2050 3430 50  0000 C CNN
+F 2 "" H 2150 3300 50  0001 C CNN
+	1    2150 3300
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2050 3300 1800 3300
+Text Label 1800 3300 0    40   ~ 0
+OPTO2_K
+Wire Wire Line
+	2250 3300 2500 3300
+Text Label 2500 3300 0    40   ~ 0
+GND_24V
+$Comp
+L Device:R R615
+U 1 1 104D
+P 2300 3500
+F 0 "R615" H 2200 3720 50  0000 C CNN
+F 1 "2.2k" H 2200 3630 50  0000 C CNN
+F 2 "" H 2300 3500 50  0001 C CNN
+	1    2300 3500
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2200 3500 1950 3500
+Text Label 1950 3500 0    40   ~ 0
+ESTOP2_AUX_RETURN
+Wire Wire Line
+	2400 3500 2650 3500
+Text Label 2650 3500 0    40   ~ 0
+AUX2_R_MID
+$Comp
+L Device:R R616
+U 1 1 104E
+P 3000 3500
+F 0 "R616" H 2900 3720 50  0000 C CNN
+F 1 "2.2k" H 2900 3630 50  0000 C CNN
+F 2 "" H 3000 3500 50  0001 C CNN
+	1    3000 3500
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2900 3500 2650 3500
+Text Label 2650 3500 0    40   ~ 0
+AUX2_R_MID
+Wire Wire Line
+	3100 3500 3350 3500
+Text Label 3350 3500 0    40   ~ 0
+OPTO3_A
+$Comp
+L Device:R R625
+U 1 1 104F
+P 2150 3700
+F 0 "R625" H 2050 3920 50  0000 C CNN
+F 1 "0R" H 2050 3830 50  0000 C CNN
+F 2 "" H 2150 3700 50  0001 C CNN
+	1    2150 3700
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2050 3700 1800 3700
+Text Label 1800 3700 0    40   ~ 0
+OPTO3_K
+Wire Wire Line
+	2250 3700 2500 3700
+Text Label 2500 3700 0    40   ~ 0
+GND_24V
+$Comp
+L Device:R R617
+U 1 1 1050
+P 4000 2750
+F 0 "R617" H 3900 2970 50  0000 C CNN
+F 1 "10k" H 3900 2880 50  0000 C CNN
+F 2 "" H 4000 2750 50  0001 C CNN
+	1    4000 2750
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3900 2750 3650 2750
+Text Label 3650 2750 0    40   ~ 0
+OPTO1_C
+Wire Wire Line
+	4100 2750 4350 2750
+Text Label 4350 2750 0    40   ~ 0
++3V3_TEENSY
+$Comp
+L Device:R R618
+U 1 1 1051
+P 4000 3150
+F 0 "R618" H 3900 3370 50  0000 C CNN
+F 1 "10k" H 3900 3280 50  0000 C CNN
+F 2 "" H 4000 3150 50  0001 C CNN
+	1    4000 3150
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3900 3150 3650 3150
+Text Label 3650 3150 0    40   ~ 0
+OPTO2_C
+Wire Wire Line
+	4100 3150 4350 3150
+Text Label 4350 3150 0    40   ~ 0
++3V3_TEENSY
+$Comp
+L Device:R R619
+U 1 1 1052
+P 4000 3550
+F 0 "R619" H 3900 3770 50  0000 C CNN
+F 1 "10k" H 3900 3680 50  0000 C CNN
+F 2 "" H 4000 3550 50  0001 C CNN
+	1    4000 3550
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3900 3550 3650 3550
+Text Label 3650 3550 0    40   ~ 0
+OPTO3_C
+Wire Wire Line
+	4100 3550 4350 3550
+Text Label 4350 3550 0    40   ~ 0
++3V3_TEENSY
+$Comp
+L Device:R R620
+U 1 1 1053
+P 4700 2750
+F 0 "R620" H 4600 2970 50  0000 C CNN
+F 1 "0R" H 4600 2880 50  0000 C CNN
+F 2 "" H 4700 2750 50  0001 C CNN
+	1    4700 2750
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4600 2750 4350 2750
+Text Label 4350 2750 0    40   ~ 0
+OPTO1_C
+Wire Wire Line
+	4800 2750 5050 2750
+Text Label 5050 2750 0    40   ~ 0
+ESTOP_LOOP_OK_N
+$Comp
+L Device:R R621
+U 1 1 1054
+P 4700 3150
+F 0 "R621" H 4600 3370 50  0000 C CNN
+F 1 "0R" H 4600 3280 50  0000 C CNN
+F 2 "" H 4700 3150 50  0001 C CNN
+	1    4700 3150
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4600 3150 4350 3150
+Text Label 4350 3150 0    40   ~ 0
+OPTO2_C
+Wire Wire Line
+	4800 3150 5050 3150
+Text Label 5050 3150 0    40   ~ 0
+ESTOP1_AUX_OK_N
+$Comp
+L Device:R R622
+U 1 1 1055
+P 4700 3550
+F 0 "R622" H 4600 3770 50  0000 C CNN
+F 1 "0R" H 4600 3680 50  0000 C CNN
+F 2 "" H 4700 3550 50  0001 C CNN
+	1    4700 3550
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4600 3550 4350 3550
+Text Label 4350 3550 0    40   ~ 0
+OPTO3_C
+Wire Wire Line
+	4800 3550 5050 3550
+Text Label 5050 3550 0    40   ~ 0
+ESTOP2_AUX_OK_N
+$Comp
+L Device:R R626
+U 1 1 1056
+P 4000 3850
+F 0 "R626" H 3900 4070 50  0000 C CNN
+F 1 "0R" H 3900 3980 50  0000 C CNN
+F 2 "" H 4000 3850 50  0001 C CNN
+	1    4000 3850
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3900 3850 3650 3850
+Text Label 3650 3850 0    40   ~ 0
+OPTO1_E
+Wire Wire Line
+	4100 3850 4350 3850
+Text Label 4350 3850 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R627
+U 1 1 1057
+P 4700 3950
+F 0 "R627" H 4600 4170 50  0000 C CNN
+F 1 "0R" H 4600 4080 50  0000 C CNN
+F 2 "" H 4700 3950 50  0001 C CNN
+	1    4700 3950
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4600 3950 4350 3950
+Text Label 4350 3950 0    40   ~ 0
+OPTO2_E
+Wire Wire Line
+	4800 3950 5050 3950
+Text Label 5050 3950 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R628
+U 1 1 1058
+P 5400 4050
+F 0 "R628" H 5300 4270 50  0000 C CNN
+F 1 "0R" H 5300 4180 50  0000 C CNN
+F 2 "" H 5400 4050 50  0001 C CNN
+	1    5400 4050
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	5300 4050 5050 4050
+Text Label 5050 4050 0    40   ~ 0
+OPTO3_E
+Wire Wire Line
+	5500 4050 5750 4050
+Text Label 5750 4050 0    40   ~ 0
+GND_CTRL
+Text Notes 650 4650 0    45   ~ 12
+2.2k+2.2k gives about 5mA at 24V, matching the LTV-847S minimum-CTR test condition. Check resistor dissipation and input range.
+$Comp
+L Connector_Generic:Conn_01x02 J604
+U 1 1 1059
+P 850 5050
+F 0 "J604" H 750 5270 50  0000 C CNN
+F 1 "MOTOR BUS SENSE" H 750 5180 50  0000 C CNN
+F 2 "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal" H 850 5050 50  0001 C CNN
+	1    850 5050
+	-1 0 0 1
+$EndComp
+Wire Wire Line
+	950 5050 1350 5050
+Text Label 1350 5050 0    40   ~ 0
+MOTOR_BUS_24V
+Wire Wire Line
+	950 5150 1350 5150
+Text Label 1350 5150 0    40   ~ 0
+GND_24V
+$Comp
+L Device:R R631
+U 1 1 105A
+P 2000 5050
+F 0 "R631" H 1900 5270 50  0000 C CNN
+F 1 "100k" H 1900 5180 50  0000 C CNN
+F 2 "" H 2000 5050 50  0001 C CNN
+	1    2000 5050
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	1900 5050 1650 5050
+Text Label 1650 5050 0    40   ~ 0
+MOTOR_BUS_24V
+Wire Wire Line
+	2100 5050 2350 5050
+Text Label 2350 5050 0    40   ~ 0
+SENSE_DIV
+$Comp
+L Device:R R632
+U 1 1 105B
+P 2700 5350
+F 0 "R632" H 2600 5570 50  0000 C CNN
+F 1 "20k" H 2600 5480 50  0000 C CNN
+F 2 "" H 2700 5350 50  0001 C CNN
+	1    2700 5350
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	2600 5350 2350 5350
+Text Label 2350 5350 0    40   ~ 0
+SENSE_DIV
+Wire Wire Line
+	2800 5350 3050 5350
+Text Label 3050 5350 0    40   ~ 0
+GND_CTRL
+$Comp
+L Device:R R633
+U 1 1 105C
+P 3400 5050
+F 0 "R633" H 3300 5270 50  0000 C CNN
+F 1 "1k" H 3300 5180 50  0000 C CNN
+F 2 "" H 3400 5050 50  0001 C CNN
+	1    3400 5050
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	3300 5050 3050 5050
+Text Label 3050 5050 0    40   ~ 0
+SENSE_DIV
+Wire Wire Line
+	3500 5050 3750 5050
+Text Label 3750 5050 0    40   ~ 0
+MOTOR_PWR_SENSE
+$Comp
+L Device:C C631
+U 1 1 105D
+P 4100 5350
+F 0 "C631" H 4000 5570 50  0000 C CNN
+F 1 "10n" H 4000 5480 50  0000 C CNN
+F 2 "" H 4100 5350 50  0001 C CNN
+	1    4100 5350
+	0 -1 -1 0
+$EndComp
+Wire Wire Line
+	4000 5350 3750 5350
+Text Label 3750 5350 0    40   ~ 0
+MOTOR_PWR_SENSE
+Wire Wire Line
+	4200 5350 4450 5350
+Text Label 4450 5350 0    40   ~ 0
+GND_CTRL
+Text Notes 650 5650 0    45   ~ 12
+Ground-domain assumption: GND_24V and GND_CTRL join at protected control-power entry. Verify before layout.
+$EndSCHEMATC

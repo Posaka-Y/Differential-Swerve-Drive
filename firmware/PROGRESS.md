@@ -1,6 +1,365 @@
 # Firmware progress
 
-最終更新: 2026-07-31(GUI/RAMへ空走ベスト設定適用)
+最終更新: 2026-09-22(F405 AMT102読取ファーム書き込み、手回し検証待ち)
+
+## 2026-09-22 AMT102 F405生カウント読取の準備
+
+### 追加: ソフト監査・PA0/PA1の内蔵pull試験
+
+- Flash先頭1128 bytesを読戻し、`amt102_f405.bin`とSHA256完全一致
+  (`0B6BF928B281A7B47C170327DFA9D289342A7BC7FED580CB6BD04893C57D1546`)。
+  CubeProgrammer単独`-v`は非対応だったため、`-u`読戻し＋hash比較で確認。再書き込みなし。
+- GPIOA MODER=0xA800A40A、AFRL=0x22000011、TIM2 CR1=1/SMCR=3/CCMR1=0x3131/CCER=0x11、
+  RCC GPIOA/B・TIM2/3/4 enable正常。ST公式HALのEncoder初期化と照合。CFSR/HFSR=0。
+- `scripts/diagnose-j4-input.cfg`でTIM2停止、PA0/PA1を通常入力へ一時変更し、
+  内蔵pullなし=00、pulldown=00、pullup=11を実測。出力モードにはしていない。
+  保存したMODER/PUPDR/TIM2 CR1を復元し、値も一致確認済み。
+- 判断: PA0/PA1の入力読出しはHigh/Lowに応答する。観測時の両線は内蔵の弱いpullに追従し、
+  U3が正常なpush-pullで両線を強くLow駆動している状態とは考えにくい。
+  U3出力〜MCUの断線/実装不良、U3無給電・接地不良・損傷等による高インピーダンスが有力。
+  MCU内部pullで生じた変化はセンサ成功に数えない。次はU3の実ピン5−2の電圧と出力6/4→MCU14/15の導通。
+  なお診断AB文字列はbit1=B/bit0=Aの順。changesは1msごとのカウント変化検出回数であり、全エッジ数ではない。
+
+- ユーザーが対象AMT102、入力バッファU3/U7/U9電源ジャンパ施工済みと回答。
+- 製造PCBでJ4/U3→PA0/PA1(TIM2 AF1)、J5/U7→PA6/PA7(TIM3 AF2)、
+  J6/U9→PB6/PB7(TIM4 AF2)を照合。
+- 独立ターゲット`amt102_f405`を追加。`src/platform/amt102_f405_bringup.c`でTIM2/3/4を
+  x4 Encoder Modeへ設定、16bit raw/32bit積算カウント/AB状態/変化検出回数をSRAMへ公開。
+  外部水晶・CAN・UART・割り込みは未使用。RUN=1Hz点滅、COMM=カウント変化時200ms点灯、ERR=例外時点灯。
+  位相入力は8sampleフィルタ、1ms差分処理。1ms内32768count以上の変化は対象外。
+- `scripts/build.ps1`成功。1128 bytesの`build/debug/amt102_f405.hex`をV3MINIE経由で
+  同じF405(Device ID 0x413)へwrite/verify/reset成功。SRAM magic=F405A102、fault=0、uptime増加を確認。
+- `scripts/read-amt102.ps1 -Samples 5`でCPUを止めずHot Plug読取成功。
+  22:56:58〜22:57:01はJ4/J5/J6すべてcount=0、AB=00、changes=0。
+  ユーザーの手回し完了報告はまだ無いため、センサ不良とも読取成功とも判定しない。
+  読取は各32bit値の逐次取得で、チャネル間の同時snapshotではない。
+- 次: 接続コネクタと手回しによる正逆カウント変化を確認。変化が無ければAMT側5V、A/B、
+  バッファ電源/出力、MCU入力の順で実測。DIPのPPR確認後に1回転=4×PPRで評価。
+  現在の書き込み済みはAMT102版。全点灯版`blink_f405.hex`も残してある。
+  参照: ST cmsis-device-f4公式`Include/stm32f405xx.h`、Same Sky AMT10-V datasheet。
+- 追加: ユーザーがJ4接続と回答。22:57:44〜59の24回読取はJ4 count=0/AB=00/changes=0。
+  TIM2 CR1=1/SMCR=3/CCMR1=0x3131/CCER=0x11/ARR=0xFFFF、GPIOA AFRL=0x22000011、
+  APB1ENR=7を実機読出しで確認。設定は意図どおり。観測中に手回し済みかは確認待ち。
+
+## 2026-09-22 F405認識復旧・初回Lチカ
+
+### 追加: 全LED常時点灯版（現在の書き込み済みコード）
+
+- **ユーザー目視で点灯成功を確認（「ついたーーー」）。** 全点灯版を書き込み後、LED点灯まで成立。
+  SWD認識→Flash書き込み/verify→MCU実行→LED目視の初回bring-up成功。
+  現在は全点灯版を保持。次は電源再投入後の起動確認、続いてODOM入力の段階検証。
+
+- ユーザー要望によりRUN/COMM/ERRを常時Highへ変更。POWER(D6)は3.3V→R19→D6→GND直結でソフト制御なし。
+- `scripts/build.ps1`成功。704 bytesの`blink_f405.hex`を同じF405へwrite/verify/reset成功。
+- 実機読出しでSRAM mask=7/fault=0、GPIOA ODR=0x20、GPIOB ODR=0xC00を確認。
+  PA5/PB10/PB11の出力ラッチが全てHigh。次はLEDの実際の点灯をユーザー目視で確認。
+  ユーザーはLED極性逆実装の可能性と電圧到達を報告済み。付け直し完了・点灯成功はまだ未確認。
+
+### 追加: 3色LED順次点灯へ
+
+- ユーザー目視では最初のPA5 Lチカは点灯せず。MCU実行成功とLED点灯成功は区別する。
+- ODOM製造PCBのネットを確認: PA5→R20→D8緑、PB10→R21→D9黄、PB11→R22→D10赤。
+  全て抵抗1kΩ、LEDカソードGNDのHigh点灯。
+- `blink_f405`をRUN→COMM→ERR→全点灯→全消灯、各1秒の5秒周期へ変更。
+  診断word2はLED mask (1=RUN、2=COMM、4=ERR)。GPIOBのPB10/PB11のみ追加設定。
+- Debugビルド成功、788 bytesを同じF405へwrite/verify/reset成功。
+  起動直後SRAM magic=`F405B11A`、mask=1、fault=0を確認。LED目視結果待ち。
+
+- ユーザー報告: MCU型番の取り違えと取り付けのピン位置の誤りが重なっていた。現在の対象はF405。
+  過去のG474前提の実機診断をそのまま当てはめない。具体的な修正内容・基板種別の最終照合は未記録。
+- 純正STLINK-V3MINIE SN `001C00363033511735393935`でSWD接続成功。
+  CPUID=`0x410fc241`、Device ID=`0x413`、Flash=1MB、電圧=3.27V。
+- `blink_f405`を独立したCMakeターゲットとして追加。F405専用startup/linkerと直接レジスタ操作で、
+  reset時HSI 16MHz、PA5を200ms ON/800ms OFF。CAN/センサは初期化せず、SysTickは割り込みなしのポーリング。
+  レジスタ参照: ST RM0090。既存G474本体とblinkは維持。
+- `scripts/build.ps1`成功。`build/debug/blink_f405.hex`は652 bytes。
+  sector 0の16KBを`build/debug/f405-sector0-before-blink-20260922-2219.bin`へ退避後、
+  CubeProgrammerで該当sectorのみ消去・書き込み・verify・reset成功。Option Bytes変更なし。
+- SRAM `0x20000000`の診断4wordはmagic=`F405B11A`、完了周期数、LED論理状態、fault。
+  Hot Plug読出しでmagic正常・周期数7→35へ増加・fault=0を確認し、継続実行を確認。
+  LED自体の目視確認はユーザー待ち。
+- 次: RUN LEDの点滅と電源再投入後の再起動を目視確認。その後F405 ODOMファーム開発へ。
+  既存`flash.ps1`はG474専用のままなので、F405へ本体HEXを流用しない。
+
+## 2026-09-22 純正STLINK-V3MINIE / CubeProgrammer最終切り分け
+
+### 追加所見: 3.3V LDOの異常発熱
+
+実機の`TLV76133DCYR`が著しく発熱していることが判明。TI公式TLV761データシート
+(SBVS349D, 2025-05改訂)でDCY pinoutを再確認し、1=GND、2+tab=OUT、3=INのため、
+基板のU2接続・SOT-223 tab接続とは一致している。通常の最小構成負荷に対する発熱としては
+不自然であり、3V3-GND短絡、MCU/3.3V部品の損傷、はんだブリッジ等による過電流が有力。
+発熱状態での連続通電を中止し、無給電で3V3-GND抵抗を確認後、外部接続を全て外して
+5V電源を低い電流制限から投入し、入力電流と3.3Vを同時測定する。
+
+`C:\Users\ttiro\Desktop\debug.log`を確認。純正STLINK-V3MINIE
+(SN `001C00363033511735393935`)をCubeProgrammer v2.23.0で使用し、プローブFWを
+V3J8M3からV3J17M11へ正常更新した。ターゲット電圧は全試行で3.26～3.27V。
+SW reset/HW resetのUnder Resetを更新前後に繰り返したが、すべて
+`Unable to get core ID` / `No STM32 target found`。したがってWeAct個体、OpenOCD設定、
+旧ST-Link FWを主因とする可能性は大きく低下し、自作基板上のMCU実装・電源ピン・
+SWD信号経路が主な調査対象になった。
+
+同ログではVCP COM4を115200 8E1で正常にopenできたが、2回ともUART bootloaderの
+ACK待ちでtimeout。これはBOOT0=HighがMCU pin 61でreset時に実測確認され、PA2/PA3の
+交差配線とMCUリードまでの導通が確認できて初めてMCU無応答の強い証拠になる。
+
+重要: LQFP上面の大きな丸い成形跡をpin 1印と断定しない。pin 1はパッケージ角付近の
+小さい識別マーク/面取りとPCBフットプリントの三角マークで照合する。以前の「大きい丸でよい」
+という案内は撤回する。向き、各VDD/VSS、VDDA/VSSA/VREF+、NRST、PA13/PA14をMCUの
+実リードで確認するまでは、MCU破損と実装向き/はんだ不良を区別できない。
+
+### 次の作業
+
+1. 無給電でMCUの小さいpin 1マークとPCB三角マークの一致を写真または拡大鏡で確認。
+2. 給電時にMCU実リードでVDD pin 16/32/48/64、VDDA pin 29、VREF+ pin 28、NRST pin 7を実測。
+3. 無給電でJ7 pin 3からPA13/SWDIO(MCU pin 49)、J7 pin 2からPA14/SWCLK(MCU pin 50)、
+   J7 pin 4からNRST(MCU pin 7)までの導通を実測。以前記載したSWDIO pin 46 / SWCLK pin 49は誤り。
+4. UARTを再判定する場合は、reset瞬間のBOOT0/PB8 pin 61 HighとPA2 pin 14/PA3 pin 17までの導通を確認。
+5. 以上がすべて正常でもSWD/UARTとも無応答なら、MCU損傷またはBGAではないLQFPの隠れたはんだ不良を疑い、再実装/交換を判断。
+
+### 回路・PCBネット再監査
+
+- KiCad 10.0.4でunit-board ERCは0件。DRCはライブラリとの差分警告8件のみで、未接続padは0件。
+- 回路図netlistと製造PCBのIPC-D-356を照合し、J7 pin 2→U4 pin 50(PA14/SWCLK)、
+  J7 pin 3→U4 pin 49(PA13/SWDIO)、J7 pin 4→U4 pin 7(NRST)を確認。
+- U4のVBAT pin 1、VDD pin 16/32/48/64は3V3、VSS pin 15/31/47/63とVSSA pin 27はGND、
+  VDDA pin 29はフェライト後3V3、VREF+ pin 28はVDDAへ0Ω接続。設計net上に起動不能を説明する誤配線は見つからない。
+- 重要な訂正: 以前の記録にあったSWDIO pin 46 / SWCLK pin 49は誤り。pin 46はPA12/FDCAN1_TX。
+  正しくはSWDIO pin 49、SWCLK pin 50。過去の導通確認が誤番号基準なら再確認が必要。
+
+## 2026-09-21 WeAct復旧調査(アンチクローン仮説)とDFU経路の行き止まり
+
+ユーザー提示のWeAct公式`Firmwares/STLink/README.md`原文を確認。内容は9行で、
+「`STLinkV2.J28.M18.bin`を書く → `en.stsw-link007_v3-10-3.zip`を展開 →
+`ST-LinkUpgrade.exe`で最新へ上げる」だけ。トラブルシュートや既知問題の記載はない。
+
+### 立てた仮説(未確定)
+
+手順3のST純正アップデータが**クローン検出**を行い、SWD機能だけが無効化された可能性。
+症状の一致: USB列挙OK/バージョン応答あり(V2J48M35)/VCP正常/**SWDのみ失敗**/
+既知良品のNUCLEOでも失敗/2台とも同症状。V2J48系はアンチクローン該当世代という報告が複数ある。
+ただしJ48で正常動作する公開事例もあり、**仮説以上のことは言えない**。
+なお最新版へ上げたのはユーザーではなく、WeActの製造手順そのものがそれを含んでいる可能性が高い。
+
+### 試したこと
+
+- `stlink-tool`(sakana280のWin64ビルド、sha256 `bb430b2c…`)を取得。起動・`-h`は正常。
+  `-p`は`No ST-Link in DFU mode found`。抜き差し直後のDFU窓を90秒/約6Hzでポーリングしたが
+  **一度も捕捉できず**。ST純正ファームは起動直後にアプリへ飛ぶためと判断。
+  このツールはブートローダを書き換えない設計なので、文鎮化リスクは当初の説明より低い(訂正)。
+- WeActリポジトリに`en.stsw-link007_v3-10-3.zip`(2.9MB)が同梱されており、**STのログイン不要**で入手可。
+  `readme.txt`によりWindows版同梱ファームは**ST-Link/V2-1向けV2J40M27**。現状のV2J48M35より
+  古く、ダウングレード候補になる。
+- `ST-LinkUpgrade.exe`(2022-05-20, sha256 `c428577b…`)を実行してもらったが**デバイスを認識せず**。
+  ZadigのWinUSB割当により、ST純正`STLinkUSBDriver.dll`が期待する識別子と一致しないためと推定。
+  純正ドライバSTSW-LINK009の入手はSTアカウントが必要で、かつ管理者権限も無いため現状は行き止まり。
+
+### 判断
+
+WeActの復旧はLチカという目的に対して迂回が長すぎる。**唯一動作実績のあるNUCLEO内蔵STLINK-V3E
+(serial `004F002C3532510731333430`)へ切り替える**。WeAct復旧は基板が動いた後の余録とする。
+
+### 次の作業
+
+1. NUCLEOのST-LINKジャンパを外して内蔵MCUを切り離し、SWDコネクタから自作基板J7へ配線。
+   **J7にVREF線が無いため、基板側3V3をプローブのVREFへ別線で引く**ことを忘れない。
+2. `probe.ps1 -Serial 004F002C3532510731333430 -SpeedKHz 100 -UnderReset`でCortex-M4を確認。
+3. 通れば`flash-uart.ps1`ではなく`flash.ps1 -Tool openocd`で`blink.hex`を書き込みLチカ。
+
+
+## 2026-09-21 SWD回避: UARTブートローダ経路とLチカ用最小ファーム
+
+WeAct ST-Link/V2-1は2台ともNUCLEO(既知良品)でもSWD接続できず、内蔵STLINK-V3Eだけが
+成功している状況のため、SWDを迂回してUARTシステムブートローダで書き込む経路を用意した。
+自作基板はJ7にDBG_TX=PA2/DBG_RX=PA3が出ており、BOOT0は隣接3V3テストポイントとの短絡で
+Highにできる設計なので、追加改造なしでブートローダへ入れる。
+
+### 追加したもの
+
+- `src/blink/blink_main.c` + CMakeの`blink`ターゲット(新規): 一次生存確認用の最小ファーム。
+  LED_RUN=PA5(R20->D8 緑)を200ms ON/800ms OFFの非対称で点滅させるだけ。HSI 16MHzのままで
+  水晶Y1に依存せず、CAN/SPI/AMT22/Flashを一切初期化しないので周辺実装状態に依存しない。
+  Debugビルドで**FLASH 792B / RAM 1032B**。`build/debug/blink.hex`と`blink.bin`を生成する。
+  PA5はNUCLEOのLD2と同じピンなので、同じ成果物をNUCLEOへ書けば対照試験になる。
+- `scripts/bootloader-ping.ps1`(新規): 外部ツール無しで.NET SerialPortだけを使い、
+  8E1で`0x7F`を送って`0x79`(ACK)または`0x1F`(NACK)が返るかを見る。どちらが返っても
+  「MCUコアが起動し、BOOT0がHighでサンプルされ、PA2/PA3のはんだと配線が生きている」ことが
+  同時に確定する。SWDの状態と独立してMCU生存を判定できる。`-Json`対応、失敗時exit 1。
+- `scripts/flash-uart.ps1`(新規): AN3155のUARTブートローダプロトコルを直接実装した書き込み器。
+  外部ツール依存ゼロ。Get ID(0x02)でProduct IDが**0x469(STM32G474)**であることを確認してから
+  書き込み、異なれば拒否する。Extended Erase(0x44)でmass erase、Write Memory(0x31)で256B単位、
+  `-Verify`でRead Memory(0x11)による全バイト読み戻し比較、`-Run`でGo(0x21)。
+  `-SelfTest`でハードウェア無しでもフレーム組み立て(コマンド補数、XORチェックサム、
+  アドレス4B+CS、mass erase CS、チャンク分割)を検証でき、全項目PASSを確認済み。
+
+### 実装上の注意(はまった点)
+
+- PowerShellの`-f "X2"`は値の型によって`0x`接頭辞の有無が変わる。self-testの比較は
+  `[byte[]]`へ正規化して`ToString("X2")`で表記を固定した。
+- `[Math]::Ceiling()`はDoubleを返し`"{0:X2}"`が失敗するため`[int]`へキャストする。
+
+### 現在の状態
+
+- ビルド・self-test・構文検査はすべて通過。**実機での書き込みは未実施**。
+- doctorはbuild/flash/probe driverともOK。WeActのVCPはCOM5で正常。SWD経路は未解決のまま。
+
+### 次の作業
+
+1. BOOT0を3V3へ短絡し、WeActのTXD/RXDをJ7 pin6/pin5へクロス接続、J1から5V給電して電源再投入。
+2. `scripts/bootloader-ping.ps1`でaliveを確認する。これが自作基板のMCU生存の一次判定になる。
+3. `scripts/flash-uart.ps1 -Image blink -Verify`でLチカを書き込み、BOOT0短絡を外して電源再投入。
+4. D8が200ms/800ms周期で点滅すればMCU・電源・クロック・GPIOまでの一次確認が完了。
+   そのうえでSWD(WeAct本体またはNUCLEO内蔵V3E経由)の切り分けへ戻る。
+
+
+## 2026-09-21 デバッグソフト監査・診断の訂正
+
+- WeAct公式`WeActStudio.MiniDebugger`リポジトリのV1.0回路図・背面ピン図・READMEを直接確認。
+  10ピンは写真の上から`3V3/SWDIO/SWCLK/GND/SWO/NRST/TXD/RXD/GND/5V`で、従来の
+  J2番号表(1=5V、5=NRST、7=GND、8=SWCLK、9=SWDIO、10=3V3)と一致した。
+- 重要な訂正: WeAct V1.0回路図にはターゲットVREF入力/測定回路がなく、5Vから生成した
+  プローブ内部3.3Vを使用する。OpenOCDの約3.24V表示はターゲット給電を一切証明しない。
+  `probe.ps1`の表示とJSON noteをこの機種に合わせて訂正した。
+- WeAct実機はST-Link/V2-1（VID:PID `0483:3752`、debug=MI_00、VCP=MI_01）。
+  STLINK-V3ではない。公式配布ドライバSTSW-LINK009もPID 3752のMI_00へWinUSBを割り当てる。現在のZadig WinUSBと
+  USB転送方式は同じ。公式INFへの置換は管理者権限がなくAccess deniedのため未実施。
+- OpenOCDとは別実装の`stlink-org/stlink v1.8.0`（配布SHA256照合済み）で同じプローブを試験。
+  `V2J48S35`/serialは読めるが`Failed to enter SWD mode`、chipid=0x000。したがって
+  OpenOCD target cfg、probe.ps1の引数処理、G4用target script固有の問題ではない。
+- WeAct公式手順は初期`STLinkV2.J28.M18.bin`を書いた後、ST公式アップデータで最新版へ上げるもの。
+  現在はそれより新しいJ48系で、J48S35が正常接続している公開実例もあるため、単なる旧版firmware
+  とは判断できない。公式同梱アップデータは古いv3.10.3であり、安易なdowngradeは実施しない。
+- NUCLEO-G474RE公式UM2505も再確認。外部デバッガ使用時はJP1(STLK_RST) ONでオンボード
+  STLINK-V3Eがreset/high-Zとなる。ユーザー確認済みのJP1 ONは正しい。
+- ST-Link/V2-1でNUCLEO-G474REを再試験。DAP normal/under-reset各100kHzとも
+  `init mode failed`でCPUID/IDCODEを取得できなかった。通常接続初回のみ一時的に
+  `V4J8S0 / VID:PID 0000:0000 / voltage check failed`となったが、直後の再試行では
+  `V2J48M35 / 0483:3752 / 3.235884V`へ正常復帰し、同じSWD接続失敗となった。
+  Windows上のcomposite/MI_00/MI_01はいずれもStatus OK。独立実装の`st-info --probe`も
+  `V2J48S35`までは取得できるが`Failed to enter SWD mode`、chipid=0x000。
+- NUCLEO内蔵STLINK-V3E(PID 374E、serial `004F002C3532510731333430`)をUSB接続して対照試験。
+  normal 1MHzはSWD DPIDR `0x2ba01477`まで読めたがtarget examination失敗。
+  under-reset 100kHzは`Cortex-M4 r0p1`とCPUID読出しに成功し、`connected=YES`。
+  NUCLEOのSTM32G474、PCのUSB/WinUSB、OpenOCD G4 target処理が正常であることを確認した。
+  したがって外付けWeAct経路の失敗はホスト側OpenOCD/target cfgではなく、WeAct本体または
+  WeActからターゲットまでの信号経路に限定される。
+- この成功試験で`probe.ps1`の成功時に以前のnative終了コード1が残る問題と、全プローブへ
+  WeAct専用電圧注記を出す問題を発見。成功時`exit 0`を明示し、PID 3752のときだけWeAct注記を
+  出すよう修正した。
+- WeAct公式回路図/README/Issue #7を再確認し、側面4穴P1
+  (`GND/CLK/DIO/3V3`)はターゲット出力ではなくMiniDebugger本体MCUを書き換えるためのSWD入力と確定。
+  ターゲット用SWDは10ピンJ2のみ。P1からNUCLEOへ直結するという以前の案内は誤りとして撤回した。
+- ネット上の同一症状を調査。OpenOCDの`STLINK_JTAG_GET_IDCODE_ERROR`(status 0x09)は、公式ソースの
+  履歴上「物理SWD/JTAGリンク切断またはDAP/TAP resetでターゲットIDCODEを得られない」場合の応答。
+  現在のV2J48M35はST公式ST-Link/V2-1最新版で、同版の正常書込み実例もあり、単なるfirmware旧版ではない。
+  WeAct回路ではJ2 SWDIO=PB14から33ohm、SWCLK=PA5から33ohm、NRST=PB1から33ohmで、target VREF入力はない。
+  候補はJ2ケーブル/向き/接触、SWDIO/SWCLK直列抵抗またははんだ、同一ロットの出力段不良、
+  もしくは本体firmware configuration/anti-clone領域不整合。4穴P1を使う本体再flashは最後の復旧手段で、
+  RDP解除/eraseを伴い得るため現段階では実施しない。
+
+- probe.ps1の引数をWindows argv規則で全て引用し、空白パス/埋込み引用符/末尾バックスラッシュに対応。
+  終了コードとtimeoutを成功判定へ反映し、CPUIDレジスタ読出しの専用マーカーでCortex-M4を確認する方式へ変更。
+  Interface=dap/hla、Serial、Traceを追加し、normalではreset_config noneを明示した。
+- doctorのprobe OK表示はUSB driverのみの確認と明記。報告電圧もVREF未結線時はMCU電源を示さないと明記。
+- flash.ps1はG4成果物をTarget=stm32f4xで書き込めてしまうため、F405専用ビルドが無い現状では拒否する。
+- test-probe-host.ps1で空白/Unicode/引用符/バックスラッシュ、stderr、exit 7、timeout終了の実プロセス試験PASS。
+  DebugビルドPASS。別ST-Link SN 0671FF515386665067011413を指定し、DAP 100/5kHzとHLA 100kHzで
+  再試験しSTLINK_JTAG_GET_IDCODE_ERRORを確認。HLA 100kHzは実ログでもclock speed 100kHzを確認。
+- 過去記述の訂正: このエラーはST-LinkのIDCODE取得失敗ステータスであり、信号が1ビットも返らないと
+  断定できない。NRSTケーブルを抜いても基板側NRST回路のLow固定は除外できない。
+  PIDだけのSTLINK-V3断定も撤回し、実際の報告V2J48M35を記録する。
+  初期HLA試験はtarget cfgによる速度上書きがあり、全速度/方式の組合せ試験済みという旧記述は不正確。
+- 現在: ソフト修正後も接続未成立。Flash/Option Bytes/プローブfirmwareの変更は未実施。
+  次: MCU pin7 NRSTの実電圧、全電源リードの電圧、同じケーブル/プローブの既知正常基板での対照試験。
+  同型プローブ2台には共通firmware/ケーブル問題が残り、MCU故障は未確定。
+- NUCLEO-G474REをWeActから給電し、現在接続中の外付けST-Link SN
+  `066CFF515386665067011518`を明示してnormal/under-reset 100kHzを対照試験したが、
+  両方とも同じ`init mode failed`。自作基板固有の故障は未確定で、外付けデバッガ配線、
+  WeAct側、またはNUCLEOオンボードST-LinkとのSWD競合を先に切り分ける。
+
+## 2026-09-21 Windowsツールチェーン導入・Debugビルド確認
+
+- `scripts/setup-windows.ps1 -WithZadig`を実行し、Arm GNU Toolchain 14.2.1、
+  CMake 4.4.3、Ninja 1.13.2、xPack OpenOCD 0.12.0系、Zadigが利用可能な状態になった。
+- `scripts/doctor.ps1`でbuild/flashはOK。ST-Link VCPはCOM4で正常だが、
+  当初ST-Link Debug InterfaceはProblem 28だった。Zadig実体をwinget package directoryから
+  管理者起動してInterface 0へWinUSBを割り当て、現在はprobeを含めdoctor全項目OK。
+- `scripts/build.ps1`のDebugビルド成功。FLASH 11100B/510KiB(2.13%)、
+  RAM 1584B/96KiB(1.61%)。ELF/HEX/BINを`build/debug/`へ生成した。
+- ビルドエラーなし。未使用static関数5件とGNU-stackに関するリンカー警告は残存。
+- `probe.ps1`のOpenOCD `-c`引数が`Start-Process`で空白分割される不具合を修正。
+  さらに`target/stm32g4x.cfg`が速度を2MHz、reset modeを上書きしていたため、overrideを
+  target cfg読込み後へ移し、明示`transport select swd`も追加した。JSON出力も有効。
+  修正後はST-Linkを認識しtarget voltage 3.238〜3.240Vを取得できたが、実速度5/100kHz、
+  DAP direct/HLA、normal/under-resetの全組合せで`init mode failed (unable to connect to the target)`。
+  PCからプローブまでのUSB通信は成立しているが、表示電圧はターゲットVREFではない。
+  SWDIO/SWCLK/NRST/GND配線・導通と実ターゲット電源の確認が次。
+- MCU向き・電源・端子導通をユーザー確認後にnormal/under-reset 100kHzを再試験したが同じ結果。
+  OpenOCD `-d3`では`STLINK_JTAG_GET_IDCODE_ERROR`で停止しており、STM32G4 target examineより前の
+  SWD IDCODE取得段階で応答がない。PCBネットリスト上はJ7=1 GND/2 SWCLK/3 SWDIO/4 NRST、
+  WeAct J2正本は5 NRST/7 GND/8 SWCLK/9 SWDIO。なおJ7にtarget VREF線は無いため、
+  OpenOCD表示の約3.238Vだけではターゲット3.3V給電の証明にならない。
+- NRST線を物理的に外した状態でもnormal 100kHz/5kHzとも同じIDCODE取得失敗。
+  NRST配線・reset回路によるSWD妨害は原因候補から除外。試験後は電源OFFでNRSTを戻す。
+- 別のST-Linkへ交換(COM5、同じVID:PID 0483:3752 / V2J48M35)してnormal 100kHzを再試験したが、
+  target voltage表示3.241827Vの後に同じIDCODE取得失敗。デバッガ個体差の可能性は低下。
+- Releaseビルドも成功。FLASH 9940B/510KiB(1.90%)、RAM 1568B/96KiB(1.60%)。
+  `scripts/*.ps1`全ファイルのPowerShell parser検査と`git diff --check -- firmware`も合格。
+  `test-host.sh`はこのWindows環境にPOSIX sh/native C compilerが無いため未実行。
+
+次:
+1. 無給電でSWDIO(PA13)、SWCLK(PA14)、NRST、GNDの導通・短絡とコネクタ向きを確認する。
+2. 給電時NRST Highを確認後、`scripts/probe.ps1 -SpeedKHz 100 -UnderReset`を再試行する。
+
+## 2026-09-21 CLI完結のハードウェア作業環境(doctor / probe / setup-windows)
+
+自作駆動基板の実装が終わり、ST-Linkを初めて接続した。GUI前提だと状態確認のたびに
+人の操作が必要でエージェントから何も見えないため、ビルド〜接続確認をCLIへ寄せた。
+
+### 追加・変更したスクリプト
+
+- `scripts/doctor.ps1`(新規): 環境状態を1コマンドで報告する読み取り専用スクリプト。
+  ツールチェーン有無と版、ST-Linkの列挙状態とドライバProblem code、COMポート一覧、
+  build成果物の有無とタイムスタンプを出す。`-Json`で機械可読。
+- `scripts/probe.ps1`(新規): SWDで接続してターゲット電圧・IDCODE・コア種別を読むだけの
+  生存確認。openocdがあればopenocd、無ければSTM32_Programmer_CLIへ自動で落ちる。
+  常駐しないようタイムアウトで必ずプロセスを落とす。`-Target stm32f4x`でODOM基板。
+- `scripts/setup-windows.ps1`(新規): Arm GCC / CMake / Ninja / openocd-xpack をwingetで
+  一括導入。導入済みはスキップし、何度実行してもよい。`-WhatIf`対応。
+- `scripts/flash.ps1`(変更): openocdでの書き込みに対応し、`auto`でopenocd→CubeProgrammerの
+  順に選ぶようにした。STのログインが必要なCubeProgrammer無しでも書き込める。
+- `scripts/toolchain.ps1`(変更): winget/xPackの導入先(`%LOCALAPPDATA%\Microsoft\WinGet\...`、
+  `xPacks`)も探索するようにし、`openocd`の解決と`Resolve-OpenOcdScriptsDir`を追加した。
+- `.claude/settings.json`(新規): doctor/probe/build/serial-monitor、USBデバイス照会、
+  winget検索などの読み取り系をallowlistへ入れ、都度の許可確認を減らした。
+  **flash.ps1は意図的に含めていない**(実機へ書き込む操作なので明示承認を残す)。
+
+### 実機側で判明したこと
+
+- ST-LinkはST-Link/V2-1(VID 0483/PID 3752、シリアル`066CFF515386665067011518`)。
+  仮想COM(MI_01)は`COM4`として正常、**デバッグI/F(MI_00)がProblem 28=ドライバ未インストール**。
+  この状態ではCubeProgrammerもopenocdもプローブを掴めない。基板の良否とは無関係。
+- 作業PCにはSTM32系ツールが一切入っていない(CubeProgrammer/CubeIDE/bundles/Arm GCC/CMake/Ninja
+  すべて未検出)。`firmware/PROGRESS.md`の過去のビルド実績は別PCでの作業と判断した。
+- wingetにSTMicro公式パッケージは無い(ST配布物がログイン必須のため)。Arm GCC 14.2.Rel1、
+  CMake、Ninja、openocd-xpack、Zadigはwingetで入る。
+
+### 現在の状態
+
+- スクリプトは全て構文チェック済み。`doctor.ps1`は実行して正しい結果を返すことを確認した
+  (build NG / flash NG / probe NG code 28)。`probe.ps1`はツール未導入時に
+  JSONで理由を返しexit 1することを確認した。
+- ツール未導入のため、ビルドと実機接続はまだ実行していない。
+
+### 次の作業
+
+1. `setup-windows.ps1`でwinget導入 → 新しいシェルで`doctor.ps1`がbuild OK/flash OKになることを確認。
+2. ST-LinkデバッグI/Fのドライバを入れる(ST公式CubeProgrammer同梱、またはZadigでWinUSB)。
+   `doctor.ps1`のprobe行がOKになるのが完了条件。
+3. `probe.ps1`でtarget voltage 3.3V付近とCortex-M4検出を確認する。これが駆動基板の
+   電源・SWD配線・はんだの一次判定になる(実装手順書PDF p.6 STEP 2-3)。
+
 
 ## 実機状態(2026-07-31 GUI/RAM空走ベスト設定)
 
@@ -2135,3 +2494,74 @@ Ki 100〜150 / angle_kp の詰め → 駆動モード実走テスト。
   R1停止median=75ms・max=1.300s。単輪の定常操舵と通信は3輪試験へ進める水準と判断した。
 - 次は3輪を浮上状態で組み、各輪の回転方向・ステア原点・車体指令への対応を確認する。
   成立後、250〜500rpm上限から接地試験へ進み、3輪同時動作時の電源・通信・停止ログを採る。
+
+## 2026-09-23 V1 CAN単体確認の着手
+
+- ユーザー方針: V2設計と並行し、V1でCAN・IMU等の最低限の機能を確認する。最初はCAN。
+- 前回のF405書込済みAMT102診断ファームはCAN未初期化。G474本体とは別ターゲットであり流用不可。
+- doctor実行: ビルド/書込ツールとSTLINK-V3MINIEドライバ正常、VCP=COM8。CANableのシリアル列挙なし（USB上にSTM32 Bootloaderは存在するが機器の同定は未実施）。
+- 現在: 対象がODOM F405か駆動G474か、およびCAN対向機をユーザーへ確認中。書込・ファーム変更・CAN送信は未実施。
+- 次: 対象/対向機を確定し、V1実基板のCAN端子と終端を照合。CAN単独診断で内部動作→外部送受信を確認し、結果を記録する。
+
+## 2026-09-23 V1 ODOM CAN診断ファーム実装・内部試験成功
+
+- 対象はユーザー指定のV1 ODOM F405、対向はUSB接続SH-C31A。USBがDFUから通常のcanable2 gs_usb (1D50:606F、serial 003800394633500E20303035)へ変化。
+- 独立can_f405ターゲットを追加。HSI silent loopbackのID/DLC/payload照合→HSE8MHz起動→Classic CAN 1Mbps通常モード。ベンチ専用6E4受信/6E5 echo/6E6 heartbeat。AMT/IMU/制御なし。
+- 初版はloopback init解除待ちで停止。PA11/12 AF9とRX pull-upを初回init前に移し修正。
+- build成功、1608byte HEXをV3MINIE SN 001C00363033511735393935へwrite/verify/reset。F405 ID=413/3.27V、SRAM phase=3/fault=0/loopbackOK=1/hseReady=1を実測。元sector0はbuild/debug/f405-sector0-before-can-20260923.binへ退避。
+- read-can-f405.ps1を追加し実行確認。test-can-f405.pyはUSB自身のechoを除外して全8byte返信を評価。専用venvをbuild/can-hostへ作成、構文検査済み。USB descriptor読取で停止しバス試験未実施。
+- 外部通信未合格: txOK=0/rx=0、TEC上昇とLEC=5。WindowsのCAN Interface 0がCode28 (ドライバ未導入)のためユーザーにWinUSB導入を依頼中。
+- V1 PCB照合: J2=1H/2L/3GND、U4 TCAN S=GND、SWD=J8 (J7はIMU)。詳細手順はfirmware/docs/ODOM_V1_CAN_BRINGUP.md。
+- 現在の書込済みはCAN診断版。次: WinUSB導入後に10往復echo/heartbeatとSWDカウンタを検証。異常ならH/L/GND、両端終端、U4電源/TXD/RXDの順に切分け。
+
+## 2026-09-23 USB-CAN WinUSB導入後の外部試験
+
+- ユーザーがZadigで導入。canable2 gs_usb Interface0のCode28が解消、USB操作可能。Interface1は未導入のままだがCAN Interface0とは別。
+- test-can-f405.py --count 10: 送信要求10、一致返信0、heartbeat0。F405実測もtxOK=0/rx=0、fault=0、loopback/HSE成功継続。外部CANは未成立。
+- F405 ESR LEC=5 (bit dominant error)、TEC増加。配線/トランシーバ/終端等の切分けが必要で、ドライバだけが原因とはしない。
+- USB報告CAN clock=170MHz、python-canでBRP10/TSEG1=12/TSEG2=4=1Mbps (SP76.47%)。feature=243でone-shot非対応。PCスクリプトへ実timing/one-shot対応/USB echo数表示を追加、構文検査成功。
+- USB側loopbackを一時設定し、固有8byteの送信echoを受信してstop。古い送信echoも残っていたため、F405成功とは混同しない。現在USB-CANはstop状態。
+- V1製造PCBの基板終端はR1=120R+SW1。J2 pin1=H/2=L/3=GNDとUSB-CANへの接続、USB 120RとSW1有効状態をユーザー確認待ち。
+- 次: 無給電H-L間約60ΩとH/L/GNDを確認して再試験。改善しなければU4電源(3=5V、5=3.3V、2/8=GND)、TXD1/RXD4の信号を実測。
+
+### CAN再試行（ユーザー「もっかい」）
+
+- 単体終端はUSB-CAN/基板とも120Ωとのユーザー報告。接続時の約60Ωは未確認。
+- 再試行時USB-CANが通常gs_usbとして存在せず、STM32 Bootloader (0483:DF11、2068306E4633)として列挙。PC試験はデバイス検出段階で停止し、10回通信試験は未実行。
+- F405は再起動後phase3/fault0/loopbackOK1/hseReady1、txOK0/rx0。次はUSB-CANのBOOT OFF→USB再接続後に再試験。
+- 続く再確認（「どう？」）でも0483:DF11のSTM32 Bootloaderのまま。gs_usb不在で試験開始不可。F405はphase3/fault0を維持。
+- さらに再確認（「どう」）も通常gs_usb不在、0483:DF11継続。スイッチ操作の案内を繰り返す前に、USB-CAN抜去で該当DFU機器が消えるかを確認し機器を同定する段階へ。
+- USB挿し直し後（「さした」）は通常1D50:606F canable2 gs_usb Interface0正常へ復帰。10回試験実行: matchedReplies=0/heartbeat=0/USB echo=3。USB echoはF405返信に数えない。F405はuptime186231ms、phase3/fault0/loopback1/HSE1、txOK0/txFail186/rx0、ESR=00D00053 (LEC5/TEC208)。USB-CANは試験終了stop。次は両者接続・無給電時のH-L抵抗と端点H/L/GND導通の現物値を確認。
+- 再試行（「どや」）: PC要求10/一致返信0/heartbeat0/USB echo3。F405再起動後uptime23035ms、txOK0/txFail23/rx0、fault0/loopback1/HSE1、LEC5/TEC184。接続状態のH-L抵抗測定値は未回答、外部通信未成立。
+- ユーザー実測: CAN H/Lとも2.45V、H-L間67Ω（測定時の給電条件は明示なし）。単体終端は両方120Ωとの前報告。DC同電位だけでは送受信正常と判定しない。次はV1 U4 TCAN1051Vの実ピン3(VCC)/5(VIO)/8(S)をpin2 GND基準で確認する。
+
+## 2026-09-23 CAN RX経路の高インピーダンス疑い
+
+- ユーザー回答: U4 pin3=5V/pin5=3.3V/pin8=0Vは全て正常。
+- MCU PA11/12のAF9/MODER設定とV1 PCB実ネット(U4.4→U1.44、U4.1→U1.45)を再確認。
+- can_f405へ起動時の短いGPIO TX High/Low/HighとRX入力弱pull試験を追加。USB-CAN stop状態で実施。build成功、1752byte HEXをwrite/verify/reset。
+- SRAM word24..27=BF0C/EF0C/FF0C/F70C。PA12実入力読取は1→0→1、PA11は1→1→1、PA11を弱pulldownにすると0。試験後TX/RX AF9とRX pull-upを復元して通常CANモード。
+- 判断: MCU側RXがU4の正常なpush-pull出力で強く駆動されていない可能性が高い。RX断線/はんだ不良/IC実装や損傷等の切分けを優先。CAN受信成功とはしない。
+- read-can-f405.ps1へ6個のpath診断値を追加して実機読取確認。詳細をODOM_V1_CAN_BRINGUP.mdへ追記。
+- 次: 無給電でU4実ピン4↔U1実ピン44、U4実ピン1↔U1実ピン45の抵抗。導通正常なら給電時U4実ピン4の対GND電圧と型番/向きを確認。
+- 再試行（「どうや」）: USB-CAN試験10要求/返信0/heartbeat0/USB echo3。直後のSWD読取はST-LINK target voltage=0.00V、No STM32 target foundで失敗。現時点では基板給電またはVTref/SWD接続の確認が先であり、以前のRX診断が継続しているとは判断しない。
+
+## 2026-09-23 V1 ODOM CAN外部送受信成功
+
+- ユーザー再確認（給電復帰後の「どうや」）でSWD接続と通常動作が復帰。ユーザーによる具体的な修正内容は未確認。
+- Classic CAN 1Mbps、test-can-f405.py --count 10: sent10/matchedReplies10/heartbeats10/errorFrames0。USB自身のecho17件は合格判定から除外。
+- F405試験前: uptime9481ms、txOK0/txFail9/rx0、ESR00480030 (ACK error/TEC72)。試験後: uptime19919ms、txOK20/txFail9/rx10、ESR00340000 (LEC0/TEC52/REC0)、busOff=false、fifoOverrun0/echoDrop0。試験中のtxFail増分0。
+- USB-CAN open前のheartbeatにはACK相手がいないため失敗が蓄積していた。残留TECを今回の試験中エラーと混同しない。
+- 判断: V1 ODOM MCU⇄TCAN1051⇄ケーブル⇄USB-CANの双方向8byte送受信が10往復成立。最小CAN機能確認は合格。高負荷/長時間/電源再投入再現性は未評価。
+- 起動時path診断の弱pulldown RXは以前0→今回1へ変化。一方RX at TX-lowは起動時snapshotで1のままだが、通常CAN通信は実測成功。単発起動試験を根拠に現時点の断線を断定しない。原因は修理内容の聴取後に確定する。
+- 現在: can_f405診断版1752byteを保持、PC試験終了でUSB-CAN stop。AMT102/IMU統合はまだなし。
+- 次: ユーザーの修正内容を記録。次機能はIMUのWHO_AM_I等の単体確認、またはCAN再現性試験。
+
+## 2026-09-23 終了時引継ぎ・次回の作業順
+
+- ユーザー指定で本日の実機作業はここまで。V1 ODOMのClassic CAN 1Mbps双方向10/10往復成功が到達点。
+- 次回（明日）の順序: (1) IMUの値を確認 → (2) 必要なジャンパを配線 → (3) AMT102エンコーダを確認。
+- IMUはICM-42688-P、まずWHO_AM_Iと加速度/角速度の生値を確認する。
+- ジャンパの具体的な接続元/先は次回現物で確定する。以前のバッファ電源ジャンパ施工済み記録と混同せず、今回追加する信号/電源経路を確認して記録する。
+- エンコーダは前回J4のPA0/PA1入力が内部pullに追従していた点を踏まえ、導通/バッファ出力確認後に手回しで正逆カウントを評価する。
+- 終了状態: F405はcan_f405診断ファーム（1752byte、AMT/IMU未統合）、USB-CANは試験終了stop。実機の電源OFFはソフトから実施していない。

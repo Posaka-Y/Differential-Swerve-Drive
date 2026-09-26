@@ -1,7 +1,11 @@
 # Teensy 4.1中央基板 Rev.A 回路図リファレンス
 
+> 2026-09-23: 本文は旧Rev.Aの参考。次回製造のCAN端子とコイルdriver搭載境界は最新一括発注計画に従う。中央回路図は改訂PDFを人が転記する。 詳細: [次回PCB一括発注計画](PCB_BATCH_V2_CENTRAL_PLAN.md)。
+
 作成: 2026-08-04
 状態: 人間レビュー用KiCad回路図の接続正本。`hardware/central-board/central-board.sch`をrootとする責務別6 child sheetsと同時に照合する。
+
+> **Rev.1注記(2026-09-14)**: Rev.1(コンタクタドライバ・24Vセンス・INA238を持たない構成)のKiCad転記用接続表は`CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md`を使う。本書のD2(コンタクタドライバ)、D4(モータバス電圧)、E(INA238部分)はRev.1で不採用。
 
 ## Rev.Aの範囲
 
@@ -11,7 +15,7 @@
 - CAN1/CAN2/CAN3トランシーバ、ESD、切替式120ohm終端、各バスIN/OUTコネクタ
 - 5V主入力保護、4ノード＋Teensy＋拡張のスター分配
 - E-stop直列ループ、個別補助接点監視、コンタクタコイルドライバ
-- コンタクタ後24Vセンス、INA238による外付けシャント監視
+- コンタクタ後24Vセンス、購入済みMatek I2C-INA-BMによる外部電流・電圧監視
 - 物理再アームボタン、基板状態LED、I2C/UART/SPI/GPIO拡張
 
 載せないもの:
@@ -34,11 +38,11 @@ J1 XT30PW-M
 ```
 
 - J1正式型番はAMASS `XT30PW-M`、横向きTHT、連続15A定格。5A入力に使用する。
-- U1はTI `TPS259470LRPWR`。真の逆流阻止、突入、過電流、過熱を扱い、USB接続中に`+5V_SYS`からDC-DC側へ逆流させない。負電圧を含む入力逆接は別の60V級series保護で扱う。
+- U1はTI `TPS259470LRPWR`。真の逆流阻止、突入、過電流、過熱を扱い、USB接続中に`+5V_SYS`からDC-DC側へ逆流させない。入力逆極性保護はTPS259470の内蔵back-to-back FETで扱う（連続5Aに使えない`LM66100`や別series diodeは中央主入力へ追加しない）。ただし絶対最大はIN=28V、負電圧=-15Vなので、24V側の大きなサージを5V出力へ通さないことはDC-DC側の責務とする。
 - `RILM=750ohm`を初期値とし、過電流閾値はtyp 4.45A。想定1〜2A負荷に十分な余裕を持たせつつ、5A DC-DCと配線を保護する。
-- UVLO/OVLOはDC-DC出力公差、TPS259470 comparator公差、抵抗公差を含むworst-case計算後に決める。Teensy VIN推奨上限5.5Vに近いOVLO nominal 5.45Vは確定値として使わない。
-- `dVdt`は全枝の実装容量を積算し、起動時の出力立上り20〜50msを目標に決める。初版は22nFを実装し、10nF/47nFへ交換可能にする。
-- U1直近に1uF入力、1uF出力、J1近傍に100uF/10V、スター点に470uF/10V low-ESRを置く。
+- SD-25B-5を5.00Vへ調整・封印した前提で、UVLO/OVLO dividerは1% `R102=732k` (IN→EN/UVLO)、`R103=51.1k` (EN/UVLO→OVLO)、`R104=221k` (OVLO→GND) とする。typ設定値はUVLO rising約4.43V、OVLO rising約5.46V。これは異常時の切離しであり、SD-25B-5の出力trimを5.5Vまで上げてよい意味ではない。組立時に無負荷/定格負荷で5.00V±0.10Vを記録する。
+- `dVdt`は全枝の実装容量を積算し、起動時の出力立上り20〜50msを目標に決める。初版は`C_dVdt=10nF`（5Vでtyp約25ms）とし、22nF/47nFへ交換可能にする。
+- U1直近に1uF入力、1uF出力、J1近傍に100uF/10V、スター点に470uF/10V low-ESRを置く。`FLT`は10kohmで3.3Vへpull-upし`PWR_5V_FAULT_N`へ接続する。
 - `FLT`は10kohmで3.3Vへpull-upし`PWR_5V_FAULT_N`へ接続する。
 - 2mm角QFNのため、データシート推奨land patternと熱viaを使用し、表裏GND copperへ放熱する。
 
@@ -59,9 +63,20 @@ PPTC後を個別ネット`+5V_UNIT1`等とし、各枝へtest pointを置く。P
 
 - 回路図では1x24 connectorを2個使い、socket pad番号1〜48を`TEENSY41_CENTRAL_PIN_ASSIGNMENT.md`どおりに割り当てる。
 - ソケットはPJRC推奨のSullins `PPPC241LFBN-RC`または`PPTC241LFBN-RC` x2を第一候補とする。Teensy側header候補はAmphenol `68000-224HLF`。
-- 列間17.78mm。Teensy外形60.96mm x 17.78mmとmicro USB plugの抜差し領域をF.CrtYd相当のkeepoutにする。
+- 列中心間15.24mm。Teensy外形60.96mm x 17.78mmとmicro USB plugの抜差し領域をF.CrtYd相当のkeepoutにする。
 - Teensy直下は裏面実装部品との干渉を避けるため、部品、test point、露出pad/copperを全面禁止する。microSD、Program button、micro USBの交換・操作空間も塞がない。
 - 組立工程にVUSB-VINパッド切断と導通検査を入れる。
+
+### B1. USB給電diode-OR(2026-09-12追加)
+
+```text
++5V_SYS -> D1(Schottky) -\
+                           +-> VIN(pad48)
+Teensy VUSBパッド -> D2(Schottky) -/
+```
+
+- VUSB-VINパッドは従来通りカット。カット後のVUSBパッドからD2を介してVINへ接続する。
+- D1/D2はNexperia `PMEG2010EA,115`（20V/1A low-VF、SOD-323）を初期指定とする。逆流はTPS259470側で別途保護済みのためD1はOR用途のみ。USB側D2の電流はTeensy単体のUSB給電電流だけを前提とし、外部5V枝をUSBから給電させない。
 
 ## C. CAN x3
 
@@ -109,9 +124,10 @@ PPTC後を個別ネット`+5V_UNIT1`等とし、各枝へtest pointを置く。P
 
 ### D3. E-stop監視
 
-- U5: `LTV-847S` 4ch optocoupler。ch1=直列ループ、ch2/3=個別補助接点、ch4=予備24V入力。
-- 各入力は2.2kohm x2直列を初期値とし、逆電圧保護diodeをLED逆並列に置く。24V時約5mAとして、LTV-847Sのminimum CTR test条件に合わせる。入力電圧範囲と抵抗損失をworst-case確認する。
-- transistor側は10kohmで3.3V pull-up。Low=接点成立なので`*_OK_N`と命名する。
+- U5: `LTV-847S` 4ch optocoupler。ch1=直列ループ、ch2/3=個別補助接点、ch4=予備24V入力。実pinはch1=`A1/K2, C16/E15`、ch2=`A3/K4, C14/E13`、ch3=`A5/K6, C12/E11`、ch4=`A7/K8, C10/E9`で固定する(**2026-09-14訂正**: 旧記載「ch1=E9/C10 … ch4=E15/C16」はLite-On BNS-OD-C131/A4の内部接続図と不一致。DIPのミラー対でLED 1/2はTr 16/15と組む。`reference-2026-09-12/`の安全シートは旧対応のままなので流用しない)。
+- `LTV-847S`は標準SOIC-16ではない。購入リール実物とLite-On outlineを照合して、wide 2.54mm-pitch SMD用の専用footprintを`hardware/lib/`へ起こすまでPCBフットプリントは空欄とする。
+- 各使用入力は2.2kohm x2直列（R10A/R10B等）と`1N4148W`のLED逆並列保護を置く。24V時は約5mA、抵抗合計4.4kohmの損失は約0.12Wなので各0603へ約60mWずつ配分される。24V制御電源の上限を30Vとしても各抵抗は約75mWに留める。
+- transistor側は各chのcollectorを10kohmで3.3Vへpull-up、emitterをGND_CTRLへ接続する。Low=接点成立なので`*_OK_N`と命名する。
 - フォトカプラは診断用であり、安全遮断の主経路ではない。
 
 ### D4. モータバス電圧
@@ -122,22 +138,31 @@ PPTC後を個別ネット`+5V_UNIT1`等とし、各枝へtest pointを置く。P
 
 ## E. バッテリー電圧・電流監視
 
-- U6: `INA238AIDGSR`、3.3V給電、I2C0、A0/A1=GNDでaddress 0x40。
-- 主電流を中央PCBへ通さない。外付け100A/75mV、0.75mohm、Kelvin端子付きシャントをバッテリー高側へ置き、2本のsense線だけをGH2へ入れる。
-- 83A時shunt drop=62.25mV、損失=約5.17W。100A時75mVでINA238の163.84mV range内。
-- battery側の各sense線起点にfusible resistorまたはsmall fuseを置く。board側10ohmだけではbattery short時のharnessを保護できない。sense connector -> 10ohm各線 -> INA238 IN+/IN-、差動10nFを初期値とし、配線は対で引いてshunt上でKelvin接続する。
-- VBUSはshunt負荷側を1kohm経由で接続する。ALERTは10kohm pull-upで`BAT_MON_ALERT_N`へ接続する。
-- 外付けシャントの正式型番は機体分電盤の機械取付寸法を確認後に確定する。0.75mohm/5W以上、100A連続、Kelvin端子を最低条件とする。
+- 購入済みのMatek `I2C-INA-BM`を中央PCB外へ置く。内蔵INA228/INA238系と200uΩ typシャントで、主電源の正側をモジュールのBAT+側からESC+/負荷側へ直列に通す。中央PCBに主電流もKelvin sense harnessも入れない。
+- 中央PCBのJ20はJST-GH 4pinで、**pin 1=GND、pin 2=I2C0_SDA、pin 3=I2C0_SCL、pin 4=+5V_SYS**。Matekは5V pinへ4〜9Vを要するため、Teensyの3.3V枝には接続しない。
+- I2C addressは既定のdecimal 69（0x45）。必要時だけモジュールのaddress jumperで68（0x44）または65（0x41）へ変更する。`BAT_MON_ALERT_N`はこのモジュール接続では使用しない。
+- 公称は0〜85V、連続150A／burst 204.8A、電流精度±2%。内蔵シャント損失は200uΩ typなので、83Aで約1.38W、150Aで約4.5W。電源線・端子・熱設計が連続電流を満たすことを実機確認する。
+- I2C信号のプルアップ電圧はモジュール実装状態で確認する。Teensy GPIOへ5Vを印加しないこと（3.3V logicであること）を通電前の必須確認とする。
 
 ## F. 操作・拡張
 
 - `REARM_SW_N`: 基板上タクトスイッチ、10kohm pull-up、100nF。GUIだけではコンタクタを再励磁できない。
 - status LED: 赤/緑を各1個、GPIOから1kohmを介して駆動。電源LEDと状態LEDをシルクで区別する。
-- I2C0/I2C1: GH4、1=3.3V、2=GND、3=SDA、4=SCL。2.2kohm pull-upはsolder jumperで切離し可能。
+- I2C0/I2C1拡張: GH4、1=3.3V、2=GND、3=SDA、4=SCL。2.2kohm pull-upはsolder jumperで切離し可能。Matek用J20は別系統で、1=GND、2=SDA、3=SCL、4=5Vとする。
 - UART x2: GH3、1=GND、2=TX、3=RX。
 - SPI: GH7、1=3.3V、2=GND、3=SCK、4=MOSI、5=MISO、6=CS0_N、7=CS1_N。
 - GPIO/ADC: GH10、1=3.3V、2=GND、3〜10=IO x8。各IOに100ohm直列抵抗。
 - 3.3V外部負荷は全拡張合計100mAをRev.A上限とし、Teensy推奨外部250mAに余裕を残す。
+
+### F1. 拡張ヘッダTVS/アクティビティLED(2026-09-12追加)
+
+```text
+GHコネクタ -> SRV05-4(pin5=+3V3_TEENSY, pin2=GND_CTRL) -> Teensy pin
+既存信号net(TXD/RXD/SCK等) -> digital transistor -> LED
+```
+
+- `SRV05-4`(SOT-23-6、4ch)をI2C(1個・4本)、UART(1個・4本)、SPI(2個・5本使用)、GPIO/ADC(2個・8本)へ計6個配置する。新規Teensy pinは消費しない。
+- アクティビティLEDは既存信号netを直接タップし、GPIOを追加消費しない。ただしUART/CANのidle HIGHを単純なNPNへ入れると常時点灯になるため、Rev.AはLED用footprintとtap padのみDNPで残し、RC one-shotまたは専用bufferを別途実測してから実装する。予備pin 33/37/38/39はそのまま温存する。
 
 ## G. PCB制約
 
@@ -156,13 +181,13 @@ PPTC後を個別ネット`+5V_UNIT1`等とし、各枝へtest pointを置く。P
 3. ダミー24V/80mAコイルでE-stop抜去、各NC開放、Teensy reset、MOSFET OFFを試験する。
 4. コンタクタ実物でGate、Drain、coil voltageを測り、Q1 VDSと解放時間を確認する。
 5. CAN各busを終端60ohm合成、1Mbps、CAN3 FD 2Mbps+BRSで連続試験する。
-6. 100A/75mV shuntを既知電流で校正し、INA238とクランプメータの差を記録する。
+6. I2C-INA-BMを既知電流でクランプメータと比較し、I2C pull-up電圧・電流値・温度上昇を記録する。
 
 ## 参照データシート
 
 - PJRC Teensy 4.1 product page / pinout card
 - TI `TPS25947` Rev.C (2026-05)
-- TI `INA238` Rev.B (2025-05)
+- Matek `I2C-INA-BM` product page / wiring guide（購入済み外部モジュール）
 - Infineon `IRLML0100`
 - Lite-On `LTV-8X7` series Rev.S
 - PJRC 24x1 header/socket guidance、Sullins `PPPC241LFBN-RC` / `PPTC241LFBN-RC`

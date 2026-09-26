@@ -1,0 +1,15 @@
+{
+  "physical_parts": 169,
+  "symbol_units": 172,
+  "schematic_sheets": 8,
+  "shared_nets": 0,
+  "duplicate_reference_unit_pairs": 0,
+  "custom_pinmaps": "match input inventory",
+  "teensy_pad_set": "1..48 matches dedicated footprint",
+  "assigned_footprints": "all exist",
+  "erc_expected_only": {
+    "pin_not_connected": 464,
+    "pin_not_driven": 11,
+    "power_pin_not_driven": 13
+  }
+}

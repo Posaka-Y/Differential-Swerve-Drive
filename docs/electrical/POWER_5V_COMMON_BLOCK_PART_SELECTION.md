@@ -7,7 +7,7 @@
 ```text
 中央基板: 5V/5A入力(XT30) -> 枝別PPTC -> 枝LED -> GH 2pin -> ハーネス
 G474基板: GH 2pin -> LM66100 -> PWR_5V -> 5V負荷
-                                              -> TLV1117LV33 -> 3V3
+                                              -> TLV76133 -> 3V3
 ```
 
 ## 正式採用品
@@ -15,7 +15,7 @@ G474基板: GH 2pin -> LM66100 -> PWR_5V -> 5V負荷
 | 用途 | 採用品 | パッケージ | 決定理由 |
 |---|---|---|---|
 | G474基板5V逆接・逆流保護 | `LM66100DCKR` | SC70-6 | Active、1.5A、1.5～5.5V、代表79mΩ。`CE_N`をVOUTへ接続するRPP+RCB構成とし、逆極性と逆電流を遮断する |
-| 5V→3.3V LDO | `TLV1117LV33DCYR` | SOT-223 | Active、1A、2～5.5V入力、代表dropout 455mV。セラミックコンデンサで安定し、熱パッドのないリード付き外形で実装・交換しやすい |
+| 5V→3.3V LDO | `TLV76133DCYR` | SOT-223 | Active、1A、2.5～18V入力、1µF以上のセラミック出力コンデンサで安定。旧TLV1117LV33DCYRと同一ピン配置 |
 | G474ノード枝PPTC | `1206L050/15YR` | 1206 | Active、15V、20℃でIhold 0.50A/Itrip 1.00A。GH/AWG26の枝故障を中央基板で局所化する |
 | 5V電源コネクタ | `SM02B-GHS-TB` | 横挿しSMT | GH 2極、1.25mm、ロック付き。ハウジング`GHR-02V-S`、圧着端子`SSHL-002T-P0.2`、AWG26を原則とする |
 | 枝電源LED | `LTST-C190KGKT` | 0603 | Active、緑、広く流通する標準部品。5V表示は`RC0603FR-071K5L` 1.5kΩを直列にする |
@@ -25,13 +25,13 @@ Rev.Aの2026-07-25 DigiKey調達BOMでは、入力・LDO周辺コンデンサを
 | 基板リファレンス | 採用品 | DigiKey品番 | 仕様/注意 |
 |---|---|---|---|
 | `C101` | `GCM21BR71E225KA73L` | `490-4787-1-ND` | 2.2uF、25V、X7R、±10%、0805。LM66100 VIN直近 |
-| `C202,C204` | `C2012X7R1A106K125AC` | `445-6857-1-ND` | 10uF、10V、X7R、±10%、0805。TLV1117LV入出力 |
+| `C202,C204` | `C2012X7R1A106K125AC` | `445-6857-1-ND` | 10uF、10V、X7R、±10%、0805。TLV761入出力 |
 
-`C202,C204`は5V/3.3V印加時のDC bias後実効容量を実装前にメーカー特性表で確認する。TLV1117LVの安定動作に必要な最小容量を下回る代替品へ置換しない。
+`C202,C204`は5V/3.3V印加時のDC bias後実効容量を実装前にメーカー特性表で確認する。TLV761の安定動作に必要な最小1uFを下回る代替品へ置換しない。
 
 正本資料:
 
-- [TI TLV1117LV製品ページ](https://www.ti.com/product/TLV1117LV/part-details/TLV1117LV33DCYR)、[データシート](https://www.ti.com/lit/ds/symlink/tlv1117lv.pdf)
+- [TI TLV761製品ページ](https://www.ti.com/product/TLV761/part-details/TLV76133DCYR)、[データシート](https://www.ti.com/lit/ds/symlink/tlv761.pdf)
 - [TI LM66100製品ページ](https://www.ti.com/product/LM66100/part-details/LM66100DCKR)、[データシート](https://www.ti.com/lit/ds/symlink/lm66100.pdf)
 - [Littelfuse 1206L050/15製品ページ](https://www.littelfuse.com/de/products/fuses-overcurrent-protection/polyswitch-resettable-pptc-devices/surface-mount-polyswitch-resettable-pptc-devices/1206l/1206l050-15)、[1206Lデータシート](https://www.littelfuse.com/assetdocs/littelfuse-ptc-1206l-datasheet?assetguid=2b6a1515-d4ee-4c83-8bd4-152b4901b8f5)
 - [JST GHシリーズ](https://www.jst-mfg.com/product/index.php?series=105)
@@ -44,7 +44,7 @@ Rev.Aの2026-07-25 DigiKey調達BOMでは、入力・LDO周辺コンデンサを
 - `SM02B-GHS-TB` pin 1=`PWR_5V_IN`、pin 2=`GND_CTRL`。
 - `LM66100DCKR`: VINへ入力、VOUTを`PWR_5V`、`CE_N`はVOUTへ接続、STとNCは未接続。TIデータシート8.3節のRPP+RCB構成とし、逆極性保護に加えて出力側から入力側への逆流を遮断する。VIN側へ2.2uF以上を置く。
 - LDO入力は100nF + 10uF、出力は100nF + 10uFのX7Rを初期値とする。各容量はDC bias後もデータシート最小値を下回らない品を選ぶ。
-- `TLV1117LV33DCYR`のタブはVOUT。広い3.3V銅箔へ接続し、誤ってGNDヒートシンクへ接続しない。
+- `TLV76133DCYR`のタブはVOUT。広い3.3V銅箔へ接続し、誤ってGNDヒートシンクへ接続しない。
 - 5V負荷は`TCAN1051VDRQ1`、AMT22/AMT102等。3.3V負荷はSTM32G474、VIO、IMU等とする。
 
 ### 中央基板のG474枝
@@ -73,6 +73,9 @@ SOT-223の1A表記は熱的に1Aを常用できる意味ではない。VOUTタ�
 
 | 候補 | 判断 |
 |---|---|
+| `TLV1117LV33DCYR` | 電気・実装条件は成立するが生産中止のため、2026-09-06に`TLV76133DCYR`へ変更 |
+| `BD33KA5FP-E2` / `BD33KA5WFP-E2` | TO-252で既存SOT-223 footprintに載らないため不採用 |
+| `NCP1117LPST33T3G` / `NCP1117ST33T3G` | SOT-223のピン配置は合うが、既存の低ESRセラミック出力コンデンサで安定条件を保証できないため不採用 |
 | `MCP1826S-3302E/DB` | セラミック安定・SOT-223で成立するが、今回の調査ではTLV1117LVより少量価格と流通の利点が弱いため代替候補へ移す |
 | `AMS1117-3.3` | メーカー違いの互換品が多く、出力コンデンサESR条件とdropoutが採用品より厳しいため新規採用しない |
 | ショットキーダイオード逆接保護 | 単純だが電圧降下が常時発生し、5V末端電圧の余裕を減らす |
