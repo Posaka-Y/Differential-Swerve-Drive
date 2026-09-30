@@ -1,3 +1,5 @@
+> **2026-09-30 X402更新:** 現行`hardware/central-board/central-board/safety-1.kicad_sch`のX402を3端子銅箔ネットタイ（`NetTie:NetTie-3_SMD_Pad2.0mm`）として選定・footprint割当済み。3帰路をPCB上の1点で結合する。PCBへの配置・配線、外部重複結合の確認、DRCは残件。以下のX402=TBDは旧履歴。
+
 > **2026-09-29採用更新:** ユーザー承認によりX401を **D405: Alpha & Omega Semiconductor SMBJ33CA（双方向TVS）**へ置換。J402-1（ESTOP_LOOP_RETURN/COIL_POS）とJ402-2（COIL_NEG）の間へ並列。symbol=`Device:D_TVS`、footprint=`Diode_SMD:D_SMB`。型番選定・KiCad反映済み、実ハーネスでのサージ/吸収エネルギー/解放10ms以内は実測残件。X402帰路結合は未確定。
 
 > **中央 2026-09-29:** 電源/CAN以外をKiCadへ配線。F402=LED枝保護TBD、X401=コイルクランプTBD、X402=帰路結合TBD（3ネット間の導通なし）として可視化。部品選定/帰路確定が完了した意味ではない。[詳細と残件](CENTRAL_NONPOWER_WIRING_2026-09-29.md)。
