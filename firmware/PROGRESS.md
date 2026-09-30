@@ -1,5 +1,10 @@
 # Firmware progress
 
+## 2026-09-26 中央GUI/物理ボタン共通ARM判定コア
+
+- central_firmwareにArmControllerを追加しCMakeへ登録。GUIイベントとSW211の新規押下を安全条件で共通判定。停止世代/boot session/sequenceで旧要求を排除、ARMとRUNを分離。中央仕様/ピン表/GUI接続仕様/ADRを更新。STM32 firmwareは変更なし。
+- 現在: ハード非依存コアのみ。ビルド・テスト・書き込み未実施。次: Teensy安全I/O/USB adapterと本体GUI、freshness/debounce/session発行/C620立上がり確認を接続し、停止・再接続・押しっぱなし等を検証する。
+
 最終更新: 2026-09-22(F405 AMT102読取ファーム書き込み、手回し検証待ち)
 
 ## 2026-09-22 AMT102 F405生カウント読取の準備

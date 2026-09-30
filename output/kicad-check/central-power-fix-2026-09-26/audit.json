@@ -1,0 +1,12 @@
+{
+  "checked_named_connections": 65,
+  "checked_internal_networks": 6,
+  "unit_supply_branches": 4,
+  "power_sheet_erc": 0,
+  "whole_project_erc": 383,
+  "physical_components": 174,
+  "duplicate_reference": 0,
+  "efuse_pin_set": "1..10",
+  "footprint_copper_lands": 14,
+  "footprint_geometry": "unchanged; split pads share same terminal numbers"
+}

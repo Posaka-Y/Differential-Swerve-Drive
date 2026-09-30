@@ -24,7 +24,7 @@ for i in [101,102]:add(f'D{i}','PMEG2010EA,115','Device:D_Schottky','Diode_SMD:D
 for i,n in enumerate(['+5V_RAW','+5V_SYS','VIN_TEENSY','GND_CTRL','PWR_5V_FAULT_N'],101):tp(f'TP{i}',n,i==105)
 p=sheet('S02B_star_teensy','Star power / Teensy / indicators')
 for i in range(201,207):
-    add(f'F{i}','1206L075/16YR' if i==205 else '1206L050/15YR','Device:Polyfuse','Fuse:Fuse_1206_3216Metric','Rating review pending' if i>=205 else '', 'provisional' if i>=205 else 'documented')
+    add(f'F{i}','1206L075/16WR' if i==205 else '1206L050/15YR','Device:Polyfuse','Fuse:Fuse_1206_3216Metric','Rating review pending' if i>=205 else '', 'provisional' if i>=205 else 'documented')
     add(f'D{i}','LTST-C190KGKT','Device:LED','LED_SMD:LED_0603_1608Metric');r(f'R{i}','1.5k')
     if i<=204:gh(f'J{i}',2,'1=5V branch / 2=GND')
 add('J210','Teensy 4.1 socket','CentralPlacement:Teensy41_Socket','DifferentialSwerve:Teensy41_Socket_2x24','単一48pinは旧J210/J211の代替。列中心間15.24mm、pad順は転記資料3.2。socket実物/ドリル照合は未完了', 'mechanical_review')

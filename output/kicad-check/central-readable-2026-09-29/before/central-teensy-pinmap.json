@@ -1,0 +1,594 @@
+{
+  "source": "docs/electrical/CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md",
+  "source_policy": "Rev.1 48pad table overrides older Rev.A assignments; ARCHITECTURE_DECISIONS 2026-09-23 applies. Placement-only, no wiring. September 26: pad11 USB eFuse fault input proposal.",
+  "footprint": "DifferentialSwerve:Teensy41_Socket_2x24",
+  "verified_pad_set": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48
+  ],
+  "notes": [
+    "Symbol pin numbers are socket pads, not Teensy GPIO numbers.",
+    "Pad 4 remains MOTOR_PWR_EN. Pad 11 is PWR_USB_FAULT_N (proposal); pad 36 remains NC.",
+    "Pad 48 is VIN_TEENSY after diode OR, not +5V_SYS directly.",
+    "Pads 15 and 46 are 3.3V outputs. VUSB is not in this 48pad socket.",
+    "USB at footprint x negative; rows are 15.24mm apart.",
+    "NC flags describe intended unused functions; placement-only drawing may leave NC markers for later wiring."
+  ],
+  "pins": [
+    {
+      "pad": 1,
+      "teensy_pin": "GND",
+      "signal": "GND_CTRL",
+      "electrical_type": "power_in",
+      "unused": false,
+      "footprint_xy_mm": [
+        0.0,
+        7.62
+      ]
+    },
+    {
+      "pad": 2,
+      "teensy_pin": "0",
+      "signal": "CAN2_RX",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        2.54,
+        7.62
+      ]
+    },
+    {
+      "pad": 3,
+      "teensy_pin": "1",
+      "signal": "CAN2_TX",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        5.08,
+        7.62
+      ]
+    },
+    {
+      "pad": 4,
+      "teensy_pin": "2",
+      "signal": "MOTOR_PWR_EN",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        7.62,
+        7.62
+      ]
+    },
+    {
+      "pad": 5,
+      "teensy_pin": "3",
+      "signal": "ESTOP_LOOP_OK_N",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        10.16,
+        7.62
+      ]
+    },
+    {
+      "pad": 6,
+      "teensy_pin": "4",
+      "signal": "ESTOP1_AUX_OK_N",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        12.7,
+        7.62
+      ]
+    },
+    {
+      "pad": 7,
+      "teensy_pin": "5",
+      "signal": "ESTOP2_AUX_OK_N",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        15.24,
+        7.62
+      ]
+    },
+    {
+      "pad": 8,
+      "teensy_pin": "6",
+      "signal": "REARM_SW_N",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        17.78,
+        7.62
+      ]
+    },
+    {
+      "pad": 9,
+      "teensy_pin": "7",
+      "signal": "STATUS_G_LED",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        20.32,
+        7.62
+      ]
+    },
+    {
+      "pad": 10,
+      "teensy_pin": "8",
+      "signal": "STATUS_R_LED",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        22.86,
+        7.62
+      ]
+    },
+    {
+      "pad": 11,
+      "teensy_pin": "9",
+      "signal": "PWR_USB_FAULT_N",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        25.4,
+        7.62
+      ],
+      "status": "proposed"
+    },
+    {
+      "pad": 12,
+      "teensy_pin": "10",
+      "signal": "SPI_CS0_N",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        27.94,
+        7.62
+      ]
+    },
+    {
+      "pad": 13,
+      "teensy_pin": "11",
+      "signal": "SPI_MOSI",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        30.48,
+        7.62
+      ]
+    },
+    {
+      "pad": 14,
+      "teensy_pin": "12",
+      "signal": "SPI_MISO",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        33.02,
+        7.62
+      ]
+    },
+    {
+      "pad": 15,
+      "teensy_pin": "3.3V",
+      "signal": "+3V3_TEENSY",
+      "electrical_type": "power_out",
+      "unused": false,
+      "footprint_xy_mm": [
+        35.56,
+        7.62
+      ]
+    },
+    {
+      "pad": 16,
+      "teensy_pin": "24/A10",
+      "signal": "IO24_A10",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        38.1,
+        7.62
+      ]
+    },
+    {
+      "pad": 17,
+      "teensy_pin": "25/A11",
+      "signal": "IO25_A11",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        40.64,
+        7.62
+      ]
+    },
+    {
+      "pad": 18,
+      "teensy_pin": "26/A12",
+      "signal": "IO26_A12",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        43.18,
+        7.62
+      ]
+    },
+    {
+      "pad": 19,
+      "teensy_pin": "27/A13",
+      "signal": "IO27_A13",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        45.72,
+        7.62
+      ]
+    },
+    {
+      "pad": 20,
+      "teensy_pin": "28",
+      "signal": "UART7_RX",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        48.26,
+        7.62
+      ]
+    },
+    {
+      "pad": 21,
+      "teensy_pin": "29",
+      "signal": "UART7_TX",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        50.8,
+        7.62
+      ]
+    },
+    {
+      "pad": 22,
+      "teensy_pin": "30",
+      "signal": "CAN3_RX",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        53.34,
+        7.62
+      ]
+    },
+    {
+      "pad": 23,
+      "teensy_pin": "31",
+      "signal": "CAN3_TX",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        55.88,
+        7.62
+      ]
+    },
+    {
+      "pad": 24,
+      "teensy_pin": "32",
+      "signal": "PWR_5V_FAULT_N",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        58.42,
+        7.62
+      ]
+    },
+    {
+      "pad": 25,
+      "teensy_pin": "33",
+      "signal": "NC",
+      "electrical_type": "no_connect",
+      "unused": true,
+      "footprint_xy_mm": [
+        58.42,
+        -7.62
+      ]
+    },
+    {
+      "pad": 26,
+      "teensy_pin": "34",
+      "signal": "UART8_RX",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        55.88,
+        -7.62
+      ]
+    },
+    {
+      "pad": 27,
+      "teensy_pin": "35",
+      "signal": "UART8_TX",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        53.34,
+        -7.62
+      ]
+    },
+    {
+      "pad": 28,
+      "teensy_pin": "36",
+      "signal": "SPI_CS1_N",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        50.8,
+        -7.62
+      ]
+    },
+    {
+      "pad": 29,
+      "teensy_pin": "37",
+      "signal": "NC",
+      "electrical_type": "no_connect",
+      "unused": true,
+      "footprint_xy_mm": [
+        48.26,
+        -7.62
+      ]
+    },
+    {
+      "pad": 30,
+      "teensy_pin": "38",
+      "signal": "NC",
+      "electrical_type": "no_connect",
+      "unused": true,
+      "footprint_xy_mm": [
+        45.72,
+        -7.62
+      ]
+    },
+    {
+      "pad": 31,
+      "teensy_pin": "39",
+      "signal": "NC",
+      "electrical_type": "no_connect",
+      "unused": true,
+      "footprint_xy_mm": [
+        43.18,
+        -7.62
+      ]
+    },
+    {
+      "pad": 32,
+      "teensy_pin": "40/A16",
+      "signal": "IO40_A16",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        40.64,
+        -7.62
+      ]
+    },
+    {
+      "pad": 33,
+      "teensy_pin": "41/A17",
+      "signal": "IO41_A17",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        38.1,
+        -7.62
+      ]
+    },
+    {
+      "pad": 34,
+      "teensy_pin": "GND",
+      "signal": "GND_CTRL",
+      "electrical_type": "power_in",
+      "unused": false,
+      "footprint_xy_mm": [
+        35.56,
+        -7.62
+      ]
+    },
+    {
+      "pad": 35,
+      "teensy_pin": "13",
+      "signal": "SPI_SCK",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        33.02,
+        -7.62
+      ]
+    },
+    {
+      "pad": 36,
+      "teensy_pin": "14/A0",
+      "signal": "NC",
+      "electrical_type": "no_connect",
+      "unused": true,
+      "footprint_xy_mm": [
+        30.48,
+        -7.62
+      ]
+    },
+    {
+      "pad": 37,
+      "teensy_pin": "15/A1",
+      "signal": "NC",
+      "electrical_type": "no_connect",
+      "unused": true,
+      "footprint_xy_mm": [
+        27.94,
+        -7.62
+      ]
+    },
+    {
+      "pad": 38,
+      "teensy_pin": "16/A2",
+      "signal": "I2C1_SCL",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        25.4,
+        -7.62
+      ]
+    },
+    {
+      "pad": 39,
+      "teensy_pin": "17/A3",
+      "signal": "I2C1_SDA",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        22.86,
+        -7.62
+      ]
+    },
+    {
+      "pad": 40,
+      "teensy_pin": "18/A4",
+      "signal": "I2C0_SDA",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        20.32,
+        -7.62
+      ]
+    },
+    {
+      "pad": 41,
+      "teensy_pin": "19/A5",
+      "signal": "I2C0_SCL",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        17.78,
+        -7.62
+      ]
+    },
+    {
+      "pad": 42,
+      "teensy_pin": "20/A6",
+      "signal": "IO20_A6",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        15.24,
+        -7.62
+      ]
+    },
+    {
+      "pad": 43,
+      "teensy_pin": "21/A7",
+      "signal": "IO21_A7",
+      "electrical_type": "bidirectional",
+      "unused": false,
+      "footprint_xy_mm": [
+        12.7,
+        -7.62
+      ]
+    },
+    {
+      "pad": 44,
+      "teensy_pin": "22/A8",
+      "signal": "CAN1_TX",
+      "electrical_type": "output",
+      "unused": false,
+      "footprint_xy_mm": [
+        10.16,
+        -7.62
+      ]
+    },
+    {
+      "pad": 45,
+      "teensy_pin": "23/A9",
+      "signal": "CAN1_RX",
+      "electrical_type": "input",
+      "unused": false,
+      "footprint_xy_mm": [
+        7.62,
+        -7.62
+      ]
+    },
+    {
+      "pad": 46,
+      "teensy_pin": "3.3V",
+      "signal": "+3V3_TEENSY",
+      "electrical_type": "power_out",
+      "unused": false,
+      "footprint_xy_mm": [
+        5.08,
+        -7.62
+      ]
+    },
+    {
+      "pad": 47,
+      "teensy_pin": "GND",
+      "signal": "GND_CTRL",
+      "electrical_type": "power_in",
+      "unused": false,
+      "footprint_xy_mm": [
+        2.54,
+        -7.62
+      ]
+    },
+    {
+      "pad": 48,
+      "teensy_pin": "VIN",
+      "signal": "VIN_TEENSY",
+      "electrical_type": "power_in",
+      "unused": false,
+      "footprint_xy_mm": [
+        0.0,
+        -7.62
+      ]
+    }
+  ]
+}

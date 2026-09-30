@@ -1,3 +1,7 @@
+> **2026-09-29採用更新:** ユーザー承認によりX401を **D405: Alpha & Omega Semiconductor SMBJ33CA（双方向TVS）**へ置換。J402-1（ESTOP_LOOP_RETURN/COIL_POS）とJ402-2（COIL_NEG）の間へ並列。symbol=`Device:D_TVS`、footprint=`Diode_SMD:D_SMB`。型番選定・KiCad反映済み、実ハーネスでのサージ/吸収エネルギー/解放10ms以内は実測残件。X402帰路結合は未確定。
+
+> **中央 2026-09-29:** 電源/CAN以外をKiCadへ配線。F402=LED枝保護TBD、X401=コイルクランプTBD、X402=帰路結合TBD（3ネット間の導通なし）として可視化。部品選定/帰路確定が完了した意味ではない。[詳細と残件](CENTRAL_NONPOWER_WIRING_2026-09-29.md)。
+
 # 回路設計 未確定事項・着手順
 
 ## 目的
@@ -90,7 +94,7 @@ Rev.Aは受動部品0603以上、LQFP/SOIC/TSSOP/SOT系ICを優先する。BGA/W
 | CTR-04 | P0 | **回路方式解消(2026-08-04): `IRLML0100TRPBF`、Gate 100Ω、47kΩ pulldown、diode+TVS clamp** | 3.3V gate駆動、Q1 VDS、coil解放時間を実測してTVS定格を確定する。1N4007単独clampは初期案にしない |
 | CTR-05 | P0 | **回路方式解消(2026-08-04): `LTV-847S` 4ch、各入力2.2kΩ x2で直列loop・補助接点x2を絶縁監視** | 約5mA入力で全温度のLow levelと抵抗損失を実測する |
 | CTR-06 | P0 | **回路側解消(2026-08-04): `INA238AIDGSR`＋外付け100A/75mV Kelvin shunt。主電流はPCBへ流さない** | 外付けshunt正式型番だけ機械取付寸法確認後に確定する |
-| CTR-07 | P0 | **解消(2026-08-04): MCU4枝=`1206L050/15YR`、Teensy=`1206L075/16YR`、拡張=`1206L050/15YR`初期値** | 高温・突入・短絡試験で最終確認する |
+| CTR-07 | P0 | **解消(2026-08-04): MCU4枝=`1206L050/15YR`、Teensy=`1206L075/16WR`、拡張=`1206L050/15YR`初期値** | 高温・突入・短絡試験で最終確認する |
 | CTR-08 | P0 | **部品解消(2026-08-04): 5V主入力=`XT30PW-M`、主保護=`TPS259470LRPWR`、枝=`SM02B-GHS-TB`** | XT30極性/footprintを二重照合し、UVLO/OVLOをrail/comparator/resistor worst-caseで確定する |
 | CTR-09 | P1 | **回路値解消(2026-08-04): 100kΩ+100kΩ/20kΩの1/11、各0.1%、1kΩ+10nF+3.3V clamp** | 40V印加試験と実測校正で判定閾値を確定する |
 | CTR-10 | P1 | E-stop内蔵LEDの点灯条件とボタンのNO補助接点有無 | 常時/押下時/モータ遮断時から運用を確定し現物接点を確認 |
@@ -105,7 +109,7 @@ Rev.Aは受動部品0603以上、LQFP/SOIC/TSSOP/SOT系ICを優先する。BGA/W
 | CTR-19 | P0 | 外付けshunt sense 2線のsource-end fuse/fusible resistor | battery側取付位置、定格、service方法を分電盤設計と同時に確定する |
 | CTR-20 | P1 | 物理rearm switchをboard-localにするかoperator panelへ置くか | 操作性と誤投入riskを機体layoutで比較し、片方だけ実装する |
 | CTR-21 | P0 | **CAN物理コネクタ数を再検討中。** 候補はCAN1/2/3各1個、合計GH3 x3。旧案の各バスIN/OUT x2（合計6個）は過剰の可能性 | 中央基板を各バス端点とし、デイジーチェーンは下流node側で行えるか、CANable等のservice接続方法も含めて確定する |
-| CTR-22 | P0 | **外部通信・GPIO構成を再検討中。** 候補はI2C x2、UART x1、USB-CDC x1、GPIO/ADC 8本。SPI外出し、UART x2維持、GPIO本数は未確定 | GPIOは先行基板の「電源/GND/IO x2」単位を参考に、GH4 x4（1=3V3、2=GND、3/4=IO、3.3V専用）を候補とする。IO LEDはADC負荷になるため不採用またはDNP、各IOは100ohm、ESD、pull-up/down/ADC-CのDNP footprintを検討する |
+| CTR-22 | P0 | **外部通信・GPIO構成を再検討中。** 候補はI2C x2、UART x1、USB-CDC x1、GPIO/ADC 8本。SPI外出し、UART x2維持、GPIO本数は未確定 | GPIOは先行基板の「電源/GND/IO x2」単位を参考に、GH4 x4（1=VCC、2=GND、3/4=IO、IOは3.3V専用）を候補とする。**2026-09-26確定: GPIOの電源ピンは列全体でジャンパ1個(JP505)により3.3V/5V切替、IOは3.3Vのまま**(`CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md` S05)。IO LEDはADC負荷になるため不採用またはDNP、各IOは100ohm、ESD、pull-up/down/ADC-CのDNP footprintを検討する |
 | CTR-23 | P0 | **バッテリーA/Bへ付ける市販I2C電圧・電流sensor x2の型番、address、給電、測定位置が未確定。** 現在のINA238＋外付けshunt案を置換するか併用するかも未確定 | 現物型番とdatasheetを確認し、同一address時はI2C0/I2C1分離またはmuxを比較する。確定までINA238回路を削除しない |
 | CTR-24 | P0 | **コンタクタ後モータbusの監視と回生chopperは方式検討中。** 必須候補はload側bus電圧監視、analog comparatorによる自律chopper、外付けaluminum resistor、power MOSFET。load側bus電流sensorとchopper電流sensorは必須か未確定 | Chopperはmain fuse/contactorのC620側へ接続し、Teensy/I2C停止中もbus電圧で動作させる。Teensyは`MOTOR_PWR_SENSE`、`BRAKE_ACTIVE`、`BRAKE_FAULT_N`等の監視に限定する案を、停止energy、resistor pulse rating、fuse位置から評価する |
 | CTR-25 | P1 | 部室在庫`BM14270AMUV-LBE2`をbusbar非接触電流監視へ使う案、およびchopper抵抗電流に既製sensor moduleを使う案は未確定 | BM14270はI2C magnetic sensorのためbusbar形状・距離・飽和・周辺磁界を含む実装後校正が必要。chopper用moduleは型番、双方向range、bandwidth、出力方式を確認してから接続先を決める |

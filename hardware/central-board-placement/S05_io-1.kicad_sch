@@ -1,15 +1,233 @@
 (kicad_sch 
-(version 20250114) 
+(version 20260306) 
 (generator "eeschema") 
+(generator_version "10.0") 
 (uuid "6ccaf325-6677-5c44-8257-def4e6bf5c38") 
 (paper "A2") 
 (title_block 
-(title "Matek battery monitor / expansion I/O (1)") 
-(date "2026-09-23") 
-(rev "PLACEMENT ONLY") 
+(title "External I2C / UART / SPI / GPIO 4 ports") 
+(date "2026-09-29") 
+(rev "WIRED DRAFT") 
 (company "Differential Swerve") 
-(comment 1 "Unwired draft - not for fabrication")) 
+(comment 1 "Nonpower circuits wired; safety TBDs remain. Not for fabrication.")) 
 (lib_symbols 
+(symbol "Connector:TestPoint" 
+(pin_numbers 
+(hide yes)) 
+(pin_names 
+(offset 0.762) 
+(hide yes)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "TP" 
+(at 0 6.858 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "TestPoint" 
+(at 0 5.08 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 5.08 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 5.08 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "test point" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "test point tp" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "Pin* Test*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "TestPoint_0_1" 
+(circle 
+(center 0 3.302) 
+(radius 0.762) 
+(stroke 
+(width 0) 
+(type default)) 
+(fill 
+(type none)))) 
+(symbol "TestPoint_1_1" 
+(pin passive line 
+(at 0 0 90) 
+(length 2.54) 
+(name "1" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
+(symbol "Connector_Generic:Conn_01x03" 
+(pin_names 
+(offset 1.016) 
+(hide yes)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "J" 
+(at 0 5.08 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "Conn_01x03" 
+(at 0 -5.08 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "connector" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "Connector*:*_1x??_*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "Conn_01x03_1_1" 
+(rectangle 
+(start -1.27 3.81) 
+(end 1.27 -3.81) 
+(stroke 
+(width 0.254) 
+(type default)) 
+(fill 
+(type background))) 
+(rectangle 
+(start -1.27 2.667) 
+(end 0 2.413) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type none))) 
+(rectangle 
+(start -1.27 0.127) 
+(end 0 -0.127) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type none))) 
+(rectangle 
+(start -1.27 -2.413) 
+(end 0 -2.667) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type none))) 
+(pin passive line 
+(at -5.08 2.54 0) 
+(length 3.81) 
+(name "Pin_1" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at -5.08 0 0) 
+(length 3.81) 
+(name "Pin_2" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at -5.08 -2.54 0) 
+(length 3.81) 
+(name "Pin_3" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "3" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
 (symbol "Connector_Generic:Conn_01x04" 
 (pin_names 
 (offset 1.016) 
@@ -155,136 +373,6 @@
 (font 
 (size 1.27 1.27)))) 
 (number "4" 
-(effects 
-(font 
-(size 1.27 1.27)))))) 
-(embedded_fonts no)) 
-(symbol "Connector_Generic:Conn_01x03" 
-(pin_names 
-(offset 1.016) 
-(hide yes)) 
-(exclude_from_sim no) 
-(in_bom yes) 
-(on_board yes) 
-(in_pos_files yes) 
-(duplicate_pin_numbers_are_jumpers no) 
-(property "Reference" "J" 
-(at 0 5.08 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "Conn_01x03" 
-(at 0 -5.08 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Description" "Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_keywords" "connector" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_fp_filters" "Connector*:*_1x??_*" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(symbol "Conn_01x03_1_1" 
-(rectangle 
-(start -1.27 3.81) 
-(end 1.27 -3.81) 
-(stroke 
-(width 0.254) 
-(type default)) 
-(fill 
-(type background))) 
-(rectangle 
-(start -1.27 2.667) 
-(end 0 2.413) 
-(stroke 
-(width 0.1524) 
-(type default)) 
-(fill 
-(type none))) 
-(rectangle 
-(start -1.27 0.127) 
-(end 0 -0.127) 
-(stroke 
-(width 0.1524) 
-(type default)) 
-(fill 
-(type none))) 
-(rectangle 
-(start -1.27 -2.413) 
-(end 0 -2.667) 
-(stroke 
-(width 0.1524) 
-(type default)) 
-(fill 
-(type none))) 
-(pin passive line 
-(at -5.08 2.54 0) 
-(length 3.81) 
-(name "Pin_1" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "1" 
-(effects 
-(font 
-(size 1.27 1.27))))) 
-(pin passive line 
-(at -5.08 0 0) 
-(length 3.81) 
-(name "Pin_2" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "2" 
-(effects 
-(font 
-(size 1.27 1.27))))) 
-(pin passive line 
-(at -5.08 -2.54 0) 
-(length 3.81) 
-(name "Pin_3" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "3" 
 (effects 
 (font 
 (size 1.27 1.27)))))) 
@@ -754,6 +842,229 @@
 (font 
 (size 1.27 1.27)))) 
 (number "10" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
+(symbol "Device:R" 
+(pin_numbers 
+(hide yes)) 
+(pin_names 
+(offset 0)) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "R" 
+(at 2.032 0 90) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "R" 
+(at 0 0 90) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at -1.778 0 90) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "Resistor" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "R res resistor" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "R_*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "R_0_1" 
+(rectangle 
+(start -1.016 -2.54) 
+(end 1.016 2.54) 
+(stroke 
+(width 0.254) 
+(type default)) 
+(fill 
+(type none)))) 
+(symbol "R_1_1" 
+(pin passive line 
+(at 0 3.81 270) 
+(length 1.27) 
+(name "" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 0 -3.81 90) 
+(length 1.27) 
+(name "" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
+(effects 
+(font 
+(size 1.27 1.27)))))) 
+(embedded_fonts no)) 
+(symbol "Jumper:SolderJumper_2_Open" 
+(pin_numbers 
+(hide yes)) 
+(pin_names 
+(offset 0) 
+(hide yes)) 
+(exclude_from_sim no) 
+(in_bom no) 
+(on_board yes) 
+(in_pos_files yes) 
+(duplicate_pin_numbers_are_jumpers no) 
+(property "Reference" "JP" 
+(at 0 2.032 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Value" "SolderJumper_2_Open" 
+(at 0 -2.54 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Footprint" "" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 0 -7.62 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "Solder Jumper, 2-pole, open" 
+(at 0 -5.08 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_keywords" "solder jumper SPST" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "ki_fp_filters" "SolderJumper*Open*" 
+(at 0 0 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(hide yes) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(symbol "SolderJumper_2_Open_0_1" 
+(polyline 
+(pts 
+(xy -0.254 1.016) 
+(xy -0.254 -1.016)) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type none))) 
+(arc 
+(start -0.254 -1.016) 
+(mid -1.2656 0) 
+(end -0.254 1.016) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type outline))) 
+(arc 
+(start 0.254 1.016) 
+(mid 1.2656 0) 
+(end 0.254 -1.016) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type outline))) 
+(polyline 
+(pts 
+(xy 0.254 1.016) 
+(xy 0.254 -1.016)) 
+(stroke 
+(width 0.1524) 
+(type default)) 
+(fill 
+(type none)))) 
+(symbol "SolderJumper_2_Open_1_1" 
+(pin passive line 
+(at -5.08 0 0) 
+(length 3.81) 
+(name "A" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "1" 
+(effects 
+(font 
+(size 1.27 1.27))))) 
+(pin passive line 
+(at 5.08 0 180) 
+(length 3.81) 
+(name "B" 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(number "2" 
 (effects 
 (font 
 (size 1.27 1.27)))))) 
@@ -1231,2095 +1542,5400 @@
 (effects 
 (font 
 (size 1.27 1.27)))))) 
-(embedded_fonts no)) 
-(symbol "Device:R" 
-(pin_numbers 
-(hide yes)) 
-(pin_names 
-(offset 0)) 
-(exclude_from_sim no) 
-(in_bom yes) 
-(on_board yes) 
-(in_pos_files yes) 
-(duplicate_pin_numbers_are_jumpers no) 
-(property "Reference" "R" 
-(at 2.032 0 90) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "R" 
-(at 0 0 90) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "" 
-(at -1.778 0 90) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Description" "Resistor" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_keywords" "R res resistor" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_fp_filters" "R_*" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(symbol "R_0_1" 
-(rectangle 
-(start -1.016 -2.54) 
-(end 1.016 2.54) 
-(stroke 
-(width 0.254) 
-(type default)) 
-(fill 
-(type none)))) 
-(symbol "R_1_1" 
-(pin passive line 
-(at 0 3.81 270) 
-(length 1.27) 
-(name "" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "1" 
-(effects 
-(font 
-(size 1.27 1.27))))) 
-(pin passive line 
-(at 0 -3.81 90) 
-(length 1.27) 
-(name "" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "2" 
-(effects 
-(font 
-(size 1.27 1.27)))))) 
-(embedded_fonts no)) 
-(symbol "Jumper:SolderJumper_2_Open" 
-(pin_numbers 
-(hide yes)) 
-(pin_names 
-(offset 0) 
-(hide yes)) 
-(exclude_from_sim no) 
-(in_bom no) 
-(on_board yes) 
-(in_pos_files yes) 
-(duplicate_pin_numbers_are_jumpers no) 
-(property "Reference" "JP" 
-(at 0 2.032 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SolderJumper_2_Open" 
-(at 0 -2.54 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Datasheet" "" 
-(at 0 -7.62 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Description" "Solder Jumper, 2-pole, open" 
-(at 0 -5.08 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_keywords" "solder jumper SPST" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_fp_filters" "SolderJumper*Open*" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(symbol "SolderJumper_2_Open_0_1" 
-(polyline 
-(pts 
-(xy -0.254 1.016) 
-(xy -0.254 -1.016)) 
-(stroke 
-(width 0.1524) 
-(type default)) 
-(fill 
-(type none))) 
-(arc 
-(start -0.254 -1.016) 
-(mid -1.2656 0) 
-(end -0.254 1.016) 
-(stroke 
-(width 0.1524) 
-(type default)) 
-(fill 
-(type outline))) 
-(arc 
-(start 0.254 1.016) 
-(mid 1.2656 0) 
-(end 0.254 -1.016) 
-(stroke 
-(width 0.1524) 
-(type default)) 
-(fill 
-(type outline))) 
-(polyline 
-(pts 
-(xy 0.254 1.016) 
-(xy 0.254 -1.016)) 
-(stroke 
-(width 0.1524) 
-(type default)) 
-(fill 
-(type none)))) 
-(symbol "SolderJumper_2_Open_1_1" 
-(pin passive line 
-(at -5.08 0 0) 
-(length 3.81) 
-(name "A" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "1" 
-(effects 
-(font 
-(size 1.27 1.27))))) 
-(pin passive line 
-(at 5.08 0 180) 
-(length 3.81) 
-(name "B" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "2" 
-(effects 
-(font 
-(size 1.27 1.27)))))) 
-(embedded_fonts no)) 
-(symbol "Connector:TestPoint" 
-(pin_numbers 
-(hide yes)) 
-(pin_names 
-(offset 0.762) 
-(hide yes)) 
-(exclude_from_sim no) 
-(in_bom yes) 
-(on_board yes) 
-(in_pos_files yes) 
-(duplicate_pin_numbers_are_jumpers no) 
-(property "Reference" "TP" 
-(at 0 6.858 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "TestPoint" 
-(at 0 5.08 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "" 
-(at 5.08 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Datasheet" "" 
-(at 5.08 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Description" "test point" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_keywords" "test point tp" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "ki_fp_filters" "Pin* Test*" 
-(at 0 0 0) 
-(show_name no) 
-(do_not_autoplace no) 
-(hide yes) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(symbol "TestPoint_0_1" 
-(circle 
-(center 0 3.302) 
-(radius 0.762) 
-(stroke 
-(width 0) 
-(type default)) 
-(fill 
-(type none)))) 
-(symbol "TestPoint_1_1" 
-(pin passive line 
-(at 0 0 90) 
-(length 2.54) 
-(name "1" 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(number "1" 
-(effects 
-(font 
-(size 1.27 1.27)))))) 
 (embedded_fonts no))) 
-(text "Matek battery monitor / expansion I/O (1)" 
-(at 205 18 0) 
+(text "EXTERNAL I/O | 3.3 V SIGNALS | GPIO VCC SELECTOR IS POWER ONLY" 
+(at 295 16 0) 
 (effects 
 (font 
-(size 2.0 2.0))) 
-(uuid "a4032987-4819-54e9-81f1-94570063a027")) 
-(text "PLACEMENT ONLY - all pins intentionally unwired; see notes in symbol properties." 
-(at 205 26 0) 
+(size 2.2 2.2))) 
+(uuid "8a5fa75d-28f6-5904-95fe-cd5a219dd9a9")) 
+(text "Global labels connect to Teensy. *_EXT labels are connector-side nets after 100 ohm resistors." 
+(at 295 24 0) 
 (effects 
 (font 
 (size 1.27 1.27))) 
-(uuid "835df768-bb11-5d5b-9717-2161501e1663")) 
-(symbol 
-(lib_id "Connector_Generic:Conn_01x04") 
-(at 59.69 58.42 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "c693621d-9926-5512-aec4-4eb808ea6289") 
-(property "Reference" "J501" 
-(at 59.69 47.61 0) 
+(uuid "da7a1637-77b3-55e8-9118-24194e86ccff")) 
+(text "I2C0 / I2C1" 
+(at 100 45 0) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
-(property "Value" "SM04B-GHS-TB" 
-(at 59.69 51.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "J501") 
-(unit 1))))) 
-(symbol 
-(lib_id "Connector_Generic:Conn_01x04") 
-(at 135.89 58.42 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "ad0ae897-b456-56fe-b23c-0ad58780d50e") 
-(property "Reference" "J502" 
-(at 135.89 47.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SM04B-GHS-TB" 
-(at 135.89 51.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "J502") 
-(unit 1))))) 
-(symbol 
-(lib_id "Connector_Generic:Conn_01x04") 
-(at 212.09 58.42 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "334f5b2e-0971-5526-b906-6949b6cb0c17") 
-(property "Reference" "J503" 
-(at 212.09 47.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SM04B-GHS-TB" 
-(at 212.09 51.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "J503") 
-(unit 1))))) 
-(symbol 
-(lib_id "Connector_Generic:Conn_01x03") 
-(at 288.29 58.42 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "e8a3a8a1-8412-5b6e-a39a-e4956c255b9a") 
-(property "Reference" "J504" 
-(at 288.29 47.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SM03B-GHS-TB" 
-(at 288.29 51.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "J504") 
-(unit 1))))) 
-(symbol 
-(lib_id "Connector_Generic:Conn_01x03") 
-(at 364.49 58.42 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "a29c972b-c26a-5f9b-a713-f994a4834197") 
-(property "Reference" "J505" 
-(at 364.49 47.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SM03B-GHS-TB" 
-(at 364.49 51.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "J505") 
-(unit 1))))) 
-(symbol 
-(lib_id "Connector_Generic:Conn_01x07") 
-(at 439.42 63.5 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "f6c077eb-7309-5e74-baa5-53338f9648a5") 
-(property "Reference" "J506" 
-(at 439.42 47.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SM07B-GHS-TB" 
-(at 439.42 51.61 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "J506") 
-(unit 1))))) 
-(symbol 
-(lib_id "Connector_Generic:Conn_01x10") 
-(at 515.62 66.04 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "d7eba59b-2706-5040-aadf-bee9e8eee59e") 
-(property "Reference" "J507" 
-(at 515.62 47.61000000000001 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SM10B-GHS-TB" 
-(at 515.62 51.61000000000001 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Connector_JST:JST_GH_SM10B-GHS-TB_1x10-1MP_P1.25mm_Horizontal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "J507 GH10 format/pin order proposal" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "J507") 
-(unit 1))))) 
-(text "REVIEW" 
-(at 515.62 85.01 0) 
-(effects 
-(font 
-(size 1.0 1.0))) 
-(uuid "f56050c0-ad0d-5956-bb4c-9db3e52dca89")) 
-(symbol 
-(lib_id "Power_Protection:SRV05-4") 
-(at 58.42 116.84 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "31834d2e-25bb-5c54-a1d8-0680b351b5f3") 
-(property "Reference" "U501" 
-(at 58.42 97.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SRV05-4" 
-(at 58.42 101.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "U501") 
-(unit 1))))) 
-(symbol 
-(lib_id "Power_Protection:SRV05-4") 
-(at 134.62 116.84 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "3d5b11c1-98b7-5271-81f1-ac84efb1fb2f") 
-(property "Reference" "U502" 
-(at 134.62 97.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SRV05-4" 
-(at 134.62 101.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "U502") 
-(unit 1))))) 
-(symbol 
-(lib_id "Power_Protection:SRV05-4") 
-(at 209.55 116.84 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "f09f1c0a-d0b7-534d-8e10-f3ba1889f753") 
-(property "Reference" "U503" 
-(at 209.55 97.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SRV05-4" 
-(at 209.55 101.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "U503") 
-(unit 1))))) 
-(symbol 
-(lib_id "Power_Protection:SRV05-4") 
-(at 285.75 116.84 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "24b817a9-ec28-5c72-88cc-7bc374ce8737") 
-(property "Reference" "U504" 
-(at 285.75 97.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SRV05-4" 
-(at 285.75 101.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "U504") 
-(unit 1))))) 
-(symbol 
-(lib_id "Power_Protection:SRV05-4") 
-(at 361.95 116.84 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "bf8bac71-1f5d-5894-9bb5-6cb0979a6319") 
-(property "Reference" "U505" 
-(at 361.95 97.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SRV05-4" 
-(at 361.95 101.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "U505") 
-(unit 1))))) 
-(symbol 
-(lib_id "Power_Protection:SRV05-4") 
-(at 438.15 116.84 0) 
-(unit 1) 
-(in_bom yes) 
-(on_board yes) 
-(dnp no) 
-(uuid "426f5d54-78d5-5aaf-9c9a-17b5e608c6c5") 
-(property "Reference" "U506" 
-(at 438.15 97.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Value" "SRV05-4" 
-(at 438.15 101.14 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Datasheet" "" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(instances 
-(project "central-board-placement" 
-(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "U506") 
-(unit 1))))) 
+(size 1.8 1.8))) 
+(uuid "e3829f9c-8d76-5e0c-b61a-c7817581413f")) 
 (symbol 
 (lib_id "Device:R") 
-(at 514.35 107.95 0) 
+(at 100.33 64.77 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "04507251-ae74-5162-bdeb-04d7c7064607") 
 (property "Reference" "R511" 
-(at 514.35 97.14 0) 
+(at 100.33 57.15 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 514.35 101.14 0) 
+(at 100.33 59.69 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 59.69 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R511") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 64.77) 
+(xy 91.44 64.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "c4c4510e-2744-56f7-bc75-033cb99e98ca")) 
+(global_label "I2C0_SDA" 
+(shape bidirectional) 
+(at 91.44 64.77 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "a6c630cd-4e01-5769-a469-3d65a60f5ec7") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 64.77 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 64.77) 
+(xy 109.22 64.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "5227c296-75b3-5c69-8650-efb6f3ea76c7")) 
+(label "I2C0_SDA_EXT" 
+(at 109.22 64.77 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "730277d8-0492-5b48-950b-a73b56d8b5ef")) 
 (symbol 
 (lib_id "Device:R") 
-(at 58.42 157.48 0) 
+(at 100.33 77.47 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "6346c874-dd6b-5461-a96e-9339997d9e08") 
 (property "Reference" "R512" 
-(at 58.42 146.67 0) 
+(at 100.33 69.85 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 58.42 150.67 0) 
+(at 100.33 72.39 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 72.39 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R512") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 77.47) 
+(xy 91.44 77.47)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "bdaf9512-37ae-5178-aa5b-dc08e0c5c731")) 
+(global_label "I2C0_SCL" 
+(shape bidirectional) 
+(at 91.44 77.47 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "06c06978-c84a-5eb5-b8e9-bd7fbf0ecf28") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 77.47 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 77.47) 
+(xy 109.22 77.47)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "2f631bfe-7def-5118-a25e-53f194d3ad33")) 
+(label "I2C0_SCL_EXT" 
+(at 109.22 77.47 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "00c3f8ed-f9cb-58f9-b948-bb7597447821")) 
 (symbol 
 (lib_id "Device:R") 
-(at 134.62 157.48 0) 
+(at 100.33 91.44 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "38c5349f-10b5-585e-91a6-d4c6e3bc110b") 
 (property "Reference" "R513" 
-(at 134.62 146.67 0) 
+(at 100.33 83.82 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 134.62 150.67 0) 
+(at 100.33 86.36 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 86.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R513") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 91.44) 
+(xy 91.44 91.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "501c6049-97d5-573c-b2d3-c34768c52073")) 
+(global_label "I2C1_SDA" 
+(shape bidirectional) 
+(at 91.44 91.44 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "ed4c01d9-c2e8-5ba4-a173-aa7d43138dca") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 91.44 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 91.44) 
+(xy 109.22 91.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "61828ae8-d062-5fbd-b171-d677d4498191")) 
+(label "I2C1_SDA_EXT" 
+(at 109.22 91.44 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "26a10967-1e97-537a-bcc8-b3ba8227a560")) 
 (symbol 
 (lib_id "Device:R") 
-(at 209.55 157.48 0) 
+(at 100.33 104.14 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "632d351b-cc61-5c54-afdf-e5e43c91cb05") 
 (property "Reference" "R514" 
-(at 209.55 146.67 0) 
+(at 100.33 96.52 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 209.55 150.67 0) 
+(at 100.33 99.06 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 99.06 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R514") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 104.14) 
+(xy 91.44 104.14)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "99eb82c1-76c8-5370-956e-5a89a7828fd1")) 
+(global_label "I2C1_SCL" 
+(shape bidirectional) 
+(at 91.44 104.14 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "03245bb3-0699-50ae-9e11-a86f77ea3794") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 104.14 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 104.14) 
+(xy 109.22 104.14)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "74d02876-17b7-552b-a831-f4b270c8c8f6")) 
+(label "I2C1_SCL_EXT" 
+(at 109.22 104.14 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "52df7a29-50e1-53e6-a270-3bc415691b65")) 
 (symbol 
-(lib_id "Device:R") 
-(at 285.75 157.48 0) 
+(lib_id "Power_Protection:SRV05-4") 
+(at 100.33 144.78 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "31834d2e-25bb-5c54-a1d8-0680b351b5f3") 
+(property "Reference" "U501" 
+(at 124.46 130.81 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "SRV05-4" 
+(at 124.46 134.62 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
+(at 100.33 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 100.33 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 139.7 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "U501") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 87.63 142.24) 
+(xy 82.55 142.24)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "08ea34ca-a821-5c0d-b6e8-fdd40ce8d933")) 
+(label "I2C0_SDA_EXT" 
+(at 82.55 142.24 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "dda9ea61-8d31-5c13-83c7-4e062a32ddcf")) 
+(wire 
+(pts 
+(xy 87.63 147.32) 
+(xy 82.55 147.32)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "907d3ae3-7893-593a-af77-ebef33d3b32b")) 
+(label "I2C0_SCL_EXT" 
+(at 82.55 147.32 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "a7b94538-d3a0-576c-9e17-9f8dabdecfe3")) 
+(wire 
+(pts 
+(xy 113.03 142.24) 
+(xy 118.11 142.24)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "10ef8a55-35e8-5dd4-91df-355186564214")) 
+(label "I2C1_SDA_EXT" 
+(at 118.11 142.24 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "9e05ade1-d6ff-5229-8479-86ab8f6261e5")) 
+(wire 
+(pts 
+(xy 113.03 147.32) 
+(xy 118.11 147.32)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f2f063a8-792b-5759-a609-44fbc69226a7")) 
+(label "I2C1_SCL_EXT" 
+(at 118.11 147.32 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "3b512ba2-1b5a-5bd1-90fb-40b0400c3fa6")) 
+(wire 
+(pts 
+(xy 100.33 132.08) 
+(xy 100.33 127.0)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "719223f1-a036-5d0a-ab74-496e46e73686")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 100.33 127.0 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "3f8860e5-c853-5b19-b7ea-2542998f262d") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 100.33 127.0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 100.33 157.48) 
+(xy 100.33 162.56)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "7573733e-e83e-5679-9793-799fd3a757fd")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 100.33 162.56 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "31d8aa68-2b01-5071-bb10-791f577c7c49") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 100.33 162.56 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(text "UART7 / UART8" 
+(at 295 45 0) 
+(effects 
+(font 
+(size 1.8 1.8))) 
+(uuid "d3fb14f5-2438-5bc0-8bef-d7eb8844bd8e")) 
+(symbol 
+(lib_id "Device:R") 
+(at 294.64 64.77 90) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "d333a417-296d-5870-a665-2d53bb4d8759") 
 (property "Reference" "R521" 
-(at 285.75 146.67 0) 
+(at 294.64 57.15 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 285.75 150.67 0) 
+(at 294.64 59.69 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 59.69 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R521") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 64.77) 
+(xy 285.75 64.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "7b3521db-67cb-568f-b356-f908965250d0")) 
+(global_label "UART7_TX" 
+(shape bidirectional) 
+(at 285.75 64.77 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "462e4bac-e184-5b46-be96-5ba5522998f6") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 64.77 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 64.77) 
+(xy 303.53 64.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "963dd096-2237-5e2c-9f4d-6d95ff8ac97e")) 
+(label "UART7_TX_EXT" 
+(at 303.53 64.77 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "3bef2103-6ae4-565f-95a4-338331c9a080")) 
 (symbol 
 (lib_id "Device:R") 
-(at 361.95 157.48 0) 
+(at 294.64 77.47 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "c6e0c29f-a6de-542a-bd12-06db59cfa568") 
 (property "Reference" "R522" 
-(at 361.95 146.67 0) 
+(at 294.64 69.85 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 361.95 150.67 0) 
+(at 294.64 72.39 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 72.39 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R522") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 77.47) 
+(xy 285.75 77.47)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "6b4985b4-a7aa-5b00-a3ea-456e27d3d42a")) 
+(global_label "UART7_RX" 
+(shape bidirectional) 
+(at 285.75 77.47 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "0a112bbb-e288-5f7c-97b9-47df62914060") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 77.47 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 77.47) 
+(xy 303.53 77.47)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "20daa71a-848d-5da9-acac-c0fcae67be5b")) 
+(label "UART7_RX_EXT" 
+(at 303.53 77.47 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "5b3ed943-279e-5eac-bb4f-23f66ea8e8b3")) 
 (symbol 
 (lib_id "Device:R") 
-(at 438.15 157.48 0) 
+(at 294.64 91.44 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "9eaf5e0a-8559-5bf9-b099-124852d837d5") 
 (property "Reference" "R523" 
-(at 438.15 146.67 0) 
+(at 294.64 83.82 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 438.15 150.67 0) 
+(at 294.64 86.36 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 86.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R523") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 91.44) 
+(xy 285.75 91.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "e20d3ed0-f099-57dc-9697-33b69a58e64b")) 
+(global_label "UART8_TX" 
+(shape bidirectional) 
+(at 285.75 91.44 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "f9bea453-f02d-5fee-928a-5b2a3b485eb3") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 91.44 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 91.44) 
+(xy 303.53 91.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f70e6615-cbab-531c-a3e9-f8db016a6aed")) 
+(label "UART8_TX_EXT" 
+(at 303.53 91.44 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "c6e5240f-3cf9-5ce9-9875-8163e820b7a8")) 
 (symbol 
 (lib_id "Device:R") 
-(at 514.35 157.48 0) 
+(at 294.64 104.14 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "fb0e3382-f053-566c-8d40-a1c7cc049ff7") 
 (property "Reference" "R524" 
-(at 514.35 146.67 0) 
+(at 294.64 96.52 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 514.35 150.67 0) 
+(at 294.64 99.06 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 99.06 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R524") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 104.14) 
+(xy 285.75 104.14)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "8364142b-73c7-56cc-ba10-0b12424aa65a")) 
+(global_label "UART8_RX" 
+(shape bidirectional) 
+(at 285.75 104.14 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "e8ef70c7-c504-5d5b-85d9-72373570d514") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 104.14 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 104.14) 
+(xy 303.53 104.14)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "d376652c-2817-5bcd-a3e9-fbca7a40054a")) 
+(label "UART8_RX_EXT" 
+(at 303.53 104.14 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "334e818c-ce11-598a-9f06-d5001c940e6c")) 
 (symbol 
-(lib_id "Device:R") 
-(at 58.42 198.12 0) 
+(lib_id "Power_Protection:SRV05-4") 
+(at 294.64 144.78 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "3d5b11c1-98b7-5271-81f1-ac84efb1fb2f") 
+(property "Reference" "U502" 
+(at 318.77 130.81 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "SRV05-4" 
+(at 318.77 134.62 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
+(at 294.64 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 294.64 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 139.7 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "U502") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 281.94 142.24) 
+(xy 276.86 142.24)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "bd8781e6-6f4d-518c-83f1-c284601daf7c")) 
+(label "UART7_TX_EXT" 
+(at 276.86 142.24 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "0ce8b4fe-2b23-54c0-a14f-4dd963b920e3")) 
+(wire 
+(pts 
+(xy 281.94 147.32) 
+(xy 276.86 147.32)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "19e73d73-1532-5889-bf42-f7c03a4d2082")) 
+(label "UART7_RX_EXT" 
+(at 276.86 147.32 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "fc65d513-c042-5ea4-8f50-904467b11d9f")) 
+(wire 
+(pts 
+(xy 307.34 142.24) 
+(xy 312.42 142.24)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "c2229b00-4875-5879-ac27-d3e116c02da4")) 
+(label "UART8_TX_EXT" 
+(at 312.42 142.24 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "6311ca94-2d9d-5713-9d2c-384e7aa1cafa")) 
+(wire 
+(pts 
+(xy 307.34 147.32) 
+(xy 312.42 147.32)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "64b500cd-e4f2-5f96-9e20-d4f6bc34617b")) 
+(label "UART8_RX_EXT" 
+(at 312.42 147.32 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "ac15f41f-3cfc-5a45-be0e-9be5235edc77")) 
+(wire 
+(pts 
+(xy 294.64 132.08) 
+(xy 294.64 127.0)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "ec35c003-e961-5a38-ad45-cf45a76c07e8")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 294.64 127.0 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "01e3b434-c0e3-5a59-8c84-b9f0953ae7b3") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 294.64 127.0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 294.64 157.48) 
+(xy 294.64 162.56)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f08ef04d-6097-5f36-aba3-a048513c3dff")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 294.64 162.56 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "eea9d85a-3eff-58fb-93bd-cce289d7a4ac") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 294.64 162.56 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(text "SPI" 
+(at 490 45 0) 
+(effects 
+(font 
+(size 1.8 1.8))) 
+(uuid "6f35e445-3398-52bd-973e-3abccfbf6b99")) 
+(symbol 
+(lib_id "Device:R") 
+(at 490.22 64.77 90) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "32bc0564-4fcc-50a1-bbd7-d27ebb90d31e") 
 (property "Reference" "R531" 
-(at 58.42 187.31 0) 
+(at 490.22 57.15 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 58.42 191.31 0) 
+(at 490.22 59.69 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 490.22 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 490.22 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 490.22 59.69 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 490.22 59.69 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R531") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 486.41 64.77) 
+(xy 481.33 64.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "d26a86da-88c7-5cd7-8180-a38d6e34146d")) 
+(global_label "SPI_SCK" 
+(shape bidirectional) 
+(at 481.33 64.77 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "ec02bf48-8eaf-5294-9663-339668c3efb4") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 481.33 64.77 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 494.03 64.77) 
+(xy 499.11 64.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "73226c2f-7d34-5129-b772-8d93ebaaf9a2")) 
+(label "SPI_SCK_EXT" 
+(at 499.11 64.77 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "295d0228-a2fd-53eb-9969-e31aa6ed8561")) 
 (symbol 
 (lib_id "Device:R") 
-(at 134.62 198.12 0) 
+(at 490.22 77.47 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "bac0cc45-f429-5160-8723-015ff0ed313b") 
 (property "Reference" "R532" 
-(at 134.62 187.31 0) 
+(at 490.22 69.85 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 134.62 191.31 0) 
+(at 490.22 72.39 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 490.22 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 490.22 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 490.22 72.39 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 490.22 72.39 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R532") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 486.41 77.47) 
+(xy 481.33 77.47)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "4aaa7819-e8b1-5575-884d-be3dc89e5380")) 
+(global_label "SPI_MOSI" 
+(shape bidirectional) 
+(at 481.33 77.47 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "7e4cd1c9-7404-5751-9e7f-eb07bdf081fa") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 481.33 77.47 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 494.03 77.47) 
+(xy 499.11 77.47)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "8e0dadae-6885-52a1-9c16-bd01c7a30a9b")) 
+(label "SPI_MOSI_EXT" 
+(at 499.11 77.47 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "3ae0e610-eec0-5868-8247-3943387b4923")) 
 (symbol 
 (lib_id "Device:R") 
-(at 209.55 198.12 0) 
+(at 490.22 91.44 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "ccc05408-f776-5315-980c-e017a6e09bb1") 
 (property "Reference" "R533" 
-(at 209.55 187.31 0) 
+(at 490.22 83.82 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 209.55 191.31 0) 
+(at 490.22 86.36 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 490.22 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 490.22 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 490.22 86.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 490.22 86.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R533") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 486.41 91.44) 
+(xy 481.33 91.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "fba1d276-1a38-5375-95db-bfe9c4adbbc6")) 
+(global_label "SPI_MISO" 
+(shape bidirectional) 
+(at 481.33 91.44 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "c7ec2fae-3890-5951-a549-c08bd7367b2f") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 481.33 91.44 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 494.03 91.44) 
+(xy 499.11 91.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "fe21545a-8741-59ff-a4f3-0f58f79b1b53")) 
+(label "SPI_MISO_EXT" 
+(at 499.11 91.44 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "4612f2f8-e321-5e09-9414-ae2bbb5f84d2")) 
 (symbol 
 (lib_id "Device:R") 
-(at 285.75 198.12 0) 
+(at 490.22 104.14 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "ae778c15-8f6d-5b82-a922-094a822f10ad") 
 (property "Reference" "R534" 
-(at 285.75 187.31 0) 
+(at 490.22 96.52 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 285.75 191.31 0) 
+(at 490.22 99.06 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 490.22 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 490.22 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 490.22 99.06 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 490.22 99.06 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R534") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 486.41 104.14) 
+(xy 481.33 104.14)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "a77ab397-2273-5774-bfb9-f4ec950b9357")) 
+(global_label "SPI_CS0_N" 
+(shape bidirectional) 
+(at 481.33 104.14 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "b4bb4150-9ff9-5c27-94e1-a9c6247f9b9f") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 481.33 104.14 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 494.03 104.14) 
+(xy 499.11 104.14)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "d602a103-6046-542b-a655-8b77328e6631")) 
+(label "SPI_CS0_N_EXT" 
+(at 499.11 104.14 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "7ba4cf8e-0ae1-5aec-90c0-b9504fa0f402")) 
 (symbol 
 (lib_id "Device:R") 
-(at 361.95 198.12 0) 
+(at 490.22 116.84 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "588692ab-00a6-5158-a731-ee5d358d109d") 
 (property "Reference" "R535" 
-(at 361.95 187.31 0) 
+(at 490.22 109.22 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 361.95 191.31 0) 
+(at 490.22 111.76 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 490.22 111.76 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 490.22 111.76 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 490.22 111.76 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 490.22 111.76 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R535") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 486.41 116.84) 
+(xy 481.33 116.84)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "59bfe2f1-cd9d-5b4a-87d3-a1d61ae526f7")) 
+(global_label "SPI_CS1_N" 
+(shape bidirectional) 
+(at 481.33 116.84 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "c58dfc91-b927-5258-9259-6dfa350dc505") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 481.33 116.84 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 494.03 116.84) 
+(xy 499.11 116.84)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "d7671205-475f-58d7-b054-6e33bd9c980b")) 
+(label "SPI_CS1_N_EXT" 
+(at 499.11 116.84 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "79dc3d04-7e89-5766-9266-8a13036ab1bc")) 
 (symbol 
-(lib_id "Device:R") 
-(at 438.15 198.12 0) 
+(lib_id "Power_Protection:SRV05-4") 
+(at 490.22 144.78 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "f09f1c0a-d0b7-534d-8e10-f3ba1889f753") 
+(property "Reference" "U503" 
+(at 514.35 130.81 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "SRV05-4" 
+(at 514.35 134.62 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
+(at 490.22 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 490.22 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 490.22 139.7 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 490.22 139.7 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "U503") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 477.52 142.24) 
+(xy 472.44 142.24)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "a028900b-839b-5d81-a421-6aa3093dc5c8")) 
+(label "SPI_SCK_EXT" 
+(at 472.44 142.24 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "8d1bbfc7-fb04-5fdf-9285-4ede24c089ee")) 
+(wire 
+(pts 
+(xy 477.52 147.32) 
+(xy 472.44 147.32)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "41ff57c8-b584-5e9f-bc84-d6615b180005")) 
+(label "SPI_MOSI_EXT" 
+(at 472.44 147.32 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "a8386748-98eb-55d0-8dac-6b791bf6c034")) 
+(wire 
+(pts 
+(xy 502.92 142.24) 
+(xy 508.0 142.24)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "8277648f-75b5-5d33-9243-aef0b3db3610")) 
+(label "SPI_MISO_EXT" 
+(at 508.0 142.24 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "7fe86186-fe8b-52e2-b469-22649b8f0b89")) 
+(wire 
+(pts 
+(xy 502.92 147.32) 
+(xy 508.0 147.32)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "a906a7f9-dee6-5491-9f5e-9196ac185adf")) 
+(label "SPI_CS0_N_EXT" 
+(at 508.0 147.32 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "26428634-97fb-5541-aeb6-88e1c8631340")) 
+(wire 
+(pts 
+(xy 490.22 132.08) 
+(xy 490.22 127.0)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "6ce065a1-88ff-582b-a715-a0bf127b6c41")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 490.22 127.0 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "9404d923-a9dc-5828-8d2f-2b5b0d89fc4a") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 490.22 127.0 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 490.22 157.48) 
+(xy 490.22 162.56)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "253cfed6-b2da-574c-93be-c6744c7ebef4")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 490.22 162.56 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "802eaf6b-8e91-5460-a35a-ff8162f3b8ac") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 490.22 162.56 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(text "GPIO PORTS 1 / 2" 
+(at 100 245 0) 
+(effects 
+(font 
+(size 1.8 1.8))) 
+(uuid "669b7f7f-c001-5552-8d5d-1328d91e8d17")) 
+(symbol 
+(lib_id "Device:R") 
+(at 100.33 265.43 90) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "ba904c6c-3e8e-57e6-9c7f-e6ada367670d") 
 (property "Reference" "R541" 
-(at 438.15 187.31 0) 
+(at 100.33 257.81 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 438.15 191.31 0) 
+(at 100.33 260.35 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 260.35 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 260.35 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 260.35 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 260.35 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R541") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 265.43) 
+(xy 91.44 265.43)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "88b3cedf-35ad-5124-943b-66f59d4edc6c")) 
+(global_label "IO20_A6" 
+(shape bidirectional) 
+(at 91.44 265.43 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "0a6f1726-2389-543b-902f-fdc412e95a84") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 265.43 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 265.43) 
+(xy 109.22 265.43)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "25518d8d-f1b3-53e3-be3b-0a77ab2fc128")) 
+(label "IO20_A6_EXT" 
+(at 109.22 265.43 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "af688f21-7dde-52e9-ac94-ce1181417bea")) 
 (symbol 
 (lib_id "Device:R") 
-(at 514.35 198.12 0) 
+(at 100.33 278.13 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "f63b7245-10c2-5ce3-a280-a49685179a7a") 
 (property "Reference" "R542" 
-(at 514.35 187.31 0) 
+(at 100.33 270.51 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 514.35 191.31 0) 
+(at 100.33 273.05 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 273.05 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 273.05 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 273.05 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 273.05 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R542") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 278.13) 
+(xy 91.44 278.13)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "9d652c93-91c8-57b8-a16b-66bb5d547d3c")) 
+(global_label "IO21_A7" 
+(shape bidirectional) 
+(at 91.44 278.13 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "b7d181f7-0a88-5c2c-94e4-a3480c3040c2") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 278.13 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 278.13) 
+(xy 109.22 278.13)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "deddfed0-e7a0-5156-b384-272865d3f371")) 
+(label "IO21_A7_EXT" 
+(at 109.22 278.13 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "727dac23-9665-5ed4-84dc-b12179a97eeb")) 
 (symbol 
 (lib_id "Device:R") 
-(at 58.42 237.49 0) 
+(at 100.33 290.83 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "cd9556b2-9a13-509b-854c-ed2061340e2f") 
 (property "Reference" "R543" 
-(at 58.42 226.68 0) 
+(at 100.33 283.21 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 58.42 230.68 0) 
+(at 100.33 285.75 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 285.75 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 285.75 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 285.75 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 285.75 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R543") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 290.83) 
+(xy 91.44 290.83)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "5b3b86e7-f16d-5001-8ff9-f7d1d98e5bff")) 
+(global_label "IO24_A10" 
+(shape bidirectional) 
+(at 91.44 290.83 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "9306147f-c01c-5c01-b19a-7c134b49be43") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 290.83 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 290.83) 
+(xy 109.22 290.83)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "855e9ee3-fc42-571a-9bfa-22bb8260571d")) 
+(label "IO24_A10_EXT" 
+(at 109.22 290.83 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "0f985fd6-abdd-5d30-ae2e-b39f0e96bb23")) 
 (symbol 
 (lib_id "Device:R") 
-(at 134.62 237.49 0) 
+(at 100.33 303.53 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "e206b3e5-b417-52d4-95c5-448c17dd099d") 
 (property "Reference" "R544" 
-(at 134.62 226.68 0) 
+(at 100.33 295.91 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 134.62 230.68 0) 
+(at 100.33 298.45 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 100.33 298.45 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 100.33 298.45 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 298.45 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 298.45 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R544") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 96.52 303.53) 
+(xy 91.44 303.53)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "eaf99753-49a9-5de1-b761-3c75ab530c84")) 
+(global_label "IO25_A11" 
+(shape bidirectional) 
+(at 91.44 303.53 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "1ee5ae99-c7b6-53b4-aec7-4c67fe112601") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 91.44 303.53 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 104.14 303.53) 
+(xy 109.22 303.53)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "7d1fd24f-a8fe-587e-aa57-74a5b059b824")) 
+(label "IO25_A11_EXT" 
+(at 109.22 303.53 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "032013ae-2e9c-5388-9322-77bc67a0fb2c")) 
 (symbol 
-(lib_id "Device:R") 
-(at 209.55 237.49 0) 
+(lib_id "Power_Protection:SRV05-4") 
+(at 100.33 345.44 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "bf8bac71-1f5d-5894-9bb5-6cb0979a6319") 
+(property "Reference" "U505" 
+(at 124.46 331.47 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "SRV05-4" 
+(at 124.46 334.01 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
+(at 100.33 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 100.33 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 100.33 340.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 100.33 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "U505") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 87.63 342.9) 
+(xy 82.55 342.9)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "8a136ecf-e61a-5520-a2ad-41dedf2aafe9")) 
+(label "IO20_A6_EXT" 
+(at 82.55 342.9 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "f2c5e977-6d50-51ea-af03-158ec4cf12d7")) 
+(wire 
+(pts 
+(xy 87.63 347.98) 
+(xy 82.55 347.98)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "68585b7d-c75b-5e65-88a0-2f6f5c9060f1")) 
+(label "IO21_A7_EXT" 
+(at 82.55 347.98 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "4c5cdf84-ff82-5aec-9235-da1f25c43c4d")) 
+(wire 
+(pts 
+(xy 113.03 342.9) 
+(xy 118.11 342.9)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "93523826-6826-597e-a348-bbbb7e4b5d65")) 
+(label "IO24_A10_EXT" 
+(at 118.11 342.9 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "68a65567-5bfd-59e8-9fba-79ef33f3fce8")) 
+(wire 
+(pts 
+(xy 113.03 347.98) 
+(xy 118.11 347.98)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "46dff62e-1bea-556e-8ee8-8393ba97f558")) 
+(label "IO25_A11_EXT" 
+(at 118.11 347.98 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "68afc943-6422-569b-b38b-5e71635688aa")) 
+(wire 
+(pts 
+(xy 100.33 332.74) 
+(xy 100.33 327.66)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "c0046c96-9c71-5f08-a6cc-95e8d43a29e6")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 100.33 327.66 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "383dc8f5-4751-5b7b-9e6f-9b8aeb84c556") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 100.33 327.66 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 100.33 358.14) 
+(xy 100.33 363.22)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "78502531-4ade-503e-b690-548306109ecb")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 100.33 363.22 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "38373329-2e41-557b-87e4-35e6c407c627") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 100.33 363.22 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(text "GPIO PORTS 3 / 4" 
+(at 295 245 0) 
+(effects 
+(font 
+(size 1.8 1.8))) 
+(uuid "9af8024f-0e71-51ce-b9bd-be500a16e195")) 
+(symbol 
+(lib_id "Device:R") 
+(at 294.64 265.43 90) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "e2ed37ba-182b-53ad-8480-53f5fb43bc22") 
 (property "Reference" "R545" 
-(at 209.55 226.68 0) 
+(at 294.64 257.81 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 209.55 230.68 0) 
+(at 294.64 260.35 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 260.35 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 260.35 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 260.35 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 260.35 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R545") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 265.43) 
+(xy 285.75 265.43)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "1b2320be-3d6c-523d-8f8b-143e28808b31")) 
+(global_label "IO26_A12" 
+(shape bidirectional) 
+(at 285.75 265.43 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "24041f9f-c96a-5979-8481-b9d726612b4a") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 265.43 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 265.43) 
+(xy 303.53 265.43)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "81816994-d5f7-5c71-a5cb-aa854ef13335")) 
+(label "IO26_A12_EXT" 
+(at 303.53 265.43 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "2935e6e9-05f1-51a5-a827-b1de5adb03cf")) 
 (symbol 
 (lib_id "Device:R") 
-(at 285.75 237.49 0) 
+(at 294.64 278.13 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "be220122-6137-587e-b8cc-a991144e4f5c") 
 (property "Reference" "R546" 
-(at 285.75 226.68 0) 
+(at 294.64 270.51 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 285.75 230.68 0) 
+(at 294.64 273.05 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 273.05 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 273.05 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 273.05 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 273.05 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R546") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 278.13) 
+(xy 285.75 278.13)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "0245bdb2-70a7-5d0f-aeda-7d8a364bac64")) 
+(global_label "IO27_A13" 
+(shape bidirectional) 
+(at 285.75 278.13 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "8d430fda-384d-5c5b-bb32-9c71ca97026c") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 278.13 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 278.13) 
+(xy 303.53 278.13)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "4c3267a1-ea91-5d8f-9aec-493ee503fd9d")) 
+(label "IO27_A13_EXT" 
+(at 303.53 278.13 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "1540af46-e8f3-5227-9588-abd20799521d")) 
 (symbol 
 (lib_id "Device:R") 
-(at 361.95 237.49 0) 
+(at 294.64 290.83 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "c2091858-966e-56ae-a87e-95a31d727115") 
 (property "Reference" "R547" 
-(at 361.95 226.68 0) 
+(at 294.64 283.21 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 361.95 230.68 0) 
+(at 294.64 285.75 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 285.75 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 285.75 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 285.75 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 285.75 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R547") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 290.83) 
+(xy 285.75 290.83)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "edfcbf26-edfe-5376-8e2b-8638696e6047")) 
+(global_label "IO40_A16" 
+(shape bidirectional) 
+(at 285.75 290.83 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "131047ad-aeed-5f5e-8241-8b0e9b24dc4d") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 290.83 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 290.83) 
+(xy 303.53 290.83)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "60b98bcb-a8e5-5939-aba6-ff613ebcd03c")) 
+(label "IO40_A16_EXT" 
+(at 303.53 290.83 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "722feb0f-e2d7-554a-8993-977d7e183cbb")) 
 (symbol 
 (lib_id "Device:R") 
-(at 438.15 237.49 0) 
+(at 294.64 303.53 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "84793b61-1b21-564b-bb47-fe952d94c922") 
 (property "Reference" "R548" 
-(at 438.15 226.68 0) 
+(at 294.64 295.91 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "100" 
-(at 438.15 230.68 0) 
+(at 294.64 298.45 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 294.64 298.45 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 298.45 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 298.45 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 298.45 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "R548") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 290.83 303.53) 
+(xy 285.75 303.53)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "0e2d6713-c554-593b-b871-daa8141ff424")) 
+(global_label "IO41_A17" 
+(shape bidirectional) 
+(at 285.75 303.53 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "672993af-c23f-51af-9ff1-c0acac7a61b0") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 285.75 303.53 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 298.45 303.53) 
+(xy 303.53 303.53)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "e9e607af-362b-5a69-9eec-b61e3ec0951e")) 
+(label "IO41_A17_EXT" 
+(at 303.53 303.53 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "b73dce17-78a6-5fbf-8d3b-1de4c2f7cd25")) 
 (symbol 
-(lib_id "Device:R") 
-(at 514.35 237.49 0) 
+(lib_id "Power_Protection:SRV05-4") 
+(at 294.64 345.44 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
-(uuid "ef230aff-8ba2-50a1-aa3b-35c73ffd112a") 
-(property "Reference" "R551" 
-(at 514.35 226.68 0) 
+(uuid "426f5d54-78d5-5aaf-9c9a-17b5e608c6c5") 
+(property "Reference" "U506" 
+(at 318.77 331.47 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "SRV05-4" 
+(at 318.77 334.01 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
+(at 294.64 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Value" "2.2k" 
-(at 514.35 230.68 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 294.64 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 294.64 340.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 294.64 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "R551") 
+(reference "U506") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 281.94 342.9) 
+(xy 276.86 342.9)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "4ef003c0-91af-5fac-ab61-20c756c96dcd")) 
+(label "IO26_A12_EXT" 
+(at 276.86 342.9 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "74562400-9e0c-509d-8fa8-3ce8027fb8f6")) 
+(wire 
+(pts 
+(xy 281.94 347.98) 
+(xy 276.86 347.98)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "e5ab91a5-b96e-5713-a236-c30e96ea081a")) 
+(label "IO27_A13_EXT" 
+(at 276.86 347.98 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "96d210ea-6409-5d10-beb7-2f95cc0e15c2")) 
+(wire 
+(pts 
+(xy 307.34 342.9) 
+(xy 312.42 342.9)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "6dadde5a-da2f-5014-ad31-e9aa82bad4e6")) 
+(label "IO40_A16_EXT" 
+(at 312.42 342.9 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "6af872ca-6ec7-5092-a446-2ec82b26de81")) 
+(wire 
+(pts 
+(xy 307.34 347.98) 
+(xy 312.42 347.98)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "3153686a-fb83-560a-baf5-1222e755a0f4")) 
+(label "IO41_A17_EXT" 
+(at 312.42 347.98 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "3140a3ce-f4d2-5ec6-8359-c4dd6604293f")) 
+(wire 
+(pts 
+(xy 294.64 332.74) 
+(xy 294.64 327.66)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f31658b5-73ce-5f63-b1c7-860fedaaaab3")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 294.64 327.66 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "d85710a9-6cf3-5eb3-be9f-45a831d244b2") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 294.64 327.66 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 294.64 358.14) 
+(xy 294.64 363.22)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "2defbf57-f2c8-522a-b1fe-e868496cbb14")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 294.64 363.22 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "37dd7e86-1043-537c-9658-d903fc7f0927") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 294.64 363.22 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
 (symbol 
-(lib_id "Device:R") 
-(at 58.42 278.13 0) 
+(lib_id "Connector_Generic:Conn_01x04") 
+(at 90.17 186.69 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
-(uuid "84c9f089-e334-5ff3-ad2b-d77dbbcf7de0") 
-(property "Reference" "R552" 
-(at 58.42 267.32 0) 
+(uuid "c693621d-9926-5512-aec4-4eb808ea6289") 
+(property "Reference" "J501" 
+(at 100.33 181.61 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM04B-GHS-TB" 
+(at 100.33 184.15 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
+(at 90.17 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Value" "2.2k" 
-(at 58.42 271.32 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 90.17 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 90.17 181.61 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 90.17 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "R552") 
+(reference "J501") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 85.09 184.15) 
+(xy 80.01 184.15)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "c6041275-eda5-5e1e-b8a1-5c48f7cb8663")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 80.01 184.15 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "e9735e0a-e844-57d9-9971-4f0272737218") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 80.01 184.15 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 85.09 186.69) 
+(xy 80.01 186.69)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f3b84117-6bff-5110-863d-19c8c4365143")) 
+(label "I2C0_SDA_EXT" 
+(at 80.01 186.69 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "864a6acd-d746-5305-8874-089f32ff5352")) 
+(wire 
+(pts 
+(xy 85.09 189.23) 
+(xy 80.01 189.23)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "07ded2f6-b444-525c-8be0-3dc6e71ff1ba")) 
+(label "I2C0_SCL_EXT" 
+(at 80.01 189.23 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "86972291-cf4e-5a3e-980b-a6b6ecf1576c")) 
+(wire 
+(pts 
+(xy 85.09 191.77) 
+(xy 80.01 191.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "1ae23405-8833-567c-9fc1-b7a5a1681a4a")) 
+(global_label "+5V_SYS" 
+(shape bidirectional) 
+(at 80.01 191.77 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "ce7f6fb4-d434-518d-bd11-d98c62c221a5") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 80.01 191.77 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
 (symbol 
-(lib_id "Device:R") 
-(at 134.62 278.13 0) 
+(lib_id "Connector_Generic:Conn_01x04") 
+(at 170.18 186.69 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
-(uuid "989fdb44-3d91-533e-91e1-fe323abc1468") 
-(property "Reference" "R553" 
-(at 134.62 267.32 0) 
+(uuid "ad0ae897-b456-56fe-b23c-0ad58780d50e") 
+(property "Reference" "J502" 
+(at 180.34 181.61 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM04B-GHS-TB" 
+(at 180.34 184.15 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
+(at 170.18 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Value" "2.2k" 
-(at 134.62 271.32 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 170.18 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 170.18 181.61 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 170.18 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "R553") 
+(reference "J502") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 165.1 184.15) 
+(xy 160.02 184.15)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "a9c0bf0c-2c0f-5400-a722-38f8c03c8353")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 160.02 184.15 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "e1897c95-c8f2-5e3c-af53-1d9628aa9448") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 160.02 184.15 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 165.1 186.69) 
+(xy 160.02 186.69)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "a3a92118-d1a4-503a-8dab-6aa257eb27a9")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 160.02 186.69 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "6893c492-75b7-5c7a-ae24-8c49bd3001f2") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 160.02 186.69 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 165.1 189.23) 
+(xy 160.02 189.23)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f52e6185-c9d9-5b5f-b4d7-9993605e8c96")) 
+(label "I2C0_SDA_EXT" 
+(at 160.02 189.23 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "bd748cb1-cade-51d2-9b77-0b3b2b5715ff")) 
+(wire 
+(pts 
+(xy 165.1 191.77) 
+(xy 160.02 191.77)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "73047083-1f7f-5d97-acb2-07e4c6134548")) 
+(label "I2C0_SCL_EXT" 
+(at 160.02 191.77 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "0b525ae7-1b07-571b-9e6d-5ba423c186e3")) 
 (symbol 
-(lib_id "Device:R") 
-(at 209.55 278.13 0) 
+(lib_id "Connector_Generic:Conn_01x04") 
+(at 170.18 209.55 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
-(uuid "ff6af2c1-487f-5af5-9227-2bf61597460a") 
-(property "Reference" "R554" 
-(at 209.55 267.32 0) 
+(uuid "334f5b2e-0971-5526-b906-6949b6cb0c17") 
+(property "Reference" "J503" 
+(at 180.34 204.47 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM04B-GHS-TB" 
+(at 180.34 207.01 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
+(at 170.18 204.47 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Value" "2.2k" 
-(at 209.55 271.32 0) 
-(effects 
-(font 
-(size 1.27 1.27)))) 
-(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 170.18 204.47 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 170.18 204.47 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 170.18 204.47 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
-(reference "R554") 
+(reference "J503") 
 (unit 1))))) 
+(wire 
+(pts 
+(xy 165.1 207.01) 
+(xy 160.02 207.01)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "6ce3df53-7994-5d89-94a9-bdbcceb33789")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 160.02 207.01 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "362a1d33-7a2b-5b72-8fa8-2d10fdb8aac3") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 160.02 207.01 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 165.1 209.55) 
+(xy 160.02 209.55)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "d9712fd0-ab28-51d0-8909-b461abff129e")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 160.02 209.55 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "a1be3616-36cc-5acc-91b7-f69b06c50bd5") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 160.02 209.55 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 165.1 212.09) 
+(xy 160.02 212.09)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "b382cef2-6640-5ab9-a82c-96c844f441e5")) 
+(label "I2C1_SDA_EXT" 
+(at 160.02 212.09 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "e4e26fd2-f813-5136-9005-ceacf6fd0825")) 
+(wire 
+(pts 
+(xy 165.1 214.63) 
+(xy 160.02 214.63)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "3a91e2f5-fce1-5195-9c4b-5c806eb8824a")) 
+(label "I2C1_SCL_EXT" 
+(at 160.02 214.63 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "b6dd7fa8-febc-535a-b2bf-c238123f015d")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x03") 
+(at 299.72 186.69 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "e8a3a8a1-8412-5b6e-a39a-e4956c255b9a") 
+(property "Reference" "J504" 
+(at 309.88 181.61 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM03B-GHS-TB" 
+(at 309.88 184.15 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" 
+(at 299.72 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 299.72 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 299.72 181.61 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 299.72 181.61 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "J504") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 294.64 184.15) 
+(xy 289.56 184.15)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "678a6699-3b96-5116-afbe-f89bdc3b0e80")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 289.56 184.15 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "2dfa8208-60e9-509a-b130-a9350378144d") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 289.56 184.15 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 294.64 186.69) 
+(xy 289.56 186.69)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "fce083d8-2257-5d5c-8639-b1642a0f1985")) 
+(label "UART7_TX_EXT" 
+(at 289.56 186.69 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "77e03775-dbb4-5e0e-b93c-c3911355dd70")) 
+(wire 
+(pts 
+(xy 294.64 189.23) 
+(xy 289.56 189.23)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "4f7e41cf-e0f5-58af-8de8-6102c22a8080")) 
+(label "UART7_RX_EXT" 
+(at 289.56 189.23 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "f7b4b52f-1ed0-5a39-a757-11dd2bdbd962")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x03") 
+(at 299.72 213.36 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "a29c972b-c26a-5f9b-a713-f994a4834197") 
+(property "Reference" "J505" 
+(at 309.88 207.01 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM03B-GHS-TB" 
+(at 309.88 209.55 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal" 
+(at 299.72 208.28 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 299.72 208.28 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 299.72 208.28 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 299.72 208.28 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "J505") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 294.64 210.82) 
+(xy 289.56 210.82)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "5b2c27af-be83-5fc2-b438-1a003f89b4b7")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 289.56 210.82 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "fe7146e6-bde1-54d7-822d-38d57db483f7") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 289.56 210.82 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 294.64 213.36) 
+(xy 289.56 213.36)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "0cb3b0e5-13b8-5de5-a634-fcd0c1924ec3")) 
+(label "UART8_TX_EXT" 
+(at 289.56 213.36 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "e2074dd6-cb9a-575c-b405-26bd72301821")) 
+(wire 
+(pts 
+(xy 294.64 215.9) 
+(xy 289.56 215.9)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "7d80ec23-1ebd-53b5-91da-8b347f9d33f5")) 
+(label "UART8_RX_EXT" 
+(at 289.56 215.9 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "fc968de1-51d8-5ca9-a274-91d4e5b52fe3")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x07") 
+(at 490.22 201.93 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "f6c077eb-7309-5e74-baa5-53338f9648a5") 
+(property "Reference" "J506" 
+(at 500.38 195.58 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM07B-GHS-TB" 
+(at 500.38 199.39 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal" 
+(at 490.22 196.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 490.22 196.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 490.22 196.85 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 490.22 196.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "J506") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 485.14 194.31) 
+(xy 480.06 194.31)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "11049dd8-36ca-585f-a75c-54b9d60395b0")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 480.06 194.31 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "dbb23c17-305b-58fd-b9ef-bcd9683f9ea3") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 480.06 194.31 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 485.14 196.85) 
+(xy 480.06 196.85)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "27d6eb80-3cfb-5e23-8e67-f20dcd72f1c9")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 480.06 196.85 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "42b8c123-83e2-5a9d-9cbd-5d2e658344a2") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 480.06 196.85 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 485.14 199.39) 
+(xy 480.06 199.39)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "4f675c39-bade-5c8c-8e6a-7260617644f8")) 
+(label "SPI_SCK_EXT" 
+(at 480.06 199.39 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "4726a97b-df61-5166-90c2-4e35475ecd00")) 
+(wire 
+(pts 
+(xy 485.14 201.93) 
+(xy 480.06 201.93)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "10082178-544d-5804-93d5-54651e410a11")) 
+(label "SPI_MOSI_EXT" 
+(at 480.06 201.93 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "57ad8d62-a0f9-5b3b-9eed-f2aceb1bf5af")) 
+(wire 
+(pts 
+(xy 485.14 204.47) 
+(xy 480.06 204.47)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "05bf6310-c7a3-571e-a24b-7a8a0d81212a")) 
+(label "SPI_MISO_EXT" 
+(at 480.06 204.47 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "d6384ebc-81a7-55c9-bc62-7a287bb3b9e5")) 
+(wire 
+(pts 
+(xy 485.14 207.01) 
+(xy 480.06 207.01)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "79296ede-6091-518d-a60b-1d2c5a901bb8")) 
+(label "SPI_CS0_N_EXT" 
+(at 480.06 207.01 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "5910083f-19bf-5916-ab98-8c10d03375b6")) 
+(wire 
+(pts 
+(xy 485.14 209.55) 
+(xy 480.06 209.55)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "360abc11-a961-5c0f-94cd-375a4fd901e2")) 
+(label "SPI_CS1_N_EXT" 
+(at 480.06 209.55 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "91303953-7ee9-5688-9478-9457afb2b543")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x04") 
+(at 95.25 379.73 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "d7eba59b-2706-5040-aadf-bee9e8eee59e") 
+(property "Reference" "J507" 
+(at 105.41 373.38 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM04B-GHS-TB" 
+(at 105.41 377.19 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
+(at 95.25 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 95.25 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 95.25 374.65 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 95.25 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "J507") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 90.17 377.19) 
+(xy 85.09 377.19)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "3eee8be3-fcfd-5f2a-be36-3fe0a3d87ccc")) 
+(label "VCC_GPIO_EXT" 
+(at 85.09 377.19 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "f9918372-115c-58a8-86fb-e4790e945148")) 
+(wire 
+(pts 
+(xy 90.17 379.73) 
+(xy 85.09 379.73)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "04f7f47b-21bb-50a3-ae6f-babb67683086")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 85.09 379.73 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "30f60b11-1c52-5544-b884-20015532aab2") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 85.09 379.73 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 90.17 382.27) 
+(xy 85.09 382.27)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "9a72a8f6-ea68-5036-878c-271b2662da0a")) 
+(label "IO20_A6_EXT" 
+(at 85.09 382.27 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "9613f896-0b11-54b8-9e23-328ff93ac9e6")) 
+(wire 
+(pts 
+(xy 90.17 384.81) 
+(xy 85.09 384.81)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "dcab8605-1c52-5141-b26d-e16695b3ebf9")) 
+(label "IO21_A7_EXT" 
+(at 85.09 384.81 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "d47351d0-9757-5b78-9380-92b2902a4c6a")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x04") 
+(at 195.58 379.73 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "113c8865-356c-5b81-ba22-819b5c1f94fa") 
+(property "Reference" "J508" 
+(at 204.47 373.38 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM04B-GHS-TB" 
+(at 204.47 377.19 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
+(at 195.58 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 195.58 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 195.58 374.65 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 195.58 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "J508") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 190.5 377.19) 
+(xy 185.42 377.19)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "46e884dd-fe81-5d37-aa33-f94cef20b37e")) 
+(label "VCC_GPIO_EXT" 
+(at 185.42 377.19 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "21141c8d-afcb-59ba-9e9d-766a16862426")) 
+(wire 
+(pts 
+(xy 190.5 379.73) 
+(xy 185.42 379.73)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "500909e5-9669-57bd-b379-c993b2b8224d")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 185.42 379.73 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "90aa8c51-70a2-5cfc-be6c-65a8bfbeeaba") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 185.42 379.73 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 190.5 382.27) 
+(xy 185.42 382.27)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "56822b54-969f-5c18-a782-cb9f26b19730")) 
+(label "IO24_A10_EXT" 
+(at 185.42 382.27 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "a0345537-aed9-5631-a98d-9756f176bc29")) 
+(wire 
+(pts 
+(xy 190.5 384.81) 
+(xy 185.42 384.81)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "e9950077-6d8a-5bd5-b458-2eb67fd9d775")) 
+(label "IO25_A11_EXT" 
+(at 185.42 384.81 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "bd0c766e-ac1c-503c-aaad-d9b1a63248aa")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x04") 
+(at 289.56 379.73 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "520a8e22-fc62-5411-b815-540b26351e1e") 
+(property "Reference" "J509" 
+(at 299.72 373.38 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM04B-GHS-TB" 
+(at 299.72 377.19 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
+(at 289.56 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 289.56 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 289.56 374.65 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 289.56 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "J509") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 284.48 377.19) 
+(xy 279.4 377.19)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "1187fd49-68e4-509b-bc0c-a729f6605a58")) 
+(label "VCC_GPIO_EXT" 
+(at 279.4 377.19 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "e586a95a-40fc-5a46-a0f5-a273cd397c35")) 
+(wire 
+(pts 
+(xy 284.48 379.73) 
+(xy 279.4 379.73)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "16f52d23-8bcf-547c-a1a6-c25c25d82fa9")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 279.4 379.73 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "08386edf-d1d0-5211-9e33-1babbe4d41dd") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 279.4 379.73 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 284.48 382.27) 
+(xy 279.4 382.27)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "2d2e5189-85a7-590f-94c8-e9d82867f01f")) 
+(label "IO26_A12_EXT" 
+(at 279.4 382.27 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "2462fcb4-62e7-5771-9742-b8e0f0ba16b9")) 
+(wire 
+(pts 
+(xy 284.48 384.81) 
+(xy 279.4 384.81)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "9d041f28-b912-5a88-b0bd-89218805f25d")) 
+(label "IO27_A13_EXT" 
+(at 279.4 384.81 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "94adfe51-d7f2-5119-8140-0ba10fd42420")) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x04") 
+(at 389.89 379.73 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "97097df5-c5c2-55d7-8037-a274a7fc2c2f") 
+(property "Reference" "J510" 
+(at 400.05 373.38 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Value" "SM04B-GHS-TB" 
+(at 400.05 377.19 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)) 
+(justify left))) 
+(property "Footprint" "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal" 
+(at 389.89 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 389.89 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 389.89 374.65 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 389.89 374.65 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "J510") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 384.81 377.19) 
+(xy 379.73 377.19)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "90614bb5-8c98-59b6-9f4f-91b892a44d7f")) 
+(label "VCC_GPIO_EXT" 
+(at 379.73 377.19 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "d8ed04d8-99e5-5e9d-a97a-899b145dee2f")) 
+(wire 
+(pts 
+(xy 384.81 379.73) 
+(xy 379.73 379.73)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "15985666-8098-5140-8338-eab30989bf90")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 379.73 379.73 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "5cd1b6ad-79ee-5739-aa84-1ad54f0f2ef2") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 379.73 379.73 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 384.81 382.27) 
+(xy 379.73 382.27)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "abfb1064-bbba-542f-bcf0-6dcac94fee83")) 
+(label "IO40_A16_EXT" 
+(at 379.73 382.27 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "430a55f2-6d4b-5b14-b047-d6c0639a96e4")) 
+(wire 
+(pts 
+(xy 384.81 384.81) 
+(xy 379.73 384.81)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "8ab760dd-e890-55e8-915e-7a2a03982b7e")) 
+(label "IO41_A17_EXT" 
+(at 379.73 384.81 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "052b99d3-c3e7-5175-a73f-ba7e3200a631")) 
+(text "OPTIONS / ADDITIONAL SPI PROTECTION" 
+(at 495 245 0) 
+(effects 
+(font 
+(size 1.6 1.6))) 
+(uuid "6e689db7-1473-539d-a941-3c44b4694d5e")) 
+(symbol 
+(lib_id "Power_Protection:SRV05-4") 
+(at 500.38 279.4 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "24b817a9-ec28-5c72-88cc-7bc374ce8737") 
+(property "Reference" "U504" 
+(at 524.51 265.43 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "SRV05-4" 
+(at 524.51 269.24 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6" 
+(at 500.38 274.32 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 500.38 274.32 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 500.38 274.32 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 500.38 274.32 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "U504") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 487.68 276.86) 
+(xy 482.6 276.86)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "0bad41e7-d91c-5b3b-9cad-06db7413332c")) 
+(label "SPI_CS1_N_EXT" 
+(at 482.6 276.86 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "434157cc-87b7-5ef9-bb04-11fbb57eb970")) 
+(no_connect 
+(at 487.68 281.94) 
+(uuid "fe2db7ce-3585-5746-ab4a-29007b34419d")) 
+(no_connect 
+(at 513.08 276.86) 
+(uuid "e27f34c0-f015-5209-913b-69c11f56afb8")) 
+(no_connect 
+(at 513.08 281.94) 
+(uuid "992cb3a5-8b39-5add-8819-2988880b0b95")) 
+(wire 
+(pts 
+(xy 500.38 266.7) 
+(xy 500.38 261.62)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "e742f4d3-b7be-5991-b6d4-319fa3655302")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 500.38 261.62 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "3393d417-e061-5d36-b99e-d812e3e8d36e") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 500.38 261.62 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 500.38 292.1) 
+(xy 500.38 297.18)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "84043e95-aa68-55e1-8e93-3135f4f26ac5")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 500.38 297.18 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "7c6db9e1-4eca-5354-8ffd-ff9b6343d9b6") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 500.38 297.18 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
 (symbol 
 (lib_id "Jumper:SolderJumper_2_Open") 
-(at 285.75 274.32 0) 
+(at 449.58 312.42 0) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "309370da-cbde-5185-8b5d-a5f325463082") 
 (property "Reference" "JP501" 
-(at 285.75 266.304 0) 
+(at 449.58 304.8 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "Pullup enable N.O." 
-(at 285.75 270.304 0) 
+(at 449.58 307.34 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
+(at 449.58 307.34 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 449.58 307.34 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 449.58 307.34 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 449.58 307.34 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "JP501") 
 (unit 1))))) 
 (symbol 
-(lib_id "Jumper:SolderJumper_2_Open") 
-(at 361.95 274.32 0) 
+(lib_id "Device:R") 
+(at 519.43 312.42 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "ef230aff-8ba2-50a1-aa3b-35c73ffd112a") 
+(property "Reference" "R551" 
+(at 519.43 304.8 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "2.2k" 
+(at 519.43 307.34 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 519.43 307.34 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 519.43 307.34 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 519.43 307.34 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 519.43 307.34 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "R551") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 444.5 312.42) 
+(xy 439.42 312.42)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "8afd368c-2af9-5e02-8aa0-8b26d601b1ae")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 439.42 312.42 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "ade56723-b24e-577c-8376-10afe2d5c60c") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 439.42 312.42 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 454.66 312.42) 
+(xy 459.74 312.42)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "9ed21a98-1312-5e9d-8f5d-186278b25aa2")) 
+(label "PU_I2C0_SDA" 
+(at 459.74 312.42 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "3febdf3b-eca4-5e71-8795-29616c230352")) 
+(wire 
+(pts 
+(xy 515.62 312.42) 
+(xy 510.54 312.42)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "5f46632b-58b8-55f6-b652-8cf080285699")) 
+(label "PU_I2C0_SDA" 
+(at 510.54 312.42 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "f9a4c91d-fca8-50d0-985b-1be10377872a")) 
+(wire 
+(pts 
+(xy 523.24 312.42) 
+(xy 528.32 312.42)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "3b75012a-324a-51c5-980b-0fc4ffedd351")) 
+(global_label "I2C0_SDA" 
+(shape bidirectional) 
+(at 528.32 312.42 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "aefb14b9-e824-536a-afa2-b028eeceafe2") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 528.32 312.42 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(symbol 
+(lib_id "Jumper:SolderJumper_2_Open") 
+(at 449.58 328.93 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "1f24753d-815a-55bc-a03f-71e84f62ece9") 
 (property "Reference" "JP502" 
-(at 361.95 266.304 0) 
+(at 449.58 321.31 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "Pullup enable N.O." 
-(at 361.95 270.304 0) 
+(at 449.58 323.85 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
+(at 449.58 323.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 449.58 323.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 449.58 323.85 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 449.58 323.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "JP502") 
 (unit 1))))) 
 (symbol 
-(lib_id "Jumper:SolderJumper_2_Open") 
-(at 438.15 274.32 0) 
+(lib_id "Device:R") 
+(at 519.43 328.93 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "84c9f089-e334-5ff3-ad2b-d77dbbcf7de0") 
+(property "Reference" "R552" 
+(at 519.43 321.31 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "2.2k" 
+(at 519.43 323.85 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 519.43 323.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 519.43 323.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 519.43 323.85 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 519.43 323.85 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "R552") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 444.5 328.93) 
+(xy 439.42 328.93)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f5c54bda-6164-54b3-a9ee-861386982b15")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 439.42 328.93 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "6d71862b-f0d2-5eeb-94b7-9a0dfd961431") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 439.42 328.93 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 454.66 328.93) 
+(xy 459.74 328.93)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "ee52fb90-e1dd-5dc5-be38-fe8b955c5d94")) 
+(label "PU_I2C0_SCL" 
+(at 459.74 328.93 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "46d16e15-ae4f-5d2c-a619-7677d5b3cc9a")) 
+(wire 
+(pts 
+(xy 515.62 328.93) 
+(xy 510.54 328.93)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "8c590d24-58b5-5bfd-b1dc-4e3c07909939")) 
+(label "PU_I2C0_SCL" 
+(at 510.54 328.93 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "f2beb5b8-fb09-52cd-8318-dac626bab197")) 
+(wire 
+(pts 
+(xy 523.24 328.93) 
+(xy 528.32 328.93)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "d01b8dea-3b98-5d7f-b6a6-f8e6d4c89dad")) 
+(global_label "I2C0_SCL" 
+(shape bidirectional) 
+(at 528.32 328.93 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "5b199e51-bcba-5893-8c6d-c8bce0a33ecd") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 528.32 328.93 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(symbol 
+(lib_id "Jumper:SolderJumper_2_Open") 
+(at 449.58 345.44 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "9638ebd1-cb87-522c-9d4c-38a17748c900") 
 (property "Reference" "JP503" 
-(at 438.15 266.304 0) 
+(at 449.58 337.82 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "Pullup enable N.O." 
-(at 438.15 270.304 0) 
+(at 449.58 340.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
+(at 449.58 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 449.58 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 449.58 340.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 449.58 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "JP503") 
 (unit 1))))) 
 (symbol 
-(lib_id "Jumper:SolderJumper_2_Open") 
-(at 514.35 274.32 0) 
+(lib_id "Device:R") 
+(at 519.43 345.44 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "989fdb44-3d91-533e-91e1-fe323abc1468") 
+(property "Reference" "R553" 
+(at 519.43 337.82 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "2.2k" 
+(at 519.43 340.36 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 519.43 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 519.43 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 519.43 340.36 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 519.43 340.36 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "R553") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 444.5 345.44) 
+(xy 439.42 345.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "cbdfb001-531e-5dc0-b1ac-0f2c4e00d671")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 439.42 345.44 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "6149440b-650c-500f-8112-2e16221c573a") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 439.42 345.44 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 454.66 345.44) 
+(xy 459.74 345.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "fa8ae47c-acb3-54d8-b5ff-bf44223af918")) 
+(label "PU_I2C1_SDA" 
+(at 459.74 345.44 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "c662a616-3655-58a8-bdaa-10ed53c38a00")) 
+(wire 
+(pts 
+(xy 515.62 345.44) 
+(xy 510.54 345.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "9f1df91a-9b48-55de-b9d1-67383303828e")) 
+(label "PU_I2C1_SDA" 
+(at 510.54 345.44 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "13e7655d-1d8a-53ab-a0e8-8d3033a935ad")) 
+(wire 
+(pts 
+(xy 523.24 345.44) 
+(xy 528.32 345.44)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f56e58f9-e208-5aec-9aae-e1fe178c39a8")) 
+(global_label "I2C1_SDA" 
+(shape bidirectional) 
+(at 528.32 345.44 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "804101c7-bb27-506b-8bac-f54b878b6b1c") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 528.32 345.44 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(symbol 
+(lib_id "Jumper:SolderJumper_2_Open") 
+(at 449.58 360.68 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "98aa38d7-e2d0-52c1-a0fb-0d37630b1467") 
 (property "Reference" "JP504" 
-(at 514.35 266.304 0) 
+(at 449.58 353.06 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "Pullup enable N.O." 
-(at 514.35 270.304 0) 
+(at 449.58 355.6 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
+(at 449.58 355.6 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 449.58 355.6 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 449.58 355.6 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 449.58 355.6 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "JP504") 
 (unit 1))))) 
 (symbol 
-(lib_id "Connector:TestPoint") 
-(at 58.42 317.5 0) 
+(lib_id "Device:R") 
+(at 519.43 360.68 90) 
 (unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
 (in_bom yes) 
 (on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "ff6af2c1-487f-5af5-9227-2bf61597460a") 
+(property "Reference" "R554" 
+(at 519.43 353.06 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "2.2k" 
+(at 519.43 355.6 90.0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Resistor_SMD:R_0603_1608Metric" 
+(at 519.43 355.6 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 519.43 355.6 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 519.43 355.6 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 519.43 355.6 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "R554") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 444.5 360.68) 
+(xy 439.42 360.68)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "098eebf4-4412-5f92-b382-1e6abc6b62d6")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 439.42 360.68 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "eefd8c15-7df2-5346-8d37-16ecc87d12bb") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 439.42 360.68 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 454.66 360.68) 
+(xy 459.74 360.68)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "74b08ac2-f14f-5d7f-be03-9db52d0cd69f")) 
+(label "PU_I2C1_SCL" 
+(at 459.74 360.68 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "cfd0cf98-4721-5381-9cca-9e0a64ec057d")) 
+(wire 
+(pts 
+(xy 515.62 360.68) 
+(xy 510.54 360.68)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "94aa51c5-0dfc-52e3-b408-d76557922ec5")) 
+(label "PU_I2C1_SCL" 
+(at 510.54 360.68 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "98595dc7-2857-5199-95c8-838e85bdb39c")) 
+(wire 
+(pts 
+(xy 523.24 360.68) 
+(xy 528.32 360.68)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "61db0e9d-3924-5d73-a1a5-955f5a367aae")) 
+(global_label "I2C1_SCL" 
+(shape bidirectional) 
+(at 528.32 360.68 0) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify left)) 
+(uuid "ebe1386e-5c85-5e80-8fb9-61e8fe6dc607") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 528.32 360.68 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(symbol 
+(lib_id "Connector_Generic:Conn_01x03") 
+(at 279.4 227.33 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
+(dnp no) 
+(uuid "5ea2d3c1-68b7-57f0-8b66-7cf793cc3add") 
+(property "Reference" "JP505" 
+(at 279.4 219.71 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Value" "GPIO VCC 3V3/5V select" 
+(at 279.4 222.25 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" 
+(at 279.4 222.25 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Datasheet" "" 
+(at 279.4 222.25 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 279.4 222.25 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 279.4 222.25 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
+(instances 
+(project "central-board-placement" 
+(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
+(reference "JP505") 
+(unit 1))))) 
+(wire 
+(pts 
+(xy 274.32 224.79) 
+(xy 269.24 224.79)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "f079e7f4-1825-53ee-bfc3-f7b14437d225")) 
+(global_label "+3V3_TEENSY" 
+(shape bidirectional) 
+(at 269.24 224.79 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "3bc0809a-220e-5666-a545-03e38e2d5644") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 269.24 224.79 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(wire 
+(pts 
+(xy 274.32 227.33) 
+(xy 269.24 227.33)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "d390d6e2-e5e4-5598-91a6-0d77388a913d")) 
+(label "VCC_GPIO_EXT" 
+(at 269.24 227.33 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "df8f4c6c-0fa2-579b-b610-90170edbe9ea")) 
+(wire 
+(pts 
+(xy 274.32 229.87) 
+(xy 269.24 229.87)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "942521a4-54bd-5987-9aec-0b5c8787ad6c")) 
+(global_label "+5V_EXP" 
+(shape bidirectional) 
+(at 269.24 229.87 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "18efb71f-1aa8-56b8-88d9-d30d03584f12") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 269.24 229.87 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(symbol 
+(lib_id "Connector:TestPoint") 
+(at 35.56 219.71 0) 
+(unit 1) 
+(body_style 1) 
+(exclude_from_sim no) 
+(in_bom yes) 
+(on_board yes) 
+(in_pos_files yes) 
 (dnp no) 
 (uuid "d2174191-42ac-58c3-9a29-ab7894193e0e") 
 (property "Reference" "TP501" 
-(at 58.42 307.198 0) 
+(at 35.56 212.09 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)))) 
+(size 1.1 1.1)))) 
 (property "Value" "GND_CTRL" 
-(at 58.42 311.198 0) 
+(at 35.56 214.63 0) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.1 1.1)))) 
+(property "Footprint" "DifferentialSwerve:Harwin_S1751-46R" 
+(at 35.56 214.63 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
 (size 1.27 1.27)))) 
-(property "Footprint" "DifferentialSwerve:Harwin_S1751-46R" 
-(at 0 0 0) 
-(effects 
-(font 
-(size 1.27 1.27)) 
-(hide yes))) 
 (property "Datasheet" "" 
-(at 0 0 0) 
+(at 35.56 214.63 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
-(property "Placement note" "S1751-46R" 
-(at 0 0 0) 
+(size 1.27 1.27)))) 
+(property "Description" "" 
+(at 35.56 214.63 0) 
+(show_name no) 
+(do_not_autoplace no) 
 (effects 
 (font 
-(size 1.27 1.27)) 
-(hide yes))) 
+(size 1.27 1.27)))) 
+(property "Placement note" "Connected schematic; see nonpower wiring review 2026-09-29" 
+(at 35.56 214.63 0) 
+(hide yes) 
+(show_name no) 
+(do_not_autoplace no) 
+(effects 
+(font 
+(size 1.27 1.27)))) 
 (instances 
 (project "central-board-placement" 
 (path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673/fd4ae659-53de-5990-931c-b18634dfaacf" 
 (reference "TP501") 
-(unit 1))))))
+(unit 1))))) 
+(wire 
+(pts 
+(xy 35.56 219.71) 
+(xy 35.56 224.79)) 
+(stroke 
+(width 0) 
+(type default)) 
+(uuid "a82653b5-35b9-54e4-b6cf-3d3c564c8503")) 
+(global_label "GND_CTRL" 
+(shape bidirectional) 
+(at 35.56 224.79 180) 
+(effects 
+(font 
+(size 0.95 0.95)) 
+(justify right)) 
+(uuid "ba7804b5-115e-5f21-a584-81f96c355393") 
+(property "Intersheetrefs" "${INTERSHEET_REFS}" 
+(at 35.56 224.79 0) 
+(effects 
+(font 
+(size 1.27 1.27)) 
+(hide yes)))) 
+(text "JP501-504 OPEN by default (optional 2.2k pullups)\nJP505: 1-2 = 3.3V default; 2-3 = 5V; ONE shunt only\nGPIO signals remain 3.3V. Total external 3.3V budget: 100mA." 
+(at 295 405 0) 
+(effects 
+(font 
+(size 1.1 1.1))) 
+(uuid "ee37304a-2183-50b7-abe1-26c73ad31d50")))

@@ -1,0 +1,9 @@
+{
+  "pinmap": "48/48 matches official card and project pinmap",
+  "left_top_to_bottom": "1..24",
+  "right_top_to_bottom": "48..25",
+  "top_USB": "left GND1 / right VIN48",
+  "library_cache_generator": "all agree",
+  "footprint": "unchanged",
+  "schematic_instances": "unchanged by this correction"
+}

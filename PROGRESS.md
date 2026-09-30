@@ -1,4 +1,161 @@
 # Project progress
+## 2026-09-30 (中央回路のGit保存)
+
+- ユーザー依頼で中央回路の保存版、SMBJ33CA採用、関連資料/PDF/検証記録/作業スクリプトをmainへコミットしoriginへpushする作業を実施。現行回路の直近検証はERC0件。
+- ユーザー追加指定「一旦全部プッシュ」に従い、機構CAD・駆動基板V2・ファーム・製造出力を含む全未コミット変更を保存対象に拡張。gitignore対象の一時ファイルは既存ルールどおり除外。全体の実機/製造検証済みを意味しない。次の中央作業は現行hardware/central-board/central-boardから継続し、実測・帰路・ヒューズ等の残件を確認する。
+
+## 2026-09-29 (クランプ更新先の訂正：現行central-board)
+
+- ユーザーから「更新されていない」と指摘。前回はcentral-board-placement側のみ更新していた。調査でhardware/central-board/central-boardが2026-09-29 22:45保存の新しいシート構成（safety-1等）へ移行済みで、PCBも22:46に更新されていることを確認。従前の「central-boardは旧データ」という説明を撤回。この保存版を今後の作業対象とする。
+- 現行safety-1.kicad_schのX401をD405 AOS SMBJ33CA / Device:D_TVS / Diode_SMD:D_SMBへ置換。新しい配置とinstance UUIDを保持。全ネットは参照名変更以外一致、D405両端=J402両端を照合。現行プロジェクトERC0→0、SVG目視確認。他の回路図・PCB・設定はハッシュ一致。
+- 退避/検証: output/kicad-check/central-clamp-current-project-2026-09-29/。前回のERC4件はplacement側の結果で、現在のcentral-boardには当てはまらない。PCBへのD405追加はまだ行っていない。実機サージ/解放時間・X402帰路等の残件は継続。
+
+## 2026-09-29 (クランプSMBJ33CA採用・KiCad反映)
+
+- ユーザーの「それに変更」でX401仮ブロックをD405 AOS SMBJ33CA双方向TVSへ置換。J402のコイル両端へ接続。Device:D_TVS / Diode_SMD:D_SMB、Manufacturer/MPN/Datasheetを付与、parts JSON/manifestと正本資料を更新。未割当は10→9参照番号。
+- 直前回答のAOS公式資料で品種を固定。SMBJ33CA: VRWM33V、VBR36.7〜40.6V、VC53.3V@11.6A、600Wは10/1000µs条件。旧候補Littelfuseの11.3Aと混用しない。AOS DO-214AA推奨ランド最小2.16×2.26mm/内側間隔最大2.74mmに対し、KiCad D_SMBは2.5×2.3mm/間隔1.8mmを照合。600W定格の銅面積・パルス・温度条件は実装時に別途満たすこと。
+- export netlistはX401→D405の参照変更を除き全ネット一致、D405両端=J402両端を確認。他7回路図はハッシュ一致。ERC4→4（既存CANのみ）。SVG表示確認、PCB/PDF/ファーム変更なし。退避/公式PDF/検証: output/kicad-check/central-clamp-2026-09-29/。
+- 次: 実ハーネスでQ401 OFF/NC接点開放の双方のサージ、吸収エネルギー、解放10ms以内を確認。X402帰路/F401/F402/正式コネクタ等は未確定。開いたKiCadは外部変更を再読込。
+
+## 2026-09-29 (TN686コイル抵抗・内部保護・クランプ候補)
+
+- ユーザー確認: TN686、24V/100A表記、コイル抵抗0.34kΩ、内部保護なし。24V時70.6mA/1.69Wを計算。販売仕様の解放10ms未満はクランプ追加後の保証と区別。ADR・要件・電源資料へ記録。
+- X401の試作候補としてLittelfuse SMBJ33CA（双方向TVS、コイル両端）を調査。公式SMBJ資料でVRWM33V、VBR36.7〜40.6V、VC53.3V@11.3A確認。仮の供給上限26.4V（提示仕様110%）との和79.7VはQ401の100V以内だが、温度・配線サージ・実供給上限を含む保証ではない。
+- 正式採用/回路/footprint変更なし。コイルLまたはOFF波形によるエネルギー・パルス幅確認、解放10ms以内の実測、配線長、NC開放時の接点間過渡電圧の確認が残る。X402帰路も未確定。
+
+## 2026-09-29 (コンタクタ現物表記TN686)
+
+- ユーザーが現物表記をTN686と回答。旧E228/1.8W/300Ω/75〜80mAの同一性が未照合となったため、ADR・中央要件・電源E-stop資料に優先注記を追加。回路の定数/部品は未変更。
+- 提示ページ https://xianhuielectric.en.made-in-china.com/product/tmDphRcJBgYP/China-Relay-Module-Hongfa-Relay-Wm686-Tn686-Rl-180-12.html を閲覧。型式混載、コイル2.4W/4.8W、TVS組込み可能という記載で、現物TN686の個別仕様は未確定。追加検索で販売店Hadex掲載のTN686仕様PDF https://www.hadex.cz/spec/l620c.pdf を発見。24V/1.8W=320Ωと24V/4.8W=120Ωの行があり、注文例は2.4Wで記載に不整合あり。現物へ適用する仕様は未特定、メーカー正式性も未確認。
+- 次: 本体の完全な銘板/末尾型式/コイル電圧/内部回路表示を確認し、保護素子の有無とコイル電流を確定。クランプX401・ヒューズF401の選定へつなげる。
+
+## 2026-09-29 (中央フットプリント報告の照合)
+
+- ユーザー提示の未割当一覧を現保存版で再集計し、C101/C104/SW211/J102/J401/J402/F401/F402/X401/X402の10参照番号と一致。J403はXH2pin footprintがあるがValue=TBDのため選定済みとは扱わない。
+- 報告の「J402=別体driver 5pin」は旧仕様。現行は中央driver→コイルの2pin。転記リファレンスの旧案を履歴と明示し、現行BOM/未決表のJ401/J402を4pin/2pinへ訂正。
+- X401クランプ、X402帰路結合は機能TBDであり、単に基板除外にして完了させない。SW311〜313/U101/U102/U401/TP/J210は割当済みだが、メーカー図面による照合状況と正式品選定を区別する。
+- 現行central-board-placementフォルダにPCBファイルは見つからない。別のhardware/central-board/central-boardにPCBはあるが、今回の報告がいう「PCBへ反映済み」は現行プロジェクトでは確認できない。今回回路/PCBの変更なし、メーカー寸法照合・新規部品採用も未実施。
+- 次: 既存基板共通化を優先して未確定品を選定。保護/帰路の設計を確定し、各footprintをメーカー図面で照合したうえで現行回路からPCBへ反映する。
+
+## 2026-09-29 (中央：電源・CAN以外をKiCadへ配線)
+
+- ユーザー指定によりS02B/S04/S05を配線。Teensy用途ラベル40/予約NC8を維持、D212赤ERR/D213緑PWRの誤配列を訂正。E-stop監視・buffer/MOSFET駆動・コネクタ、I2C/UART/SPI/100Ω/TVS/プルアップ、GPIO4pin×4組(J507〜J510)とJP505共通電源選択を反映。
+- J401を4pinで復元。F402はLED枝保護TBD、X401はクランプTBD、X402は帰路結合TBDの明示ブロック（導通するnet tieではない）。S04は保護/帰路/正式品を確定するまで実機・製造未完了。
+- netlist186端子、Teensy48pad、GPIO/LED/driver接続、レール非短絡を検証。S02A/CAN3枚はバイト一致、既存部品間ネット一致。ERC193→4（error4/warning0、対象外CANの電源未駆動）。除外設定は変更なし。変更3シートをSVG描画・目視確認。PCB/ファーム変更なし。
+- parts JSON/manifestを現保存版157参照番号へ同期、目次更新。詳細 `docs/electrical/CENTRAL_NONPOWER_WIRING_2026-09-29.md`、退避/検証 `output/kicad-check/central-nonpower-wiring-2026-09-29/`。既存人間向けPDFは前回の説明版で今回は更新なし。
+- 次: F401/F402、X401クランプ、X402帰路、24Vコネクタ等を確定。対象外CAN ERC4件を別途解消。開いているKiCadは古い画面を保存せず再読込する。
+
+## 2026-09-29 (中央PDF描き直し・Teensy GPIO用途global label)
+
+- 人間参照PDFを画像縮小方式から文字/配線のベクター描画へ作り直し。15ページ、Teensy全48端子、電源、CAN、E-stop外部配線/監視/driver、I2C/UART/SPI/GPIOを分離。最新版 `output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-29.pdf`、生成 `tmp/pdfs/build_central_readable.py`。GPIO4pin×4組はPDFへ転記案反映、KiCad S05は今回未変更。
+- 保存済みS02BへTeensy用途global labelを30個追加。使用40端子/予約NC8端子を明示。READ_SW_N→REARM_SW_N訂正、GPIO4/5の廃止済み監視割当をpinmapから除去。ラベルと干渉するC212/GNDだけ余白へ移し同名3V3で接続。既存ネットの分断なし、全48padネット照合合格。CAN3系統の既存ラベルとも接続成立。
+- ERC217→194（未接続159、ラベル片端23、power未駆動6、wire端3、input未駆動3）。最終合格ではない。他シート/PCB/ファームは未変更。退避・netlist・ERC・SVG: `output/kicad-check/central-readable-2026-09-29/`。開いているKiCadは外部変更を再読込する。
+- ユーザー申告: E-stopはPMD22-03-24R、X1-X2へ24Vで押下時LED点灯確認、11-12を安全ループに使用する方針。LEDは20V/0.2Wに続き24V/約0.3Wを実測（約12.5mA、1個なら2個約25mA）。接点導通/LED極性/測定個数は最終照合。J401は現行4pinを維持。未確定部品は既存基板との共通化優先で選定。
+- 次: LED枝保護/F401/コイルクランプ/帰路結合点、コネクタ等をメーカー資料で選定。USB接続先/取出し経路とMatek実物を照合。GPIO4組をS05へ反映し、現保存版で未配置のJ323も要求と照合。新PDFのCAN表は保存版U311/312/313・J311〜316を表示し旧番号との差を明示。
+
+## 2026-09-29 (中央回路の設計再開・GPIO接続案整理)
+
+- 最新ADR・中央転記表・ピン表・保存済みS05を確認。4pin×4組の指定に対し、現行はJ507 10pinのままであることを確認。
+- 既存8信号を2本ずつJ507〜J510へ分ける接続案を `docs/electrical/CENTRAL_GPIO_4PORT_HANDOFF_2026-09-29.md` に記録。JP505共通電源選択、100Ω/TVS、Teensy割当を維持する案。RefDes/組分けは実装案として区別。
+- 現在: 回路/PDF/ファーム変更なし、ERC未実施。次: GPIO正式コネクタの図面照合後、S05/PDF/正本資料を同期。E-stop側はLED給電/J401極数、枝保護、クランプ、帰路接続が未確定。
+
+## 2026-09-29 (会話保存：E-stop配線の理解整理)
+
+- コイル励磁で主接点ON、NCボタンでコイル電流を切る構成、J401 OUT/RETURNは24Vの行き戻りでGNDではないこと、ループ監視と主接点監視の違い、LED別枝保護の役割を docs/electrical/POWER_DISTRIBUTION_AND_ESTOP.md に図付きで保存。
+- LEDを24Vバスから独立給電してJ401を2pinにする案は検討段階。確定変更として扱わず、現行4pinを維持。ボタンLEDは反転点灯とのユーザー申告、内部配線は未照合。
+- 現在: PDFは12ページ整理版、監視/コイルのコネクタ配線まで図示済み。次: 指摘済み汎用GPIO4pin×4組をPDF/KiCadへ反映、LED給電/J401極数・保護部品・帰路接続の確定。今回回路/PDF/ファーム変更なし。
+
+## 2026-09-26 (E-stop監視・コイル図へコネクタ配線を追加)
+
+- PDF7ページにJ401全4pin、外部NC1/NC2直列ループ、LED枝、R401/R402/D401/U401/R409/TP401への配線を描画。8ページにJ403の24V入力/GND、F401、J401往復、J402コイル2線、Q401への配線と監視分岐を描画。
+- LED枝独立保護はF401前からJ401-3への接続を示し、保護素子とクランプはTBD表示を維持。GND帰路の結合点は未確定のまま。変更2ページを描画して目視確認。退避/PNG: output/kicad-check/central-connector-wiring-2026-09-26/。
+- 今回はPDF作図修正。KiCad配線は変更なし。次: LED保護・クランプ・正式コネクタ等の未確定設計。汎用GPIO端子はユーザーから4pin×4組への訂正あり、PDF/KiCadへの反映は別途必要。
+
+## 2026-09-26 (中央PDFを12ページの整理版へ再構成)
+
+- 後付け16ページを機能順12ページへ再構成。日本語説明・共通ページ番号・読み方を統一。USBとVIN合流を一枚へ再描画し、コイルの24V→NC直列→コイル→Q401を連続経路で表現。ARMはE-stopページ7、JP505はI/Oページ10へ統合。未確定項目はページ12に集約。
+- 図のラベル重なり・分割ランド説明・F205の重複描画を整理。U102の全10端子/NC、分圧/FLT/ILM/dVdt、C103/104/107、D101/102、TPを再描画。基板/ファーム仕様は変更なし。
+- 全12ページを描画し、全体一覧と変更図を目視確認。旧16ページ版退避/PNG/抽出テキスト: output/kicad-check/central-pdf-clean-2026-09-26/。生成: tmp/pdfs/build_central_board_clean.py（旧9/26入口も整理版を生成）。次: F401/コイルクランプ/コネクタ等の未確定設計を詰める。
+
+## 2026-09-26 (仮配置KiCadへGUI共通ARMを追記)
+
+- 20:26:10保存版を退避。S02B/S04/トップへGUI USBとSW211の共通ARM判定、E-stop解除だけでは復帰しない、ARM後は新規RUNまでゼロ、古い要求破棄、実機adapter未完を追記。
+- 最新保存で戻っていたS04の4ch監視を再度指定済み1chへ修正。消えていたSW211/R214を退避版からS02B余白へ復元し、既存C211は位置保持。部品一覧/manifestを現在の手編集回路図へ同期。退避: output/kicad-check/central-arm-placement-2026-09-26/before/。
+- 電源など他の手配線を再生成しない。今回ERC/実機試験は未実施。次: KiCadを外部変更から再読込し、再保存による旧版上書きを避ける。
+
+## 2026-09-26 (GUI共通ARM方式をPDFへ反映)
+
+- 最新中央回路PDFを16ページへ更新。Teensy/SW211ページ6、コイルdriverページ11、目次に共通ARMを明記。ページ16にGUI/USBと物理タクト入力→Teensy共通判定→コイル許可、E-stop解除だけでは復帰しない、新規RUNまで運転ゼロ、旧要求破棄、実装未完の接続部分を記載。
+- 変更4ページをPNG化して目視確認。旧版退避/描画: output/kicad-check/central-gui-arm-pdf-2026-09-26/。回路・ファーム変更なし。次: Teensy/GUI接続と実機検証。
+
+## 2026-09-26 (本体GUIからの共通ARM仕様・判定コア追加)
+
+- ユーザー確定: 本体GUIのARM要求とSW211タクトをTeensyの共通判定へ接続。E-stop解除のみでは復帰せず、ARM後も新規RUNまで運転ゼロ。ADR/GUI仕様/ピン表を同期し、撤回済みMOTOR_PWR_SENSE条件を除去。回路変更は不要。
+- central_firmwareに判定コアを実装。実機USB/GPIOと本体GUI接続は未実装、ビルド・テスト未実施。詳細/次作業はfirmware/PROGRESS.md。
+
+## 2026-09-26 (再アームボタン方式を維持)
+
+- ユーザー確認: SW211はタクトスイッチのままとする。電圧切替ではなくTeensy pin6/pad8へのREARM_SW_N入力。設計上はTeensyが安全条件と新規押下エッジを判定し、MOTOR_PWR_ENを出力する。
+- central_firmwareは現状ハード非依存制御コアで、安全I/O/CAN/USB/STOP・ESTOP状態機械は未実装。再アームは設計済み・実機実装未完として区別。ファーム変更なし。
+
+## 2026-09-26 (E-stop監視を1chへ簡略化)
+
+- ユーザー確定: ボタン個別状態は不要。仮配置S04のU401をLTV-817S 1chへ変更し、R403〜408/R410〜412、D402〜404、TP402〜405の16部品と余分なU401ユニットを削除。R401/R402/D401/R409/TP401でループ全体のみ監視。
+- J401は4pin（ループ往復＋LED24V/帰路）へ変更、正式MPN未確定。J402コンタクタコイルは2線を維持。Teensy旧個別入力pad6/7は予約扱い、再割当なし。安全遮断は物理NC直列接点、フォトカプラは診断専用。
+- Lite-On DS-70-96-0016 Rev.NでLTV-817S pin1 A/2 K/3 E/4 C、CTR min50%と外形を確認。標準symbolあり、SMDIP-4_W9.53mmは購入実物照合待ち。部品一覧/manifest/要件/転記表/ピン表/ADRへ反映。退避: output/kicad-check/central-estop-1ch-2026-09-26/before/。
+- 最新15ページPDFもS04Aを1chへ更新し、変更ページを描画して目視確認。現在: S04は引き続き未配線。次: 1ch接続表に沿って配線、J401購入型番とU401実物footprintを確定。ファーム未変更、個別監視を参照する既存コードがあれば追従が必要。
+
+## 2026-09-26 (中央仮配置の電源回路を修正・再確認)
+
+- 18:40:19ユーザー保存版を退避し、S02AのU101/U102分圧・給電・GND・fault接続、F205 0.75A枝とD101/LEDを修正。S02B旧重複22部品・TP211〜213を削除し、Teensy電源/fault/残存TPを同名ネットで接続。既存配置を保持、仮配置の再生成なし。
+- Part Loader eFuseの分割角ランド11/12/13/14を10/1/4/7へ整理したproject-local footprintを作成。銅箔形状は維持。U101シンボルを10端子へ修正、両eFuseへ割当。共有SamacSys libraryは変更なし。
+- Netlistの主要65接続・内部6ネット・給電4枝・全eFuse端子を照合。電源シートERC0、全体455→383件（他シート未配線等）。174実部品、Ref重複0。部品JSON/manifest同期。証跡: output/kicad-check/central-power-fix-2026-09-26/REVIEW.md。
+- 現在: 電源の接続修正済み。他シート、C101/C104 footprint、J102取出し、USB電流評価、PCB設計は未完。次: KiCad再読込後にラベルの混雑を整理し、未確定部品と他回路を進める。生成器で手配線原本を上書きしない。
+
+## 2026-09-26 (Teensy表示順訂正・ユーザー作成電源回路を確認)
+
+- ユーザー指摘により、J210仮配置シンボル右列の上から25→48を48→25へ訂正。左1→24、USB側上、GND1/VIN48を揃えUSB END表示追加。ライブラリ/cache/生成器/部品JSONへ反映。全48pinの番号と信号名、ソケットfootprint、全38インスタンスの配置/UUIDを保持。公式PJRC Rev.4と照合し、専用検査でlibrary/cache/生成器一致を確認。PDFのTeensy図は既にこの順序。記録: output/kicad-check/central-teensy-pin-order-2026-09-26/。
+- 同時にユーザーがS02A電源回路を手配線。17:56:40保存版をsnapshot化し原本byte一致を確認してread-only監査。R104がOVLOでなくENへ接続、C103/C104片側未接続、F205二重/旧S02B枝Ref重複、USB回路未配線かつページ外、local label/GND名不一致を確認。電源原本は編集なし。
+- Part LoaderのSamacSys TPS259470LRPWRは14番号。TI RPW0010Aの10端子/L字ランドと比較し、追加11/12/13/14は10/1/4/7の角部分割ランドとして同番号へ整理が必要。現在追加端子NC、footprint名にlibrary prefixもない。メーカー図を保存・描画して確認。
+- 最新ERC486件には手配線途中・未配線シートの違反と重複注釈が混在。以前の「未接続のみ」の仮配置判定を現在の回路へ流用しない。詳細/修正先: output/kicad-check/central-power-2026-09-26/REVIEW.md。
+- 次: 上記電源結線と部品重複・ライブラリ番号を修正して再照合。ユーザーが手配線を開始したため仮配置生成器で原本を再生成しない。外部変更したTeensyシンボルはエディタ再読込が必要。
+
+## 2026-09-26 (中央駆動枝TP211〜TP213を省略)
+
+- ユーザーの「unitごとのTPはLEDがあるので省く」指定を駆動Unit 1〜3の給電枝へ適用。仮配置S02BからTP211〜TP213を削除し、部品JSON/manifest/目次個数/README/要件/転記表/ADRを同期。LEDで給電状態を確認し、電圧測定はJ201〜J203で行う。
+- 最新PDF（CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-26.pdf）の4ページから3つのTPを除去、再レンダリングして確認。ODOM/Teensy/ExpansionのTP214〜TP216、主電源/CAN/USB fault等のTPは保持。
+- KiCad netlist/ERCと部品照合: 178部品/181シンボル、重複なし/共有ネットなし/割当footprint実在。ERC521件は未接続493/入力未駆動13/電源未駆動15のみ。未配線段階。退避/記録: output/kicad-check/central-unit-tp-2026-09-26/。
+- 次: ユーザーによる手配線とeFuse RPW footprint割当、既存未確定項目の解消を続ける。
+
+## 2026-09-26 (F205正式型番の誤記訂正)
+
+- ユーザーの入手性質問からメーカー資料と流通型番を再確認し、F205の1206L075/16YRを正式発注型番1206L075/16WRへ訂正。Littelfuse 1206LメーカーDS注文表とMouser/DigiKey掲載を確認。保持0.75A/耐圧16V/1206の設計意図は変更なし。
+- 中央要件/転記表/回路リファレンス/HTML/未確定表、現行仮配置と部品JSON/manifest、生成器を同期。9月26日版PDFも型番訂正。旧版PDFは履歴として保持。退避: output/kicad-check/central-f205-mpn-2026-09-26/。
+- 次: 1206L075/16WRで部品検索/調達。別メーカー品への変更は未実施。Teensy枝の実測負荷/突入による定格reviewは継続。
+
+## 2026-09-26 (中央仕様変更を手配線用回路図・仮配置へ反映)
+
+- 更新済みADR/中央要件/Rev.1転記表を読み、USB→+5V_SYS給電とGPIO電源列選択の差分を確認。`hardware/central-board-placement`へU102 TPS259470ARPWR、R107〜R112、C106〜C108、TP106、JP505の12部品を追加。電源シートをA2に拡張し、既存素子の位置・向き・UUID・プロパティを注記以外保持（変更3シートの既存105シンボルを比較）。配線は作成していない。
+- USB eFuseのピンはTI TPS25947 Rev.Cと照合。GPIOはJP505 1=3V3/2=VCC_GPIO_EXT/3=5V_EXP、出荷時1-2。J507-1の電源のみ変更し、IO/TVSは3.3V固定。pad11/pin9 USB fault入力は資料通り提案扱い、pad36はNC。
+- 部品JSON/manifest/Teensy対応データ/README/文書索引を更新。最新版人手転記PDFは`output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-26.pdf`（15ページ、14 USB eFuse、15 GPIO選択）。全ページPNG化、変更ページと仮配置S02A/S05を目視確認。旧PDFは保持。
+- KiCad SVG/netlist出力、181部品/184シンボル、重複なし、割当footprint実在、custom pin表一致、接続ネットなしを確認。ERC524件は未接続496/入力未駆動13/電源未駆動15のみ。未配線段階で製造用ERC合格ではない。記録/退避: `output/kicad-check/central-placement-2026-09-26/`。
+- 次: ユーザーがPart LoaderでU101 `TPS259470LRPWR` / U102 `TPS259470ARPWR`のRPW 10pin QFN footprintを取得し、pad番号を照合して割当。その後PDF/転記表に沿って手配線。ヘッダ購入型番、VUSB取出し電流、コイルclamp等の既存未確定を解消する。中央旧プロジェクト/PCB/ファームは変更なし。
+
+## 2026-09-26 (駆動V2製造前の3仕様をユーザー確認)
+
+- J6逆順はケーブル都合の意図した配列として確定。R13=33k（5V側）/R14=22k（GND側）も確定、33kを調達予定。V2 ADC分圧比0.4、換算値をファームへ合わせる必要あり（今回ファーム変更なし）。
+- C620 CANは2個のGHから各ESCへ接続し各ESCの120Ω終端をON。ESC①―駆動基板―ESC②の両端終端なので基板内終端不要で確定。旧「基板内終端欠落＝不備」の扱いを撤回。
+- ADR/駆動要件/V2要件/QA/電気監査へ反映。3仕様は既存回路と整合しておりPCB・ZIP再生成不要。電気的エラー/未接続0、残る表示/ライブラリ/実装属性等は前回QAのとおり。ZIPは生成済み、基板注文はしていない。
+
+## 2026-09-26 (駆動V2最終照合・製造ZIP作成、仕様確認待ち)
+
+- ユーザー依頼で最新駆動V2を固定snapshotとしてERC/DRC、全pad/net、要件とメーカーpin資料を照合。原本変更なし。ERC0エラー/1警告、DRC0エラー/7警告・未接続0、別整合警告10。信号padの不一致0（NC slash表記差のみ）。
+- MCU電源/VDDA/VREF・reset/HSE・TCAN・LM66100/BAT54Sの主要pin接続を監査。library差が出たU1/D2/D7/SW3/J6のpad番号/位置/寸法は標準libraryと一致。SWD PCB DNP差・RXシルク重なり等の警告は残る。
+- 要確認: AMT22 J6が以前指定の全逆順（現在1=CS/2=MISO/3=GND/4=MOSI/5=SCLK/6=5V）。R13/R14は33k/22kで旧実装記録22k/10kと異なりADC換算も異なる。外部C620終端と配線形状も未確認。ユーザーへ質問済み、勝手な回路変更なし。
+- C620基板内終端なしを単独で回路ミスとは断定しない。駆動基板がC6202台の間で外部両端終端なら基板終端不要、ハーネスを含めた照合が必要。
+- output/manufacturing/unit-v2-2026-09-26/unit-v2-2026-09-26-NOT_RELEASED.zipを作成。4層1.6mm、外形最大45×45mm、Gerber11+job+PTH/NPTH=14files、PTH107/NPTH6。展開byte/層/外形/穴/プレビュー照合済み。QA-NOT_RELEASED.mdとelectrical-audit.md参照。
+- 次: 上記3仕様を確認し、必要なら回路/資料/ファーム換算を整合してZIP再生成。発注は未実施。ZIP生成を設計合格と同一視しない。
+
 ## 2026-09-25 (駆動V2シルク参照番号を非表示)
 
 - ユーザーの新規配置配線完了後の依頼で駆動V2 PCBを更新。開いているunit-board-v2と最新保存時刻22:55:11から対象を確認。
@@ -3125,3 +3282,56 @@
 
 - 新規プロジェクトをKiCadで開き、各子シートへユーザーが配線する。未確定値・コネクタ・footprintを順次確定し、階層pin/電源/NCはその段階で追加。
 - 配線後にERCと正本接続表を照合する。V1 ODOMは本日CAN実機10/10成功、明日はIMU→ジャンパ→エンコーダの順（詳細firmware/PROGRESS.md）。
+
+## 2026-09-26 (中央基板: USB単独でCAN・ノード1基給電)
+
+### やったこと
+
+- ユーザー要望「USB接続だけでCAN試験、1モジュール分の電源分配もしたい」を受け、USB→`+5V_SYS`給電を追加設計。
+- 以前の構成(D102でVUSB→Teensy VINのみ)では、USBだけだとTeensyは起動するがCANトランシーバ(VCC=`+5V_SYS`)と枝5Vは無電源でCAN不可だった。
+- 第2 eFuse `U102 TPS259470ARPWR`(auto-retry)をTeensy VUSB→`+5V_SYS`に追加。TPS25947 DS(SLVSFC9C)照合で`RILM=3.32kΩ`→ILIM 0.85/1.007/1.15A、UVLO分圧232k/100k(3.98V)。
+- 外部5V優先は`+5V_RAW`→100k/37.4k→U102 OVLO(rising 4.41V/falling 4.00V、5.46V時1.49V≤推奨1.5V)。両eFuseのtrue RCBで逆流なし。D102は切替時のTeensy保持用に残す。FLT→`PWR_USB_FAULT_N`→Teensy pin 9(提案)。
+- 更新: `ARCHITECTURE_DECISIONS.md`、`CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md`(3.1接続表、根拠、6章、7章#18〜20、8.1 ASCII)、`CENTRAL_BOARD_SCHEMATIC_REFERENCE.md` B2、`CENTRAL_BOARD_REQUIREMENTS.md`、`CENTRAL_BOARD_REV1_CONSTITUTION.md`。
+
+### 現在の状態
+
+- ドキュメントのみ更新。`hardware/central-board-placement`のS02AへのU102/R107〜R112/C106〜C108/TP106追加は未実施(ユーザー手編集中のため)。
+
+### 次の作業
+
+- S02AへU102周りのシンボルを追加して配線。
+- Teensy 4.1のUSB→VUSB経路の電流上限をPJRC回路図で確認、`TPS259470ARPWR`の在庫確認。
+- 実機でUSB単独時の電流(Teensy+CAN x3+ユニット1基)と`+5V_SYS`電圧(TCAN1051 VCC≥4.5V)を実測。
+
+## 2026-09-26 (中央基板: GPIO電源の3.3V/5V列切替)
+
+- ユーザー確定: GPIOコネクタの電源ピンだけを、列全体でJP505(2.54mm 1x3ヘッダ+ショートピン、出荷時1-2=3.3V)により`+3V3_TEENSY`/`+5V_EXP`切替。新ネット`VCC_GPIO_EXT`。IOは3.3Vのまま(レベル変換なし、ADC維持)。I2C/SPIの電源ピンは3.3V固定。
+- はんだジャンパではなくヘッダにしたのは、3.3V/5Vの同時短絡を構造上防ぐため。
+- 更新: `ARCHITECTURE_DECISIONS.md`、`CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md`(J507、S05切替節、footprint表、ネット表)、`SCHEMATIC_DESIGN_OPEN_ITEMS.md` CTR-22。
+- 次: S05へJP505を追加(KiCad未反映)。
+
+## 2026-09-29 (中央基板 central-board: 階層ラベル化・ERC 0件)
+
+### やったこと
+
+- `hardware/central-board/central-board`の全子シートのグローバルラベルを階層ラベル化し、ルートにシートピン＋ローカルラベルのスタブを追加。ルートのグローバルラベルもローカルラベル化。1シート内でしか使わない名前(+5V_RAW/+5V_UNITx等)はローカルラベルにした。
+- 実バグ修正: CAN2/CAN3シートがCAN1シートのコピーで`CAN1_RX/TX`グローバルラベルのままだったため、3基のTCAN1051 RXD/TXDがTeensy CAN1ピンに短絡していた。各シートを`CAN2_*`/`CAN3_*`へ(ピン割当は`TEENSY41_CENTRAL_PIN_ASSIGNMENT.md`と一致)。
+- 実バグ修正: CANシートの電源ラベルが`5V_SYS`(+なし)で`+5V_SYS`と別ネットだった→統合。TCAN1051V VIO(U311〜U313 pin5)がデカップリングCのみで未接続だった→`+3V3_TEENSY`へ接続(KICAD_ENTRY_REFERENCE 3.x「VIOをNC/5Vにしない」)。
+- Teensy 3.3Vピンがpassiveのため`+3V3_TEENSY`に`#FLG0905` PWR_FLAGを電源シートに追加。CAN2/CAN3/IOのシート枠を1.27mmグリッドに補正。
+- プロジェクトローカル`sym-lib-table`/`fp-lib-table`を追加(DifferentialSwerve=`hardware/lib`、CentralPlacement=`hardware/central-board-placement`)。
+
+### 現在の状態
+
+- ERC 0件(Errors 0/Warnings 0)。修正前後のnetlist差分は上記の意図した変更のみ。DRC未実施。
+
+### 次の作業
+
+- KiCad GUIで開き直してシートピン/スタブの見た目を整える(自動配置のため位置は機械的)。
+- PCBへ回路図から更新し、DRCへ。
+
+## 2026-09-29 (中央基板 central-board: PCB初期整理)
+
+- ユーザーがGUIで「回路図からPCB更新」後、`central-board.kicad_pcb`に暫定外形100x80mm(Edge.Cuts、原点(100,100))と四隅M3穴H1〜H4(`MountingHole_3.2mm_M3` NPTH、穴中心4mm、board-only)を追加(`CENTRAL_BOARD_SCHEMATIC_REFERENCE.md`の暫定値)。
+- 1点に積み重なっていた142 footprintを外形の右側へRefDes百の位(シート)ごとに整列退避→silk系210件が解消。
+- DRC(schematic parity付き): 残りは未配線297件(配置・配線待ち)と`missing_footprint` 10件(SW211/C101/C104/J102/F401/F402/J401/J402/X401/X402、すべて型番未確定部品)。
+- 要確認: J403にJST XH footprintが割当済みだが要件書は未確定(提案Molex 43650-0200)。JS102011SAQN自作footprintは図面照合未。

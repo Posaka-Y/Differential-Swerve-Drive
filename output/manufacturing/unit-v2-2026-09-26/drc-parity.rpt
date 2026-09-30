@@ -1,0 +1,73 @@
+** Drc report for unit-board.kicad_pcb **
+** Created on 2026-09-26T16:06:14 **
+** Report includes: Errors, Warnings **
+
+** Found 7 DRC violations **
+[lib_footprint_mismatch]: Footprint 'SOT-23' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(90.8500 mm, 65.7750 mm): Footprint D2
+[lib_footprint_mismatch]: Footprint 'SOT-363_SC-70-6' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(79.5000 mm, 87.2500 mm): Footprint U1
+[lib_footprint_mismatch]: Footprint 'SW_DIP_SPSTx03_Slide_Omron_A6S-310x_W8.9mm_P2.54mm' does not match copy in library 'Button_Switch_SMD'
+    Local override; warning
+    @(87.4250 mm, 74.4000 mm): Footprint SW3
+[lib_footprint_mismatch]: Footprint 'DifferentialSwerve_Logo' does not match copy in library 'DifferentialSwerve'
+    Local override; warning
+    @(65.9750 mm, 64.0000 mm): Footprint G***
+[lib_footprint_mismatch]: Footprint 'JST_GH_SM06B-GHS-TB_1x06-1MP_P1.25mm_Horizontal' does not match copy in library 'Connector_JST'
+    Local override; warning
+    @(78.0000 mm, 63.2000 mm): Footprint J6
+[lib_footprint_mismatch]: Footprint 'SOT-23' does not match copy in library 'Package_TO_SOT_SMD'
+    Local override; warning
+    @(89.0500 mm, 82.2750 mm): Footprint D7
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(90.8500 mm, 64.2150 mm): PCB text 'RX' on F.Silkscreen
+    @(90.0900 mm, 64.2150 mm): Segment of D2 on F.Silkscreen
+
+** Found 0 unconnected pads **
+
+** Found 10 Footprint errors **
+[duplicate_footprints]: Duplicate footprints
+    Local override; warning
+    @(97.0000 mm, 97.0000 mm): Footprint REF**
+    @(97.0000 mm, 58.0000 mm): Footprint REF**
+[duplicate_footprints]: Duplicate footprints
+    Local override; warning
+    @(58.0000 mm, 97.0000 mm): Footprint REF**
+    @(97.0000 mm, 58.0000 mm): Footprint REF**
+[duplicate_footprints]: Duplicate footprints
+    Local override; warning
+    @(58.0000 mm, 58.0000 mm): Footprint REF**
+    @(97.0000 mm, 58.0000 mm): Footprint REF**
+[footprint_symbol_mismatch]: SamacSys:FTSH10501LDVKP doesn't match footprint given by symbol (FTSH10501LDVKP)
+    Local override; warning
+    @(59.7250 mm, 77.5000 mm): Footprint J8
+[footprint_symbol_mismatch]: Footprint attributes don't match symbol: 'Do not populate' settings differ
+    Local override; warning
+    @(59.7250 mm, 77.5000 mm): Footprint J8
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(97.0000 mm, 58.0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(97.0000 mm, 97.0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(64.6000 mm, 84.0250 mm): Footprint QR*****
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(58.0000 mm, 97.0000 mm): Footprint REF**
+[extra_footprint]: Extra footprint
+    Local override; warning
+    @(58.0000 mm, 58.0000 mm): Footprint REF**
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **

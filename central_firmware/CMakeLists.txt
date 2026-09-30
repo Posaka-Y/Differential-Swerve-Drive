@@ -4,6 +4,7 @@ project(differential_swerve_central_core LANGUAGES CXX)
 add_library(differential_swerve_central_core
     src/control/swerve_coordinator.cpp
     src/control/steer_trajectory.cpp
+    src/control/arm_controller.cpp
 )
 target_include_directories(differential_swerve_central_core PUBLIC include)
 target_compile_features(differential_swerve_central_core PUBLIC cxx_std_11)

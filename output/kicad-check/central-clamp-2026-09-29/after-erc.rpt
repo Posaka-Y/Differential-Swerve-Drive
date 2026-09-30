@@ -1,0 +1,38 @@
+ERC report (2026-09-29T23:31:43, Encoding UTF8)
+Report includes: Errors, Warnings
+
+***** Sheet /
+
+***** Sheet /5V input / eFuse / USB diode OR (1)/
+
+***** Sheet /Star power / Teensy / indicators (1)/
+
+***** Sheet /CAN1 Sensor (1)/
+[power_pin_not_driven]: Input Power pin not driven by any Output Power pins
+    ; error
+    @(156.21 mm, 88.90 mm): Symbol U311 Pin 3 [VCC, Power input, Line]
+[power_pin_not_driven]: Input Power pin not driven by any Output Power pins
+    ; error
+    @(184.15 mm, 91.44 mm): Symbol U311 Pin 5 [VIO, Power input, Line]
+
+***** Sheet /CAN2 Expansion (1)/
+[power_pin_not_driven]: Input Power pin not driven by any Output Power pins
+    ; error
+    @(175.26 mm, 85.09 mm): Symbol U312 Pin 5 [VIO, Power input, Line]
+
+***** Sheet /CAN3 Drive (1)/
+[power_pin_not_driven]: Input Power pin not driven by any Output Power pins
+    ; error
+    @(185.42 mm, 111.76 mm): Symbol U313 Pin 5 [VIO, Power input, Line]
+
+***** Sheet /E-stop monitoring / central coil driver (1)/
+
+***** Sheet /Matek battery monitor / expansion I/O (1)/
+
+ ** ERC messages: 4  Errors 4  Warnings 0
+
+ ** Ignored checks:
+    - Global label only appears once in the schematic
+    - Four connection points are joined together
+    - SPICE model issue
+    - Assigned footprint doesn't match footprint filters

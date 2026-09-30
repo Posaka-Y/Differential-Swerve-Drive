@@ -132,7 +132,7 @@ Add-HorizontalPassive 'Device:Polyfuse' 'F113' '1206L050/15YR' 1750 3850 '+5V_SY
 Add-Component 'Connector_Generic:Conn_01x02' 'J114' 'ODOM 5V OUT GH2' 850 4200 '-1 0 0 1' 'Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal'
 Add-ConnectorLabels 850 4200 @('+5V_ODOM','GND_CTRL')
 Add-HorizontalPassive 'Device:Polyfuse' 'F114' '1206L050/15YR' 1750 4200 '+5V_SYS' '+5V_ODOM'
-Add-HorizontalPassive 'Device:Polyfuse' 'F115' '1206L075/16YR' 3100 3150 '+5V_SYS' '+5V_TEENSY'
+Add-HorizontalPassive 'Device:Polyfuse' 'F115' '1206L075/16WR' 3100 3150 '+5V_SYS' '+5V_TEENSY'
 Add-HorizontalPassive 'Device:Polyfuse' 'F116' '1206L050/15YR' 3100 3500 '+5V_SYS' '+5V_EXP'
 Add-Note 650 4550 'Each node branch: add green LED + 1.5k after PPTC and a test point during PCB capture.' 45
 

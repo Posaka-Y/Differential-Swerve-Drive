@@ -86,11 +86,18 @@ class Libraries:
     def add_custom(self, part):
         libid = part['lib_id']; short = libid.split(':')[1]
         pins = part['custom_pins']; half = math.ceil(len(pins) / 2)
+        if part.get('custom_layout') == 'teensy_usb_top':
+            assert {int(p['number']) for p in pins} == set(range(1, 49))
+            pins = sorted(pins, key=lambda p: int(p['number']))[:24] + sorted(
+                (p for p in pins if int(p['number']) >= 25), key=lambda p: -int(p['number']))
         h = max(10.16, (half + 1) * 2.54 / 2)
         n = ['symbol', q(libid), ['pin_names', ['offset', '1.016']], ['in_bom', 'yes'], ['on_board', 'yes'],
              prop('Reference', 'U'), prop('Value', part['value']),
              ['symbol', q(short + '_0_1'), ['rectangle', ['start', '-17.78', str(h)], ['end', '17.78', str(-h)], ['stroke', ['width', '0.254'], ['type', 'default']], ['fill', ['type', 'background']]]]]
         unit = ['symbol', q(short + '_1_1')]
+        if part.get('custom_layout') == 'teensy_usb_top':
+            common = children(n, 'symbol')[0]
+            common.append(['text', q('USB END'), ['at', '0', '29.21', '0'], effects(1.27)])
         for i, p in enumerate(pins):
             left = i < half; j = i if left else i-half
             y = (half - 1) * 1.27 - j * 2.54

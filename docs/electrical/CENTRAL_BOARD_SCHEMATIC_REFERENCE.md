@@ -54,7 +54,7 @@ J1 XT30PW-M
 | Unit 2 | `1206L050/15YR` | 同上 | 同上 |
 | Unit 3 | `1206L050/15YR` | 同上 | 同上 |
 | Odometry | `1206L050/15YR` | 同上 | 同上 |
-| Teensy | `1206L075/16YR` | VINへ基板内接続 | 緑+1.5kohm |
+| Teensy | `1206L075/16WR` | VINへ基板内接続 | 緑+1.5kohm |
 | Expansion 5V | `1206L050/15YR` | GH拡張電源 | 緑+1.5kohm |
 
 PPTC後を個別ネット`+5V_UNIT1`等とし、各枝へtest pointを置く。PPTCの高温deratingと突入は実機で確認する。
@@ -76,7 +76,18 @@ Teensy VUSBパッド -> D2(Schottky) -/
 ```
 
 - VUSB-VINパッドは従来通りカット。カット後のVUSBパッドからD2を介してVINへ接続する。
-- D1/D2はNexperia `PMEG2010EA,115`（20V/1A low-VF、SOD-323）を初期指定とする。逆流はTPS259470側で別途保護済みのためD1はOR用途のみ。USB側D2の電流はTeensy単体のUSB給電電流だけを前提とし、外部5V枝をUSBから給電させない。
+- D1/D2はNexperia `PMEG2010EA,115`（20V/1A low-VF、SOD-323）を初期指定とする。逆流はTPS259470側で別途保護済みのためD1はOR用途のみ。
+- ~~外部5V枝をUSBから給電させない~~ → 2026-09-26撤回。USBからも第2 eFuse経由で`+5V_SYS`へ給電する(B2)。
+
+### B2. USB→+5V_SYS 給電(2026-09-26追加)
+
+```text
+Teensy VUSB -> U102 TPS259470ARPWR (ILIM≈1A, auto-retry) -> +5V_SYS
++5V_RAW -> 100k/37.4k -> U102 OVLO   (外部5V≥4.41VでU102 OFF = 外部5V優先)
+```
+
+- USBだけでCAN x3とノード1基分(ユニット or オドメトリ)の5Vを動かすため。定数・接続表は`CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md` 3.1節が正本。
+- D2(VUSB→VIN)は残す。外部5Vの抜き差し時とU102の電流制限時にTeensyのUSB接続を切らさないため。
 
 ## C. CAN x3
 

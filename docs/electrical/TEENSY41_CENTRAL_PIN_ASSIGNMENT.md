@@ -1,6 +1,10 @@
+> **2026-09-29:** Teensy使用40pad/予約NC8padの用途global labelを維持し、周辺回路を接続。GPIOの4pin×4組は[最新配線記録](CENTRAL_NONPOWER_WIRING_2026-09-29.md)のJ507〜J510に反映済み。GPIO4/5は個別E-stop監視廃止により予約。
+
 # Teensy 4.1中央基板 ピン割当
 
-> 2026-09-23確認: 本文の旧Rev.A表よりARCHITECTURE_DECISIONSとRev.1転記表を優先。Teensy pin9/socket pad11とpin14/socket pad36はRev.1ではNC（旧AUX_OUTPUT_EN/MOTOR_PWR_SENSEを復活させない）。pin2/socket pad4はMOTOR_PWR_ENを維持。 詳細: [次回PCB一括発注計画](PCB_BATCH_V2_CENTRAL_PLAN.md)。
+> **2026-09-29ラベル反映:** 現行`central-board-placement`のJ210へ全使用端子の用途global labelを設定。GPIO4/5は個別E-stop監視廃止後の予約NC。予約NCはpad6/7/25/29/30/31/36/37。GPIO9/pad11のUSB faultは提案扱いを維持。誤記`READ_SW_N`を`REARM_SW_N`へ統一。現行対応は`tools/kicad/central-teensy-pinmap.json`と2026-09-29 PDF p05を参照。
+
+> 2026-09-26更新: 本文の旧Rev.A表よりARCHITECTURE_DECISIONSとRev.1転記表を優先。Teensy pin9/socket pad11はUSB側eFuse U102の`PWR_USB_FAULT_N`入力候補へ変更（提案）。pin14/socket pad36はNC。旧AUX_OUTPUT_EN/MOTOR_PWR_SENSEは復活させない。pin2/socket pad4はMOTOR_PWR_ENを維持。GPIO端子の電源のみJP505で3.3V/5Vを一括選択し、IO信号は3.3V固定。 詳細: [Rev.1転記表](CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md)。
 
 作成: 2026-08-04
 対象: 中央制御基板 Rev.A
@@ -23,8 +27,8 @@
 | 3 | 1 | `CAN2_TX` | Out | 汎用拡張CAN送信 |
 | 4 | 2 | `MOTOR_PWR_EN` | Out | コンタクタ低側MOSFET許可。起動時Low |
 | 5 | 3 | `ESTOP_LOOP_OK_N` | In | 直列NCループ監視。Low=ループ成立 |
-| 6 | 4 | `ESTOP1_AUX_OK_N` | In | E-stop 1補助接点。Low=補助接点成立 |
-| 7 | 5 | `ESTOP2_AUX_OK_N` | In | E-stop 2補助接点。Low=補助接点成立 |
+| 6 | 4 | 未使用（旧ESTOP1） | - | 2026-09-26個別監視省略。予約、再割当なし |
+| 7 | 5 | 未使用（旧ESTOP2） | - | 2026-09-26個別監視省略。予約、再割当なし |
 | 8 | 6 | `REARM_SW_N` | In | 物理再アーム押しボタン。Low=押下 |
 | 9 | 7 | `STATUS_G_LED` | Out | 基板状態LED緑 |
 | 10 | 8 | `STATUS_R_LED` | Out | 基板状態LED赤 |
@@ -81,12 +85,20 @@ Teensy pin 33、37、38、39はRev.Aでは未使用とし、ソケットpinへNo
 
 ## ファームウェアの初期状態
 
-Teensy起動直後、I/O設定完了前も外付けpulldownにより`MOTOR_PWR_EN`と`AUX_OUTPUT_EN`はLowを維持する。再アーム判定は少なくとも次を全て満たす場合だけ許可する。
+2026-09-26確定: 起動・reset・Hi-Z時は外付けpulldownでMOTOR_PWR_ENをLowへ保持。E-stop解除だけでは復帰しない。
 
-1. `ESTOP_LOOP_OK_N`、`ESTOP1_AUX_OK_N`、`ESTOP2_AUX_OK_N`が成立。
-2. `MOTOR_PWR_SENSE`がコンタクタOFF相当。
-3. 3ユニット、オドメトリ、mini PCとの通信が正常。
-4. 停止原因ラッチを確認後、`REARM_SW_N`の新しい押下エッジを検出。
+再アームの共通条件:
+
+1. ESTOP_LOOP_OK_Nが成立（個別ボタン監視は省略）。
+2. GUI、駆動MCU3基、ODOMとの通信がfresh、他の停止原因なし。
+3. 動作指令ゼロ。
+4. GUIからの新規ARM要求、またはSW211の新規押下エッジ。
+
+GUIとSW211は同じTeensy判定へ入れる。ARM成立時はMOTOR_PWR_ENをON、運転出力はゼロで保持。成立後の新しい運転要求だけで動作を許可する。停止で許可を破棄し、再起動・GUI再接続時も新規ARMを要求する。保持中ボタン・停止前要求・古い指令を再利用しない。
+
+MOTOR_PWR_SENSEやコンタクタ補助接点は搭載しないため再アーム条件には使わない。コンタクタOFF中はC620無応答が正常なので、駆動MCUの通信正常とC620の応答を区別する。ARM後の運転開始にはC620立上がり・応答fresh確認を別途要求する。
+
+判定コア: central_firmware/include/control/arm_controller.h。GPIO/USB/GUIアダプタは未実装。詳細: software/MINIPC_GUI_AND_TEENSY.md。
 
 ## 根拠資料
 

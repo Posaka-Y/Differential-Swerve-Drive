@@ -1,0 +1,23 @@
+{
+  "existing_symbols_in_changed_sheets_preserved": 105,
+  "new_parts": [
+    "U102",
+    "R107",
+    "R108",
+    "R109",
+    "R110",
+    "R111",
+    "R112",
+    "C106",
+    "C107",
+    "C108",
+    "TP106",
+    "JP505"
+  ],
+  "wiring": "none; placement only",
+  "pdf_pages": 15,
+  "library_download_mpn": [
+    "TPS259470LRPWR",
+    "TPS259470ARPWR"
+  ]
+}

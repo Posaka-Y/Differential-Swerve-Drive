@@ -1,3 +1,7 @@
+> **作業先訂正 2026-09-29:** 現行は `hardware/central-board/central-board/central-board.kicad_pro`。22:45保存版へ移行済みで、クランプD405も `safety-1.kicad_sch` に反映済み。ERC0件。下記のcentral-board-placement対象/既存CAN4件という記載は以前の作業履歴。
+
+> 2026-09-29中央KiCad配線の現在地：[電源・CAN以外の配線記録](electrical/CENTRAL_NONPOWER_WIRING_2026-09-29.md)。既存PDFと現在のKiCadの差、TBD境界、ERC残件を記載。
+
 # Differential Swerve Drive ドキュメント構成
 
 このドキュメント群は、差動ステアユニットを「機構モジュール」「制御モジュール」「電源・安全」「基板」「ソフトウェア」のレイヤーに分けて管理する。
@@ -35,7 +39,7 @@
 | 9.2 | `electrical/CENTRAL_BOARD_SCHEMATIC_REFERENCE.md` | 中央基板Rev.Aの責務別階層sheet、正式部品、接続、PCB制約、試験条件 |
 | 9.25 | `electrical/CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md` | **中央基板Rev.1のKiCad転記用リファレンス**。シート構成・RefDes・ピン番号付き接続表・symbol/footprint・ERC非検出注意・未確定事項を具体化。2026-09-17にコンタクタを別体`CONTACTOR_DRIVER`へ分離し、中央`MOTOR_PWR_EN` 3.3V直結へ訂正 |
 | 9.255 | `../hardware/lib/TEENSY41_SOCKET_FOOTPRINT.md` | Teensy 4.1一体48padソケット、列中心間15.24mm、USB側pad1/48、1mm穴と実物適合の確認条件 |
-| 9.257 | `../output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-23.pdf` | **中央基板・人手転記用回路図の最新版（A3横13ページ）**。回路拡大、横挿しGH3 CAN仕様、中央コイルdriver搭載案、Teensy列中心間15.24mm訂正、未確定一覧 |
+| 9.257 | `../output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-29.pdf` | **最新・人間参照回路図（A3横15ページ、ベクター版）**。電源2〜4、Teensy5〜6、CAN7、E-stop8〜10、I/O11〜14、未確定15。GPIO4pin×4組の転記案、ボタン現物/LED実測を反映。生成: `tmp/pdfs/build_central_readable.py` |
 | 9.258 | `electrical/CENTRAL_BOARD_REV1_PDF_CHANGELOG_2026-09-23.md` | 改訂PDFの変更点・出典・未確定事項。旧転記表のCAN/安全境界との差分正本 |
 | 9.259 | `../hardware/central-board-placement/README.md` | 中央基板の新規KiCad階層回路図。機能別シンボル配置のみ、配線はユーザーが実施。既存中央プロジェクトとは別 |
 | 9.26 | `../output/pdf/CENTRAL_BOARD_REV1_SCHEMATIC_2026-09-14.pdf` | **旧版。9.257へ更新済み。**  9.25の接続表を人が読む回路図にしたA3横8ページ。2026-09-17改訂版は3.3V ON/OFF→別体gate buffer/MOSFET→E228 24V coilの境界を明記。生成は`tmp/pdfs/build_central_board_rev1_schematic.py` |

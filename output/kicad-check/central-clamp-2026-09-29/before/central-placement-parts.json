@@ -1,0 +1,1704 @@
+{
+  "scope": "Saved schematic inventory as of 2026-09-29. Nonpower wired; safety TBDs explicit. NEVER regenerate saved power/CAN/manual sheets with placement generator.",
+  "sources": [
+    "docs/electrical/CENTRAL_BOARD_REV1_KICAD_ENTRY_REFERENCE.md",
+    "docs/electrical/CENTRAL_BOARD_REV1_PDF_CHANGELOG_2026-09-23.md",
+    "tmp/pdfs/build_central_board_rev1_schematic_2026_09_23.py",
+    "docs/ARCHITECTURE_DECISIONS.md"
+  ],
+  "sheets": [
+    {
+      "id": "S02A_power_input",
+      "title": "5V input / eFuse / USB diode OR",
+      "parts": [
+        {
+          "ref": "R110",
+          "value": "100k 1%",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "+5V_RAW to USB_EFUSE_OVLO; external 5V priority",
+          "status": "documented"
+        },
+        {
+          "ref": "R107",
+          "value": "3.32k 1%",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "USB_EFUSE_ILM to GND_CTRL; ILIM 0.85/1.007/1.15A",
+          "status": "documented"
+        },
+        {
+          "ref": "R103",
+          "value": "51.1k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R204",
+          "value": "1.5k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U102",
+          "value": "TPS259470ARPWR",
+          "lib_id": "CentralPlacement:TPS259470ARPWR",
+          "footprint": "DifferentialSwerve:TPS25947_RPW_10Pin",
+          "note": "USB eFuse auto-retry. IN5=TEENSY_VUSB; OUT6=+5V_SYS; EN1=R108/R109; OVLO2=R110/R111 (+5V_RAW priority); FLT4=R112/TP106/Teensy pad11 (proposal); DVDT7=C108; GND8=GND_CTRL; ILM9=R107; AUXOFF3/ITIMER10=NC when wired. RPW footprint remains unresolved.",
+          "status": "documented",
+          "custom_pins": [
+            {
+              "number": "1",
+              "name": "EN/UVLO",
+              "type": "input"
+            },
+            {
+              "number": "2",
+              "name": "OVLO",
+              "type": "input"
+            },
+            {
+              "number": "3",
+              "name": "AUXOFF",
+              "type": "open_collector"
+            },
+            {
+              "number": "4",
+              "name": "FLT",
+              "type": "open_collector"
+            },
+            {
+              "number": "5",
+              "name": "IN",
+              "type": "power_in"
+            },
+            {
+              "number": "6",
+              "name": "OUT",
+              "type": "power_out"
+            },
+            {
+              "number": "7",
+              "name": "dVdt",
+              "type": "passive"
+            },
+            {
+              "number": "8",
+              "name": "GND",
+              "type": "power_in"
+            },
+            {
+              "number": "9",
+              "name": "ILM",
+              "type": "passive"
+            },
+            {
+              "number": "10",
+              "name": "ITIMER",
+              "type": "passive"
+            }
+          ],
+          "datasheet": "https://www.ti.com/lit/ds/symlink/tps25947.pdf"
+        },
+        {
+          "ref": "J203",
+          "value": "SM02B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x02",
+          "footprint": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
+          "note": "1=5V branch / 2=GND",
+          "status": "documented"
+        },
+        {
+          "ref": "J101",
+          "value": "XT30PW-M",
+          "lib_id": "Connector_Generic:Conn_01x02",
+          "footprint": "Connector_AMASS:AMASS_XT30PW-M_1x02_P2.50mm_Horizontal",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D204",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R203",
+          "value": "1.5k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U101",
+          "value": "TPS259470LRPWR",
+          "lib_id": "CentralPlacement:TPS259470LRPWR_10Pin",
+          "footprint": "DifferentialSwerve:TPS25947_RPW_10Pin",
+          "note": "",
+          "status": "documented",
+          "custom_pins": [
+            {
+              "number": "1",
+              "name": "EN/UVLO",
+              "type": "input"
+            },
+            {
+              "number": "2",
+              "name": "OVLO",
+              "type": "input"
+            },
+            {
+              "number": "3",
+              "name": "AUXOFF",
+              "type": "open_collector"
+            },
+            {
+              "number": "4",
+              "name": "FLT",
+              "type": "open_collector"
+            },
+            {
+              "number": "5",
+              "name": "IN",
+              "type": "power_in"
+            },
+            {
+              "number": "6",
+              "name": "OUT",
+              "type": "power_out"
+            },
+            {
+              "number": "7",
+              "name": "dVdt",
+              "type": "passive"
+            },
+            {
+              "number": "8",
+              "name": "GND",
+              "type": "power_in"
+            },
+            {
+              "number": "9",
+              "name": "ILM",
+              "type": "passive"
+            },
+            {
+              "number": "10",
+              "name": "ITIMER",
+              "type": "passive"
+            }
+          ]
+        },
+        {
+          "ref": "F205",
+          "value": "1206L075/16WR",
+          "lib_id": "Device:Fuse",
+          "footprint": "Fuse:Fuse_1206_3216Metric",
+          "note": "",
+          "status": "provisional"
+        },
+        {
+          "ref": "F202",
+          "value": "1206L050/15YR",
+          "lib_id": "Device:Fuse",
+          "footprint": "Fuse:Fuse_1206_3216Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R106",
+          "value": "0",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "dVdt series proposal: 0R for 10nF, 100R if >10nF",
+          "status": "provisional"
+        },
+        {
+          "ref": "J204",
+          "value": "SM02B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x02",
+          "footprint": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
+          "note": "1=5V branch / 2=GND",
+          "status": "documented"
+        },
+        {
+          "ref": "R104",
+          "value": "221k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J102",
+          "value": "VUSB pickup TBD",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "",
+          "note": "引出し方法とfootprint未確定",
+          "status": "unresolved"
+        },
+        {
+          "ref": "R112",
+          "value": "10k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "+3V3_TEENSY to PWR_USB_FAULT_N; never pull up to 5V",
+          "status": "documented"
+        },
+        {
+          "ref": "C108",
+          "value": "10nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "USB_EFUSE_DVDT to GND_CTRL; ~25ms ramp",
+          "status": "documented"
+        },
+        {
+          "ref": "R205",
+          "value": "1.5k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D102",
+          "value": "PMEG2010EA,115",
+          "lib_id": "Device:D_Schottky",
+          "footprint": "Diode_SMD:D_SOD-323",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D205",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R108",
+          "value": "232k 1%",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "TEENSY_VUSB to USB_EFUSE_EN",
+          "status": "documented"
+        },
+        {
+          "ref": "R111",
+          "value": "37.4k 1%",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "USB_EFUSE_OVLO to GND_CTRL",
+          "status": "documented"
+        },
+        {
+          "ref": "C107",
+          "value": "1uF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "+5V_SYS to GND_CTRL; U102 OUT local bypass",
+          "status": "documented"
+        },
+        {
+          "ref": "R102",
+          "value": "732k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R206",
+          "value": "1.5k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J201",
+          "value": "SM02B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x02",
+          "footprint": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
+          "note": "1=5V branch / 2=GND",
+          "status": "documented"
+        },
+        {
+          "ref": "C104",
+          "value": "470uF 10V low-ESR",
+          "lib_id": "Device:C",
+          "footprint": "",
+          "note": "MPN/package TBD",
+          "status": "unresolved"
+        },
+        {
+          "ref": "D201",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D206",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R109",
+          "value": "100k 1%",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "USB_EFUSE_EN to GND_CTRL",
+          "status": "documented"
+        },
+        {
+          "ref": "R202",
+          "value": "1.5k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "C101",
+          "value": "100uF 10V",
+          "lib_id": "Device:C",
+          "footprint": "",
+          "note": "MPN/package TBD",
+          "status": "unresolved"
+        },
+        {
+          "ref": "F204",
+          "value": "1206L050/15YR",
+          "lib_id": "Device:Fuse",
+          "footprint": "Fuse:Fuse_1206_3216Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "TP102",
+          "value": "+5V_SYS",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        },
+        {
+          "ref": "C102",
+          "value": "1uF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "C1608X7R1E105K080AB",
+          "status": "documented"
+        },
+        {
+          "ref": "F203",
+          "value": "1206L050/15YR",
+          "lib_id": "Device:Fuse",
+          "footprint": "Fuse:Fuse_1206_3216Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R105",
+          "value": "10k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "C106",
+          "value": "1uF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "TEENSY_VUSB to GND_CTRL; U102 IN local bypass",
+          "status": "documented"
+        },
+        {
+          "ref": "D203",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J202",
+          "value": "SM02B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x02",
+          "footprint": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
+          "note": "1=5V branch / 2=GND",
+          "status": "documented"
+        },
+        {
+          "ref": "D101",
+          "value": "PMEG2010EA,115",
+          "lib_id": "Device:D_Schottky",
+          "footprint": "Diode_SMD:D_SOD-323",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "C105",
+          "value": "10nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "C1608C0G1H103J080AA",
+          "status": "documented"
+        },
+        {
+          "ref": "F206",
+          "value": "1206L050/15YR",
+          "lib_id": "Device:Fuse",
+          "footprint": "Fuse:Fuse_1206_3216Metric",
+          "note": "",
+          "status": "provisional"
+        },
+        {
+          "ref": "TP101",
+          "value": "+5V_RAW",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        },
+        {
+          "ref": "C103",
+          "value": "1uF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "C1608X7R1E105K080AB",
+          "status": "documented"
+        },
+        {
+          "ref": "R101",
+          "value": "750",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "F201",
+          "value": "1206L050/15YR",
+          "lib_id": "Device:Fuse",
+          "footprint": "Fuse:Fuse_1206_3216Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R201",
+          "value": "1.5k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D202",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        }
+      ]
+    },
+    {
+      "id": "S02B_star_teensy",
+      "title": "Star power / Teensy / indicators",
+      "parts": [
+        {
+          "ref": "R214",
+          "value": "10k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "Local tactile ARM request; shared Teensy gate with GUI ARM over USB. New press only; not voltage selection.",
+          "status": "documented"
+        },
+        {
+          "ref": "TP217",
+          "value": "+3V3_TEENSY",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        },
+        {
+          "ref": "D212",
+          "value": "LTST-C190KRKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "C212",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric"
+        },
+        {
+          "ref": "TP214",
+          "value": "+5V_ODOM",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        },
+        {
+          "ref": "TP216",
+          "value": "+5V_EXP",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        },
+        {
+          "ref": "TP215",
+          "value": "+5V_TEENSY_F",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        },
+        {
+          "ref": "SW211",
+          "value": "REARM switch TBD",
+          "lib_id": "Switch:SW_Push",
+          "footprint": "",
+          "note": "Local tactile ARM request; shared Teensy gate with GUI ARM over USB. New press only; not voltage selection.",
+          "status": "unresolved"
+        },
+        {
+          "ref": "R213",
+          "value": "1.5k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R211",
+          "value": "1k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R212",
+          "value": "1k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "C211",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D211",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D213",
+          "value": "LTST-C190KGKT",
+          "lib_id": "Device:LED",
+          "footprint": "LED_SMD:LED_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J210",
+          "value": "Teensy 4.1 socket",
+          "lib_id": "CentralPlacement:Teensy41_Socket",
+          "footprint": "DifferentialSwerve:Teensy41_Socket_2x24",
+          "note": "GPIO purpose global labels added 2026-09-29. Reserved NC pads 6/7/25/29/30/31/36/37; GPIO9 USB fault remains proposed; REARM_SW_N spelling corrected. See central-teensy-pinmap.json.",
+          "status": "mechanical_review",
+          "custom_pins": [
+            {
+              "number": "1",
+              "name": "GND",
+              "type": "passive"
+            },
+            {
+              "number": "2",
+              "name": "0",
+              "type": "passive"
+            },
+            {
+              "number": "3",
+              "name": "1",
+              "type": "passive"
+            },
+            {
+              "number": "4",
+              "name": "2",
+              "type": "passive"
+            },
+            {
+              "number": "5",
+              "name": "3",
+              "type": "passive"
+            },
+            {
+              "number": "6",
+              "name": "4",
+              "type": "passive"
+            },
+            {
+              "number": "7",
+              "name": "5",
+              "type": "passive"
+            },
+            {
+              "number": "8",
+              "name": "6",
+              "type": "passive"
+            },
+            {
+              "number": "9",
+              "name": "7",
+              "type": "passive"
+            },
+            {
+              "number": "10",
+              "name": "8",
+              "type": "passive"
+            },
+            {
+              "number": "11",
+              "name": "9",
+              "type": "passive"
+            },
+            {
+              "number": "12",
+              "name": "10",
+              "type": "passive"
+            },
+            {
+              "number": "13",
+              "name": "11",
+              "type": "passive"
+            },
+            {
+              "number": "14",
+              "name": "12",
+              "type": "passive"
+            },
+            {
+              "number": "15",
+              "name": "3.3V",
+              "type": "passive"
+            },
+            {
+              "number": "16",
+              "name": "24/A10",
+              "type": "passive"
+            },
+            {
+              "number": "17",
+              "name": "25/A11",
+              "type": "passive"
+            },
+            {
+              "number": "18",
+              "name": "26/A12",
+              "type": "passive"
+            },
+            {
+              "number": "19",
+              "name": "27/A13",
+              "type": "passive"
+            },
+            {
+              "number": "20",
+              "name": "28",
+              "type": "passive"
+            },
+            {
+              "number": "21",
+              "name": "29",
+              "type": "passive"
+            },
+            {
+              "number": "22",
+              "name": "30",
+              "type": "passive"
+            },
+            {
+              "number": "23",
+              "name": "31",
+              "type": "passive"
+            },
+            {
+              "number": "24",
+              "name": "32",
+              "type": "passive"
+            },
+            {
+              "number": "25",
+              "name": "33",
+              "type": "passive"
+            },
+            {
+              "number": "26",
+              "name": "34",
+              "type": "passive"
+            },
+            {
+              "number": "27",
+              "name": "35",
+              "type": "passive"
+            },
+            {
+              "number": "28",
+              "name": "36",
+              "type": "passive"
+            },
+            {
+              "number": "29",
+              "name": "37",
+              "type": "passive"
+            },
+            {
+              "number": "30",
+              "name": "38",
+              "type": "passive"
+            },
+            {
+              "number": "31",
+              "name": "39",
+              "type": "passive"
+            },
+            {
+              "number": "32",
+              "name": "40/A16",
+              "type": "passive"
+            },
+            {
+              "number": "33",
+              "name": "41/A17",
+              "type": "passive"
+            },
+            {
+              "number": "34",
+              "name": "GND",
+              "type": "passive"
+            },
+            {
+              "number": "35",
+              "name": "13",
+              "type": "passive"
+            },
+            {
+              "number": "36",
+              "name": "14/A0",
+              "type": "passive"
+            },
+            {
+              "number": "37",
+              "name": "15/A1",
+              "type": "passive"
+            },
+            {
+              "number": "38",
+              "name": "16/A2",
+              "type": "passive"
+            },
+            {
+              "number": "39",
+              "name": "17/A3",
+              "type": "passive"
+            },
+            {
+              "number": "40",
+              "name": "18/A4",
+              "type": "passive"
+            },
+            {
+              "number": "41",
+              "name": "19/A5",
+              "type": "passive"
+            },
+            {
+              "number": "42",
+              "name": "20/A6",
+              "type": "passive"
+            },
+            {
+              "number": "43",
+              "name": "21/A7",
+              "type": "passive"
+            },
+            {
+              "number": "44",
+              "name": "22/A8",
+              "type": "passive"
+            },
+            {
+              "number": "45",
+              "name": "23/A9",
+              "type": "passive"
+            },
+            {
+              "number": "46",
+              "name": "3.3V",
+              "type": "passive"
+            },
+            {
+              "number": "47",
+              "name": "GND",
+              "type": "passive"
+            },
+            {
+              "number": "48",
+              "name": "VIN",
+              "type": "passive"
+            }
+          ],
+          "custom_layout": "teensy_usb_top"
+        },
+        {
+          "ref": "TP218",
+          "value": "GND_CTRL",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        }
+      ]
+    },
+    {
+      "id": "S03_CAN1",
+      "title": "CAN1 Sensor",
+      "parts": [
+        {
+          "ref": "R311",
+          "value": "120",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J312",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "1=COMM_A / 2=COMM_B / 3=GND; 2 ports/bus is provisional",
+          "status": "port_count_provisional"
+        },
+        {
+          "ref": "J311",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "1=COMM_A / 2=COMM_B / 3=GND; 2 ports/bus is provisional",
+          "status": "port_count_provisional"
+        },
+        {
+          "ref": "C312",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "D311",
+          "value": "ESD2CAN24DBZRQ1",
+          "lib_id": "DifferentialSwerve:ESD2CAN24DBZRQ1",
+          "footprint": "Package_TO_SOT_SMD:SOT-23",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U311",
+          "value": "TCAN1051VDRQ1",
+          "lib_id": "DifferentialSwerve:TCAN1051VDRQ1",
+          "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "SW311",
+          "value": "JS102011SAQN",
+          "lib_id": "DifferentialSwerve:JS102011SAQN",
+          "footprint": "DifferentialSwerve:JS102011SAQN",
+          "note": "ON方向はPCB/シルクで要確認",
+          "status": "documented"
+        },
+        {
+          "ref": "C311",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        }
+      ]
+    },
+    {
+      "id": "S03_CAN2",
+      "title": "CAN2 Expansion",
+      "parts": [
+        {
+          "ref": "SW312",
+          "status": "documented",
+          "value": "JS102011SAQN",
+          "lib_id": "DifferentialSwerve:JS102011SAQN",
+          "footprint": "DifferentialSwerve:JS102011SAQN",
+          "note": "ON方向はPCB/シルクで要確認"
+        },
+        {
+          "ref": "C314",
+          "status": "documented",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": ""
+        },
+        {
+          "ref": "U312",
+          "status": "documented",
+          "value": "TCAN1051VDRQ1",
+          "lib_id": "DifferentialSwerve:TCAN1051VDRQ1",
+          "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+          "note": ""
+        },
+        {
+          "ref": "J314",
+          "status": "documented",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "1=COMM_A / 2=COMM_B / 3=GND; 2 ports/bus is provisional"
+        },
+        {
+          "ref": "J313",
+          "status": "documented",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "1=COMM_A / 2=COMM_B / 3=GND; 2 ports/bus is provisional"
+        },
+        {
+          "ref": "C313",
+          "status": "documented",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": ""
+        },
+        {
+          "ref": "D312",
+          "status": "documented",
+          "value": "ESD2CAN24DBZRQ1",
+          "lib_id": "DifferentialSwerve:ESD2CAN24DBZRQ1",
+          "footprint": "Package_TO_SOT_SMD:SOT-23",
+          "note": ""
+        },
+        {
+          "ref": "R312",
+          "status": "documented",
+          "value": "120",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "S03_CAN3",
+      "title": "CAN3 Drive",
+      "parts": [
+        {
+          "ref": "D313",
+          "status": "documented",
+          "value": "ESD2CAN24DBZRQ1",
+          "lib_id": "DifferentialSwerve:ESD2CAN24DBZRQ1",
+          "footprint": "Package_TO_SOT_SMD:SOT-23",
+          "note": ""
+        },
+        {
+          "ref": "C315",
+          "status": "documented",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": ""
+        },
+        {
+          "ref": "SW313",
+          "status": "documented",
+          "value": "JS102011SAQN",
+          "lib_id": "DifferentialSwerve:JS102011SAQN",
+          "footprint": "DifferentialSwerve:JS102011SAQN",
+          "note": "ON方向はPCB/シルクで要確認"
+        },
+        {
+          "ref": "J316",
+          "status": "documented",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "1=COMM_A / 2=COMM_B / 3=GND; 2 ports/bus is provisional"
+        },
+        {
+          "ref": "C316",
+          "status": "documented",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": ""
+        },
+        {
+          "ref": "J315",
+          "status": "documented",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "1=COMM_A / 2=COMM_B / 3=GND; 2 ports/bus is provisional"
+        },
+        {
+          "ref": "R313",
+          "status": "documented",
+          "value": "120",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": ""
+        },
+        {
+          "ref": "U313",
+          "status": "documented",
+          "value": "TCAN1051VDRQ1",
+          "lib_id": "DifferentialSwerve:TCAN1051VDRQ1",
+          "footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "id": "S04_safety",
+      "title": "E-stop monitoring / central coil driver",
+      "parts": [
+        {
+          "ref": "J403",
+          "value": "TBD 2pin",
+          "lib_id": "Connector_Generic:Conn_01x02",
+          "footprint": "Connector_JST:JST_XH_S2B-XH-A_1x02_P2.50mm_Horizontal",
+          "note": "暫定1=24V_CTRL_IN / 2=GND_24V_RETURN; 正式MPN/pin順/key未確定",
+          "status": "unresolved"
+        },
+        {
+          "ref": "J401",
+          "value": "TBD E-stop 4pin",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "",
+          "note": "Rating / part / footprint TBD",
+          "status": "TBD"
+        },
+        {
+          "ref": "J402",
+          "value": "TBD 2pin",
+          "lib_id": "Connector_Generic:Conn_01x02",
+          "footprint": "",
+          "note": "暫定1=COIL_POS / 2=COIL_NEG; 正式MPN/pin順/key未確定",
+          "status": "unresolved"
+        },
+        {
+          "ref": "F401",
+          "value": "TBD coil fuse",
+          "lib_id": "Device:Fuse",
+          "footprint": "",
+          "note": "定格/型番/配置未確定",
+          "status": "unresolved"
+        },
+        {
+          "ref": "F402",
+          "value": "TBD LED branch fuse",
+          "lib_id": "Device:Fuse",
+          "footprint": "",
+          "status": "TBD",
+          "note": "Rating / part / footprint TBD"
+        },
+        {
+          "ref": "R401",
+          "value": "2.2k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R402",
+          "value": "2.2k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U401",
+          "value": "LTV-817S",
+          "lib_id": "Isolator:LTV-817S",
+          "footprint": "Package_DIP:SMDIP-4_W9.53mm",
+          "note": "4 units all required. footprint未確定; SMDIP-16_W9.53mm候補を実物照合する",
+          "status": "footprint_unresolved",
+          "units": [
+            1
+          ]
+        },
+        {
+          "ref": "D401",
+          "value": "1N4148W",
+          "lib_id": "Diode:1N4148W",
+          "footprint": "Diode_SMD:D_SOD-123",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R409",
+          "value": "10k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "TP401",
+          "value": "ESTOP_LOOP_OK_N",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "TestPoint:TestPoint_Pad_D1.5mm",
+          "note": "Signal pad",
+          "status": "documented"
+        },
+        {
+          "ref": "TP406",
+          "value": "GND_CTRL_LED",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "TestPoint:TestPoint_Pad_D1.5mm",
+          "note": "Signal pad",
+          "status": "documented"
+        },
+        {
+          "ref": "U402",
+          "value": "SN74AHCT1G125DBVR",
+          "lib_id": "74xGxx:74AHCT1G125",
+          "footprint": "Package_TO_SOT_SMD:SOT-23-5",
+          "note": "2026-09-23 PDF候補、DBV:1=OE_N 2=A 3=GND 4=Y 5=VCC。symbol pin要照合",
+          "status": "provisional"
+        },
+        {
+          "ref": "R414",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "Gate resistor, PDF candidate",
+          "status": "provisional"
+        },
+        {
+          "ref": "Q401",
+          "value": "IRLML0100TRPBF",
+          "lib_id": "Transistor_FET:Q_NMOS_GSD",
+          "footprint": "Package_TO_SOT_SMD:SOT-23",
+          "note": "2026-09-23 PDF基本案:1=G 2=S 3=D",
+          "status": "provisional"
+        },
+        {
+          "ref": "R413",
+          "value": "100k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "Input pulldown, PDF candidate",
+          "status": "provisional"
+        },
+        {
+          "ref": "R415",
+          "value": "100k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "Gate pulldown, PDF candidate",
+          "status": "provisional"
+        },
+        {
+          "ref": "C401",
+          "value": "100nF",
+          "lib_id": "Device:C",
+          "footprint": "Capacitor_SMD:C_0603_1608Metric",
+          "note": "U402 bypass, PDF candidate",
+          "status": "provisional"
+        },
+        {
+          "ref": "X401",
+          "value": "CLAMP TBD",
+          "lib_id": "CentralPlacement:CoilClamp_TBD",
+          "footprint": "",
+          "status": "TBD",
+          "note": "TBD functional placeholder; no selected device or conductive return connection",
+          "custom_pins": [
+            {
+              "number": "1",
+              "name": "COIL_POS",
+              "type": "passive"
+            },
+            {
+              "number": "2",
+              "name": "COIL_NEG",
+              "type": "passive"
+            }
+          ]
+        },
+        {
+          "ref": "X402",
+          "value": "RETURN JOIN TBD",
+          "lib_id": "CentralPlacement:ReturnJoin_TBD",
+          "footprint": "",
+          "status": "TBD",
+          "note": "TBD functional placeholder; no selected device or conductive return connection",
+          "custom_pins": [
+            {
+              "number": "1",
+              "name": "LOGIC",
+              "type": "passive"
+            },
+            {
+              "number": "2",
+              "name": "LED",
+              "type": "passive"
+            },
+            {
+              "number": "3",
+              "name": "COIL",
+              "type": "passive"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S05_io",
+      "title": "Matek battery monitor / expansion I/O",
+      "parts": [
+        {
+          "ref": "R511",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R512",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R513",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R514",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U501",
+          "value": "SRV05-4",
+          "lib_id": "Power_Protection:SRV05-4",
+          "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+          "note": "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library",
+          "status": "documented"
+        },
+        {
+          "ref": "R521",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R522",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R523",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R524",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U502",
+          "value": "SRV05-4",
+          "lib_id": "Power_Protection:SRV05-4",
+          "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+          "note": "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library",
+          "status": "documented"
+        },
+        {
+          "ref": "R531",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R532",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R533",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R534",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R535",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U503",
+          "value": "SRV05-4",
+          "lib_id": "Power_Protection:SRV05-4",
+          "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+          "note": "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library",
+          "status": "documented"
+        },
+        {
+          "ref": "R541",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R542",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R543",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R544",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U505",
+          "value": "SRV05-4",
+          "lib_id": "Power_Protection:SRV05-4",
+          "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+          "note": "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library",
+          "status": "documented"
+        },
+        {
+          "ref": "R545",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R546",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R547",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R548",
+          "value": "100",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "U506",
+          "value": "SRV05-4",
+          "lib_id": "Power_Protection:SRV05-4",
+          "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+          "note": "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library",
+          "status": "documented"
+        },
+        {
+          "ref": "J501",
+          "value": "SM04B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J502",
+          "value": "SM04B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J503",
+          "value": "SM04B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J504",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J505",
+          "value": "SM03B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J506",
+          "value": "SM07B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x07",
+          "footprint": "Connector_JST:JST_GH_SM07B-GHS-TB_1x07-1MP_P1.25mm_Horizontal",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "J507",
+          "value": "SM04B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+          "note": "GPIO 4pin port; common JP505 VCC; 3.3V signals only; wired 2026-09-29",
+          "status": "provisional"
+        },
+        {
+          "ref": "J508",
+          "value": "SM04B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+          "note": "GPIO 4pin port; common JP505 VCC; 3.3V signals only; wired 2026-09-29"
+        },
+        {
+          "ref": "J509",
+          "value": "SM04B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+          "note": "GPIO 4pin port; common JP505 VCC; 3.3V signals only; wired 2026-09-29"
+        },
+        {
+          "ref": "J510",
+          "value": "SM04B-GHS-TB",
+          "lib_id": "Connector_Generic:Conn_01x04",
+          "footprint": "Connector_JST:JST_GH_SM04B-GHS-TB_1x04-1MP_P1.25mm_Horizontal",
+          "note": "GPIO 4pin port; common JP505 VCC; 3.3V signals only; wired 2026-09-29"
+        },
+        {
+          "ref": "U504",
+          "value": "SRV05-4",
+          "lib_id": "Power_Protection:SRV05-4",
+          "footprint": "Package_TO_SOT_SMD:SOT-23-6",
+          "note": "Manufacturer not fixed; pin1/3/4/6=IO,2=GND,5=3V3; verify library",
+          "status": "documented"
+        },
+        {
+          "ref": "JP501",
+          "value": "Pullup enable N.O.",
+          "lib_id": "Jumper:SolderJumper_2_Open",
+          "footprint": "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R551",
+          "value": "2.2k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "JP502",
+          "value": "Pullup enable N.O.",
+          "lib_id": "Jumper:SolderJumper_2_Open",
+          "footprint": "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R552",
+          "value": "2.2k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "JP503",
+          "value": "Pullup enable N.O.",
+          "lib_id": "Jumper:SolderJumper_2_Open",
+          "footprint": "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R553",
+          "value": "2.2k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "JP504",
+          "value": "Pullup enable N.O.",
+          "lib_id": "Jumper:SolderJumper_2_Open",
+          "footprint": "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "R554",
+          "value": "2.2k",
+          "lib_id": "Device:R",
+          "footprint": "Resistor_SMD:R_0603_1608Metric",
+          "note": "",
+          "status": "documented"
+        },
+        {
+          "ref": "JP505",
+          "value": "GPIO VCC 3V3/5V select",
+          "lib_id": "Connector_Generic:Conn_01x03",
+          "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical",
+          "note": "1=+3V3_TEENSY; 2=VCC_GPIO_EXT to J507 pin1; 3=+5V_EXP (F206). One shunt: 1-2 default 3V3, 2-3 5V. IO stays 3.3V ONLY; actual header/shunt MPN pending.",
+          "status": "provisional"
+        },
+        {
+          "ref": "TP501",
+          "value": "GND_CTRL",
+          "lib_id": "Connector:TestPoint",
+          "footprint": "DifferentialSwerve:Harwin_S1751-46R",
+          "note": "S1751-46R",
+          "status": "documented"
+        }
+      ]
+    }
+  ],
+  "excluded_unresolved": [
+    {
+      "item": "D4xx coil clamp",
+      "reason": "Topology/polarity/value/MPN undecided; textual placeholder only, do not select diode/TVS symbol"
+    },
+    {
+      "item": "COMM LED",
+      "reason": "GPIO/implementation undecided; no part Ref fixed"
+    },
+    {
+      "item": "LED branch protection",
+      "reason": "F402 revival/rating/MPN undecided"
+    }
+  ],
+  "conflicts": [
+    "中央の最終正本は専用CAN GH3。2026-09-23 V2作業ログの後発CAN2pin指定は駆動V2対象確認中で中央の変更承認ではない。",
+    "旧S04 J402=別体driver5線/CONTACTOR_STATUS_Nは撤回。中央コイルdriverとJ402コイル2線へ更新。",
+    "旧中央モニタINA238回路/shuntはMatek I2Cモジュールへ置換、中央へ配置しない。",
+    "旧Teensy 1x24 x2のRefを単一J210へ統合。列中心15.24mm。"
+  ]
+}

@@ -28,3 +28,11 @@ central_firmware/scripts/test-host.sh
 twist/steer profiler、通常STOP/ESTOP状態機械をこのコアの外側へ接続する。空走P4では
 jerk=100k/200kを評価したが応答優先ではjerk=0が最速だったため、production configの
 non-zero jerk採用値は接地3輪試験後に確定する。
+
+## 再アーム判定コア（2026-09-26）
+
+control/arm_controllerを追加。GUI ARMイベントとSW211押下を同じ安全判定へ入力し、ARMによるコイル許可とRUNによる運転許可を分離する。詳細はdocs/software/MINIPC_GUI_AND_TEENSY.md。
+
+アダプタは毎周期ArmInputsを構築する。初期値は安全側（未許可）。GPIOにmotor_power_enableを反映し、motion_permitted=falseでは車輪出力をゼロにする。boot_sessionは起動/GUI再接続ごとに新しい値を供給し、再接続時はコントローラを再初期化する。USB受信イベントをキューへ保持せず、期限切れリンク/指令をlinks_ok=falseへ反映する。run_eventはC620立上がりや運転の他条件を確認したイベントだけを渡す。
+
+これは判定コアの実装であり、Teensy GPIO/USB、本体ディスプレーGUIとの接続は未実装。今回ビルド・テスト・書き込みは実施していない。

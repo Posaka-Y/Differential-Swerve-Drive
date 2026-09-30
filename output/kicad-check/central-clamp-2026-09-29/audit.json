@@ -1,0 +1,8 @@
+{
+  "netlist_equal_after_X401_to_D405_rename": true,
+  "D405_parallel_J402": true,
+  "value": "SMBJ33CA",
+  "footprint": "Diode_SMD:D_SMB",
+  "erc_before": 4,
+  "erc_after": 4
+}

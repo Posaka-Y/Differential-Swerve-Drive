@@ -466,7 +466,7 @@
       "no_connect_dangling": "warning",
       "pin_not_connected": "error",
       "pin_not_driven": "error",
-      "pin_to_pin": "warning",
+      "pin_to_pin": "error",
       "power_pin_not_driven": "error",
       "same_local_global_label": "warning",
       "similar_label_and_power": "warning",
@@ -648,13 +648,37 @@
         "uuid": "cdb60579-f192-43a7-86d7-10cb974d2bc4"
       }
     ],
-    "used_designators": "C101-102,D101,F101,F111-116,J3-4,J101,J111-114,J201-202,R101-106,U101",
+    "used_designators": "C101-108,C211-212,C311-316,C401,D101-102,D201-206,D211-213,D311-313,D401,#PWR1-49,#PWR51-52,F101,F111-116,F201-207,F401-402,J3-4,J101-102,J111-114,J201-204,J210,J311-316,J401-403,J501-510,#FLG901-904,R101-112,R201-206,R211-214,R311-313,R401-402,R409,R413-415,R511-514,R521-524,R531-535,R541-548,R551-554,IC1,U101-102,U311-313,U401-402,U501-506,TP101-102,TP401,TP406,TP501,SW211,SW311-313,Q401,X401-402,JP501-505",
     "variants": []
   },
   "sheets": [
     [
       "cdb60579-f192-43a7-86d7-10cb974d2bc4",
       "Root"
+    ],
+    [
+      "dc630c3b-c5eb-43fa-be73-3daed3599e43",
+      "5V input / eFuse / USB diode OR (1)"
+    ],
+    [
+      "588c6e97-0c89-4579-a15a-6b66f9f9d27b",
+      "CAN1 Sensor"
+    ],
+    [
+      "bfe32829-2bae-4b1d-ba38-165be84e30c7",
+      "CAN2 Expansion"
+    ],
+    [
+      "b68f6fc2-7a9a-4d9b-88be-0facb95f02ac",
+      "CAN3 Drive"
+    ],
+    [
+      "63e42baf-1edb-45c4-b0c0-86be76261e2f",
+      "E-stop monitoring, central coil driver"
+    ],
+    [
+      "ae1cb71e-9276-4c55-b394-4589870cd7be",
+      "Matek battery monitor / expansion I/O (1)"
     ]
   ],
   "text_variables": {},

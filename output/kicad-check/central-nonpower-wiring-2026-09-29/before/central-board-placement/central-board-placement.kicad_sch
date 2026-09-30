@@ -1,0 +1,422 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "86ff21e2-ce3a-5bf6-854a-178e7ad1d673")
+	(paper "A3")
+	(title_block
+		(title "Central board - symbol placement index")
+		(date "2026-09-23")
+		(rev "PLACEMENT ONLY")
+		(company "Differential Swerve")
+		(comment 1 "Unwired draft - not for fabrication")
+	)
+	(lib_symbols)
+	(text "44 parts"
+		(exclude_from_sim no)
+		(at 80 141 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "489c5bb4-8419-5413-9ded-a3ff0d7a6157")
+	)
+	(text "10 parts"
+		(exclude_from_sim no)
+		(at 205 99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "555ce3e9-b933-585c-a1c2-d4e94abdcd1d")
+	)
+	(text "32 parts"
+		(exclude_from_sim no)
+		(at 80 57 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "59190852-d159-5923-a37f-80f76bf44110")
+	)
+	(text "41 parts"
+		(exclude_from_sim no)
+		(at 205 57 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "706f7141-1160-5cfc-88c3-e09711a866e2")
+	)
+	(text "10 parts"
+		(exclude_from_sim no)
+		(at 330 57 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "91511fb6-e192-5db9-8e70-951926e3b6aa")
+	)
+	(text "36 parts"
+		(exclude_from_sim no)
+		(at 330 99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "960dd25a-d48e-5fed-847a-ad3443f6f526")
+	)
+	(text "ARM: GUI over USB + SW211 tactile -> common Teensy safety gate.\nE-stop release is not ARM. ARM is power only; new RUN starts motion.\nDetails: S02B / S04 and reference PDF page16. USB/GPIO/GUI integration pending."
+		(exclude_from_sim no)
+		(at 205 210 0)
+		(effects
+			(font
+				(size 1.5 1.5)
+			)
+		)
+		(uuid "a5e0c8c6-6e53-5f08-a43b-6300ae7b1e1c")
+	)
+	(text "11 parts"
+		(exclude_from_sim no)
+		(at 80 99 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "a8cfff41-8b78-532c-891c-5ad71ee5288f")
+	)
+	(text "CENTRAL BOARD / UNWIRED COMPONENT PLACEMENT"
+		(exclude_from_sim no)
+		(at 205 20 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+			)
+		)
+		(uuid "b7e8ae87-c821-5b74-b204-f5c39053c033")
+	)
+	(text "Open a sheet to wire the components. Footprints marked TBD remain unassigned."
+		(exclude_from_sim no)
+		(at 205 28 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "bd09baeb-260f-5953-8f65-d008d73c503f")
+	)
+	(sheet
+		(at 150 45)
+		(size 110 24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "34bf53da-dcef-54e5-a740-b8c75f8d45cf")
+		(property "Sheetname" "Star power / Teensy / indicators (1)"
+			(at 205 42 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sheetfile" "S02B_star_teensy-1.kicad_sch"
+			(at 205 72 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(instances
+			(project "central-board-placement"
+				(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 25 87)
+		(size 110 24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "3be0a58d-7170-573b-8df3-7bd781da7b86")
+		(property "Sheetname" "CAN2 Expansion (1)"
+			(at 80 84 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sheetfile" "S03_CAN2-1.kicad_sch"
+			(at 80 114 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(instances
+			(project "central-board-placement"
+				(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 25 45)
+		(size 110 24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "5746d33b-29ca-5651-aacb-9e02822eead7")
+		(property "Sheetname" "5V input / eFuse / USB diode OR (1)"
+			(at 80 42 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sheetfile" "S02A_power_input-1.kicad_sch"
+			(at 80 72 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(instances
+			(project "central-board-placement"
+				(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 150 87)
+		(size 110 24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "7bea6aa1-fbde-5598-83a3-4a917715fd87")
+		(property "Sheetname" "CAN3 Drive (1)"
+			(at 205 84 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sheetfile" "S03_CAN3-1.kicad_sch"
+			(at 205 114 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(instances
+			(project "central-board-placement"
+				(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 275 45)
+		(size 110 24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "f1fe899c-e08e-5296-a114-8044dd98e43a")
+		(property "Sheetname" "CAN1 Sensor (1)"
+			(at 330 42 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sheetfile" "S03_CAN1-1.kicad_sch"
+			(at 330 72 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(instances
+			(project "central-board-placement"
+				(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 25 129)
+		(size 110 24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "fd4ae659-53de-5990-931c-b18634dfaacf")
+		(property "Sheetname" "Matek battery monitor / expansion I/O (1)"
+			(at 80 126 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sheetfile" "S05_io-1.kicad_sch"
+			(at 80 156 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(instances
+			(project "central-board-placement"
+				(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 275 87)
+		(size 110 24)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "fe643318-c497-510e-9f1e-0a174de6489e")
+		(property "Sheetname" "E-stop monitoring / central coil driver (1)"
+			(at 330 84 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sheetfile" "S04_safety-1.kicad_sch"
+			(at 330 114 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(instances
+			(project "central-board-placement"
+				(path "/86ff21e2-ce3a-5bf6-854a-178e7ad1d673"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

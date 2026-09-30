@@ -1,0 +1,14 @@
+{
+  "hardware\\central-board\\central-board\\CAN1-1.kicad_sch": "7025e47b33f401db142c46afccd93d6e025e4df3710415e25df29ffc92bde5b4",
+  "hardware\\central-board\\central-board\\CAN2-1.kicad_sch": "b38909c2adb718401752953ee31dad14210dbd19da1d619f92ebe503e3387864",
+  "hardware\\central-board\\central-board\\CAN3-1.kicad_sch": "637233de8ad9de7f1b5e16994ab6b339a9344420d4e9f68fad4c1df1d2fba61c",
+  "hardware\\central-board\\central-board\\central-board.kicad_pcb": "adea68f65d64191e671ba74d19768e3ce8a6f0ba8cb0674c7c6f908f52bf088f",
+  "hardware\\central-board\\central-board\\central-board.kicad_prl": "040b3d939cae79334d26985d152f7999288563b368fa401628f0a4cbb279af07",
+  "hardware\\central-board\\central-board\\central-board.kicad_pro": "967c399d7ccafe9d04d6d77fd49a840d4f7c49abe3b8e33daea78844b6af3699",
+  "hardware\\central-board\\central-board\\central-board.kicad_sch": "ffefd5d2ff5518473a523705d25c92a46bb4719dc636d3519980f8cef1678004",
+  "hardware\\central-board\\central-board\\central-board.sch": "1dab9dc44999f3d685e0562b15d51cfa02b1ae8c71bd799b45713a953f0f759b",
+  "hardware\\central-board\\central-board\\fp-lib-table": "08ff71416b6ad5f4c8abda2b35d96de1c8c0b10b7188d8d03503c248037bc5d9",
+  "hardware\\central-board\\central-board\\io-1.kicad_sch": "fd7ed860e6548517a8a78c6dbc615f6c18825a09a68b5a05f134147ef8523bd9",
+  "hardware\\central-board\\central-board\\power_input.kicad_sch": "415caf002b1cdf08de9cc186cc6daf240b94501f6c3fa6e52d147a0ac915d41d",
+  "hardware\\central-board\\central-board\\sym-lib-table": "5fb5b900371169b22fbda007959b673935b9e2b674b88e1a6ec48b6924148302"
+}

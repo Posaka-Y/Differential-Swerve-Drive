@@ -151,3 +151,23 @@ python3 tools/linux/dualsense_web_ui.py --host 0.0.0.0 --port 8766
 `vx/vy/omega`を50ms間隔で表示するが、CAN・USBシリアル・モータ出力は持たない。
 R1解放またはevdev切断で3軸要求は同じsnapshotから0になる。今後USB-CDC出力を追加しても、
 Teensy側に独立した受信timeout、再接続後の再arm要求、E-stop優先を実装する。
+
+## GUI・物理ボタン共通再アーム（2026-09-26確定）
+
+本体ディスプレーのARMボタンと基板のSW211を、Teensyの同じ判定へ接続する。GUIからMOTOR_PWR_ENを直接指定しない。GUIは要求を出し、Teensyの受理応答と状態を表示する。ARMはコイル励磁の許可、RUNは別の運転開始要求とする。解除だけで復帰せず、ARM成功だけでも車輪指令はゼロのまま。
+
+### 接続仕様
+
+- 本体GUI→mini PC→USB-CDC→Teensy。ESP32手動twist中継からARM要求を暗黙生成しない。
+- Teensyは起動ごと・GUI再接続ごとに異なる非ゼロboot_sessionを発行し、stop_generationと一緒に状態配信する。GUI再接続は一旦DISARMし判定コアを新sessionで初期化する。
+- ARM要求はboot_session/stop_generation/gui_sequenceを含む。sequenceはsession内単調増加。要求は受信した制御周期だけのイベントとし、保留・自動再送・再接続後再利用をしない。
+- 停止・E-stop・リンク期限切れ・異常で即DISARM。stop_generationを更新し、それ以前の要求を無効化する。GUI表示は通信freshなTeensy状態を正とし、通信断時は状態不明と表示する。
+- SW211はデバウンス済み入力を渡す。安全条件成立中に解放を観測した後の押下だけを受理する。押しっぱなしや安全条件成立前の押下で自動復帰させない。
+- 共通ARM条件はNCループ成立、GUI/駆動3基/ODOMのfresh通信、他異常なし、動作指令ゼロ。ファームは判定結果と拒否状態をGUIへ返す。
+- ARM後は新しいRUNと動作指令を要求し、モーションsequenceも単調増加で旧指令を除去する。同一周期ARM+RUNを許可しない。RUNアダプタはC620の立上がり確認・キャリブレーション・通常運転の安全条件も確認する。
+- OFF中のC620無応答をARM拒否条件にしない。C620はコンタクタON後の確認項目であり、主接点の溶着検出には使用しない。
+- GPIO出力は周期ごとのmotor_power_enableを反映し、motion_permitted=falseなら全運転出力ゼロ。リンク異常判定は制御指令の期限切れも含める。
+
+### 実装状況
+
+central_firmwareにハード非依存ArmControllerを追加。起動OFF、共通ARM判定、停止世代token、GUI重複拒否、ボタン押下、ARM/RUN分離を実装した。Teensy実機GPIO・USBプロトコルの符号化/受信処理、本体GUIの画面、タイムアウト/デバウンス/C620立上がりアダプタは未実装。既存単ユニットWeb UIへ中央ARMを追加してはいない。実機投入・テストは未実施。

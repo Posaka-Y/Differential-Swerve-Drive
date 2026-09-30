@@ -136,7 +136,7 @@ Add-Component 'Connector_Generic:Conn_01x02' 'J114' 'ODOM 5V OUT GH2' 850 4600 '
 Add-ConnectorLabels 850 4600 @('+5V_ODOM','GND_CTRL')
 Add-HorizontalPassive 'Device:Polyfuse' 'F114' '1206L050/15YR' 1750 4600 '+5V_PROT' '+5V_ODOM'
 
-Add-HorizontalPassive 'Device:Polyfuse' 'F115' '1206L075/16YR' 3100 3550 '+5V_PROT' '+5V_SYS'
+Add-HorizontalPassive 'Device:Polyfuse' 'F115' '1206L075/16WR' 3100 3550 '+5V_PROT' '+5V_SYS'
 Add-HorizontalPassive 'Device:Polyfuse' 'F116' '1206L050/15YR' 3100 3900 '+5V_PROT' '+5V_EXP'
 
 Add-Component 'Device:LED' 'D111' 'LTST-C190KGKT' 2600 3550 '0 -1 -1 0' 'LED_SMD:LED_0603_1608Metric'
